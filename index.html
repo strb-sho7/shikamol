@@ -270,12 +270,12 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div class="row"><span class="small" style="width:3.5em">動かす</span><b id="supMov" style="flex:1"></b><select id="supMovCh"></select></div>
     <div class="row"><span class="small" style="width:3.5em">基準</span><select id="supRef" style="flex:1"></select><select id="supRefCh"></select></div>
     <div class="row">
-      <select id="supMode"><option value="seq">配列アライメントで対応付け</option><option value="num">残基番号で対応付け</option></select>
+      <select id="supMode" title="Cα の対応付けの方法"><option value="auto">自動（おすすめ）</option><option value="seq">配列アライメント</option><option value="struct">構造ベース（配列に頼らない）</option><option value="num">残基番号</option></select>
       <button class="pri" id="supRun">重ね合わせ</button>
       <button id="supUndo">元の位置に戻す</button>
     </div>
     <div class="row"><button id="supAll">全構造をこの基準に一括で重ね合わせ</button></div>
-    <div class="small" id="supInfo">外れ値（RMSDの2倍を超えるずれ）を除きながら5回まで繰り返し当てはめます（PyMOLの align と同じ考え方）。</div>
+    <div class="small" id="supInfo">自動：BLOSUM62 の配列アライメントで Cα を対応付け、配列一致度が 30% 未満のときや当てはまりが悪いときは構造ベース（TM-align と同じ考え方）に切り替えます。外れ値（RMSD の2倍を超えるずれ）を除きながら5回まで当てはめ直します（PyMOL の align と同じ）。</div>
   </div>
 
   <div id="chainHolder" style="display:none">
@@ -841,7 +841,7 @@ const EXACT = new Map(Object.entries({
   'クリックした残基から指定した半径の内側はそのまま、外側を薄くします（濃さ 0 で外側を消します）。表面・リガンド・ほかの構造も外側として薄くなります。「色を背景に近づける」は透けないので、手前にある部分がクリックした場所を隠すことがあります。':
     'Inside the chosen radius stays as is; everything outside is faded (strength 0 hides it), including surfaces, ligands and other structures. "Blend toward background" is opaque, so parts in front can hide the site.',
   '薄くする方法': 'Fade by', '色を背景に近づける（透けない）': 'Blend toward background (opaque)', '半透明（手前も透ける）': 'Transparent (see-through)', '外側の濃さ': 'Outside strength',
-  '周りを薄く': 'Fade surroundings', '▭ 範囲選択': '▭ Box select', '全Chainを同じ色にする（構造全体を1色で塗ります）': 'Give all chains the same colour (colour the whole structure)', '📌 残す': '📌 Keep', '📌 残す中': '📌 Keeping', '複数の構造': 'Several structures', '2つ以上開いたとき': 'when two or more are open', '1つの構造だけ選択': 'Select in one structure at a time', '構造ごとに選択を残す': 'Keep a selection in each structure', '同じ番号を連動して表示': 'Link the same residue numbers', '構造を2つ以上開いているときの選択の扱い': 'How selections work with two or more structures', '「構造ごとに選択を残す」：別の構造の残基をクリックしても前の構造の表示が残り、構造ごとに好きな残基を並べて比べられます（番号がずれていても使えます）。「同じ番号を連動して表示」：Chain 名と残基番号が同じ残基を、ほかの構造にも自動で表示します。': '"Keep a selection in each structure": clicking a residue in another structure leaves the previous structure’s display in place, so you can compare any residues side by side (works even when numbering differs). "Link the same residue numbers": the residues with the same chain name and number are shown in the other structures automatically.', 'ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します': 'Keep this structure’s selection (sticks and interactions) when you click a residue in another structure', 'ほかの構造の残基をクリックしても、前の構造の選択（スティックと相互作用）を残します。背景をクリックすると全部消えます': 'Selections stay in each structure when you click residues in another one. Click the background to clear them all', '構造ごとの選択を残さない表示に戻しました（いつも1つの構造だけ）': 'Back to one selection at a time', '全構造に適用': 'Apply to all structures', '同じ Chain 名・残基番号の残基で、ほかの構造にも同じ名前・色・表示形式の選択を作ります（同じ名前のものがあれば置き換えます）': 'Create the same selection (name, colour, style) in the other structures, matching residues by chain name and number (replaces one with the same name)', '🔗 連動': '🔗 Link', '🔗 連動中': '🔗 Linked', 'ほかの構造にも同じ残基を表示（連動）': 'Show the same residues in the other structures (linked)', '連動表示をオフにしました': 'Linked display turned off', 'ほかの構造でも、Chain名と残基番号が同じ残基を表示します（相互作用も構造ごとに計算します）': 'The residues with the same chain name and number are shown in the other structures too (interactions are calculated for each structure)', '構造を2つ以上開いているとき、選んだ残基と同じ Chain 名・残基番号の残基を、ほかの構造でもスティック表示し、相互作用も構造ごとに計算します（アポ型とホロ型、変異体などの比較向け）': 'With two or more structures open, the residues with the same chain name and number as the selection are shown as sticks in the other structures as well, and interactions are calculated for each structure (for comparing apo and holo forms, mutants, etc.)', 'ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）': 'Show the residues with the same chain name and number as sticks in the other structures (interactions per structure)', ': ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': ': Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', ': 手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra & Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': ': Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', '表をコピー': 'Copy table', 'ConSurfの結果': 'ConSurf results', 'MSAから計算': 'From an MSA', '出力:': 'Output:', '⑤ 保存と共有': '⑤ Save & share', '表示の状態を .json に保存、またはリンクで共有': 'save the view as .json, or share it as a link', '🔗 今の表示をリンクで共有': '🔗 Share this view as a link', '処理中': 'Working', 'ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': 'Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', 'をダウンロードして読み込みます。グレード（1〜9）と色は ConSurf の出力そのものです。論文の図にはこちらを使ってください。': 'and load it here. Grades (1–9) and colours are exactly ConSurf\u2019s output; use this for figures in papers.', '手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra &amp; Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': 'Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', 'アラインメントの中から、選んだChainの配列に最も近い配列を自動で探して対応づけます。グレードは ConSurf と同じく、平均からの差を保存側・可変側それぞれ 4.5 区間に分けた 9 段階です。その位置に残基をもつ配列が 6 本未満の位置と、ギャップが 30% を超える位置（元のスクリプトが点数を付けない位置）は「データ不足」（黄色）にします。': 'The sequence in the alignment closest to the selected chain is found and mapped automatically. As in ConSurf, the nine grades split the deviation from the mean into 4.5 intervals on the conserved and variable sides. Positions with fewer than 6 sequences, or more than 30% gaps (positions the original script does not score), are marked "insufficient data" (yellow).', '色分けはカートゥーン・スティック・表面と、画面下の配列に反映されます。表面の色が「Chainの色」のとき、表面も保存度で塗ります。': 'Colours are applied to cartoons, sticks, surfaces and the sequence strip. When the surface colour is "Chain colour", the surface is coloured by conservation too.', 'PDB ID で開いた構造、Chainごとの色と表示形式、リガンド・水の表示、保存した選択、選んでいる残基、視点、見た目、サーバーから読み込んだ電子密度（レベルと色）がリンクに入ります。リンクを開いた人は同じ画面から始められます。手元のファイル（構造・マップ・MTZ）はリンクに入りません（全部渡すときはセッションの .json を送ってください）。': 'The link holds the structures opened by PDB ID, chain colours and styles, ligand and water display, saved selections, the selected residues, the viewpoint, the look, and density fetched from servers (level and colour). Whoever opens it starts from the same screen. Local files (structures, maps, MTZ) are not included; send the session .json to pass on everything.', '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with', '（Mac は': ' (Mac:', 'でオフ）': 'turns it off)', 'ShikaMol — ブラウザで動く分子ビューア': 'ShikaMol — a molecular viewer in your browser', '色覚の多様性に配慮した配色（viridis）': 'Colour-blind-safe palette (viridis)', '硫黄は原子が大きく、S が関わる水素結合は長めになるため（Mol* は 4.1 Å まで）': 'Sulfur is larger, so H-bonds involving S are longer (Mol* allows up to 4.1 Å)', 'Lys・Arg・His と Asp・Glu・リン酸のように、電荷をもつ基どうしの水素結合は塩橋と同じ相互作用です。オフにすると「水素結合」と「塩橋」の2行で表示します': 'An H-bond between charged groups (Lys, Arg, His with Asp, Glu, phosphate) is the same interaction as the salt bridge. Turn off to list it as two rows, "H-bond" and "Salt bridge"', 'タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます': 'Whether protein sticks include the main chain (N, C, O). With "side chain only", the main chain is still drawn for residues whose main chain takes part in an interaction', '核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます': 'Which part of nucleotides is drawn as sticks. A hidden part is still drawn for nucleotides where it takes part in an interaction', '疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）': 'How hydrophobic contacts (carbon–carbon) are drawn. Dots are fine points on the facing sides of the two carbons (a 3D take on LigPlot+ "eyelashes")', '1つ前の表示に戻す（Ctrl／⌘＋Z）': 'Undo the last change (Ctrl/⌘+Z)', '戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）': 'Redo (Ctrl/⌘+Shift+Z)', 'オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します': 'While on, dragging a rectangle in the viewer selects the residues inside it (dragging with Alt/Option does the same). With Ctrl/⌘/Shift held, or with "+ Add to selection" on, they are added to the selection', 'いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）': 'Save the current selection under a name (listed under "Saved selections and history" in the Structures tab)', 'オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け': 'While on, tapped (clicked) residues are added to the selection, like holding Ctrl/⌘. For tablets', '疎水性の描き方': 'Hydrophobic contacts', 'Chain間の解析にも共通': 'also for chain interfaces', 'ドット': 'Dots', '点線': 'Dashed line', 'イラスト風': 'Illustration', '淡い色調': 'Soft colours', '解像度の目安': 'dpi presets', '黒': 'Black', '白': 'White', '紺グレー': 'Slate', '標準（少し光沢）': 'Standard (slight gloss)', 'マット（光沢なし）': 'Matte (no gloss)', 'フラット（イラスト風）': 'Flat (illustration-like)', '光沢あり': 'Glossy', '淡い（やわらかい光）': 'Soft (gentle light)', 'なし': 'None', '細め': 'Thin', '太め': 'Thick', '強め': 'Strong', '解析用（残基の上・奥は薄く）': 'Analysis (on the residues, dimmed when behind)', '図用（動かせる・重ならないように並べる）': 'Figure (movable, no overlaps)', 'Arg51': 'Arg51', 'R51': 'R51', 'ARG51': 'ARG51', '界面解析のときだけ': 'Interface analysis only', '付ける': 'Always', '付けない': 'Never', '小': 'Small', '中': 'Medium', '大': 'Large', '特大': 'Extra large', '背景': 'Background', '投影': 'Projection', '質感': 'Look', '輪郭線': 'Outline', '奥のぼかし': 'Depth fade', '透明度': 'transparency', 'まとめて設定': 'Presets', '表記': 'Style', 'Chain名': 'Chain name', '文字の大きさ': 'Text size', '論文の段組': 'journal columns', '1段': '1 col', '1.5段': '1.5 col', '2段': '2 col', '供与体–受容体': 'donor–acceptor', '炭素どうし': 'carbon–carbon', '環の重心間': 'ring centroids', 'カチオン–π': 'Cation–π', '電荷中心–環の重心': 'charge–ring centroid', '手元のマップ': 'Local map', 'ファイルの種類': 'file type', '開く…': 'Open…', 'すべてのマップ': 'all maps', 'と': 'and', '主鎖＋側鎖': 'Main + side chain', '側鎖のみ': 'Side chain only', 'タンパク質': 'Protein', '核酸': 'Nucleic acid', 'スティックで描く部分': 'Parts drawn as sticks', '全体': 'Whole', '骨格のみ（リン酸・糖）': 'Backbone only (phosphate, sugar)', '塩基のみ': 'Base only', '↶ 戻す': '↶ Undo', '1つ前の表示に戻しました': 'Undid the last change', 'やり直しました': 'Redone', 'これ以上戻せません': 'Nothing more to undo', 'やり直す操作はありません': 'Nothing to redo', '四角の中に残基がありませんでした': 'No residues inside the box', '範囲選択: オフ（ドラッグで回転に戻ります）': 'Box select: off (dragging rotates again)',
+  '周りを薄く': 'Fade surroundings', '▭ 範囲選択': '▭ Box select', '自動（おすすめ）': 'Auto (recommended)', '構造ベース（配列に頼らない）': 'Structure-based (sequence-independent)', 'Cα の対応付けの方法': 'How Cα atoms are paired', '自動：BLOSUM62 の配列アライメントで Cα を対応付け、配列一致度が 30% 未満のときや当てはまりが悪いときは構造ベース（TM-align と同じ考え方）に切り替えます。外れ値（RMSD の2倍を超えるずれ）を除きながら5回まで当てはめ直します（PyMOL の align と同じ）。': 'Auto: Cα atoms are paired by a BLOSUM62 sequence alignment; below 30% identity, or when the fit is poor, it switches to a structure-based alignment (the TM-align idea). Pairs deviating more than 2 × RMSD are rejected over up to 5 cycles (as in PyMOL align).', '全Chainを同じ色にする（構造全体を1色で塗ります）': 'Give all chains the same colour (colour the whole structure)', '📌 残す': '📌 Keep', '📌 残す中': '📌 Keeping', '複数の構造': 'Several structures', '2つ以上開いたとき': 'when two or more are open', '1つの構造だけ選択': 'Select in one structure at a time', '構造ごとに選択を残す': 'Keep a selection in each structure', '同じ番号を連動して表示': 'Link the same residue numbers', '構造を2つ以上開いているときの選択の扱い': 'How selections work with two or more structures', '「構造ごとに選択を残す」：別の構造の残基をクリックしても前の構造の表示が残り、構造ごとに好きな残基を並べて比べられます（番号がずれていても使えます）。「同じ番号を連動して表示」：Chain 名と残基番号が同じ残基を、ほかの構造にも自動で表示します。': '"Keep a selection in each structure": clicking a residue in another structure leaves the previous structure’s display in place, so you can compare any residues side by side (works even when numbering differs). "Link the same residue numbers": the residues with the same chain name and number are shown in the other structures automatically.', 'ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します': 'Keep this structure’s selection (sticks and interactions) when you click a residue in another structure', 'ほかの構造の残基をクリックしても、前の構造の選択（スティックと相互作用）を残します。背景をクリックすると全部消えます': 'Selections stay in each structure when you click residues in another one. Click the background to clear them all', '構造ごとの選択を残さない表示に戻しました（いつも1つの構造だけ）': 'Back to one selection at a time', '全構造に適用': 'Apply to all structures', '同じ Chain 名・残基番号の残基で、ほかの構造にも同じ名前・色・表示形式の選択を作ります（同じ名前のものがあれば置き換えます）': 'Create the same selection (name, colour, style) in the other structures, matching residues by chain name and number (replaces one with the same name)', '🔗 連動': '🔗 Link', '🔗 連動中': '🔗 Linked', 'ほかの構造にも同じ残基を表示（連動）': 'Show the same residues in the other structures (linked)', '連動表示をオフにしました': 'Linked display turned off', 'ほかの構造でも、Chain名と残基番号が同じ残基を表示します（相互作用も構造ごとに計算します）': 'The residues with the same chain name and number are shown in the other structures too (interactions are calculated for each structure)', '構造を2つ以上開いているとき、選んだ残基と同じ Chain 名・残基番号の残基を、ほかの構造でもスティック表示し、相互作用も構造ごとに計算します（アポ型とホロ型、変異体などの比較向け）': 'With two or more structures open, the residues with the same chain name and number as the selection are shown as sticks in the other structures as well, and interactions are calculated for each structure (for comparing apo and holo forms, mutants, etc.)', 'ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）': 'Show the residues with the same chain name and number as sticks in the other structures (interactions per structure)', ': ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': ': Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', ': 手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra & Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': ': Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', '表をコピー': 'Copy table', 'ConSurfの結果': 'ConSurf results', 'MSAから計算': 'From an MSA', '出力:': 'Output:', '⑤ 保存と共有': '⑤ Save & share', '表示の状態を .json に保存、またはリンクで共有': 'save the view as .json, or share it as a link', '🔗 今の表示をリンクで共有': '🔗 Share this view as a link', '処理中': 'Working', 'ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': 'Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', 'をダウンロードして読み込みます。グレード（1〜9）と色は ConSurf の出力そのものです。論文の図にはこちらを使ってください。': 'and load it here. Grades (1–9) and colours are exactly ConSurf\u2019s output; use this for figures in papers.', '手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra &amp; Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': 'Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', 'アラインメントの中から、選んだChainの配列に最も近い配列を自動で探して対応づけます。グレードは ConSurf と同じく、平均からの差を保存側・可変側それぞれ 4.5 区間に分けた 9 段階です。その位置に残基をもつ配列が 6 本未満の位置と、ギャップが 30% を超える位置（元のスクリプトが点数を付けない位置）は「データ不足」（黄色）にします。': 'The sequence in the alignment closest to the selected chain is found and mapped automatically. As in ConSurf, the nine grades split the deviation from the mean into 4.5 intervals on the conserved and variable sides. Positions with fewer than 6 sequences, or more than 30% gaps (positions the original script does not score), are marked "insufficient data" (yellow).', '色分けはカートゥーン・スティック・表面と、画面下の配列に反映されます。表面の色が「Chainの色」のとき、表面も保存度で塗ります。': 'Colours are applied to cartoons, sticks, surfaces and the sequence strip. When the surface colour is "Chain colour", the surface is coloured by conservation too.', 'PDB ID で開いた構造、Chainごとの色と表示形式、リガンド・水の表示、保存した選択、選んでいる残基、視点、見た目、サーバーから読み込んだ電子密度（レベルと色）がリンクに入ります。リンクを開いた人は同じ画面から始められます。手元のファイル（構造・マップ・MTZ）はリンクに入りません（全部渡すときはセッションの .json を送ってください）。': 'The link holds the structures opened by PDB ID, chain colours and styles, ligand and water display, saved selections, the selected residues, the viewpoint, the look, and density fetched from servers (level and colour). Whoever opens it starts from the same screen. Local files (structures, maps, MTZ) are not included; send the session .json to pass on everything.', '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with', '（Mac は': ' (Mac:', 'でオフ）': 'turns it off)', 'ShikaMol — ブラウザで動く分子ビューア': 'ShikaMol — a molecular viewer in your browser', '色覚の多様性に配慮した配色（viridis）': 'Colour-blind-safe palette (viridis)', '硫黄は原子が大きく、S が関わる水素結合は長めになるため（Mol* は 4.1 Å まで）': 'Sulfur is larger, so H-bonds involving S are longer (Mol* allows up to 4.1 Å)', 'Lys・Arg・His と Asp・Glu・リン酸のように、電荷をもつ基どうしの水素結合は塩橋と同じ相互作用です。オフにすると「水素結合」と「塩橋」の2行で表示します': 'An H-bond between charged groups (Lys, Arg, His with Asp, Glu, phosphate) is the same interaction as the salt bridge. Turn off to list it as two rows, "H-bond" and "Salt bridge"', 'タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます': 'Whether protein sticks include the main chain (N, C, O). With "side chain only", the main chain is still drawn for residues whose main chain takes part in an interaction', '核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます': 'Which part of nucleotides is drawn as sticks. A hidden part is still drawn for nucleotides where it takes part in an interaction', '疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）': 'How hydrophobic contacts (carbon–carbon) are drawn. Dots are fine points on the facing sides of the two carbons (a 3D take on LigPlot+ "eyelashes")', '1つ前の表示に戻す（Ctrl／⌘＋Z）': 'Undo the last change (Ctrl/⌘+Z)', '戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）': 'Redo (Ctrl/⌘+Shift+Z)', 'オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します': 'While on, dragging a rectangle in the viewer selects the residues inside it (dragging with Alt/Option does the same). With Ctrl/⌘/Shift held, or with "+ Add to selection" on, they are added to the selection', 'いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）': 'Save the current selection under a name (listed under "Saved selections and history" in the Structures tab)', 'オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け': 'While on, tapped (clicked) residues are added to the selection, like holding Ctrl/⌘. For tablets', '疎水性の描き方': 'Hydrophobic contacts', 'Chain間の解析にも共通': 'also for chain interfaces', 'ドット': 'Dots', '点線': 'Dashed line', 'イラスト風': 'Illustration', '淡い色調': 'Soft colours', '解像度の目安': 'dpi presets', '黒': 'Black', '白': 'White', '紺グレー': 'Slate', '標準（少し光沢）': 'Standard (slight gloss)', 'マット（光沢なし）': 'Matte (no gloss)', 'フラット（イラスト風）': 'Flat (illustration-like)', '光沢あり': 'Glossy', '淡い（やわらかい光）': 'Soft (gentle light)', 'なし': 'None', '細め': 'Thin', '太め': 'Thick', '強め': 'Strong', '解析用（残基の上・奥は薄く）': 'Analysis (on the residues, dimmed when behind)', '図用（動かせる・重ならないように並べる）': 'Figure (movable, no overlaps)', 'Arg51': 'Arg51', 'R51': 'R51', 'ARG51': 'ARG51', '界面解析のときだけ': 'Interface analysis only', '付ける': 'Always', '付けない': 'Never', '小': 'Small', '中': 'Medium', '大': 'Large', '特大': 'Extra large', '背景': 'Background', '投影': 'Projection', '質感': 'Look', '輪郭線': 'Outline', '奥のぼかし': 'Depth fade', '透明度': 'transparency', 'まとめて設定': 'Presets', '表記': 'Style', 'Chain名': 'Chain name', '文字の大きさ': 'Text size', '論文の段組': 'journal columns', '1段': '1 col', '1.5段': '1.5 col', '2段': '2 col', '供与体–受容体': 'donor–acceptor', '炭素どうし': 'carbon–carbon', '環の重心間': 'ring centroids', 'カチオン–π': 'Cation–π', '電荷中心–環の重心': 'charge–ring centroid', '手元のマップ': 'Local map', 'ファイルの種類': 'file type', '開く…': 'Open…', 'すべてのマップ': 'all maps', 'と': 'and', '主鎖＋側鎖': 'Main + side chain', '側鎖のみ': 'Side chain only', 'タンパク質': 'Protein', '核酸': 'Nucleic acid', 'スティックで描く部分': 'Parts drawn as sticks', '全体': 'Whole', '骨格のみ（リン酸・糖）': 'Backbone only (phosphate, sugar)', '塩基のみ': 'Base only', '↶ 戻す': '↶ Undo', '1つ前の表示に戻しました': 'Undid the last change', 'やり直しました': 'Redone', 'これ以上戻せません': 'Nothing more to undo', 'やり直す操作はありません': 'Nothing to redo', '四角の中に残基がありませんでした': 'No residues inside the box', '範囲選択: オフ（ドラッグで回転に戻ります）': 'Box select: off (dragging rotates again)',
   '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または ': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with ', '（Mac は ': ' (Mac: ', '）を押しながらドラッグ。四角の中の残基をまとめて選択（': '). Selects the residues inside the box (', ' でオフ）': ' turns it off)', '＋ 追加選択': '+ Add to selection', '追加選択: オフ': 'Add to selection: off',
   'タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン': 'Tablet: one finger rotates, two fingers zoom and pan. On the sequence, hold a letter briefly, then slide to select a stretch. To pick several residues, turn on "+ Add to selection" in the info box', '★ 選択を保存': '★ Save selection', '選択の保存と履歴': 'Saved selections and history', '表示': 'Show', '＋追加': '+ Add', '★ 保存': '★ Save',
   '選んだ残基の周囲5Åもスティック表示': 'Also show residues within 5 Å as sticks', '選んだ場所にズーム': 'Zoom to the selection',
@@ -964,7 +964,12 @@ const EXACT = new Map(Object.entries({
   '表面は各Chainの行の「表面」にチェックを入れると、カートゥーンやスティックに重ねて表示されます。下が透けて見えるよう不透明度で調整してください。表面だけ見たいときは表示形式を「なし（表面だけ）」に。': 'Tick "Surface" on a chain row to overlay its surface on the cartoon or sticks. Lower the opacity to see what is underneath. For a surface only, set the style to "None (surface only)".',
 }));
 const P = (re, f) => [re, f];
+const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^(.+?) を (.+?) に重ね合わせました（(.+?)）: RMSD (.+?) Å（(\d+) Cα）、TM-score (.+)$/, (m, a, b, me, r, n, tm) => `Superposed ${a} onto ${b} (${SUP_EN[me] || me}): RMSD ${r} Å (${n} Cα), TM-score ${tm}`),
+  P(/^(.+?)で対応付け。RMSD (.+?) Å（(\d+) \/ (\d+) Cα、外れ値除外後）。(?:構造的に対応した Cα (\d+) 組（5 Å 以内）全体では (.+?) Å。|全ペアでは (.+?) Å。)TM-score (.+?)（短い方の長さで規格化）。対応ペアの配列一致 (\d+)%。(.*)$/,
+    (m, me, r, n, N, ne, re, ra, tm, id, w) => `Paired by ${SUP_EN[me] || me}. RMSD ${r} Å (${n} / ${N} Cα after outlier rejection). ` + (ne ? `${re} Å over all ${ne} structurally equivalent Cα pairs (within 5 Å). ` : `${ra} Å over all pairs. `) + `TM-score ${tm} (normalised by the shorter length). Sequence identity of the pairs ${id}%.` + (w ? ' Note: the moved structure no longer matches the electron-density maps.' : '')),
+  P(/^・(.+?): (配列アライメント|構造ベース|残基番号)、RMSD (.+?) Å（(\d+)\/(\d+) Cα）、TM-score (.+?)、一致 (\d+)%$/, (m, a, me, r, n, N, tm, id) => `· ${a}: ${SUP_EN[me]}, RMSD ${r} Å (${n}/${N} Cα), TM-score ${tm}, identity ${id}%`),
   P(/^(.+) の全Chainを同じ色にしました（Chainごとの色は各行の色ボタンで変えられます）$/, (m, n) => `All chains of ${n} now have the same colour (change single chains with the colour button on each row)`),
   P(/^「(.+)」を (\d+) 個の構造に作りました（Chain名と残基番号で対応）(.*)$/, (m, n, k, r) => `Created "${n}" in ${k} structure(s) (matched by chain name and number)` + (r ? '; some residues missing in: ' + r.replace(/^。一部の残基がない構造: /, '') : '')),
   P(/^🔗 (.+)$/, (m, r) => '🔗 ' + r.replace(/同じ番号の残基なし/g, 'no residues with the same numbers').replace(/特定の相互作用なし/g, 'no specific interactions').replace(/表示中/g, 'shown').replace(/（選んだ (\d+) 残基のうち (\d+) 残基）/g, ' ($2 of $1 selected residues)').replace(/　／ /g, ' / ')),
@@ -1397,36 +1402,44 @@ $('#closeAll').onclick = clearAll;
 
 /* ---------- superposition ---------- */
 /* ---------- superposition core (pairing, Horn quaternion fit, PyMOL-style outlier rejection) ---------- */
-const SIMGRP = ['AVLIMC', 'FWY', 'KRH', 'DE', 'STNQ', 'GP'];
-function aaScore(a, b) {
-  if (a === b) return a === 'X' ? 0 : 4;
-  return SIMGRP.some(g => g.includes(a) && g.includes(b)) ? 1 : -1;
-}
-/* semi-global alignment (free end gaps), linear gap; returns array of [i, j] index pairs */
-function alignSeq(s1, s2) {
-  const n = s1.length, m = s2.length, G = -3, W = m + 1;
-  const H = new Float32Array((n + 1) * W), T = new Uint8Array((n + 1) * W);
-  for (let i = 1; i <= n; i++) { T[i * W] = 1; }
-  for (let j = 1; j <= m; j++) { T[j] = 2; }
+const B62_AA = 'ARNDCQEGHILKMFPSTWYVBZX';
+const B62 = [[4,-1,-2,-2,0,-1,-1,0,-2,-1,-1,-1,-1,-2,-1,1,0,-3,-2,0,-2,-1,0],[-1,5,0,-2,-3,1,0,-2,0,-3,-2,2,-1,-3,-2,-1,-1,-3,-2,-3,-1,0,-1],[-2,0,6,1,-3,0,0,0,1,-3,-3,0,-2,-3,-2,1,0,-4,-2,-3,3,0,-1],[-2,-2,1,6,-3,0,2,-1,-1,-3,-4,-1,-3,-3,-1,0,-1,-4,-3,-3,4,1,-1],[0,-3,-3,-3,9,-3,-4,-3,-3,-1,-1,-3,-1,-2,-3,-1,-1,-2,-2,-1,-3,-3,-2],[-1,1,0,0,-3,5,2,-2,0,-3,-2,1,0,-3,-1,0,-1,-2,-1,-2,0,3,-1],[-1,0,0,2,-4,2,5,-2,0,-3,-3,1,-2,-3,-1,0,-1,-3,-2,-2,1,4,-1],[0,-2,0,-1,-3,-2,-2,6,-2,-4,-4,-2,-3,-3,-2,0,-2,-2,-3,-3,-1,-2,-1],[-2,0,1,-1,-3,0,0,-2,8,-3,-3,-1,-2,-1,-2,-1,-2,-2,2,-3,0,0,-1],[-1,-3,-3,-3,-1,-3,-3,-4,-3,4,2,-3,1,0,-3,-2,-1,-3,-1,3,-3,-3,-1],[-1,-2,-3,-4,-1,-2,-3,-4,-3,2,4,-2,2,0,-3,-2,-1,-2,-1,1,-4,-3,-1],[-1,2,0,-1,-3,1,1,-2,-1,-3,-2,5,-1,-3,-1,0,-1,-3,-2,-2,0,1,-1],[-1,-1,-2,-3,-1,0,-2,-3,-2,1,2,-1,5,0,-2,-1,-1,-1,-1,1,-3,-1,-1],[-2,-3,-3,-3,-2,-3,-3,-3,-1,0,0,-3,0,6,-4,-2,-2,1,3,-1,-3,-3,-1],[-1,-2,-2,-1,-3,-1,-1,-2,-2,-3,-3,-1,-2,-4,7,-1,-1,-4,-3,-2,-2,-1,-2],[1,-1,1,0,-1,0,0,0,-1,-2,-2,0,-1,-2,-1,4,1,-3,-2,-2,0,0,0],[0,-1,0,-1,-1,-1,-1,-2,-2,-1,-1,-1,-1,-2,-1,1,5,-2,-2,0,-1,-1,0],[-3,-3,-4,-4,-2,-2,-3,-2,-2,-3,-2,-3,-1,1,-4,-3,-2,11,2,-3,-4,-3,-2],[-2,-2,-2,-3,-2,-1,-2,-3,2,-1,-1,-2,-1,3,-3,-2,-2,2,7,-1,-3,-2,-1],[0,-3,-3,-3,-1,-2,-2,-3,-3,3,1,-2,1,-1,-2,-2,0,-3,-1,4,-3,-2,-1],[-2,-1,3,4,-3,0,1,-1,0,-3,-4,0,-3,-3,-2,0,-1,-4,-3,-3,4,1,-1],[-1,0,0,1,-3,3,4,-2,0,-3,-3,1,-1,-3,-1,0,-1,-3,-2,-2,1,4,-1],[0,-1,-1,-1,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,0,0,-2,-1,-1,-1,-1,-1]];
+/* BLOSUM62 (Henikoff & Henikoff 1992), generated from the Biopython copy of the NCBI table */
+const B62_IX = new Int8Array(128).fill(22); [...B62_AA].forEach((c, i) => { B62_IX[c.charCodeAt(0)] = i; });
+const b62 = (a, b) => B62[B62_IX[a.charCodeAt(0) & 127]][B62_IX[b.charCodeAt(0) & 127]];
+/* affine-gap dynamic programming (Gotoh), end gaps free (semi-global); score(i, j) for pairing i of the first and j of
+   the second sequence; a gap of length k costs open + (k-1)*ext. Returns [i, j] pairs in order. */
+function alignAffine(n, m, score, open, ext) {
+  const W = m + 1, N = (n + 1) * W, NEG = -1e9;
+  const M = new Float32Array(N).fill(NEG), X = new Float32Array(N).fill(NEG), Y = new Float32Array(N).fill(NEG);
+  const tM = new Uint8Array(N), tX = new Uint8Array(N), tY = new Uint8Array(N);
+  M[0] = 0;
+  for (let i = 1; i <= n; i++) X[i * W] = 0;          // leading gaps are free
+  for (let j = 1; j <= m; j++) Y[j] = 0;
   for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) {
-    const d = H[(i - 1) * W + j - 1] + aaScore(s1[i - 1], s2[j - 1]);
-    const u = H[(i - 1) * W + j] + (j === m ? 0 : G);
-    const l = H[i * W + j - 1] + (i === n ? 0 : G);
-    let best = d, t = 0;
-    if (u > best) { best = u; t = 1; }
-    if (l > best) { best = l; t = 2; }
-    H[i * W + j] = best; T[i * W + j] = t;
+    const d = (i - 1) * W + j - 1, c = i * W + j, u = (i - 1) * W + j, l = i * W + j - 1;
+    let b = M[d], t = 0; if (X[d] > b) { b = X[d]; t = 1; } if (Y[d] > b) { b = Y[d]; t = 2; }
+    M[c] = b + score(i - 1, j - 1); tM[c] = t;
+    const xo = M[u] + open, xe = X[u] + ext; if (xo >= xe) { X[c] = xo; tX[c] = 0; } else { X[c] = xe; tX[c] = 1; }
+    const yo = M[l] + open, ye = Y[l] + ext; if (yo >= ye) { Y[c] = yo; tY[c] = 0; } else { Y[c] = ye; tY[c] = 2; }
   }
+  // trailing gaps are free: best cell in the last row or column
+  let bi = n, bj = m, bs = NEG, bst = 0;
+  const look = (i, j) => { const c = i * W + j; [[M[c], 0], [X[c], 1], [Y[c], 2]].forEach(([v, k]) => { if (v > bs) { bs = v; bi = i; bj = j; bst = k; } }); };
+  for (let j = 0; j <= m; j++) look(n, j);
+  for (let i = 0; i <= n; i++) look(i, m);
   const pairs = [];
-  let i = n, j = m;
-  while (i > 0 || j > 0) {
-    const t = T[i * W + j];
-    if (i > 0 && j > 0 && t === 0) { pairs.push([i - 1, j - 1]); i--; j--; }
-    else if (i > 0 && (t === 1 || j === 0)) i--;
-    else j--;
+  let i = bi, j = bj, st = bst;
+  while (i > 0 && j > 0) {
+    const c = i * W + j;
+    if (st === 0) { pairs.push([i - 1, j - 1]); st = tM[c]; i--; j--; }
+    else if (st === 1) { st = tX[c] === 1 ? 1 : 0; i--; }
+    else { st = tY[c] === 2 ? 2 : 0; j--; }
   }
   return pairs.reverse();
 }
+/* sequence alignment with BLOSUM62, gap opening -10 and extension -0.5 (as PyMOL align / EMBOSS needle) */
+function alignSeq(s1, s2) { return alignAffine(s1.length, s2.length, (i, j) => b62(s1[i], s2[j]), -10, -0.5); }
 function jacobi4(A) {
   const a = A.map(r => r.slice()), V = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]];
   for (let sweep = 0; sweep < 60; sweep++) {
@@ -1482,6 +1495,67 @@ function fitWithRejection(P, Q, cycles = 5, cutoff = 2.0) {
   return {rt, rmsd: rmsdOf(rt, pp, qq), n: idx.length, rmsdAll: rmsdOf(rt, P, Q), nAll: P.length};
 }
 
+/* ---------- structure-based superposition (sequence-independent), in the spirit of TM-align ----------
+   Seeds: the sequence alignment and the best gapless threadings. Each seed is refined by aligning the Cα atoms by
+   dynamic programming on the TM-score kernel 1/(1+(d/d0)^2) of the current superposition (gap opening -0.6), then
+   fitting again on the pairs closer than 5 Å; the alignment with the highest TM-score wins.
+   TM-score is normalised by the length of the shorter chain set. Zhang & Skolnick 2004 (TM-score), 2005 (TM-align). */
+function tmD0(L) { return L > 21 ? Math.max(0.5, 1.24 * Math.cbrt(L - 15) - 1.8) : 0.5; }
+function tmScoreOf(rt, pairs, A, B, L, d0) {
+  let s = 0;
+  for (const [i, j] of pairs) { const a = applyRT(rt, A[i].p), b = B[j].p, d = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); s += 1 / (1 + (d / d0) ** 2); }
+  return s / L;
+}
+function superposeStruct(A, B, seqPairs) {
+  const n = A.length, m = B.length, L = Math.min(n, m), d0 = tmD0(L);
+  const P = i => A[i].p, Q = j => B[j].p;
+  const fitPairs = pairs => fitRT(pairs.map(([i]) => P(i)), pairs.map(([, j]) => Q(j)));
+  const big = n * m > 4e6;                               // very large chain sets: fewer seeds and cycles
+  // seeds
+  const seeds = [];
+  if (seqPairs && seqPairs.length >= 3) seeds.push(fitPairs(seqPairs));
+  const minOv = Math.max(3, Math.min(20, Math.floor(L / 2))), thr = [];
+  for (let k = -(n - minOv); k <= m - minOv; k++) {      // gapless threading: A[i] with B[i + k]
+    const pr = [];
+    for (let i = Math.max(0, -k); i < n && i + k < m; i++) pr.push([i, i + k]);
+    if (pr.length < minOv) continue;
+    const rt = fitPairs(pr);
+    thr.push({rt, tm: tmScoreOf(rt, pr, A, B, L, d0)});
+  }
+  thr.sort((a, b) => b.tm - a.tm);
+  thr.slice(0, big ? 1 : 3).forEach(t => seeds.push(t.rt));
+  // refinement
+  const xyzB = B.map(b => b.p);
+  let best = null;
+  for (const seed of seeds) {
+    let rt = seed, last = '';
+    for (let it = 0; it < (big ? 4 : 8); it++) {
+      const xa = A.map(a => applyRT(rt, a.p));
+      const pairs = alignAffine(n, m, (i, j) => { const a = xa[i], b = xyzB[j], d2 = (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2; return 1 / (1 + d2 / (d0 * d0)); }, -0.6, 0);
+      const tm = tmScoreOf(rt, pairs, A, B, L, d0);
+      if (!best || tm > best.tm) best = {tm, rt, pairs};
+      const key = pairs.map(p => p.join(',')).join(';'); if (key === last) break; last = key;
+      let close = pairs.filter(([i, j]) => { const a = xa[i], b = xyzB[j]; return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) < 5; });
+      if (close.length < 3) close = pairs;
+      if (close.length < 3) break;
+      rt = fitPairs(close);
+    }
+  }
+  if (!best) return null;
+  // final fit: aligned pairs within 5 Å of each other under the best superposition, with outlier rejection
+  const xa = A.map(a => applyRT(best.rt, a.p));
+  let core = best.pairs.filter(([i, j]) => { const a = xa[i], b = B[j].p; return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) < 5; });
+  if (core.length < 3) core = best.pairs;
+  const res = fitWithRejection(core.map(([i]) => P(i)), core.map(([, j]) => Q(j)));
+  // keep the final fit only if it does not lower the TM-score
+  const tmFinal = tmScoreOf(res.rt, best.pairs, A, B, L, d0);
+  const rt = tmFinal >= best.tm ? res.rt : best.rt;
+  // pairs within 5 Å under the final superposition: the structurally equivalent Cα atoms (as TM-align reports)
+  const xf = A.map(a => applyRT(rt, a.p)), eq = best.pairs.filter(([i, j]) => { const a = xf[i], b = B[j].p; return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) < 5; });
+  return {rt, tm: Math.max(tmFinal, best.tm), alnPairs: best.pairs, pairs: eq.length >= 3 ? eq : best.pairs, core, L,
+          rmsd: res.rmsd, n: res.n, rmsdAll: eq.length >= 3 ? rmsdOf(rt, eq.map(([i]) => P(i)), eq.map(([, j]) => Q(j))) : rmsdOf(rt, best.pairs.map(([i]) => P(i)), best.pairs.map(([, j]) => Q(j))), nAll: eq.length >= 3 ? eq.length : best.pairs.length, eqOnly: eq.length >= 3};
+}
+
 function caList(st, ch) {
   const out = [];
   st.eachResidue(r => {
@@ -1519,15 +1593,36 @@ function superposeActive(refIdx, mode, chM, chR) {
   const ref = structs[refIdx];
   const A = caList(comp.structure, chM), B = caList(ref.comp.structure, chR);
   if (A.length < 3 || B.length < 3) return 'Cα原子が足りません（タンパク質Chainを選んでください）';
-  let pairs = [];
+  // mode: 'auto' (sequence alignment; structure-based when identity < 30% or the fit is poor), 'seq', 'struct', 'num'
+  if (mode !== 'num' && mode !== 'seq' && mode !== 'struct') mode = 'auto';
+  let pairs = [], res = null, method = mode;
   if (mode === 'num') {
     const k = (chM === '*' || chR === '*') ? 'key' : 'rkey';
     const m = new Map(B.map((b, j) => [b[k], j]));
     A.forEach((a, i) => { if (m.has(a[k])) pairs.push([i, m.get(a[k])]); });
-  } else pairs = alignSeq(A.map(a => a.one).join(''), B.map(b => b.one).join(''));
+  } else {
+    const seqPairs = alignSeq(A.map(a => a.one).join(''), B.map(b => b.one).join(''));
+    const idSeq = seqPairs.length ? seqPairs.filter(([i, j]) => A[i].one === B[j].one).length / seqPairs.length : 0;
+    const seqRes = seqPairs.length >= 3 ? fitWithRejection(seqPairs.map(([i]) => A[i].p), seqPairs.map(([, j]) => B[j].p)) : null;
+    let useStruct = mode === 'struct';
+    if (mode === 'auto' && (!seqRes || idSeq < 0.3 || seqRes.n < 0.5 * seqPairs.length)) useStruct = true;
+    if (useStruct) {
+      const sr = superposeStruct(A, B, seqPairs);
+      if (sr) {
+        const L = Math.min(A.length, B.length), d0 = tmD0(L);
+        // auto: keep the sequence result if it is at least as good by TM-score
+        if (mode === 'auto' && seqRes && tmScoreOf(seqRes.rt, seqPairs, A, B, L, d0) >= sr.tm) { pairs = seqPairs; res = seqRes; method = 'seq'; }
+        else { pairs = sr.pairs; res = sr; method = 'struct'; }
+      }
+    }
+    if (!res) { pairs = seqPairs; res = seqRes; method = 'seq'; }
+  }
   if (pairs.length < 3) return '対応するCαが3個未満です。対応付けの方法やChainを変えてください';
-  const ident = pairs.filter(([i, j]) => A[i].one === B[j].one).length;
-  const res = fitWithRejection(pairs.map(([i]) => A[i].p), pairs.map(([, j]) => B[j].p));
+  if (!res) res = fitWithRejection(pairs.map(([i]) => A[i].p), pairs.map(([, j]) => B[j].p));
+  // structure-based: TM-score and identity over the whole structural alignment
+  const aln = method === 'struct' && res.alnPairs ? res.alnPairs : pairs;
+  const ident = aln.filter(([i, j]) => A[i].one === B[j].one).length;
+  const Lm = Math.min(A.length, B.length), tm = method === 'struct' && res.tm != null ? res.tm : tmScoreOf(res.rt, pairs, A, B, Lm, tmD0(Lm));
   const st = comp.structure, cur = positionsOf(st);
   if (!structs[active].orig) structs[active].orig = cur.slice();
   const out = new Float32Array(cur.length);
@@ -1537,16 +1632,19 @@ function superposeActive(refIdx, mode, chM, chR) {
   const prev = structs[active].xf || {R: [[1,0,0],[0,1,0],[0,0,1]], t: [0, 0, 0]};
   const Rm = [0, 1, 2].map(r => [0, 1, 2].map(c => res.rt.R[r][0]*prev.R[0][c] + res.rt.R[r][1]*prev.R[1][c] + res.rt.R[r][2]*prev.R[2][c]));
   structs[active].xf = {R: Rm, t: applyRT(res.rt, prev.t)};
-  return {...res, ident: 100 * ident / pairs.length};
+  return {...res, ident: 100 * ident / aln.length, method, tm, nPairs: aln.length};
 }
+const SUP_NAME = {seq: '配列アライメント', struct: '構造ベース', num: '残基番号', auto: '自動'};
 const mapWarn = () => maps.length ? '　※動かした構造は電子密度マップとは位置が合わなくなります。' : '';
 $('#supRun').onclick = () => {
   if (structs.length < 2) return;
   const refIdx = +$('#supRef').value, ref = structs[refIdx]; if (!ref) return;
   const r = superposeActive(refIdx, $('#supMode').value, $('#supMovCh').value, $('#supRefCh').value);
   if (typeof r === 'string') return status(r, true);
-  afterMove(`RMSD ${r.rmsd.toFixed(3)} Å（${r.n} / ${r.nAll} Cα、外れ値除外後）。全ペアでは ${r.rmsdAll.toFixed(3)} Å。対応ペアの配列一致 ${r.ident.toFixed(0)}%。` + mapWarn());
-  status(`${structs[active].name} を ${ref.name} に重ね合わせました: RMSD ${r.rmsd.toFixed(2)} Å（${r.n} Cα）`);
+  afterMove(`${SUP_NAME[r.method]}で対応付け。RMSD ${r.rmsd.toFixed(3)} Å（${r.n} / ${r.nAll} Cα、外れ値除外後）。` +
+    (r.eqOnly ? `構造的に対応した Cα ${r.nAll} 組（5 Å 以内）全体では ${r.rmsdAll.toFixed(3)} Å。` : `全ペアでは ${r.rmsdAll.toFixed(3)} Å。`) +
+    `TM-score ${r.tm.toFixed(2)}（短い方の長さで規格化）。対応ペアの配列一致 ${r.ident.toFixed(0)}%。` + mapWarn());
+  status(`${structs[active].name} を ${ref.name} に重ね合わせました（${SUP_NAME[r.method]}）: RMSD ${r.rmsd.toFixed(2)} Å（${r.n} Cα）、TM-score ${r.tm.toFixed(2)}`);
 };
 $('#supAll').onclick = () => {
   if (structs.length < 2) return;
@@ -1560,7 +1658,7 @@ $('#supAll').onclick = () => {
     const chM = chMsel !== '*' && chains.some(c => c.name === chMsel) ? chMsel : '*';
     const r = superposeActive(refIdx, mode, chM, chR);
     if (typeof r === 'string') rows.push(`${structs[i].name}: 失敗（${r}）`);
-    else { afterMove(); rows.push(`${structs[i].name}: RMSD ${r.rmsd.toFixed(2)} Å（${r.n}/${r.nAll} Cα、一致 ${r.ident.toFixed(0)}%）`); }
+    else { afterMove(); rows.push(`${structs[i].name}: ${SUP_NAME[r.method]}、RMSD ${r.rmsd.toFixed(2)} Å（${r.n}/${r.nAll} Cα）、TM-score ${r.tm.toFixed(2)}、一致 ${r.ident.toFixed(0)}%`); }
   }
   activate(refIdx);
   renderStructs();

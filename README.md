@@ -47,7 +47,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Spotlight: fade everything farther than a set distance from the residues of interest
 - Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis
 - Biological assemblies: load the assembly coordinates registered at RCSB
-- Load and superpose multiple structures
+- Load and superpose multiple structures (auto, sequence alignment, structure-based or residue numbers; distant homologues with dissimilar sequences can be superposed by structure)
 - Keep a selection in each structure: clicking a residue in another structure leaves the previous structure's sticks and interactions in place, so any residues can be compared side by side, even when numbering differs
 - Linked display: the residues with the same chain name and number as the selection are shown as sticks in the other structures too, with interactions calculated for each (for comparing apo and holo forms, mutants, etc.); saved selections can be applied to all structures at once
 
@@ -114,6 +114,12 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
 - Interaction types and criteria follow PLIP and Mol*.
   - Salentin S, et al. PLIP: fully automated protein–ligand interaction profiler. *Nucleic Acids Res.* 2015;43:W443–W447. doi:[10.1093/nar/gkv315](https://doi.org/10.1093/nar/gkv315)
   - Sehnal D, et al. Mol* Viewer: modern web app for 3D visualization and analysis of large biomolecular structures. *Nucleic Acids Res.* 2021;49:W431–W437. doi:[10.1093/nar/gkab314](https://doi.org/10.1093/nar/gkab314)
+- Superposition: Cα atoms are paired by sequence alignment with BLOSUM62 and affine gaps (opening −10, extension −0.5); below 30% identity, among other cases, a structure-based pairing using the TM-score is used instead. The rotation is the quaternion least-squares solution (Horn's method), refitted up to 5 times after rejecting outliers beyond 2 × RMSD.
+  - Henikoff S, Henikoff JG. Amino acid substitution matrices from protein blocks. *Proc. Natl. Acad. Sci. USA* 1992;89:10915–10919. doi:[10.1073/pnas.89.22.10915](https://doi.org/10.1073/pnas.89.22.10915)
+  - Gotoh O. An improved algorithm for matching biological sequences. *J. Mol. Biol.* 1982;162:705–708. doi:[10.1016/0022-2836(82)90398-9](https://doi.org/10.1016/0022-2836(82)90398-9)
+  - Horn BKP. Closed-form solution of absolute orientation using unit quaternions. *J. Opt. Soc. Am. A* 1987;4:629–642. doi:[10.1364/JOSAA.4.000629](https://doi.org/10.1364/JOSAA.4.000629)
+  - Zhang Y, Skolnick J. Scoring function for automated assessment of protein structure template quality. *Proteins* 2004;57:702–710. doi:[10.1002/prot.20264](https://doi.org/10.1002/prot.20264)
+  - Zhang Y, Skolnick J. TM-align: a protein structure alignment algorithm based on the TM-score. *Nucleic Acids Res.* 2005;33:2302–2309. doi:[10.1093/nar/gki524](https://doi.org/10.1093/nar/gki524)
 - Interface area uses the same definition as PISA (half of the total buried surface area).
   - Krissinel E, Henrick K. Inference of macromolecular assemblies from crystalline state. *J. Mol. Biol.* 2007;372:774–797. doi:[10.1016/j.jmb.2007.05.022](https://doi.org/10.1016/j.jmb.2007.05.022)
 - Conservation is calculated as Jensen–Shannon divergence and coloured in the same nine grades as ConSurf.

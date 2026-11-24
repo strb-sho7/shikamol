@@ -45,7 +45,7 @@ https://strb-sho7.github.io/shikamol/?pdb=7DA1
 - 周りを薄くする表示：注目している残基から一定の距離より外側を薄くする
 - 対称分子：結晶構造の対称分子を表示し、選んだものを Chain として加えて解析
 - 生物学的集合体：RCSB に登録された集合体の座標を読み込み
-- 複数の構造の読み込みと重ね合わせ
+- 複数の構造の読み込みと重ね合わせ（自動・配列アライメント・構造ベース・残基番号から選択。配列の似ていないホモログも構造で重ね合わせ可能）
 - 構造ごとに選択を残す：別の構造の残基をクリックしても前の構造のスティックと相互作用が残り、番号の違う構造どうしでも好きな残基を並べて比較
 - 連動表示：選んだ残基と同じ Chain 名・残基番号の残基を、ほかの構造でもスティック表示し、相互作用も構造ごとに計算（アポ型とホロ型、変異体などの比較）。保存した選択は「全構造に適用」でまとめて作成
 
@@ -112,6 +112,12 @@ index.html だけをダウンロードして開いた場合は、同じフォル
 - 相互作用の種類と判定基準は、PLIP と Mol* を参考にしています。
   - Salentin S, et al. PLIP: fully automated protein–ligand interaction profiler. *Nucleic Acids Res.* 2015;43:W443–W447. doi:[10.1093/nar/gkv315](https://doi.org/10.1093/nar/gkv315)
   - Sehnal D, et al. Mol* Viewer: modern web app for 3D visualization and analysis of large biomolecular structures. *Nucleic Acids Res.* 2021;49:W431–W437. doi:[10.1093/nar/gkab314](https://doi.org/10.1093/nar/gkab314)
+- 重ね合わせ：Cα を BLOSUM62 とアフィンギャップ（開始 −10、延長 −0.5）の配列アライメントで対応付け、配列一致度が 30% 未満のときなどは TM-score を用いた構造ベースの対応付けに切り替えます。回転は四元数による最小二乗解（Horn の方法）で求め、RMSD の 2 倍を超える外れ値を除いて最大 5 回当てはめ直します。
+  - Henikoff S, Henikoff JG. Amino acid substitution matrices from protein blocks. *Proc. Natl. Acad. Sci. USA* 1992;89:10915–10919. doi:[10.1073/pnas.89.22.10915](https://doi.org/10.1073/pnas.89.22.10915)
+  - Gotoh O. An improved algorithm for matching biological sequences. *J. Mol. Biol.* 1982;162:705–708. doi:[10.1016/0022-2836(82)90398-9](https://doi.org/10.1016/0022-2836(82)90398-9)
+  - Horn BKP. Closed-form solution of absolute orientation using unit quaternions. *J. Opt. Soc. Am. A* 1987;4:629–642. doi:[10.1364/JOSAA.4.000629](https://doi.org/10.1364/JOSAA.4.000629)
+  - Zhang Y, Skolnick J. Scoring function for automated assessment of protein structure template quality. *Proteins* 2004;57:702–710. doi:[10.1002/prot.20264](https://doi.org/10.1002/prot.20264)
+  - Zhang Y, Skolnick J. TM-align: a protein structure alignment algorithm based on the TM-score. *Nucleic Acids Res.* 2005;33:2302–2309. doi:[10.1093/nar/gki524](https://doi.org/10.1093/nar/gki524)
 - 界面面積は PISA と同じ定義（埋没表面積の合計の 1/2）です。
   - Krissinel E, Henrick K. Inference of macromolecular assemblies from crystalline state. *J. Mol. Biol.* 2007;372:774–797. doi:[10.1016/j.jmb.2007.05.022](https://doi.org/10.1016/j.jmb.2007.05.022)
 - 保存度は Jensen–Shannon divergence で計算し、ConSurf と同じ 9 段階に分けて色分けしています。
