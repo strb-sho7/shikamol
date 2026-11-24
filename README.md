@@ -39,7 +39,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Cartoon, sticks, surface and other representations; adjustable cartoon transparency
 - Look: material (standard, matte, flat, soft), outlines, depth fade, and one-click "illustration" and "soft colours" presets
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
-- Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap)
+- Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour
 - Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
 - Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues
 - Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off
