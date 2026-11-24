@@ -1,19 +1,21 @@
-# SHOWmol
+<img src="apple-touch-icon.png" width="72" align="right" alt="">
 
-**S**tructure **H**ighlighting & **O**bservation on the **W**eb（構造を強調して観察できる、ウェブの分子ビューア）
+# ShikaMol
+
+ブラウザで動く分子ビューアです。
 
 [English](README.md) | **日本語**
 
 ブラウザだけで動く分子ビューアです。PDB ID かファイルを読み込むだけで、構造の表示、電子密度・クライオ電顕マップの重ね合わせ、残基どうしの相互作用の解析、論文用の高解像度画像の書き出しまでを一つの画面で行えます。インストールは要りません。パソコン・iPad・スマートフォンのブラウザで動きます。
 
-**▶ 使ってみる：https://strb-sho7.github.io/molviewer/**
+**▶ 使ってみる：https://strb-sho7.github.io/shikamol/**
 
 ---
 
 ## 使い方
 
 1. 上のアドレスを開きます。
-2. 左の「構造」タブで、PDB ID（例 `1D66`）を入力して「読込」を押します。手元の `.pdb` / `.cif` ファイルを読み込むこともできます（ドラッグ＆ドロップ可）。
+2. 左の「構造」タブで、PDB ID（例 `7DA1`。`pdb_00007da1` のような 12 文字の形でも可）を入力して「読込」を押します。手元の `.pdb` / `.cif` ファイルを読み込むこともできます（ドラッグ＆ドロップ可）。
 3. 分子ウィンドウで残基をクリック（タブレットではタップ）すると、その残基にズームし、周囲 5 Å 以内の相互作用が一覧と点線で表示されます。背景をクリックすると解除されます。
 
 ### アドレスで構造を指定する
@@ -21,7 +23,7 @@
 アドレスの末尾に `?pdb=` を付けると、開いたときにその構造を読み込みます。授業で「今日の構造」を配るときに便利です。
 
 ```
-https://strb-sho7.github.io/molviewer/?pdb=1D66
+https://strb-sho7.github.io/shikamol/?pdb=7DA1
 ```
 
 ## 主な機能
@@ -71,10 +73,12 @@ https://strb-sho7.github.io/molviewer/?pdb=1D66
 
 Chrome、Edge、Safari、Firefox の最新版。WebGL が使えるブラウザが必要です。
 
+index.html だけをダウンロードして開いた場合は、同じフォルダに ngl.js がないため、NGL をインターネット（unpkg）から読み込みます。
+
 ## 使っているライブラリ・データ・計算方法
 
 **ライブラリ**
-- NGL Viewer（MIT ライセンス）
+- NGL Viewer 2.3.1（MIT ライセンス）。ShikaMol と同じ場所に置いた `ngl.js` を読み込みます（npm パッケージ ngl 2.3.1 の `dist/ngl.js` を改変せずに同梱）。`ngl.js` に含まれる three.js・Mol\*・chroma.js・sprintf-js・JS-Signals を含め、ライセンス文は [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) にまとめています。
   - Rose AS, Hildebrand PW. NGL Viewer: a web application for molecular visualization. *Nucleic Acids Res.* 2015;43:W576–W579. doi:[10.1093/nar/gkv402](https://doi.org/10.1093/nar/gkv402)
   - Rose AS, et al. NGL viewer: web-based molecular graphics for large complexes. *Bioinformatics.* 2018;34:3755–3758. doi:[10.1093/bioinformatics/bty419](https://doi.org/10.1093/bioinformatics/bty419)
 

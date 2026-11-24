@@ -3,8 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SHOWmol — Structure Highlighting &amp; Observation on the Web</title>
-<script src="https://unpkg.com/ngl@2.3.1/dist/ngl.js"></script>
+<title>ShikaMol — ブラウザで動く分子ビューア</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22E4C%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f1f3f5%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237d8793%22/%3E%3C/radialGradient%3E%3CradialGradient%20id%3D%22E4A%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffe0a8%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c48a2c%22/%3E%3C/radialGradient%3E%3CradialGradient%20id%3D%22E4N%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23a9c4ff%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232d5bc4%22/%3E%3C/radialGradient%3E%3CradialGradient%20id%3D%22E4O%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffb0a8%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c43c3c%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2222%22%20fill%3D%22%2313233a%22/%3E%3Cg%20transform%3D%22translate%280%2C8%29%22%3E%3Cline%20x1%3D%2241%22%20y1%3D%2244%22%20x2%3D%2259%22%20y2%3D%2244%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2259%22%20y1%3D%2244%22%20x2%3D%2263%22%20y2%3D%2259%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2263%22%20y1%3D%2259%22%20x2%3D%2250%22%20y2%3D%2276%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2250%22%20y1%3D%2276%22%20x2%3D%2237%22%20y2%3D%2259%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2237%22%20y1%3D%2259%22%20x2%3D%2241%22%20y2%3D%2244%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2241%22%20y1%3D%2244%22%20x2%3D%2227%22%20y2%3D%2240%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2259%22%20y1%3D%2244%22%20x2%3D%2273%22%20y2%3D%2240%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2241%22%20y1%3D%2244%22%20x2%3D%2239%22%20y2%3D%2234%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2259%22%20y1%3D%2244%22%20x2%3D%2261%22%20y2%3D%2234%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2239%22%20y1%3D%2234%22%20x2%3D%2234%22%20y2%3D%2225%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2234%22%20y1%3D%2225%22%20x2%3D%2237%22%20y2%3D%2215%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2237%22%20y1%3D%2215%22%20x2%3D%2231%22%20y2%3D%227%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2234%22%20y1%3D%2225%22%20x2%3D%2226%22%20y2%3D%2221%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2237%22%20y1%3D%2215%22%20x2%3D%2244%22%20y2%3D%2210%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2261%22%20y1%3D%2234%22%20x2%3D%2266%22%20y2%3D%2225%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2266%22%20y1%3D%2225%22%20x2%3D%2263%22%20y2%3D%2215%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2263%22%20y1%3D%2215%22%20x2%3D%2269%22%20y2%3D%227%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2266%22%20y1%3D%2225%22%20x2%3D%2274%22%20y2%3D%2221%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2263%22%20y1%3D%2215%22%20x2%3D%2256%22%20y2%3D%2210%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%2241%22%20cy%3D%2244%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2259%22%20cy%3D%2244%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2259%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2276%22%20r%3D%224.4%22%20fill%3D%22url%28%23E4N%29%22/%3E%3Ccircle%20cx%3D%2237%22%20cy%3D%2259%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2239%22%20cy%3D%2234%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2234%22%20cy%3D%2225%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2237%22%20cy%3D%2215%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%227%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2221%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2210%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2261%22%20cy%3D%2234%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2266%22%20cy%3D%2225%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2215%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2269%22%20cy%3D%227%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2274%22%20cy%3D%2221%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2256%22%20cy%3D%2210%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2227%22%20cy%3D%2240%22%20r%3D%223.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2273%22%20cy%3D%2240%22%20r%3D%223.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2256%22%20r%3D%222.5%22%20fill%3D%22url%28%23E4O%29%22/%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2256%22%20r%3D%222.5%22%20fill%3D%22url%28%23E4O%29%22/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="ShikaMol">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#14161b">
+<!-- NGL 2.3.1: the copy next to this page (GitHub Pages) first; unpkg only when this page is opened on its own -->
+<script src="ngl.js"></script>
+<script>if (!window.NGL) document.write('<script src="https://unpkg.com/ngl@2.3.1/dist/ngl.js"><\/script>');</script>
 <style>
 :root{--bg:#14161b;--panel:#1c1f26;--line:#2c313b;--ink:#e8eaee;--mute:#9aa2b1;--acc:#5aa9ff;--warn:#ff7a7a}
 *{box-sizing:border-box;min-width:0}
@@ -19,6 +29,7 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #viewport{position:absolute;inset:0}
 #vtools{position:absolute;right:10px;top:10px;z-index:5;display:flex;gap:6px}
 #vtools button{font-size:12px;padding:3px 8px;background:#000a;color:#eee;border:1px solid #ffffff40;border-radius:6px}
+#vtools button:disabled{opacity:.35}
 #vtools button.on{background:#5aa9ff;color:#000;border-color:#5aa9ff}
 #symList{max-height:170px;overflow:auto;border:1px solid #2c313b;border-radius:4px;margin:4px 0;padding:2px 4px}
 #symList label{display:flex;gap:6px;align-items:center;font-size:12px;padding:2px 0;cursor:pointer}
@@ -28,11 +39,47 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #lblLayer svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 .rlbl{position:absolute;left:0;top:0;white-space:nowrap;pointer-events:auto;cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;line-height:1.15;padding:0 1px;font-family:Arial,Helvetica,sans-serif}
 .rlbl.drag{outline:1px dashed #4da3ff}
+.rlbl.ana{pointer-events:none;cursor:default;border-radius:3px;padding:0 3px}
 #info,#status{z-index:4}
+#maps .mapgroup{padding:6px 8px}
+#maps .mapgroup>summary{list-style:none;display:flex;align-items:center;gap:6px;cursor:pointer;flex-wrap:wrap}
+#maps .mapgroup>summary::-webkit-details-marker{display:none}
+#maps .mgarrow::before{content:'▸';color:var(--mute);display:inline-block;width:10px;transition:transform .15s}
+#maps .mapgroup[open] .mgarrow::before{transform:rotate(90deg)}
+#maps .mapgroup>summary .x{margin-left:auto}
+#maps .mgsub{flex-basis:100%;padding-left:16px}
+#maps .mapgname{font-size:14px;margin-right:4px}
+#maps .maprow{border-top:1px solid var(--line);margin-top:6px;padding-top:4px}
+#maps .mapkind{color:#8fa8ff}#maps .mapkind.diff{color:#6ee06e}
+
+#deerRun{position:absolute;left:10px;bottom:32px;width:84px;height:58px;padding:2px 4px;border-radius:10px;background:rgba(20,24,30,.72);z-index:5;pointer-events:none;display:none}
+#deerRun.on{display:block}
+#deerRun svg{width:100%;height:100%;overflow:visible}
+@keyframes dGround{from{stroke-dashoffset:0}to{stroke-dashoffset:16}}
+#deerRun .ground{animation:dGround .26s linear infinite}
+
 #boxLayer{position:absolute;inset:0;z-index:3;display:none;cursor:crosshair;touch-action:none}
 #boxRect{position:absolute;border:1.5px dashed #5aa9ff;background:#5aa9ff22;display:none;pointer-events:none}
 #status{position:absolute;left:10px;bottom:10px;right:10px;pointer-events:none;font-size:13px;color:#ddd;text-shadow:0 1px 2px #000}
 #status.err{color:var(--warn)}
+.frow{display:flex;align-items:center;gap:8px;margin:5px 0}
+.frow>.fl{flex:0 0 6.6em;font-size:12px;line-height:1.25;color:var(--mute,#9aa3ad)}
+.frow>.fl small{display:block;font-size:10.5px;opacity:.8}
+.frow>select,.frow>.fc{flex:1 1 auto;min-width:0;max-width:280px}
+.frow>label{flex:1 1 auto}
+.frow>.fc{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.frow>.fc.nowrap{flex-wrap:nowrap}
+.frow>.fc button{white-space:nowrap}
+.frow>.fc>select{flex:1 1 auto;min-width:0}
+.frow>.fc>input[type=range]{flex:1 1 auto;min-width:60px}
+.frow>.fc>input[type=number]{width:64px}
+.ifpair{display:flex;flex-direction:column;gap:4px;flex:1 1 auto;min-width:0}
+.ifpair>select{width:100%}
+.ifpair>span{align-self:center;line-height:1}
+#asBanner{position:fixed;left:50%;bottom:44px;transform:translateX(-50%);z-index:50;display:flex;gap:14px;align-items:center;max-width:min(560px,calc(100vw - 24px));
+  background:var(--panel,#1f2430);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 14px;box-shadow:0 6px 24px rgba(0,0,0,.35);font-size:13px;line-height:1.45}
+#asBanner .asBtns{display:flex;gap:6px;flex-shrink:0}
+#asBanner button{padding:6px 12px;font-size:13px}
 #info{position:absolute;left:10px;top:10px;background:#000a;padding:4px 10px;border-radius:6px;font-size:13px;display:none}
 #flist{position:absolute;left:10px;top:44px;width:min(440px,max(46%,calc(100% - 20px)));max-height:46%;overflow:auto;background:#000c;color:#eee;border-radius:6px;font-size:12px;padding:6px 8px;display:none;z-index:4}
 #flist .fh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
@@ -100,7 +147,12 @@ input[type=range]{flex:1}
 label{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
 .small{font-size:12px;color:var(--mute)}
 .card{background:#0f1115;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin:6px 0}
-.chain{display:grid;grid-template-columns:28px 34px minmax(0,1fr) 30px 108px 40px 24px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid #22262e}
+.chain{display:grid;grid-template-columns:28px 34px 30px minmax(0,1fr) 40px 24px;column-gap:6px;row-gap:1px;align-items:center;padding:5px 0;border-bottom:1px solid #22262e}
+/* molecule name on its own line under the controls, so it stays readable in a narrow panel (two lines at most) */
+.chain > .desc{grid-row:2;grid-column:2 / -1;white-space:normal;font-size:11.5px;line-height:1.35;color:#b4bcc9;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.chain > .desc.full{-webkit-line-clamp:unset;display:block}
+.chain.bulk > .desc,.chain.colhead > .desc{display:none}
 .chain:last-child{border-bottom:0}
 .chain.colhead{padding:0 0 2px;border-bottom:0;font-size:11px;color:var(--mute)}
 .chain.colhead span{white-space:nowrap}
@@ -175,7 +227,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 <div id="app">
 <aside id="side">
   <div class="row" style="justify-content:space-between;margin:0 0 6px">
-    <h1 style="margin:0" title="SHOWmol — Structure Highlighting &amp; Observation on the Web">SHOWmol</h1>
+    <h1 style="margin:0;display:flex;align-items:center;gap:8px" title="ShikaMol — ブラウザで動く分子ビューア"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22E4C%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f1f3f5%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237d8793%22/%3E%3C/radialGradient%3E%3CradialGradient%20id%3D%22E4A%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffe0a8%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c48a2c%22/%3E%3C/radialGradient%3E%3CradialGradient%20id%3D%22E4N%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23a9c4ff%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232d5bc4%22/%3E%3C/radialGradient%3E%3CradialGradient%20id%3D%22E4O%22%20cx%3D%2235%25%22%20cy%3D%2232%25%22%20r%3D%2270%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffb0a8%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c43c3c%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2222%22%20fill%3D%22%2313233a%22/%3E%3Cg%20transform%3D%22translate%280%2C8%29%22%3E%3Cline%20x1%3D%2241%22%20y1%3D%2244%22%20x2%3D%2259%22%20y2%3D%2244%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2259%22%20y1%3D%2244%22%20x2%3D%2263%22%20y2%3D%2259%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2263%22%20y1%3D%2259%22%20x2%3D%2250%22%20y2%3D%2276%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2250%22%20y1%3D%2276%22%20x2%3D%2237%22%20y2%3D%2259%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2237%22%20y1%3D%2259%22%20x2%3D%2241%22%20y2%3D%2244%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2241%22%20y1%3D%2244%22%20x2%3D%2227%22%20y2%3D%2240%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2259%22%20y1%3D%2244%22%20x2%3D%2273%22%20y2%3D%2240%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2241%22%20y1%3D%2244%22%20x2%3D%2239%22%20y2%3D%2234%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2259%22%20y1%3D%2244%22%20x2%3D%2261%22%20y2%3D%2234%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2239%22%20y1%3D%2234%22%20x2%3D%2234%22%20y2%3D%2225%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2234%22%20y1%3D%2225%22%20x2%3D%2237%22%20y2%3D%2215%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2237%22%20y1%3D%2215%22%20x2%3D%2231%22%20y2%3D%227%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2234%22%20y1%3D%2225%22%20x2%3D%2226%22%20y2%3D%2221%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2237%22%20y1%3D%2215%22%20x2%3D%2244%22%20y2%3D%2210%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2261%22%20y1%3D%2234%22%20x2%3D%2266%22%20y2%3D%2225%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2266%22%20y1%3D%2225%22%20x2%3D%2263%22%20y2%3D%2215%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2263%22%20y1%3D%2215%22%20x2%3D%2269%22%20y2%3D%227%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2266%22%20y1%3D%2225%22%20x2%3D%2274%22%20y2%3D%2221%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Cline%20x1%3D%2263%22%20y1%3D%2215%22%20x2%3D%2256%22%20y2%3D%2210%22%20stroke%3D%22%23c9ced6%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%2241%22%20cy%3D%2244%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2259%22%20cy%3D%2244%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2259%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2276%22%20r%3D%224.4%22%20fill%3D%22url%28%23E4N%29%22/%3E%3Ccircle%20cx%3D%2237%22%20cy%3D%2259%22%20r%3D%224.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2239%22%20cy%3D%2234%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2234%22%20cy%3D%2225%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2237%22%20cy%3D%2215%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%227%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2221%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2210%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2261%22%20cy%3D%2234%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2266%22%20cy%3D%2225%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2263%22%20cy%3D%2215%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2269%22%20cy%3D%227%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2274%22%20cy%3D%2221%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2256%22%20cy%3D%2210%22%20r%3D%223.0%22%20fill%3D%22url%28%23E4A%29%22/%3E%3Ccircle%20cx%3D%2227%22%20cy%3D%2240%22%20r%3D%223.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2273%22%20cy%3D%2240%22%20r%3D%223.6%22%20fill%3D%22url%28%23E4C%29%22/%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2256%22%20r%3D%222.5%22%20fill%3D%22url%28%23E4O%29%22/%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2256%22%20r%3D%222.5%22%20fill%3D%22url%28%23E4O%29%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="width:30px;height:30px;border-radius:7px;box-shadow:0 0 0 1px #ffffff22">ShikaMol</h1>
     <select id="lang" data-notr title="Language"><option value="ja">日本語</option><option value="en">English</option></select>
   </div>
   <div id="stickyTop">
@@ -194,7 +246,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 
   <div class="tabpane" data-tab="struct">
   <div class="row">
-    <input type="text" id="pdbId" placeholder="PDB ID（例 4DRB）" maxlength="12">
+    <input type="text" id="pdbId" placeholder="PDB ID（例 7DA1）" maxlength="12">
     <select id="pdbAsm" title="非対称単位（登録された座標そのまま）か、PDBに登録された生物学的集合体か">
       <option value="0">非対称単位</option><option value="1">生物学的集合体 1</option><option value="2">生物学的集合体 2</option>
     </select>
@@ -208,7 +260,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div id="structs"></div>
   <div class="row" id="structTools" style="display:none">
     <span class="small">クリックした構造が編集対象（下のChain・相互作用・対称分子の設定はその構造に効きます）</span>
-    <select id="colorBy"><option value="chain">色: Chainごと</option><option value="struct">色: 構造ごとに単色</option></select>
+    <select id="colorBy"><option value="chain">色: Chainごと</option><option value="struct">色: 構造ごとに単色</option><option value="rainbowcb" title="色覚の多様性に配慮した配色（viridis）">色: N末→C末（紫→緑→黄）</option></select>
     <button id="closeAll">すべて閉じる</button>
   </div>
   <div id="supBox" class="card" style="display:none">
@@ -277,7 +329,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div class="tabpane" data-tab="ana">
   <h2>Chain間の相互作用 <span class="small an"></span></h2>
   <div class="row">
-    <select id="ifA"></select><span>⇄</span><select id="ifB"></select>
+    <div class="ifpair"><select id="ifA"></select><span class="small">と</span><select id="ifB"></select></div>
     <button class="pri" id="ifRun">解析</button>
   </div>
   <div class="row small">
@@ -286,25 +338,25 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <label><input type="checkbox" id="ifDist"> 距離</label>
   </div>
   <details class="card" id="critBox" style="margin:6px 0" open><summary><b>判定条件</b>（クリックしたときの相互作用と Chain 間の解析に共通）</summary>
-    <div class="row small"><span style="width:9em">水素結合（供与体–受容体）</span><select id="hbMax">
+  <div class="frow"><span class="fl">水素結合<small>供与体–受容体</small></span><select id="hbMax">
       <option value="3.2">3.2 Å（厳しめ）</option>
       <option value="3.35">3.35 Å（LIGPLOT・NUCPLOT）</option>
       <option value="3.5">3.5 Å（Mol*・WHAT IF）</option>
       <option value="3.9">3.9 Å（HBPLUS の既定）</option>
       <option value="4.1">4.1 Å（PLIP）</option>
-    </select>
-    <label title="硫黄は原子が大きく、S が関わる水素結合は長めになるため（Mol* は 4.1 Å まで）"><input type="checkbox" id="hbS"> S が関わるときは +0.6 Å</label></div>
-    <div class="row small"><span style="width:9em">塩橋</span><select data-crit="salt">
+    </select></div>
+  <div class="frow"><span class="fl"></span><label title="硫黄は原子が大きく、S が関わる水素結合は長めになるため（Mol* は 4.1 Å まで）"><input type="checkbox" id="hbS"> S が関わるときは +0.6 Å</label></div>
+  <div class="frow"><span class="fl">塩橋</span><select data-crit="salt">
       <option value="molstar">電荷をもつ原子間 &lt; 5.0 Å（Mol*）</option>
       <option value="bt">電荷をもつ N–O 原子間 &lt; 4.0 Å（Barlow &amp; Thornton 1983）</option>
       <option value="kn">電荷中心 ≤ 4.0 Å かつ N–O ≤ 4.0 Å（Kumar &amp; Nussinov 2002）</option>
       <option value="plip">電荷中心 ≤ 5.5 Å（PLIP）</option>
     </select></div>
-    <div class="row small"><span style="width:9em">疎水性（炭素どうし）</span><select data-crit="hyd"><option value="3.6">3.6 Å</option><option value="3.9">3.9 Å（HBPLUS の非結合接触）</option><option value="4">4.0 Å（PLIP・Mol*）</option></select></div>
-    <div class="row small"><span style="width:9em">πスタッキング（環の重心間）</span><select data-crit="pi"><option value="4.5">4.5 Å</option><option value="5">5.0 Å</option><option value="5.5">5.5 Å（PLIP・Mol*）</option></select></div>
-    <div class="row small"><span style="width:9em">カチオン-π（電荷中心–環の重心）</span><select data-crit="catpi"><option value="4.5">4.5 Å</option><option value="5">5.0 Å</option><option value="6">6.0 Å（PLIP・Mol*）</option></select></div>
-    <div class="row small"><span style="width:9em">金属配位</span><select data-crit="metal"><option value="2.6">2.6 Å</option><option value="2.8">2.8 Å</option><option value="3">3.0 Å（PLIP・Mol*）</option></select></div>
-    <div class="row small"><span style="width:9em">ハロゲン結合</span><select data-crit="hal"><option value="3.5">3.5 Å</option><option value="4">4.0 Å（PLIP・Mol*）</option></select></div>
+  <div class="frow"><span class="fl">疎水性<small>炭素どうし</small></span><select data-crit="hyd"><option value="3.6">3.6 Å</option><option value="3.9">3.9 Å（HBPLUS の非結合接触）</option><option value="4">4.0 Å（PLIP・Mol*）</option></select></div>
+  <div class="frow"><span class="fl">πスタッキング<small>環の重心間</small></span><select data-crit="pi"><option value="4.5">4.5 Å</option><option value="5">5.0 Å</option><option value="5.5">5.5 Å（PLIP・Mol*）</option></select></div>
+  <div class="frow"><span class="fl">カチオン–π<small>電荷中心–環の重心</small></span><select data-crit="catpi"><option value="4.5">4.5 Å</option><option value="5">5.0 Å</option><option value="6">6.0 Å（PLIP・Mol*）</option></select></div>
+  <div class="frow"><span class="fl">金属配位</span><select data-crit="metal"><option value="2.6">2.6 Å</option><option value="2.8">2.8 Å</option><option value="3">3.0 Å（PLIP・Mol*）</option></select></div>
+  <div class="frow"><span class="fl">ハロゲン結合</span><select data-crit="hal"><option value="3.5">3.5 Å</option><option value="4">4.0 Å（PLIP・Mol*）</option></select></div>
     <div class="row small"><label title="Lys・Arg・His と Asp・Glu・リン酸のように、電荷をもつ基どうしの水素結合は塩橋と同じ相互作用です。オフにすると「水素結合」と「塩橋」の2行で表示します"><input type="checkbox" id="critMerge"> 塩橋と重なる水素結合は「塩橋（水素結合あり）」の1行にまとめる</label></div>
     <div class="row small"><button id="critReset">初期値に戻す</button><span>水を介した水素結合は水素結合と同じ上限です。設定はセッションにも保存されます。</span></div>
   </details>
@@ -400,6 +452,11 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   </div>
   <div class="small">結晶対称を考慮した密度を、画面中心の周り（または構造全体）だけ取得します。中心を動かすと自動で取り直します。</div>
   <div class="row">
+    <input type="file" id="mtzFile" accept=".mtz" hidden>
+    <button id="mtzBtn">MTZ から計算（2Fo-Fc ＋ Fo-Fc）…</button>
+  </div>
+  <div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。ファイルはどこにも送信されません。</div>
+  <div class="row">
     <input type="text" id="emdbId" placeholder="EMDB ID（例 8116）">
     <button id="srvEm">EMマップ（密度サーバー）</button>
   </div>
@@ -413,12 +470,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
       <button id="rcsbDiff">Fo-Fc（RCSB）</button>
     </div>
     <div class="small">ファイルは結晶の一部の範囲しか含まないことがあり、その場合モデルの一部で密度が欠けます。</div>
-    <div class="row small">
-      <span>メッシュの線</span><select id="meshLW"><option value="1">細い</option><option value="1.5">標準</option><option value="2.5">太い</option></select>
-      <select id="mapKind"><option value="normal">通常マップ（2Fo-Fc / EM）</option><option value="diff">差マップ（Fo-Fc, ±表示）</option></select>
-      <input type="file" id="mapFile" accept=".ccp4,.map,.mrc,.dsn6,.omap,.brix,.dx,.gz" hidden>
-      <button id="mapBtn">手元のマップ…</button>
-    </div>
+  <div class="frow"><span class="fl">手元のマップ<small>ファイルの種類</small></span><div class="fc nowrap"><select id="mapKind"><option value="normal">通常マップ（2Fo-Fc / EM）</option><option value="diff">差マップ（Fo-Fc, ±表示）</option></select><input type="file" id="mapFile" accept=".ccp4,.map,.mrc,.dsn6,.omap,.brix,.dx,.mtz,.gz" hidden><button id="mapBtn">開く…</button></div></div>
+  <div class="frow"><span class="fl">メッシュの線<small>すべてのマップ</small></span><select id="meshLW"><option value="1">細い</option><option value="1.5">標準</option><option value="2.5">太い</option></select></div>
   </details>
   <div id="maps"></div>
   <div class="small">「表示範囲」は画面中心を中心とする球の半径（Å）。0で構造全体（サーバー取得）／マップ全体（ファイル）。</div>
@@ -430,27 +483,22 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div class="small" style="margin-bottom:6px">見出しを押すと開閉します。</div>
   <details class="sec" data-sec="look" open><summary><b>① 全体の見た目</b><span class="sechint">背景・質感・輪郭線・回転</span></summary>
   <div class="secbody">
-  <div class="row">
-    <select id="bg"><option value="black">背景: 黒</option><option value="white">背景: 白</option><option value="#202634">背景: 紺グレー</option></select>
-    <select id="cam"><option value="perspective">透視投影</option><option value="orthographic">平行投影</option></select>
-  </div>
-  <div class="row">
-    <select id="look">
-      <option value="std">質感: 標準（少し光沢）</option>
-      <option value="matte">質感: マット（光沢なし）</option>
-      <option value="flat">質感: フラット（イラスト風）</option>
-      <option value="gloss">質感: 光沢あり</option>
-    </select>
-    <select id="outline" title="カートゥーン・スティック・塩基などに黒い輪郭線を付けます（半透明の部分には付きません）">
-      <option value="0">輪郭線: なし</option><option value="1">輪郭線: 細め</option><option value="2">輪郭線: 標準</option><option value="3">輪郭線: 太め</option>
-    </select>
-  </div>
-  <div class="row">
-    <select id="fogSel" title="奥にあるものほど背景の色に近づけて、手前を目立たせます">
-      <option value="0">奥のぼかし: なし</option><option value="1" selected>奥のぼかし: 標準</option><option value="2">奥のぼかし: 強め</option>
-    </select>
-    <button id="toonPreset" title="質感をフラット、背景を白、輪郭線を標準、奥のぼかしを強めにします">イラスト風にする</button>
-  </div>
+  <div class="frow"><span class="fl">背景</span><select id="bg"><option value="black">黒</option><option value="white">白</option><option value="#202634">紺グレー</option></select></div>
+  <div class="frow"><span class="fl">投影</span><select id="cam"><option value="perspective">透視投影</option><option value="orthographic">平行投影</option></select></div>
+  <div class="frow"><span class="fl">質感</span><select id="look">
+      <option value="std">標準（少し光沢）</option>
+      <option value="matte">マット（光沢なし）</option>
+      <option value="flat">フラット（イラスト風）</option>
+      <option value="soft">淡い（やわらかい光）</option>
+    </select></div>
+  <div class="frow"><span class="fl">輪郭線</span><select id="outline" title="カートゥーン・スティック・塩基などに黒い輪郭線を付けます（半透明の部分には付きません）">
+      <option value="0">なし</option><option value="1">細め</option><option value="2">標準</option><option value="3">太め</option>
+    </select></div>
+  <div class="frow"><span class="fl">奥のぼかし</span><select id="fogSel" title="奥にあるものほど背景の色に近づけて、手前を目立たせます">
+      <option value="0">なし</option><option value="1" selected>標準</option><option value="2">強め</option>
+    </select></div>
+  <div class="frow"><span class="fl">カートゥーン<small>透明度</small></span><div class="fc"><input type="range" id="cartOp" min="0" max="90" step="5" value="0"><span class="lv">0%</span></div></div>
+  <div class="frow"><span class="fl">まとめて設定</span><div class="fc btns"><button id="toonPreset" title="質感をフラット、背景を白、輪郭線を標準、奥のぼかしを強めにします">イラスト風</button><button id="softPreset" title="Chain の色を淡い色にし、質感を「淡い」、背景を白、輪郭線を細めにします">淡い色調</button></div></div>
   <div class="row">
     <label><input type="checkbox" id="seqOn" checked> 配列（1文字）を画面下に表示</label>
   </div>
@@ -467,14 +515,20 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <label><input type="checkbox" id="focusZoom" checked> 選んだ場所にズーム</label>
   </div>
   <div class="small">「周囲5Å」をオフにすると、選んだ残基だけを表示します。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。</div>
+  <div class="frow"><span class="fl">表示形式</span><select id="focusStyle"></select></div>
+  <div class="small" style="margin-top:6px">スティックで描く部分</div>
+  <div class="frow"><span class="fl">タンパク質</span><select id="stickPart" title="タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます"><option value="all">主鎖＋側鎖</option><option value="side">側鎖のみ</option></select></div>
+  <div class="frow"><span class="fl">核酸</span><select id="stickNuc" title="核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます"><option value="all">全体</option><option value="bb">骨格のみ（リン酸・糖）</option><option value="base">塩基のみ</option></select></div>
   <div class="row">
-    <span class="small">表示形式</span><select id="focusStyle"></select>
+    <label title="ChimeraX のように、クリックした残基やリガンドを Chain と同じ淡い色の半透明の表面で包みます"><input type="checkbox" id="focusSurf"> クリックした残基を半透明の表面で包む</label>
   </div>
   <div class="row">
-    <label><input type="checkbox" id="focusIx" checked> その残基の相互作用も表示</label>
+    <label><input type="checkbox" id="focusIx" checked> 相互作用も表示</label>
+    <select id="focusScope" title="スティックで表示している残基どうしの相互作用をすべて出すか、クリックした残基が関わるものだけにするか"><option value="all">範囲: 表示中の残基すべて</option><option value="sel">範囲: クリックした残基のみ</option></select>
     <label class="small"><input type="checkbox" id="focusDist" checked> 距離</label>
     <label class="small"><input type="checkbox" id="focusListOn" checked> 一覧を表示</label>
   </div>
+  <div class="frow"><span class="fl">疎水性の描き方<small>Chain間の解析にも共通</small></span><select id="hydStyle" title="疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）"><option value="dots">ドット</option><option value="line">点線</option></select></div>
   <div class="subh">周りを薄くして強調する</div>
   <div class="row">
     <label><input type="checkbox" id="spotOn"> 周りを薄くしてクリックした場所を強調</label>
@@ -487,20 +541,16 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   </details>
   <details class="sec" data-sec="label"><summary><b>③ 残基ラベル</b><span class="sechint">解析用 / 図用（重ならないように並べる）</span></summary>
   <div class="secbody">
-  <div class="row">
-    <select id="lblMode" title="解析用：分子の中に表示し、手前の分子に隠れます。図用：分子の上に重ねて表示し、ドラッグや自動配置で文字が重ならないように整えられます">
-      <option value="ngl">表示: 解析用（分子の中に表示）</option><option value="fig">表示: 図用（動かせる・重ならないように並べる）</option>
-    </select>
-  </div>
+  <div class="frow"><span class="fl">表示</span><select id="lblMode" title="解析用：ラベルを残基の上に固定し、手前の分子に隠れた残基のラベルは薄く表示します。図用：ドラッグや自動配置で文字が重ならないように整えられます">
+      <option value="ngl">解析用（残基の上・奥は薄く）</option><option value="fig">図用（動かせる・重ならないように並べる）</option>
+    </select></div>
   <div class="small lblFigOnly">ラベルはドラッグ（タブレットでは指でなぞる）で動かせます。動かした位置は書き出す画像とセッションにも入ります。</div>
+  <div class="frow"><span class="fl">表記</span><select id="lblFmt"><option value="Arg51">Arg51</option><option value="R51">R51</option><option value="ARG51">ARG51</option></select></div>
+  <div class="frow"><span class="fl">Chain名</span><select id="lblChain"><option value="auto">界面解析のときだけ</option><option value="on">付ける</option><option value="off">付けない</option></select></div>
+  <div class="frow"><span class="fl">文字の大きさ</span><select id="lblSize"><option value="11">小</option><option value="14" selected>中</option><option value="18">大</option><option value="24">特大</option></select></div>
   <div class="row">
-    <select id="lblFmt"><option value="Arg51">表記: Arg51</option><option value="R51">表記: R51</option><option value="ARG51">表記: ARG51</option></select>
-    <select id="lblChain"><option value="auto">Chain名: 界面解析のときだけ</option><option value="on">Chain名: 付ける</option><option value="off">Chain名: 付けない</option></select>
-  </div>
-  <div class="row">
-    <select id="lblSize"><option value="11">文字: 小</option><option value="14" selected>文字: 中</option><option value="18">文字: 大</option><option value="24">文字: 特大</option></select>
     <label><input type="checkbox" id="lblBold" checked> 太字</label>
-    <label class="lblFigOnly"><input type="checkbox" id="lblHalo" checked> 縁取り</label>
+    <label><input type="checkbox" id="lblHalo" checked> 縁取り</label>
     <label class="lblFigOnly"><input type="checkbox" id="lblLine" checked> 引き出し線</label>
   </div>
   <div class="row">
@@ -512,19 +562,18 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <details class="sec" data-sec="img"><summary><b>④ 画像の書き出し</b><span class="sechint">論文用 PNG（mm・dpi を指定）</span></summary>
   <div class="secbody">
   <div id="imgBox">
-    <div class="row"><span class="small">幅</span><input type="number" id="imgW" value="85" min="1" step="1" style="width:70px">
-      <select id="imgUnit"><option value="mm">mm</option><option value="in">inch</option><option value="px">px</option></select>
-      <span class="small">解像度</span><input type="number" id="imgDpi" value="600" min="72" max="2400" step="50" style="width:70px"><span class="small">dpi</span></div>
-    <div class="row"><span class="small">幅の目安</span><button class="imgPre" data-w="85">1段 85 mm</button><button class="imgPre" data-w="114">1.5段 114 mm</button><button class="imgPre" data-w="174">2段 174 mm</button></div>
-    <div class="row"><span class="small">dpi</span><button class="imgDpiPre" data-d="300">300</button><button class="imgDpiPre" data-d="600">600</button><button class="imgDpiPre" data-d="1200">1200</button>
-      <span class="small">縦横比</span><select id="imgAspect"><option value="view">画面と同じ</option><option value="1">1:1</option><option value="1.3333">4:3</option><option value="0.75">3:4</option><option value="1.7778">16:9</option></select></div>
+  <div class="frow"><span class="fl">幅</span><div class="fc"><input type="number" id="imgW" value="85" min="1" step="1" style="width:70px"><select id="imgUnit"><option value="mm">mm</option><option value="in">inch</option><option value="px">px</option></select></div></div>
+  <div class="frow"><span class="fl">幅の目安<small>論文の段組</small></span><div class="fc btns"><button class="imgPre" data-w="85" title="85 mm">1段</button><button class="imgPre" data-w="114" title="114 mm">1.5段</button><button class="imgPre" data-w="174" title="174 mm">2段</button></div></div>
+  <div class="frow"><span class="fl">解像度</span><div class="fc"><input type="number" id="imgDpi" value="600" min="72" max="2400" step="50" style="width:70px"><span class="small">dpi</span></div></div>
+  <div class="frow"><span class="fl">解像度の目安</span><div class="fc btns"><button class="imgDpiPre" data-d="300">300</button><button class="imgDpiPre" data-d="600">600</button><button class="imgDpiPre" data-d="1200">1200</button></div></div>
+  <div class="frow"><span class="fl">縦横比</span><select id="imgAspect"><option value="view">画面と同じ</option><option value="1">1:1</option><option value="1.3333">4:3</option><option value="0.75">3:4</option><option value="1.7778">16:9</option></select></div>
     <div class="small" id="imgInfo"></div>
     <div class="row"><button class="pri" id="snap">PNGを書き出す</button><label class="small"><input type="checkbox" id="transp"> 透過背景</label></div>
     <div class="small">PNGに解像度（dpi）の情報を書き込むので、Illustrator・PowerPoint・Word に配置すると指定した大きさになります。縦横比を変えると、書き出しの間だけ画面の枠がその比率に変わります（画面に見えている範囲が基準です）。</div>
   </div>
   </div>
   </details>
-  <details class="sec" data-sec="ses"><summary><b>⑤ セッションの保存</b><span class="sechint">表示や解析の状態を .json に保存</span></summary>
+  <details class="sec" data-sec="ses"><summary><b>⑤ 保存と共有</b><span class="sechint">表示の状態を .json に保存、またはリンクで共有</span></summary>
   <div class="secbody">
   <div class="row">
     <button class="pri" id="saveSes">セッションを保存</button>
@@ -532,6 +581,9 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <input type="file" id="sesFile" accept=".json" hidden>
   </div>
   <div class="small">構造・Chainの色と表示形式・選択範囲・マップの設定・相互作用解析・視点をまとめて .json に保存します。手元の構造ファイルや40 MB以下のマップファイルは中に埋め込みます。.jsonは画面にドロップしても開けます。</div>
+  <div class="row" style="margin-top:10px"><button id="shareBtn">🔗 今の表示をリンクで共有</button></div>
+  <input type="text" id="shareUrl" readonly style="display:none;width:100%;margin-top:6px;font-size:12px">
+  <div class="small">PDB ID で開いた構造、Chainごとの色と表示形式、リガンド・水の表示、保存した選択、選んでいる残基、視点、見た目、サーバーから読み込んだ電子密度（レベルと色）がリンクに入ります。リンクを開いた人は同じ画面から始められます。手元のファイル（構造・マップ・MTZ）はリンクに入りません（全部渡すときはセッションの .json を送ってください）。</div>
   </div>
   </details>
   <details class="sec" data-sec="help"><summary><b>操作方法</b><span class="sechint">マウス・キーボード・タブレット</span></summary>
@@ -551,10 +603,43 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="viewport"></div>
     <div id="lblLayer"><svg id="lblLines"></svg></div>
     <div id="boxLayer"><div id="boxRect"></div></div>
-    <div id="vtools"><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div>
+    <div id="vtools"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div>
     <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）">★ 選択を保存</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button></div>
     <div id="flist"></div>
     <div id="status">PDB IDを入力して「読込」</div>
+    <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
+ <defs>
+  <radialGradient id="runC" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#f1f3f5"/><stop offset="1" stop-color="#7d8793"/></radialGradient>
+  <radialGradient id="runA" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#ffe0a8"/><stop offset="1" stop-color="#c48a2c"/></radialGradient>
+  <radialGradient id="runN" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#a9c4ff"/><stop offset="1" stop-color="#2d5bc4"/></radialGradient>
+  <radialGradient id="runO" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#ffb0a8"/><stop offset="1" stop-color="#c43c3c"/></radialGradient>
+ </defs>
+ <line class="ground" x1="2" y1="37.5" x2="58" y2="37.5" stroke="#5b6573" stroke-width="1" stroke-dasharray="5 3"/>
+ <g class="dbody">
+  <g stroke="#8e96a1" stroke-width="1.5" stroke-linecap="round">
+   <g class="hfu"><line x1="18" y1="21" x2="18" y2="28"/><g class="hfl"><line x1="18" y1="28" x2="18" y2="35"/><circle cx="18" cy="35" r="1.3" fill="#8e96a1" stroke="none"/></g></g>
+   <g class="ffu"><line x1="36" y1="21" x2="36" y2="28"/><g class="ffl"><line x1="36" y1="28" x2="36" y2="35"/><circle cx="36" cy="35" r="1.3" fill="#8e96a1" stroke="none"/></g></g>
+  </g>
+  <g stroke="#c9ced6" stroke-width="1.8" stroke-linecap="round">
+   <line x1="12" y1="18" x2="18" y2="21"/><line x1="18" y1="21" x2="27" y2="20"/><line x1="27" y1="20" x2="36" y2="21"/>
+  </g>
+  <g class="dneck">
+   <g stroke="#c9ced6" stroke-width="1.8" stroke-linecap="round">
+    <line x1="36" y1="21" x2="41" y2="14"/><line x1="41" y1="14" x2="46" y2="9"/><line x1="46" y1="9" x2="51" y2="11"/><line x1="46" y1="9" x2="44" y2="4"/>
+    <line x1="44" y1="4" x2="41" y2="0.5" stroke="#e0b86a"/><line x1="44" y1="4" x2="48" y2="1" stroke="#e0b86a"/>
+   </g>
+   <circle cx="41" cy="14" r="2.2" fill="url(#runC)"/>
+   <circle cx="44" cy="4" r="1.7" fill="url(#runA)"/><circle cx="41" cy="0.8" r="1.3" fill="url(#runA)"/><circle cx="48" cy="1.2" r="1.3" fill="url(#runA)"/>
+   <circle cx="46" cy="9" r="2.8" fill="url(#runC)"/><circle cx="51" cy="11" r="2.2" fill="url(#runN)"/><circle cx="46.6" cy="8.4" r="0.7" fill="#1a1f27"/>
+  </g>
+  <circle cx="12" cy="18" r="1.8" fill="url(#runO)"/>
+  <circle cx="18" cy="21" r="2.6" fill="url(#runC)"/><circle cx="27" cy="20" r="2.8" fill="url(#runC)"/><circle cx="36" cy="21" r="2.6" fill="url(#runC)"/>
+  <g stroke="#d6dbe2" stroke-width="1.7" stroke-linecap="round">
+   <g class="hnu"><line x1="18" y1="21" x2="18" y2="28"/><circle cx="18" cy="28" r="1.4" fill="url(#runC)" stroke="none"/><g class="hnl"><line x1="18" y1="28" x2="18" y2="35"/><circle cx="18" cy="35" r="1.5" fill="url(#runC)" stroke="none"/></g></g>
+   <g class="fnu"><line x1="36" y1="21" x2="36" y2="28"/><circle cx="36" cy="28" r="1.4" fill="url(#runC)" stroke="none"/><g class="fnl"><line x1="36" y1="28" x2="36" y2="35"/><circle cx="36" cy="35" r="1.5" fill="url(#runC)" stroke="none"/></g></g>
+  </g>
+ </g>
+</svg></div>
     <div id="drop">ここにドロップ（構造 or マップ）</div>
   </div>
   <div id="seqbar" title="ドラッグで配列欄の高さを変更（ダブルクリックで元の高さ）"></div>
@@ -578,7 +663,50 @@ addEventListener('error', e => log(e.message + (e.filename ? ` (${e.filename.spl
 addEventListener('unhandledrejection', e => log('Promise: ' + (e.reason && (e.reason.message || e.reason))));
 const _ce = console.error.bind(console);
 console.error = (...a) => { log(a.map(x => (x && x.message) || String(x)).join(' ')); _ce(...a); };
-function status(msg, err) { const s = $('#status'); s.textContent = msg; s.className = err ? 'err' : ''; if (err) log(msg); }
+/* running deer: a rotary gallop drawn with two-segment legs; poses are interpolated smoothly (periodic Catmull-Rom) */
+const DEER_POSES = {
+  // phase:   0     .125   .25   .375   .5    .625   .75   .875
+  hindU:   [  38,   20,  -10,  -35,  -42,  -25,    5,   25],   // thigh at the hip (deg, + = backward)
+  hindL:   [  10,   30,   48,   38,   15,    0,    4,    8],   // cannon at the hock (+ = folds back)
+  foreU:   [ -42,  -30,   -5,   15,   32,   38,   10,  -25],   // upper foreleg at the shoulder
+  foreL:   [  -5,    0,    8,   10,   25,   70,   85,   40],   // lower foreleg at the knee (+ = folds back)
+  pitch:   [  -5,   -3,    1,    4,    5,    2,   -2,   -5],   // body tilt (- = nose up)
+  bob:     [ -1.6, -2.4, -1.4,  0.4,  0.8,  0.0, -0.8, -1.4],  // body height (- = up)
+  neck:    [   4,    2,   -1,   -4,   -5,   -2,    2,    4]    // head nod against the body tilt
+};
+function deerAt(key, ph) {
+  const a = DEER_POSES[key], n = a.length, x = ph * n, i = Math.floor(x), t = x - i;
+  const p0 = a[(i - 1 + n) % n], p1 = a[i % n], p2 = a[(i + 1) % n], p3 = a[(i + 2) % n];
+  return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+}
+function deerPose(svg, ph) {
+  const q = s => svg.querySelector(s), set = (s, v) => { const e = q(s); if (e) e.setAttribute('transform', v); };
+  set('.dbody', `translate(0 ${deerAt('bob', ph).toFixed(2)}) rotate(${deerAt('pitch', ph).toFixed(2)} 27 20)`);
+  set('.dneck', `rotate(${deerAt('neck', ph).toFixed(2)} 36 21)`);
+  // near legs lead, far legs trail a little (rotary gallop)
+  for (const [side, off] of [['n', 0], ['f', -0.14]]) {   // far legs land a little later: four separate beats
+    const p = (ph + off + 1) % 1;
+    set(`.h${side}u`, `rotate(${deerAt('hindU', p).toFixed(1)} 18 21)`); set(`.h${side}l`, `rotate(${deerAt('hindL', p).toFixed(1)} 18 28)`);
+    set(`.f${side}u`, `rotate(${deerAt('foreU', p).toFixed(1)} 36 21)`); set(`.f${side}l`, `rotate(${deerAt('foreL', p).toFixed(1)} 36 28)`);
+  }
+}
+let deerRaf = 0, deerT0 = 0;
+function deerLoop(ts) {
+  const el = document.getElementById('deerRun');
+  if (!el || !el.classList.contains('on')) { deerRaf = 0; return; }
+  if (!deerT0) deerT0 = ts;
+  deerPose(el, ((ts - deerT0) / 520) % 1);
+  deerRaf = requestAnimationFrame(deerLoop);
+}
+function deerStart() { if (!deerRaf && typeof requestAnimationFrame !== 'undefined') deerRaf = requestAnimationFrame(deerLoop); }
+
+/* a message ending in "…" means work is in progress: the running deer is shown until the next message (or 90 s at most) */
+let deerT = 0;
+function status(msg, err) {
+  const s = $('#status'); s.textContent = msg; s.className = err ? 'err' : ''; if (err) log(msg);
+  const busy = !err && /…\s*$/.test(String(msg)), d = document.getElementById('deerRun');
+  if (d) { d.classList.toggle('on', busy); clearTimeout(deerT); if (busy) { deerStart(); deerT = setTimeout(() => d.classList.remove('on'), 90000); } }
+}
 
 /* =====================================================================
    Language switch (日本語 / English).
@@ -590,15 +718,24 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
-  'PDB ID（例 4DRB）': 'PDB ID (e.g. 4DRB)',
-  '読込': 'Load', '見出しを押すと開閉します。': 'Click a heading to open or close it.',
+  'PDB ID（例 7DA1）': 'PDB ID (e.g. 7DA1)',
+  '読込': 'Load', 'カートゥーンの透明度': 'Cartoon transparency', '相互作用も表示': 'Show interactions', '範囲: 表示中の残基すべて': 'Scope: all residues shown', '範囲: クリックした残基のみ': 'Scope: clicked residues only',
+  '表示中の残基すべて': 'All residues shown', 'クリックした残基のみ': 'Clicked residues only', '範囲': 'Scope',
+  'スティックで表示している残基（クリックした残基と周囲5Å）どうしの相互作用をすべて表示します': 'Shows every interaction among the residues drawn as sticks (the clicked residues and their 5 Å surroundings)',
+  'クリックした残基が関わる相互作用だけを表示します': 'Shows only interactions that involve a clicked residue',
+  'スティックで表示している残基どうしの相互作用をすべて出すか、クリックした残基が関わるものだけにするか': 'All interactions among the residues drawn as sticks, or only those involving the clicked residues', 'MTZ から計算（2Fo-Fc ＋ Fo-Fc）…': 'From MTZ (2Fo-Fc + Fo-Fc)…',
+  '精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。ファイルはどこにも送信されません。': 'Computes density in your browser from a refinement MTZ (Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT, etc.). Works for structures without a PDB ID. The file is not sent anywhere.', '淡い表示にする': 'Soft look', '質感: 淡い（やわらかい光）': 'Material: soft (gentle light)', '半透明の表面＋スティック': 'Translucent surface + sticks',
+  'クリックした残基を半透明の表面で包む': 'Wrap clicked residues in a translucent surface',
+  'ChimeraX のように、クリックした残基やリガンドを Chain と同じ淡い色の半透明の表面で包みます': 'Like ChimeraX: wraps clicked residues or ligands in a translucent surface in a lighter shade of the chain colour',
+  'Chain の色を淡い色にし、質感を「淡い」、背景を白、輪郭線を細めにします': 'Pastel chain colours, soft material, white background, thin outlines',
+  '淡い表示にしました（Chain の色を淡い色に変更。色は「構造」タブで1本ずつ変えられます）': 'Soft look on (pastel chain colours; change each chain in the Structure tab)', 'この構造のマップをまとめて表示・非表示': 'Show or hide all maps of this structure', 'この構造のマップをすべて削除': 'Remove all maps of this structure', '見出しを押すと開閉します。': 'Click a heading to open or close it.',
   '① 全体の見た目': '① Overall look', '背景・質感・輪郭線・回転': 'background, material, outlines, rotation',
   '② クリックしたときの表示': '② When you click a residue', '残基の周りのスティック・相互作用・周りを薄くする': 'sticks around the residue, interactions, spotlight',
   '③ 残基ラベル': '③ Residue labels', '解析用 / 図用（重ならないように並べる）': 'analysis / figure (arranged without overlaps)',
   '④ 画像の書き出し': '④ Image export', '論文用 PNG（mm・dpi を指定）': 'PNG for papers (set mm and dpi)',
   '⑤ セッションの保存': '⑤ Sessions', '表示や解析の状態を .json に保存': 'save the display and analysis state as .json',
-  '操作方法': 'Controls', 'マウス・キーボード・タブレット': 'mouse, keyboard, tablet', '周りを薄くして強調する': 'Fade the surroundings to highlight', '表示: 解析用（分子の中に表示）': 'Labels: analysis (inside the scene)', '表示: 図用（動かせる・重ならないように並べる）': 'Labels: figure (movable, no overlaps)',
-  '解析用：分子の中に表示し、手前の分子に隠れます。図用：分子の上に重ねて表示し、ドラッグや自動配置で文字が重ならないように整えられます': 'Analysis: drawn inside the scene and hidden behind nearer molecules. Figure: drawn on top; drag or arrange them so they do not overlap',
+  '操作方法': 'Controls', 'マウス・キーボード・タブレット': 'mouse, keyboard, tablet', '周りを薄くして強調する': 'Fade the surroundings to highlight', '表示: 解析用（残基の上・奥は薄く）': 'Labels: analysis (on the residues, dimmed when behind)', '表示: 図用（動かせる・重ならないように並べる）': 'Labels: figure (movable, no overlaps)',
+  '解析用：ラベルを残基の上に固定し、手前の分子に隠れた残基のラベルは薄く表示します。図用：ドラッグや自動配置で文字が重ならないように整えられます': 'Analysis: labels stay on their residues and are dimmed when hidden behind nearer parts. Figure: drag or arrange them so they do not overlap',
   '図用の表示に切り替えて、重なっているラベルを、元の残基からなるべく離れないように押し広げます': 'Switches to figure labels and spreads overlapping labels apart while keeping them near their residues', '残基ラベル': 'Residue labels', '表記: Arg51': 'Style: Arg51', '表記: R51': 'Style: R51', '表記: ARG51': 'Style: ARG51',
   'Chain名: 界面解析のときだけ': 'Chain: interface analysis only', 'Chain名: 付ける': 'Chain: always', 'Chain名: 付けない': 'Chain: never',
   '文字: 小': 'Text: small', '文字: 中': 'Text: medium', '文字: 大': 'Text: large', '文字: 特大': 'Text: extra large', '太字': 'Bold', '縁取り': 'Halo', '引き出し線': 'Leader lines',
@@ -700,7 +837,7 @@ const EXACT = new Map(Object.entries({
   'クリックした残基から指定した半径の内側はそのまま、外側を薄くします（濃さ 0 で外側を消します）。表面・リガンド・ほかの構造も外側として薄くなります。「色を背景に近づける」は透けないので、手前にある部分がクリックした場所を隠すことがあります。':
     'Inside the chosen radius stays as is; everything outside is faded (strength 0 hides it), including surfaces, ligands and other structures. "Blend toward background" is opaque, so parts in front can hide the site.',
   '薄くする方法': 'Fade by', '色を背景に近づける（透けない）': 'Blend toward background (opaque)', '半透明（手前も透ける）': 'Transparent (see-through)', '外側の濃さ': 'Outside strength',
-  '周りを薄く': 'Fade surroundings', '▭ 範囲選択': '▭ Box select', '四角の中に残基がありませんでした': 'No residues inside the box', '範囲選択: オフ（ドラッグで回転に戻ります）': 'Box select: off (dragging rotates again)',
+  '周りを薄く': 'Fade surroundings', '▭ 範囲選択': '▭ Box select', '疎水性の描き方': 'Hydrophobic contacts', 'Chain間の解析にも共通': 'also for chain interfaces', 'ドット': 'Dots', '点線': 'Dashed line', 'イラスト風': 'Illustration', '淡い色調': 'Soft colours', '解像度の目安': 'dpi presets', '黒': 'Black', '白': 'White', '紺グレー': 'Slate', '標準（少し光沢）': 'Standard (slight gloss)', 'マット（光沢なし）': 'Matte (no gloss)', 'フラット（イラスト風）': 'Flat (illustration-like)', '光沢あり': 'Glossy', '淡い（やわらかい光）': 'Soft (gentle light)', 'なし': 'None', '細め': 'Thin', '太め': 'Thick', '強め': 'Strong', '解析用（残基の上・奥は薄く）': 'Analysis (on the residues, dimmed when behind)', '図用（動かせる・重ならないように並べる）': 'Figure (movable, no overlaps)', 'Arg51': 'Arg51', 'R51': 'R51', 'ARG51': 'ARG51', '界面解析のときだけ': 'Interface analysis only', '付ける': 'Always', '付けない': 'Never', '小': 'Small', '中': 'Medium', '大': 'Large', '特大': 'Extra large', '背景': 'Background', '投影': 'Projection', '質感': 'Look', '輪郭線': 'Outline', '奥のぼかし': 'Depth fade', '透明度': 'transparency', 'まとめて設定': 'Presets', '表記': 'Style', 'Chain名': 'Chain name', '文字の大きさ': 'Text size', '論文の段組': 'journal columns', '1段': '1 col', '1.5段': '1.5 col', '2段': '2 col', '供与体–受容体': 'donor–acceptor', '炭素どうし': 'carbon–carbon', '環の重心間': 'ring centroids', 'カチオン–π': 'Cation–π', '電荷中心–環の重心': 'charge–ring centroid', '手元のマップ': 'Local map', 'ファイルの種類': 'file type', '開く…': 'Open…', 'すべてのマップ': 'all maps', 'と': 'and', '主鎖＋側鎖': 'Main + side chain', '側鎖のみ': 'Side chain only', 'タンパク質': 'Protein', '核酸': 'Nucleic acid', 'スティックで描く部分': 'Parts drawn as sticks', '全体': 'Whole', '骨格のみ（リン酸・糖）': 'Backbone only (phosphate, sugar)', '塩基のみ': 'Base only', '↶ 戻す': '↶ Undo', '1つ前の表示に戻しました': 'Undid the last change', 'やり直しました': 'Redone', 'これ以上戻せません': 'Nothing more to undo', 'やり直す操作はありません': 'Nothing to redo', '四角の中に残基がありませんでした': 'No residues inside the box', '範囲選択: オフ（ドラッグで回転に戻ります）': 'Box select: off (dragging rotates again)',
   '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または ': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with ', '（Mac は ': ' (Mac: ', '）を押しながらドラッグ。四角の中の残基をまとめて選択（': '). Selects the residues inside the box (', ' でオフ）': ' turns it off)', '＋ 追加選択': '+ Add to selection', '追加選択: オフ': 'Add to selection: off',
   'タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン': 'Tablet: one finger rotates, two fingers zoom and pan. On the sequence, hold a letter briefly, then slide to select a stretch. To pick several residues, turn on "+ Add to selection" in the info box', '★ 選択を保存': '★ Save selection', '選択の保存と履歴': 'Saved selections and history', '表示': 'Show', '＋追加': '+ Add', '★ 保存': '★ Save',
   '選んだ残基の周囲5Åもスティック表示': 'Also show residues within 5 Å as sticks', '選んだ場所にズーム': 'Zoom to the selection',
@@ -755,7 +892,7 @@ const EXACT = new Map(Object.entries({
   '構造を読み込み中…': 'Loading structure…', 'セッションを書き出し中…': 'Writing session…', 'セッションを復元中…': 'Restoring session…',
   '保存する構造がありません': 'No structure to save', '先に構造を読み込んでください': 'Load a structure first',
   '先にPDB IDで構造を読み込んでください': 'Load a structure by PDB ID first',
-  'PDB IDは4文字（例 4DRB）で入力してください': 'Enter a 4-character PDB ID (e.g. 4DRB)',
+  'PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください': 'Enter a 4-character PDB ID (e.g. 7DA1) or a 12-character one starting with pdb_ (e.g. pdb_00003b0b)',
   'EMDB IDの数字を入力してください': 'Enter the EMDB ID number',
   'このビューアのセッションファイルではありません': 'This is not a session file of this viewer',
   'この構造は動かしていません': 'This structure has not been moved',
@@ -770,7 +907,7 @@ const EXACT = new Map(Object.entries({
   '特定の相互作用なし': 'no specific interactions',
   '応答に密度データのブロックがありません': 'The response contains no density data block',
   '全構造をこの基準に一括で重ね合わせ': 'Superpose all structures onto this reference',
-  '色: Chainごと': 'Colour: by chain', '色: 構造ごとに単色': 'Colour: one per structure',
+  '色: Chainごと': 'Colour: by chain', '色: N末→C末（青→緑→赤）': 'Colour: N→C (blue→green→red)', '色: N末→C末（紫→緑→黄）': 'Colour: N→C (purple→green→yellow)', '色: 構造ごとに単色': 'Colour: one per structure',
   '表面の色': 'Surface colour', 'Chainの色': 'Chain colour',
   '電荷をもつ残基（Lys/Arg 青・Asp/Glu/リン酸 赤）': 'Charged residues (Lys/Arg blue, Asp/Glu/phosphate red)',
   '静電ポテンシャル（近似）': 'Electrostatic potential (approx.)', '疎水性（Kyte–Doolittle）': 'Hydrophobicity (Kyte–Doolittle)',
@@ -797,7 +934,7 @@ const EXACT = new Map(Object.entries({
   'この構造は重ね合わせで動かしてあるため、マップと位置が合っていません。「元の位置に戻す」で戻してください。': 'This structure has been moved by superposition, so it no longer matches the map. Use "Restore position".',
   '構造': 'Structures', '解析': 'Analysis', '電子密度': 'Density',
   '編集中': 'Editing', '操作の対象にする構造を切り替え': 'Switch the structure the panels act on',
-  '色・表示形式を開く': 'Open colours & style', '色・表示形式を閉じる': 'Close colours & style',
+  '色・表示形式を開く': 'Open colours & style', '（分子名なし）': '(no molecule name)', '色・表示形式を閉じる': 'Close colours & style',
   'PLIP（Salentin et al., 2015）の判定基準（plip/basic/config.py の値）に合わせています。結晶構造には水素原子がないため、水素の角度を使う条件は重原子の角度で近似しています。': 'Criteria follow PLIP (Salentin et al., 2015; values from plip/basic/config.py). Crystal structures have no hydrogens, so conditions on hydrogen angles are estimated from heavy atoms.',
   '水素結合: 供与体–受容体 2.2 Å〜上で選んだ上限（初期値 3.5 Å。PLIP の既定は 4.1 Å）。供与体・受容体は残基と原子名から判定。角度は PLIP と同じ D–H···A ≥ 100°。水素の位置は、供与体の隣の重原子の配置から決めています（2個なら sp2 の固定位置、1個なら結合のまわりで最も良い向き）。Lys の NZ は −NH3⁺ として供与体のみ扱います。': 'H-bond: donor–acceptor from 2.2 Å up to the limit chosen above (default 3.5 Å; PLIP uses 4.1 Å). Donors/acceptors from residue and atom names. Angle as in PLIP, D–H···A ≥ 100°, with the H placed from the donor\'s heavy neighbours (two neighbours: fixed sp2 position; one: best orientation around the bond). Lys NZ is treated as −NH3⁺ (donor only).',
   '水を介した水素結合: 水の酸素と両側の極性原子が 2.5 Å〜水素結合の上限（PLIP は 4.1 Å）、極性原子–水–極性原子の角度 71–140°（PLIPの ω 角の近似）。': 'Water bridge: water oxygen from 2.5 Å up to the H-bond limit (PLIP: 4.1 Å) from polar atoms on both sides, polar–water–polar angle 71–140° (approximating PLIP\'s ω angle).',
@@ -834,6 +971,11 @@ const PATTERNS = [
   P(/^対称分子を加えた構造を削除し、(.+) に戻しました$/, (m, a) => `Deleted the structure with symmetry copies and returned to ${a}`),
   P(/^(.+) に切り替えました（対称分子を加えた構造は非表示にして残しています。.*$/, (m, a) => `Switched to ${a} (the structure with symmetry copies is kept hidden; tick it in the structure list to show it again)`),
   P(/^ラベル (\d+) 個を重ならないように配置しました。.*$/, (m, n) => `Arranged ${n} labels so they do not overlap. Drag any label to adjust it`),
+  P(/^MTZ を読み込み中: (.+) …$/, (m, a) => `Reading MTZ: ${a} …`),
+  P(/^(.+): (2Fo-Fc|Fo-Fc) を計算中（(.+) \/ (.+)、空間群 (.+)、対称操作 (\d+) 個）…$/, (m, a, b, c, d, e, f) => `${a}: computing ${b} (${c} / ${d}, space group ${e}, ${f} operators)…`),
+  P(/^MTZ から密度を計算しました: (.+)（格子 (\S+?)(、列は推測: (.+))?）$/, (m, a, b, c, d) => `Computed density from MTZ: ${a} (grid ${b}${d ? ', columns guessed: ' + d : ''})`),
+  P(/^MTZ を読めませんでした: (.+)（(.+)）$/, (m, a, b) => `Could not read MTZ: ${a} (${b})`),
+  P(/^(.+): マップ用の列（.+）が見つかりません。列: (.+)$/, (m, a, b) => `${a}: no map-coefficient columns (2FOFCWT/PH2FOFCWT, FWT/PHWT, …) found. Columns: ${b}`),
   P(/^範囲選択: オン。.*$/, () => 'Box select: on. Drag in the molecule window to select the residues inside the box (press again to turn off)'),
   P(/^範囲選択: (\d+) 残基を(選択しました|追加しました)（奥にある残基も含みます）。.*$/, (m, n, k) => `Box select: ${k === '追加しました' ? 'added' : 'selected'} ${n} residues (including those further back). Save them as a group with "★ Save selection"`),
   P(/^範囲が広すぎます（(\d+) 残基）。.*$/, (m, n) => `The box is too large (${n} residues). Up to 300; zoom in first to narrow it down`),
@@ -1444,7 +1586,8 @@ function setupChains() {
     const v = st.getView(new NGL.Selection(`:${o.name} and polymer and /0`));
     if (!v.atomCount) continue;
     const nuc = st.getView(new NGL.Selection(`:${o.name} and nucleic and /0`)).atomCount > 0;
-    chains.push({...o, nres: v.residueCount, nucleic: nuc, color: pal[i++ % pal.length], type: 'cartoon', surf: false, visible: true, reps: []});
+    let nres = 0; v.eachResidue(() => { nres++; });   // StructureView has no residueCount in NGL 2.3
+    chains.push({...o, nres, nucleic: nuc, color: pal[i++ % pal.length], type: 'cartoon', surf: false, visible: true, reps: []});
   }
   chains.forEach(chainReps);
   stash();
@@ -1459,13 +1602,25 @@ function chainReps(ch) {
 }
 /* spotlight is on and something it faded was rebuilt or toggled: redo it (once, after the current handler) */
 function spotRefresh() { if (spot.live && lastFocus) { clearTimeout(spot.rt); spot.rt = setTimeout(() => lastFocus && focusOn(lastFocus, false), 0); } }
+/* transparency of cartoons (and nucleic-acid bases); 1 = opaque */
+let cartOp = (() => { try { const v = +localStorage.getItem('pdv_cart_op'); return v > 0 && v <= 1 ? v : 1; } catch (e) { return 1; } })();
+const cartOpParams = () => cartOp < 0.995 ? {opacity: cartOp, depthWrite: true, side: 'front'} : {opacity: 1, depthWrite: true, side: 'double'};
+function setCartOp(v) {
+  cartOp = Math.min(1, Math.max(0.05, +v || 1));
+  try { localStorage.setItem('pdv_cart_op', cartOp); } catch (e) {}
+  lblOccSchedule();
+  const sl = $('#cartOp'); if (sl) { sl.value = Math.round((1 - cartOp) * 100); sl.nextElementSibling.textContent = Math.round((1 - cartOp) * 100) + '%'; }
+  const all = new Set(chains); structs.forEach(S => (S.chains || []).forEach(ch => all.add(ch)));
+  all.forEach(ch => (ch.reps || []).forEach(r => { const t = r.repr && r.repr.type; if (t === 'cartoon' || t === 'base') r.setParameters(cartOpParams()); }));
+}
 function repSpecs(ch) {
   const out = [];
   const n = ch.name, s = `:${n} and polymer`, cs = consActive(ch);
-  const c = cs ? CONS_SCHEME : ch.color;
+  const rb = !cs && rainbowMode;
+  const c = cs ? CONS_SCHEME : rb ? RB_SCHEME : ch.color;
   const add = (t, p) => out.push([t, p]);
-  const el = cs ? {color: CONS_SCHEME} : {color: 'element', colorValue: hexNum(ch.color)};
-  const cartoon = () => { add('cartoon', {sele: s, color: c}); if (ch.nucleic) add('base', {sele: `:${n} and nucleic`, color: c}); };
+  const el = cs ? {color: CONS_SCHEME} : rb ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(ch.color)};
+  const cartoon = () => { add('cartoon', {sele: s, color: c, ...cartOpParams()}); if (ch.nucleic) add('base', {sele: `:${n} and nucleic`, color: c, ...cartOpParams()}); };
   switch (ch.type) {
     case 'cartoon': cartoon(); break;
     case 'cartoon+sc': cartoon(); add('licorice', {sele: `:${n} and protein and sidechainAttached and not hydrogen`, ...el}); break;
@@ -1488,19 +1643,48 @@ function sticksByChain(indices, extra = {}, style = 'licorice', ligStyle = style
     else lig.push(i);
   }
   const reps = [];
-  for (const [n, idx] of byChain) reps.push(comp.addRepresentation(style, {sele: '@' + idx.join(','), color: 'element', colorValue: hexNum(chainColor(n)), ...extra}));
+  for (const [n, idx] of byChain) reps.push(comp.addRepresentation(style, {sele: '@' + idx.join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(n))}), ...extra}));
   if (lig.length) reps.push(comp.addRepresentation(ligStyle, {sele: '@' + lig.join(','), color: 'element', colorValue: hexNum($('#ligColor').dataset.v), ...extra}));
   return reps;
 }
 /* how clicked residues and interface residues are drawn: style (stick / ball & stick / CPK) and stick thickness */
 const STICK_KEY = 'pdv_stick';
-const stickPref = (() => { const d = {style: 'licorice', w: 1}; try { Object.assign(d, JSON.parse(localStorage.getItem(STICK_KEY) || '{}')); } catch (e) {} return d; })();
+/* part: 'all' = main chain + side chain, 'side' = side chain only (CA kept so it joins the cartoon; Pro keeps N) */
+/* nuc: 'all' = whole nucleotide, 'bb' = phosphate + sugar only, 'base' = base + C1' only */
+const STICK_NUC_BB = new Set(['P', 'OP1', 'OP2', 'OP3', 'O1P', 'O2P', 'O3P', "O5'", "C5'", "C4'", "O4'", "C3'", "O3'", "C2'", "O2'", "C1'"]);
+const stickPref = (() => { const d = {style: 'licorice', w: 1, part: 'all', nuc: 'all'}; try { Object.assign(d, JSON.parse(localStorage.getItem(STICK_KEY) || '{}')); } catch (e) {} return d; })();
+/* atoms left out of the sticks by the "side chain only" and nucleic-acid choices (ap is moved to atom i) */
+function stickHide(ap, i) {
+  ap.index = i;
+  if (stickPref.part === 'side' && ap.isProtein()) return PROT_BB.has(ap.atomname) && !(ap.atomname === 'N' && ap.resname === 'PRO');
+  if (stickPref.nuc !== 'all' && ap.isNucleic()) {
+    const n = ap.atomname.replace(/\*/g, "'"), bb = STICK_NUC_BB.has(n);
+    return stickPref.nuc === 'bb' ? !bb : (bb && n !== "C1'");
+  }
+  return false;
+}
+const stickTrimOn = () => stickPref.part === 'side' || stickPref.nuc !== 'all';
 /* display choices = style + thickness in one list: value "type|width" */
 const STYLE_CHOICES = [['licorice|1', 'スティック（標準）'], ['licorice|1.5', 'スティック（太め）'],
-  ['ball+stick|1', 'ボール＆スティック（標準）'], ['ball+stick|1.5', 'ボール＆スティック（太め）'], ['spacefill|1', 'CPK（空間充填）']];
-const styleVal = (t, w) => `${t}|${t === 'spacefill' ? 1 : (+w === 1.5 ? 1.5 : 1)}`;
-const styleOpts = cur => STYLE_CHOICES.map(([v, n]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${n}</option>`).join('');
-const parseStyle = v => { const [t, w] = String(v).split('|'); return {t: ['licorice', 'ball+stick', 'spacefill'].includes(t) ? t : 'licorice', w: +w === 1.5 ? 1.5 : 1}; };
+  ['ball+stick|1', 'ボール＆スティック（標準）'], ['ball+stick|1.5', 'ボール＆スティック（太め）'], ['spacefill|1', 'CPK（空間充填）'],
+  ['surface|1', '半透明の表面＋スティック']];
+const styleVal = (t, w) => `${t}|${t === 'spacefill' || t === 'surface' ? 1 : (+w === 1.5 ? 1.5 : 1)}`;
+const styleOpts = (cur, withSurf = true) => STYLE_CHOICES.filter(([v]) => withSurf || !v.startsWith('surface')).map(([v, n]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${n}</option>`).join('');
+const parseStyle = v => { const [t, w] = String(v).split('|'); return {t: ['licorice', 'ball+stick', 'spacefill', 'surface'].includes(t) ? t : 'licorice', w: +w === 1.5 ? 1.5 : 1}; };
+/* colour helpers for the soft look: lighter (toward white) and darker (toward black) versions of a colour */
+function mixHex(a, b, t) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const x = p(a), y = p(b); return '#' + x.map((v, i) => Math.round(v * (1 - t) + y[i] * t).toString(16).padStart(2, '0')).join(''); }
+const SURF_OP = 0.5;
+/* translucent surface around the given atoms, coloured per chain (a lighter version of the chain colour); ligands light grey */
+function surfByChain(c, indices, colorOf) {
+  const st = c.structure, ap = st.getAtomProxy(), by = new Map();
+  for (const i of indices) { ap.index = i; const k = ap.isPolymer() ? ap.chainname : '\u0000lig'; if (!by.has(k)) by.set(k, []); by.get(k).push(i); }
+  const reps = [];
+  for (const [k, idx] of by) {
+    const col = k === '\u0000lig' ? '#b9b9b9' : mixHex(colorOf(k), '#000000', 0.06);
+    reps.push(c.addRepresentation('surface', {sele: '@' + idx.join(','), color: col, opacity: SURF_OP, surfaceType: 'av', probeRadius: 1.4, side: 'front', depthWrite: false, roughness: 1, metalness: 0, disablePicking: true}));
+  }
+  return reps;
+}
 function focusDraw(idx) {
   const w = stickPref.w;
   if (stickPref.style === 'spacefill') return sticksByChain(idx, {}, 'spacefill');
@@ -1540,6 +1724,37 @@ const CONS_HEX = CONS_COL.map(c => '#' + c.toString(16).padStart(6, '0'));
 const CONS_NONE = 0xd0d0d0;
 const consKey = (ch, rs, ic) => `${ch}|${rs}|${ic || ''}`;
 const consLookup = a => { const st = a.structure; return st.__cons || (st.structure && st.structure.__cons) || null; };
+/* ---------- N- to C-terminus colouring (5' to 3' for nucleic acids), each chain on its own ----------
+   rainbow: blue → red (as PyMOL spectrum / ChimeraX rainbow); rainbowcb: viridis (purple → yellow), readable with colour-vision deficiency */
+let rainbowMode = '';                         // '' | 'rainbow' | 'rainbowcb'
+const RAMP_RB = [[0, 0x2050ff], [0.25, 0x00c8ff], [0.5, 0x30e040], [0.75, 0xffd000], [1, 0xff2020]];
+const RAMP_CB = [[0, 0x440154], [0.25, 0x3b528b], [0.5, 0x21918c], [0.75, 0x5ec962], [1, 0xfde725]];
+function rampColor(ramp, t) {
+  t = Math.min(1, Math.max(0, t));
+  for (let k = 1; k < ramp.length; k++) if (t <= ramp[k][0]) {
+    const [t0, a] = ramp[k - 1], [t1, b] = ramp[k], f = (t - t0) / (t1 - t0 || 1);
+    const ch = sh => Math.round(((a >> sh) & 255) * (1 - f) + ((b >> sh) & 255) * f);
+    return (ch(16) << 16) | (ch(8) << 8) | ch(0);
+  }
+  return ramp[ramp.length - 1][1];
+}
+const rbRange = new WeakMap();                // structure → chainIndex → [first, last] polymer residue index
+function rbT(a) {
+  const st = a.structure; let m = rbRange.get(st);
+  if (!m) {
+    m = new Map();
+    st.eachChain(c => { let lo = Infinity, hi = -1; c.eachResidue(r => { if (r.isPolymer()) { lo = Math.min(lo, r.index); hi = Math.max(hi, r.index); } }); if (hi >= 0) m.set(c.index, [lo, hi]); });
+    rbRange.set(st, m);
+  }
+  const r = m.get(a.chainIndex);
+  return r ? (r[1] > r[0] ? (a.residueIndex - r[0]) / (r[1] - r[0]) : 0) : -1;
+}
+const rbColor = a => { const t = rbT(a); return t < 0 ? 0xc8c8c8 : rampColor(rainbowMode === 'rainbowcb' ? RAMP_CB : RAMP_RB, t); };
+const EL_COL = {N: 0x3050f8, O: 0xff0d0d, S: 0xffff30, P: 0xff8000, SE: 0xffa100, H: 0xffffff};
+const RB_SCHEME = NGL.ColormakerRegistry.addScheme(function () { this.atomColor = rbColor; }, 'nc-rainbow');
+// sticks: carbon in the N→C colour, other elements in their usual colours
+const RB_EL_SCHEME = NGL.ColormakerRegistry.addScheme(function () { this.atomColor = a => EL_COL[a.element] ?? rbColor(a); }, 'nc-rainbow-element');
+
 const CONS_SCHEME = NGL.ColormakerRegistry.addScheme(function () {
   this.atomColor = a => {
     const D = consLookup(a); if (!D) return CONS_NONE;
@@ -1842,8 +2057,10 @@ $('#surfOp').onchange = () => { stash(); spotRefresh(); };
 
 /* ---------- colour by structure (one colour per structure) ---------- */
 $('#colorBy').onchange = e => {
+  const v = e.target.value;
+  rainbowMode = v === 'rainbow' || v === 'rainbowcb' ? v : '';
   if (!structs.length) return;
-  const byStruct = e.target.value === 'struct', back = active;
+  const byStruct = v === 'struct', back = active;
   const pal = PALETTES[$('#palette').value];
   structs.forEach((st, i) => {
     activate(i);
@@ -1858,7 +2075,8 @@ $('#colorBy').onchange = e => {
   });
   activate(back);
   renderChains(); renderSeq();
-  status(byStruct ? '構造ごとに単色で表示しています（Chainの色パネルで個別に変えることもできます）' : 'Chainごとの色に戻しました');
+  status(rainbowMode ? `N末から C末（核酸は 5'から 3'）に向かって、Chainごとに紫→緑→黄で塗っています。クリックした残基のスティックの炭素も同じ色です`
+    : byStruct ? '構造ごとに単色で表示しています（Chainの色パネルで個別に変えることもできます）' : 'Chainごとの色に戻しました');
 };
 
 function renderChains() {
@@ -1868,7 +2086,7 @@ function renderChains() {
   const typeOpts = sel => TYPES.map(([v,t]) => `<option value="${v}" ${v === sel ? 'selected' : ''}>${t}</option>`).join('');
   const same = chains.every(c => c.type === chains[0].type) ? chains[0].type : '';
   const head = `
-    <div class="chain colhead"><span>表示</span><span>Chain</span><span></span><span class="colsw">色</span><span>表示形式</span><span class="surfc">表面</span><span></span></div>
+    <div class="chain colhead"><span>表示</span><span>Chain</span><span class="colsw">色</span><span>表示形式</span><span class="surfc">表面</span><span></span></div>
     <div class="chain bulk" title="この行の操作は全Chainにまとめて効きます">
       <input type="checkbox" data-k="allvis" title="全Chainの表示/非表示">
       <span class="cname">一括</span>
@@ -1882,7 +2100,7 @@ function renderChains() {
     <div class="chain" data-i="${i}">
       <input type="checkbox" data-k="vis" ${c.visible ? 'checked' : ''} title="表示/非表示">
       <span class="cname">${c.name}</span>
-      <span class="desc" title="${esc(c.desc)}">${esc(c.desc)} <span class="small">(${c.nres}${c.nucleic ? ' nt' : ' aa'})</span></span>
+      <span class="desc" data-k="desc" title="${esc(c.desc)}">${esc(c.desc) || '（分子名なし）'} <span class="small">(${c.nres}${c.nucleic ? ' nt' : ' aa'})</span></span>
       <button class="sw" data-k="col" style="background:${c.color}" title="色を選ぶ"></button>
       <select data-k="type">${typeOpts(c.type)}</select>
       <span class="surfc"><input type="checkbox" data-k="surf" ${c.surf ? 'checked' : ''} title="このChainに表面を重ねて表示"></span>
@@ -1893,6 +2111,7 @@ function renderChains() {
   tri('allsurf', c => c.surf);
   renderActiveBar();
 }
+$('#chains').addEventListener('click', e => { const d = e.target.closest('.desc[data-k=desc]'); if (d) d.classList.toggle('full'); });
 $('#chains').addEventListener('input', e => {
   const k = e.target.dataset.k;
   if (k === 'allvis' || k === 'allsurf' || k === 'alltype') {
@@ -2328,6 +2547,21 @@ function drawIfc() {
   ifc.shape = lineShape(shown.flatMap(visibleItems), $('#ifDist').checked);
   if (!$('#ifShow').checked) setIfcVisible(false);
 }
+/* hydrophobic contacts: 'dots' = fine grey dots on the facing sides of the two carbons (like LigPlot+ "eyelashes", in 3D);
+   'line' = dashed line like the other interactions */
+let hydStyle = (() => { try { return localStorage.getItem('pdv_hyd') === 'line' ? 'line' : 'dots'; } catch (e) { return 'dots'; } })();
+const HYD_PTS = (() => { const N = 260, g = Math.PI * (3 - Math.sqrt(5)), out = [];
+  for (let k = 0; k < N; k++) { const y = 1 - 2 * (k + 0.5) / N, r = Math.sqrt(1 - y * y), t = g * k; out.push([Math.cos(t) * r, y, Math.sin(t) * r]); } return out; })();
+function hydDots(shape, it, col, name) {
+  const R = 1.75;                                  // about the carbon van der Waals radius
+  for (const [a, b] of [[it.a, it.b], [it.b, it.a]]) {
+    const A = [a.x, a.y, a.z], B = [b.x, b.y, b.z], d = Math.hypot(B[0] - A[0], B[1] - A[1], B[2] - A[2]);
+    for (const u of HYD_PTS) {
+      const q = [A[0] + u[0] * R, A[1] + u[1] * R, A[2] + u[2] * R];
+      if (Math.hypot(B[0] - q[0], B[1] - q[1], B[2] - q[2]) < d - 0.55) shape.addSphere(q, col, 0.056, name);   // only the side facing the partner
+    }
+  }
+}
 function lineShape(items, showD) {
   if (!items.length) return null;
   const shape = new NGL.Shape('interactions');
@@ -2349,6 +2583,7 @@ function lineShape(items, showD) {
       return;
     }
     const name = `${IT[it.t].n}${it.sub ? '（' + it.sub + '）' : ''} ${it.d.toFixed(2)} Å  ${atomLabel(it.a)} – ${atomLabel(it.b)}`;
+    if (it.t === 'hyd' && hydStyle === 'dots' && it.a.an && it.b.an) { hydDots(shape, it, col, name); return; }
     dash(P, Q, col, name);
     if (!it.a.an) shape.addSphere(P, col, 0.3, '環の重心');
     if (!it.b.an) shape.addSphere(Q, col, 0.3, '環の重心');
@@ -2521,7 +2756,8 @@ async function loadMap(src, o, name, kind, source, settings = {}) {
   let mc;
   try { mc = await stage.loadFile(src, o); }
   catch (e) { status(`マップの読み込みに失敗: ${name}（${e.message || e}）`, true); return; }
-  const m = newMap(name, kind, {mc, box: o.box ?? 10, source: source === 'url' ? {type: 'url', url: src, ext: o.ext} : source, ...settings});
+  const grp = settings.group || ((name.match(/^(\S+) (?:2Fo-Fc|Fo-Fc)/) || [])[1]) || (structs[active] && structs[active].name) || '手元のマップ';
+  const m = newMap(name, kind, {mc, box: o.box ?? 10, source: source === 'url' ? {type: 'url', url: src, ext: o.ext} : source, group: grp, ...settings});
   mapReps(m); maps.push(m); renderMaps();
   status(`マップ読込完了: ${name}`);
 }
@@ -2602,26 +2838,68 @@ function sphereClip(vol) {
   };
   vol.__sphere = true;
 }
+/* the map list is grouped by structure (or EM entry): each group holds its 2Fo-Fc and Fo-Fc maps together */
+function mapGroup(m) {
+  if (m.srv) return m.srv.group || (m.srv.src === 'em' ? m.srv.label : m.srv.id.toUpperCase());
+  return m.group || '手元のマップ';
+}
+function mapGroupNote(list) {
+  const m = list[0];
+  if (m.srv) return m.srv.src === 'mtz' ? `MTZ（${m.srv.id}）` : m.srv.src === 'em' ? 'EMDB（密度サーバー）' : 'PDBe 密度サーバー';
+  if (m.source && m.source.type === 'url') return /rcsb/.test(m.source.url || '') ? 'RCSB のマップファイル' : 'PDBe のマップファイル';
+  return '手元のファイル';
+}
+function mapShortName(m, g) {
+  if (m.srv && m.srv.src === 'em') return 'EM マップ';
+  let t = m.name.startsWith(g + ' ') ? m.name.slice(g.length + 1) : m.name;
+  return t.replace(/（(PDBe|RCSB)ファイル）/, '');
+}
+const mapClosed = new Set();     // structures whose map group the user folded
 function renderMaps() {
-  $('#maps').innerHTML = maps.map((m, i) => `
-    <div class="card" data-i="${i}">
-      <div class="row"><input type="checkbox" data-k="vis" ${m.visible ? 'checked' : ''}><span class="mapname" title="${esc(m.name)}">${esc(m.name)}</span><button class="x" data-k="del">✕</button></div>
+  const groups = new Map();
+  maps.forEach((m, i) => { const g = mapGroup(m); if (!groups.has(g)) groups.set(g, []); groups.get(g).push(i); });
+  const row = (m, i, g, showBox) => `
+    <div class="maprow" data-i="${i}">
+      <div class="row"><input type="checkbox" data-k="vis" ${m.visible ? 'checked' : ''}><b class="mapkind ${m.kind === 'diff' ? 'diff' : ''}" title="${esc(m.name)}">${esc(mapShortName(m, g))}</b>
+        <span class="small">${m.kind === 'diff' ? '差マップ（＋/−）' : ''}</span><button class="x" data-k="del" title="このマップだけ削除">✕</button></div>
       <div class="row"><span class="small">レベル</span><input type="range" data-k="lvl" min="0.1" max="${Math.max(8, Math.ceil(m.level * 2))}" step="0.05" value="${m.level}"><span class="lv" data-sig>${m.kind === 'diff' ? '±' : ''}${m.level.toFixed(2)}σ</span></div>
       <div class="row"><span class="small">絶対値</span><input type="number" data-k="absIn" data-abs="${i}" step="any" value="${absVal(m)}" style="width:90px" title="マップの値で直接指定（EMマップの推奨レベルなど）">${m.recAbs != null ? `<span class="small">EMDB推奨 ${m.recAbs}</span>` : ''}</div>
-      <div class="row"><span class="small">表示範囲</span><input type="range" data-k="box" min="0" max="30" step="1" value="${m.box}"><span class="lv">${boxText(m)}</span></div>
+      ${showBox ? `<div class="row"><span class="small">表示範囲</span><input type="range" data-k="box" min="0" max="30" step="1" value="${m.box}"><span class="lv">${boxText(m)}</span></div>` : ''}
       <div class="row">
         <select data-k="style"><option value="mesh" ${m.style === 'mesh' ? 'selected' : ''}>メッシュ</option><option value="surf" ${m.style === 'surf' ? 'selected' : ''}>半透明面</option></select>
         <span class="small">${m.kind === 'diff' ? '＋' : '色'}</span><button class="sw" data-k="col" style="background:${m.color}"></button>
         ${m.kind === 'diff' ? `<span class="small">−</span><button class="sw" data-k="neg" style="background:${m.neg}"></button>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  $('#maps').innerHTML = [...groups.entries()].map(([g, idx]) => {
+    idx.sort((a, b) => (maps[a].kind === 'diff') - (maps[b].kind === 'diff'));
+    const list = idx.map(i => maps[i]), srv = list[0].srv, allOn = list.every(m => m.visible);
+    // maps fetched together from the server share one range; file maps each keep their own
+    const shared = srv && list.every(m => m.srv === srv);
+    const kinds = list.map(m => mapShortName(m, g).replace(/\.(ccp4|map|mrc|dsn6|omap|brix|dx)(\.gz)?$/i, '')).join(' / ');
+    return `<details class="card mapgroup" data-g="${esc(g)}"${mapClosed.has(g) ? '' : ' open'}>
+      <summary><span class="mgarrow"></span><input type="checkbox" data-gk="gvis" ${allOn ? 'checked' : ''} title="この構造のマップをまとめて表示・非表示"><b class="mapgname">${esc(g)}</b><button class="x" data-gk="gdel" title="この構造のマップをすべて削除">✕</button>
+        <span class="small mgsub">${esc(mapGroupNote(list))}・${esc(kinds)}</span></summary>
+      ${shared ? `<div class="row" data-i="${idx[0]}"><span class="small">表示範囲</span><input type="range" data-k="box" min="0" max="30" step="1" value="${list[0].box}"><span class="lv">${boxText(list[0])}</span></div>` : ''}
+      ${idx.map(i => row(maps[i], i, g, !shared)).join('')}
+    </details>`;
+  }).join('');
 }
+// fold/unfold a structure's maps; the checkbox and ✕ in the heading must not fold it
+$('#maps').addEventListener('toggle', e => { const d = e.target; if (d.matches && d.matches('details.mapgroup')) { if (d.open) mapClosed.delete(d.dataset.g); else mapClosed.add(d.dataset.g); } }, true);
+$('#maps').addEventListener('click', e => { if (e.target.closest('summary') && e.target.matches('input,button')) { const sm = e.target.closest('summary'); sm.dataset.skip = '1'; setTimeout(() => delete sm.dataset.skip, 0); } }, true);
+$('#maps').addEventListener('click', e => { const sm = e.target.closest('summary'); if (sm && sm.dataset.skip && !e.target.matches('input')) e.preventDefault(); });
 const refreshAbs = () => document.querySelectorAll('[data-abs]').forEach(el => {
   const m = maps[+el.dataset.abs]; if (!m) return;
   if (el.tagName === 'INPUT') { if (document.activeElement !== el) el.value = absVal(m); } else el.textContent = `(${absVal(m)})`;
 });
 $('#maps').addEventListener('input', e => {
-  const card = e.target.closest('.card'); if (!card) return;
+  if (e.target.dataset.gk === 'gvis') {
+    const g = e.target.closest('[data-g]').dataset.g, on = e.target.checked;
+    maps.filter(m => mapGroup(m) === g).forEach(m => { m.visible = on; m.reps.forEach(r => r.setVisibility(on)); if (on && m.srv) srvFetch(m.srv); });
+    renderMaps(); return;
+  }
+  const card = e.target.closest('[data-i]'); if (!card) return;
   const m = maps[+card.dataset.i], k = e.target.dataset.k, v = e.target.value;
   if (k === 'lvl') {
     m.level = +v; m.reps.forEach(r => r.setParameters({isolevel: m.level}));
@@ -2642,27 +2920,34 @@ $('#maps').addEventListener('input', e => {
   if (k === 'box') {
     if (m.srv) {
       m.srv.box = +v; m.srv.maps.forEach(x => { x.box = +v; x.reps.forEach(r => r.setParameters({boxSize: x.box ? 2 * x.box : 0})); });
-      document.querySelectorAll('#maps .card').forEach(c => { const x = maps[+c.dataset.i]; if (x.srv === m.srv) { c.querySelector('[data-k=box]').value = v; c.querySelector('[data-k=box]').nextElementSibling.textContent = boxText(x); } });
+      document.querySelectorAll('#maps [data-i]').forEach(c => { const x = maps[+c.dataset.i], b = c.querySelector(':scope > [data-k=box], :scope > .row > [data-k=box]') || (c.matches('.row') ? c.querySelector('[data-k=box]') : null); if (x && x.srv === m.srv && b) { b.value = v; b.nextElementSibling.textContent = boxText(x); } });
       clearTimeout(m.srv.bt); m.srv.bt = setTimeout(() => srvFetch(m.srv, true), 350);
     } else { m.box = +v; m.reps.forEach(r => r.setParameters({boxSize: m.box ? 2 * m.box : 0})); e.target.nextElementSibling.textContent = boxText(m); }
     return;
   }
-  if (k === 'vis') { m.visible = e.target.checked; m.reps.forEach(r => r.setVisibility(m.visible)); if (m.visible && m.srv) srvFetch(m.srv); return; }
+  if (k === 'vis') { m.visible = e.target.checked; m.reps.forEach(r => r.setVisibility(m.visible)); if (m.visible && m.srv) srvFetch(m.srv);
+    const gc = card.closest('[data-g]'), gv = gc && gc.querySelector('[data-gk=gvis]'); if (gv) gv.checked = maps.filter(x => mapGroup(x) === gc.dataset.g).every(x => x.visible); return; }
   if (k === 'style') { m.style = v; mapReps(m); }
 });
 $('#meshLW').value = String(meshLW);
 $('#meshLW').onchange = e => { meshLW = +e.target.value; try { localStorage.setItem(MESH_KEY, meshLW); } catch (er) {} setMeshWidth(1); };
+function removeMap(m) {
+  if (m.mc) stage.removeComponent(m.mc);
+  if (m.srv) { m.srv.maps = m.srv.maps.filter(x => x !== m); if (!m.srv.maps.length) { m.srv.ctrl && m.srv.ctrl.abort(); servers = servers.filter(s => s !== m.srv); } }
+  maps.splice(maps.indexOf(m), 1);
+}
 $('#maps').addEventListener('click', e => {
+  if (e.target.dataset.gk === 'gdel') {
+    const g = e.target.closest('[data-g]').dataset.g;
+    maps.filter(m => mapGroup(m) === g).forEach(removeMap); renderMaps(); return;
+  }
   const k = e.target.dataset.k;
   if (k === 'col' || k === 'neg') {
-    const m = maps[+e.target.closest('.card').dataset.i];
+    const m = maps[+e.target.closest('[data-i]').dataset.i];
     return openPicker(e.target, k === 'col' ? m.color : m.neg, c => { if (k === 'col') m.color = c; else m.neg = c; mapReps(m); });
   }
   if (k !== 'del') return;
-  const i = +e.target.closest('.card').dataset.i, m = maps[i];
-  if (m.mc) stage.removeComponent(m.mc);
-  if (m.srv) { m.srv.maps = m.srv.maps.filter(x => x !== m); if (!m.srv.maps.length) { m.srv.ctrl && m.srv.ctrl.abort(); servers = servers.filter(s => s !== m.srv); } }
-  maps.splice(i, 1); renderMaps();
+  removeMap(maps[+e.target.closest('[data-i]').dataset.i]); renderMaps();
 });
 
 /* ---------- density server (symmetry-aware boxes, text CIF) ---------- */
@@ -2753,6 +3038,7 @@ async function srvFetch(srv, force) {
     const h = srv.box + 3;                       // fetch a cube a little larger than the display sphere
     a = [c.x - h, c.y - h, c.z - h]; b = [c.x + h, c.y + h, c.z + h];
   }
+  if (srv.src === 'mtz') return mtzShow(srv, a, b, c);          // computed locally from an MTZ: no download
   if (srv.ctrl) srv.ctrl.abort();
   const ctrl = srv.ctrl = new AbortController();
   const url = `${SRV}/${srv.src}/${srv.id}/box/${a.map(v => v.toFixed(2)).join(',')}/${b.map(v => v.toFixed(2)).join(',')}?space=cartesian&detail=${srv.box ? 4 : 2}&encoding=cif`;
@@ -2784,6 +3070,254 @@ async function srvFetch(srv, force) {
     refreshAbs();
     status(`密度を表示: ${srv.label}（${srv.box ? '中心から半径 ' + srv.box + ' Å' : '構造全体'}）`);
   } catch (e) { status(`密度データの解釈に失敗: ${e.message || e}`, true); }
+}
+/* ---------- MTZ map coefficients -> electron density (all in the browser) ----------
+   parseMtz reads the binary MTZ file (header records + reflection table).
+   mtzMap expands the reflections over the space-group symmetry (from the SYMM records in the file),
+   puts them on a reciprocal-space grid and Fourier-transforms it into a density grid for one unit cell:
+     rho(x) = sum_h F(h) exp(-2 pi i h.x),   with F(hR) = F(h) exp(-2 pi i h.t) for each operator x' = Rx + t. */
+function parseMtz(buf) {
+  const dv = new DataView(buf), u8 = new Uint8Array(buf);
+  const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+  if (magic !== 'MTZ ') throw new Error('MTZ ファイルではありません（先頭が "MTZ " ではありません）');
+  const le = (u8[9] & 0xf0) !== 0x10 ? true : false;   // machine stamp: 0x44 = little-endian IEEE, 0x11 = big-endian
+  const little = u8[8] === 0x44 || u8[8] === 0x41 || (u8[8] !== 0x11 && le);
+  let hdr = dv.getInt32(4, little);
+  if (hdr <= 0 || (hdr - 1) * 4 >= buf.byteLength) { hdr = dv.getInt32(4, !little); if (hdr <= 0 || (hdr - 1) * 4 >= buf.byteLength) throw new Error('MTZ のヘッダー位置が読めません'); }
+  const recs = [];
+  for (let p = (hdr - 1) * 4; p + 80 <= buf.byteLength; p += 80) {
+    let s = ''; for (let k = 0; k < 80; k++) s += String.fromCharCode(u8[p + k]);
+    s = s.trimEnd(); recs.push(s);
+    if (/^END\b/.test(s) || /^MTZENDOFHEADERS/.test(s)) break;
+  }
+  const out = {cols: [], symm: [], cell: null, ncol: 0, nref: 0, missing: NaN, spg: ''};
+  for (const r of recs) {
+    const key = r.slice(0, r.search(/\s|$/)).toUpperCase(), rest = r.slice(key.length).trim();
+    if (key === 'NCOL') { const t = rest.split(/\s+/).map(Number); out.ncol = t[0]; out.nref = t[1]; }
+    else if (key === 'CELL') out.cell = rest.split(/\s+/).slice(0, 6).map(Number);
+    else if (key === 'SYMM') out.symm.push(rest);
+    else if (key === 'SYMINF') { const m = rest.match(/'([^']*)'/); if (m) out.spg = m[1].trim(); }
+    else if (key === 'VALM') { const v = rest.trim(); out.missing = /^NAN/i.test(v) ? NaN : Number(v); }
+    else if (key === 'COLUMN') { const t = rest.split(/\s+/); out.cols.push({label: t[0], type: t[1], min: +t[2], max: +t[3]}); }
+    else if (key === 'DCELL' && !out.cell) { const t = rest.split(/\s+/).map(Number); out.cell = t.slice(1, 7); }
+  }
+  if (!out.ncol || !out.nref) throw new Error('MTZ のヘッダーに NCOL がありません');
+  if (!out.cell) throw new Error('MTZ のヘッダーに格子定数（CELL）がありません');
+  if (!out.symm.length) out.symm.push('X,Y,Z');
+  const n = out.ncol * out.nref;
+  if (80 + n * 4 > buf.byteLength) throw new Error('MTZ の反射データが途中で切れています');
+  const data = new Float32Array(n);
+  for (let i = 0; i < n; i++) data[i] = dv.getFloat32(80 + i * 4, little);
+  out.data = data;
+  return out;
+}
+/* "-X+1/2, Y, -Z+1/2" -> {R: 3x3 rows, t: [3]} */
+function parseSymm(s) {
+  const parts = s.toUpperCase().replace(/\s+/g, '').split(',');
+  if (parts.length !== 3) throw new Error('対称操作が読めません: ' + s);
+  const R = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], t = [0, 0, 0];
+  parts.forEach((p, row) => {
+    const re = /([+-]?)(\d*\.?\d*(?:\/\d+)?)\*?([XYZ]?)/g; let m;
+    while ((m = re.exec(p)) && m[0] !== '') {
+      const sg = m[1] === '-' ? -1 : 1, num = m[2], ax = m[3];
+      if (ax) { const k = num ? evalFrac(num) : 1; R[row]['XYZ'.indexOf(ax)] += sg * k; }
+      else if (num) t[row] += sg * evalFrac(num);
+    }
+  });
+  return {R, t};
+}
+function evalFrac(s) { const [a, b] = s.split('/'); return b ? +a / +b : +a; }
+/* choose the 2mFo-DFc and mFo-DFc columns (Phenix, Refmac, Buster names) */
+const MTZ_PAIRS = {
+  normal: [['2FOFCWT', 'PH2FOFCWT'], ['FWT', 'PHWT'], ['2FOFCWT_FILL', 'PH2FOFCWT_FILL'], ['2FOFCWT_NO_FILL', 'PH2FOFCWT_NO_FILL'], ['FWT_FILL', 'PHWT_FILL']],
+  diff: [['FOFCWT', 'PHFOFCWT'], ['DELFWT', 'PHDELWT'], ['DELFWT_FILL', 'PHDELWT_FILL']]
+};
+function mtzPick(mtz) {
+  const has = l => mtz.cols.findIndex(c => c.label.toUpperCase() === l);
+  const found = {};
+  for (const k of ['normal', 'diff']) for (const [f, p] of MTZ_PAIRS[k]) { const i = has(f), j = has(p); if (i >= 0 && j >= 0) { found[k] = {f: mtz.cols[i].label, p: mtz.cols[j].label, fi: i, pi: j}; break; } }
+  if (!found.normal) {           // fall back to the first amplitude (F) + phase (P) pair
+    const fi = mtz.cols.findIndex(c => c.type === 'F'), pi = mtz.cols.findIndex(c => c.type === 'P');
+    if (fi >= 0 && pi >= 0) found.normal = {f: mtz.cols[fi].label, p: mtz.cols[pi].label, fi, pi, guess: true};
+  }
+  return found;
+}
+/* mixed-radix (2, 3, 4, 5) complex FFT on one line; sign -1: exp(-2 pi i k n / N) */
+const fftPlans = new Map();
+function fftPlan(N) {
+  if (fftPlans.has(N)) return fftPlans.get(N);
+  const f = []; let n = N;
+  for (const p of [4, 2, 3, 5]) while (n % p === 0) { f.push(p); n /= p; }
+  if (n !== 1) throw new Error('FFT の格子数が 2・3・5 の積になっていません: ' + N);
+  const cos = new Float64Array(N), sin = new Float64Array(N);
+  for (let k = 0; k < N; k++) { cos[k] = Math.cos(2 * Math.PI * k / N); sin[k] = -Math.sin(2 * Math.PI * k / N); }
+  const plan = {N, f, cos, sin, ore: new Float64Array(N), oim: new Float64Array(N), tre: new Float64Array(8), tim: new Float64Array(8)};
+  fftPlans.set(N, plan); return plan;
+}
+function fftLine(P, re, im) {       // re/im: Float64Array(N) in, result written to P.ore/P.oim
+  const {N, f, cos, sin, ore, oim, tre, tim} = P;
+  (function rec(off, stride, n, oo, d) {
+    if (n === 1) { ore[oo] = re[off]; oim[oo] = im[off]; return; }
+    const p = f[d], m = n / p;
+    for (let r = 0; r < p; r++) rec(off + r * stride, stride * p, m, oo + r * m, d + 1);
+    const step = N / n;
+    for (let k = 0; k < m; k++) {
+      for (let r = 0; r < p; r++) { tre[r] = ore[oo + r * m + k]; tim[r] = oim[oo + r * m + k]; }
+      for (let q = 0; q < p; q++) {
+        let sr = 0, si = 0; const kk = k + q * m;
+        for (let r = 0; r < p; r++) {
+          const e = ((r * kk) % n) * step, c = cos[e], s = sin[e];
+          sr += tre[r] * c - tim[r] * s; si += tre[r] * s + tim[r] * c;
+        }
+        ore[oo + kk] = sr; oim[oo + kk] = si;
+      }
+    }
+  })(0, 1, N, 0, 0);
+}
+function fft3(re, im, nx, ny, nz) {
+  const lines = (n, count, idx) => {
+    const P = fftPlan(n), lr = new Float64Array(n), li = new Float64Array(n);
+    for (let c = 0; c < count; c++) {
+      for (let k = 0; k < n; k++) { const j = idx(c, k); lr[k] = re[j]; li[k] = im[j]; }
+      fftLine(P, lr, li);
+      for (let k = 0; k < n; k++) { const j = idx(c, k); re[j] = P.ore[k]; im[j] = P.oim[k]; }
+    }
+  };
+  lines(nx, ny * nz, (c, k) => c * nx + k);
+  lines(ny, nx * nz, (c, k) => { const x = c % nx, z = (c / nx) | 0; return x + nx * (k + ny * z); });
+  lines(nz, nx * ny, (c, k) => c + nx * ny * k);
+}
+function niceN(n) { for (let m = Math.max(2, Math.ceil(n)); ; m++) { let r = m; for (const p of [2, 3, 5]) while (r % p === 0) r /= p; if (r === 1 && m % 2 === 0) return m; } }
+/* density for one unit cell; returns {grid, n: [na, nb, nc], cell, mean, rms, min, max, dmin} */
+function mtzMap(mtz, fi, pi, opt = {}) {
+  const nc = mtz.ncol, D = mtz.data, H = mtz.cols.findIndex(c => c.type === 'H' && /^H$/i.test(c.label)),
+        K = mtz.cols.findIndex(c => c.type === 'H' && /^K$/i.test(c.label)), L = mtz.cols.findIndex(c => c.type === 'H' && /^L$/i.test(c.label));
+  if (H < 0 || K < 0 || L < 0) throw new Error('MTZ に H・K・L の列がありません');
+  const ops = mtz.symm.map(parseSymm);
+  const miss = v => Number.isNaN(v) || (!Number.isNaN(mtz.missing) && v === mtz.missing);
+  let hm = 0, km = 0, lm = 0;
+  for (let r = 0; r < mtz.nref; r++) {
+    const o = r * nc;
+    if (miss(D[o + fi]) || miss(D[o + pi])) continue;
+    const h = D[o + H], k = D[o + K], l = D[o + L];
+    for (const {R} of ops) {
+      const a = Math.abs(h * R[0][0] + k * R[1][0] + l * R[2][0]), b = Math.abs(h * R[0][1] + k * R[1][1] + l * R[2][1]), c = Math.abs(h * R[0][2] + k * R[1][2] + l * R[2][2]);
+      if (a > hm) hm = a; if (b > km) km = b; if (c > lm) lm = c;
+    }
+  }
+  const rate = opt.rate || 2.6;            // grid points per reflection order (≈ d_min / 2.6 spacing)
+  let n = [niceN(Math.max(2 * hm + 1, rate * hm)), niceN(Math.max(2 * km + 1, rate * km)), niceN(Math.max(2 * lm + 1, rate * lm))];
+  const maxPts = opt.maxPts || 24e6;
+  if (n[0] * n[1] * n[2] > maxPts) {       // very large cells: fall back to the minimum grid that still holds every reflection
+    n = [niceN(2 * hm + 1), niceN(2 * km + 1), niceN(2 * lm + 1)];
+    if (n[0] * n[1] * n[2] > maxPts * 2) throw new Error(`単位胞が大きすぎて計算できません（格子 ${n.join('×')}）`);
+  }
+  const [na, nb, ncz] = n, tot = na * nb * ncz;
+  const re = new Float64Array(tot), im = new Float64Array(tot);
+  const put = (h, k, l, F, ph) => {
+    const i = ((h % na) + na) % na, j = ((k % nb) + nb) % nb, q = ((l % ncz) + ncz) % ncz, x = i + na * (j + nb * q);
+    re[x] = F * Math.cos(ph); im[x] = F * Math.sin(ph);
+  };
+  const seen = new Set();
+  for (let r = 0; r < mtz.nref; r++) {
+    const o = r * nc, F = D[o + fi], P = D[o + pi];
+    if (miss(F) || miss(P) || !(F > 0)) continue;
+    const h = D[o + H], k = D[o + K], l = D[o + L], phi = P * Math.PI / 180;
+    seen.clear();
+    for (const {R, t} of ops) {
+      const h2 = Math.round(h * R[0][0] + k * R[1][0] + l * R[2][0]), k2 = Math.round(h * R[0][1] + k * R[1][1] + l * R[2][1]), l2 = Math.round(h * R[0][2] + k * R[1][2] + l * R[2][2]);
+      const ph = phi - 2 * Math.PI * (h * t[0] + k * t[1] + l * t[2]);
+      const key = h2 + ',' + k2 + ',' + l2, keyF = (-h2) + ',' + (-k2) + ',' + (-l2);
+      if (!seen.has(key)) { seen.add(key); put(h2, k2, l2, F, ph); }
+      if (!seen.has(keyF)) { seen.add(keyF); put(-h2, -k2, -l2, F, -ph); }     // Friedel mate keeps the density real
+    }
+  }
+  fft3(re, im, na, nb, ncz);
+  const grid = new Float32Array(tot);
+  let s = 0, s2 = 0, mn = Infinity, mx = -Infinity;
+  for (let x = 0; x < tot; x++) { const v = re[x]; grid[x] = v; s += v; s2 += v * v; if (v < mn) mn = v; if (v > mx) mx = v; }
+  const mean = s / tot, rms = Math.sqrt(Math.max(0, s2 / tot - mean * mean));
+  return {grid, n, cell: mtz.cell, mean, rms, min: mn, max: mx, hkl: [hm, km, lm]};
+}
+/* trilinear sample at fractional coordinates (for tests) */
+function sampleFrac(M, f) {
+  const [na, nb, nc] = M.n, g = M.grid, w = (v, n) => ((v % n) + n) % n;
+  const x = f[0] * na, y = f[1] * nb, z = f[2] * nc, x0 = Math.floor(x), y0 = Math.floor(y), z0 = Math.floor(z), dx = x - x0, dy = y - y0, dz = z - z0;
+  let v = 0;
+  for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) for (let c = 0; c < 2; c++)
+    v += (a ? dx : 1 - dx) * (b ? dy : 1 - dy) * (c ? dz : 1 - dz) * g[w(x0 + a, na) + na * (w(y0 + b, nb) + nb * w(z0 + c, nc))];
+  return v;
+}
+
+/* density for a cube (a, b in Cartesian Å) cut out of a unit-cell grid, wrapping around the cell edges */
+function cellBoxVolume(M, a, b, name) {
+  const B = cellBasis(M.cell.slice(0, 3), M.cell.slice(3, 6)), [na, nb, nc] = M.n;
+  // Cartesian -> fractional: invert the matrix whose rows are the cell vectors
+  const m = B, det = m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1]) - m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0]) + m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);
+  const inv = [[(m[1][1]*m[2][2]-m[1][2]*m[2][1])/det, (m[0][2]*m[2][1]-m[0][1]*m[2][2])/det, (m[0][1]*m[1][2]-m[0][2]*m[1][1])/det],
+               [(m[1][2]*m[2][0]-m[1][0]*m[2][2])/det, (m[0][0]*m[2][2]-m[0][2]*m[2][0])/det, (m[0][2]*m[1][0]-m[0][0]*m[1][2])/det],
+               [(m[1][0]*m[2][1]-m[1][1]*m[2][0])/det, (m[0][1]*m[2][0]-m[0][0]*m[2][1])/det, (m[0][0]*m[1][1]-m[0][1]*m[1][0])/det]];
+  const frac = p => [0, 1, 2].map(j => p[0] * inv[0][j] + p[1] * inv[1][j] + p[2] * inv[2][j]);
+  const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+  for (const x of [a[0], b[0]]) for (const y of [a[1], b[1]]) for (const z of [a[2], b[2]]) frac([x, y, z]).forEach((v, j) => { if (v < lo[j]) lo[j] = v; if (v > hi[j]) hi[j] = v; });
+  const i0 = Math.floor(lo[0] * na), j0 = Math.floor(lo[1] * nb), k0 = Math.floor(lo[2] * nc);
+  const ni = Math.min(Math.ceil(hi[0] * na) - i0 + 1, 4 * na), nj = Math.min(Math.ceil(hi[1] * nb) - j0 + 1, 4 * nb), nk = Math.min(Math.ceil(hi[2] * nc) - k0 + 1, 4 * nc);
+  if (ni * nj * nk > 60e6) throw new Error('表示範囲が大きすぎます。「表示範囲」を小さくしてください');
+  const data = new Float32Array(ni * nj * nk), g = M.grid, w = (v, n) => ((v % n) + n) % n;
+  let o = 0;
+  for (let k = 0; k < nk; k++) { const kk = w(k0 + k, nc) * nb;
+    for (let j = 0; j < nj; j++) { const jj = (w(j0 + j, nb) + kk) * na;
+      for (let i = 0; i < ni; i++) data[o++] = g[w(i0 + i, na) + jj]; } }
+  const el = new Array(16).fill(0), n3 = [na, nb, nc];
+  for (let t = 0; t < 3; t++) { el[4*t] = B[t][0] / n3[t]; el[4*t+1] = B[t][1] / n3[t]; el[4*t+2] = B[t][2] / n3[t]; }
+  const f0 = [i0 / na, j0 / nb, k0 / nc];
+  for (let q = 0; q < 3; q++) el[12 + q] = f0[0] * B[0][q] + f0[1] * B[1][q] + f0[2] * B[2][q];
+  el[15] = 1;
+  const vol = new NGL.Volume(name, '', data, ni, nj, nk);
+  vol.setMatrix({elements: el});
+  vol.setStats(M.min, M.max, M.mean, M.rms);       // σ of the whole unit cell, as for density-server maps
+  return vol;
+}
+function mtzShow(srv, a, b, c) {
+  try {
+    for (const m of srv.maps) {
+      const M = srv.mtz[m.channel]; if (!M) continue;
+      const old = m.mc;
+      m.mc = stage.addComponentFromObject(cellBoxVolume(M, a, b, m.name));
+      m.reps = []; mapReps(m); applyPendingAbs(m);
+      if (old) stage.removeComponent(old);
+    }
+    srv.center = c; srv.all = !srv.box;
+    refreshAbs();
+  } catch (e) { status(`MTZ の密度の表示に失敗: ${e.message || e}`, true); }
+}
+/* read an MTZ with map coefficients and show 2mFo-DFc and mFo-DFc like density-server maps */
+async function loadMtz(f, restore) {
+  const nextFrame = () => new Promise(r => setTimeout(r, 30));
+  status(`MTZ を読み込み中: ${f.name} …`); await nextFrame();
+  let mtz;
+  try { mtz = parseMtz(await f.arrayBuffer()); }
+  catch (e) { status(`MTZ を読めませんでした: ${f.name}（${e.message || e}）`, true); return; }
+  const pick = mtzPick(mtz);
+  if (!pick.normal && !pick.diff) {
+    status(`${f.name}: マップ用の列（2FOFCWT/PH2FOFCWT、FWT/PHWT など）が見つかりません。列: ${mtz.cols.map(c => c.label).join(', ')}`, true); return;
+  }
+  const group = (restore && restore.group) || (structs[active] && structs[active].name) || f.name.replace(/\.mtz$/i, '');
+  const srv = {src: 'mtz', id: f.name, label: f.name, group, box: (restore && restore.box) || 12, center: null, all: false, ctrl: null, maps: [], mtz: {}, file: f};
+  const chans = [['normal', '2Fo-Fc', 'normal'], ['diff', 'Fo-Fc', 'diff']];
+  for (const [k, nm, kind] of chans) {
+    if (!pick[k]) continue;
+    status(`${f.name}: ${nm} を計算中（${pick[k].f} / ${pick[k].p}、空間群 ${mtz.spg || '?'}、対称操作 ${mtz.symm.length} 個）…`); await nextFrame();
+    try { srv.mtz[k] = mtzMap(mtz, pick[k].fi, pick[k].pi); }
+    catch (e) { status(`${f.name}: ${nm} の計算に失敗（${e.message || e}）`, true); continue; }
+    const set = (restore && restore.sets && restore.sets[k]) || {};
+    const m = newMap(`${group} ${nm}（${pick[k].f}）`, kind, {srv, channel: k, box: srv.box, ...set});
+    srv.maps.push(m); maps.push(m);
+  }
+  if (!srv.maps.length) return;
+  servers.push(srv); renderMaps(); srvFetch(srv, true);
+  const M = srv.mtz.normal || srv.mtz.diff;
+  status(`MTZ から密度を計算しました: ${f.name}（格子 ${M.n.join('×')}${pick.normal && pick.normal.guess ? '、列は推測: ' + pick.normal.f + '/' + pick.normal.p : ''}）`);
 }
 function addServer(src, id, label, channels, box = 12) {
   const srv = {src, id, label, box, center: null, all: false, ctrl: null, maps: []};
@@ -2866,6 +3400,8 @@ function applyPendingAbs(m) {
   renderMaps();
   status(`${m.name}: EMDB の推奨レベル ${m.recAbs}（${m.level.toFixed(2)}σ）で表示しています`);
 }
+$('#mtzBtn').onclick = () => $('#mtzFile').click();
+$('#mtzFile').onchange = e => { const f = e.target.files[0]; if (f) loadMtz(f); e.target.value = ''; };
 $('#pdbe2fo').onclick  = () => needId() && loadMap(`https://www.ebi.ac.uk/pdbe/entry-files/${pdbId.toLowerCase()}.ccp4`, {ext: 'ccp4', name: pdbId + ' 2Fo-Fc'}, `${pdbId} 2Fo-Fc（PDBeファイル）`, 'normal', srcUrl);
 $('#pdbeDiff').onclick = () => needId() && loadMap(`https://www.ebi.ac.uk/pdbe/entry-files/${pdbId.toLowerCase()}_diff.ccp4`, {ext: 'ccp4', name: pdbId + ' Fo-Fc'}, `${pdbId} Fo-Fc（PDBeファイル）`, 'diff', srcUrl);
 $('#rcsb2fo').onclick  = () => needId() && loadMap(`https://edmaps.rcsb.org/maps/${pdbId.toLowerCase()}_2fofc.dsn6`, {ext: 'dsn6', name: pdbId + ' 2Fo-Fc'}, `${pdbId} 2Fo-Fc（RCSBファイル）`, 'normal', srcUrl);
@@ -2875,7 +3411,12 @@ $('#rcsbDiff').onclick = () => needId() && loadMap(`https://edmaps.rcsb.org/maps
    Session save / restore (.json)
    ===================================================================== */
 const MAX_EMBED = 40 * 1024 * 1024;
-const fileToDataURL = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(f); });
+const _durl = new WeakMap();       // File → dataURL promise (auto-save re-uses it instead of re-encoding)
+const fileToDataURL = f => {
+  if (_durl.has(f)) return _durl.get(f);
+  const p = new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(f); });
+  _durl.set(f, p); p.catch(() => _durl.delete(f)); return p;
+};
 function dataURLToFile(url, name) {
   const b64 = url.slice(url.indexOf(',') + 1), bin = atob(b64), u8 = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
@@ -2903,19 +3444,20 @@ async function structToJSON(st) {
     cons: st.cons || null
   };
 }
-async function saveSession() {
-  stash();
-  if (!structs.length) return status('保存する構造がありません', true);
-  status('セッションを書き出し中…');
-  try {
-    const s = {app: 'pdb-density-viewer', version: 2, saved: new Date().toISOString(), active, palette: $('#palette').value};
+async function buildSession() {
+    const s = {app: 'pdb-density-viewer', version: 2, saved: new Date().toISOString(), active, palette: $('#palette').value, colorBy: $('#colorBy').value};
     s.structs = [];
     for (const st of structs) s.structs.push(await structToJSON(st));
     s.maps = [];
     const skipped = [];
     for (const m of maps) {
-      const base = {name: m.name, kind: m.kind, ...mapSettings(m)};
-      if (m.srv) s.maps.push({...base, source: {type: 'server', src: m.srv.src, id: m.srv.id, label: m.srv.label, channel: m.channel}});
+      const base = {name: m.name, kind: m.kind, group: m.group, ...mapSettings(m)};
+      if (m.srv && m.srv.src === 'mtz') {
+        const first = m.srv.maps[0] === m, big = m.srv.file.size > MAX_EMBED;
+        if (first && big) skipped.push(m.srv.id);
+        s.maps.push({...base, source: {type: 'mtz', name: m.srv.id, group: m.srv.group, box: m.srv.box, channel: m.channel, data: first && !big ? await fileToDataURL(m.srv.file) : null}});
+      }
+      else if (m.srv) s.maps.push({...base, source: {type: 'server', src: m.srv.src, id: m.srv.id, label: m.srv.label, channel: m.channel}});
       else if (m.source && m.source.type === 'url') s.maps.push({...base, source: m.source});
       else if (m.source && m.source.type === 'file') {
         const big = m.source.file.size > MAX_EMBED;
@@ -2923,13 +3465,21 @@ async function saveSession() {
         s.maps.push({...base, source: {type: 'file', name: m.source.name, ext: m.source.ext, gz: m.source.gz, data: big ? null : await fileToDataURL(m.source.file)}});
       }
     }
-    s.view = {orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, lbl: {...lblPref}, lblOff: [...lblOff],
-              focusSc: $('#focusSc').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
-              focusIx: $('#focusIx').checked, focusDist: $('#focusDist').checked, seq: $('#seqOn').checked,
+    s.view = {orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, cartOp, lbl: {...lblPref}, lblOff: [...lblOff],
+              focusSc: $('#focusSc').checked, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
+              focusIx: $('#focusIx').checked, focusScope, focusDist: $('#focusDist').checked, seq: $('#seqOn').checked,
               hb: {...HBSET}, ifCat: {...ifCat}, focusCat: {...focusCat}, stick: {...stickPref},
               spot: {on: $('#spotOn').checked, r: +$('#spotR').value, op: +$('#spotOp').value, mode: $('#spotMode').value},
               focusList: $('#focusListOn').checked, focusTypes: {...focusTypeOn}};
     s.colors = recent;
+    return {s, skipped};
+}
+async function saveSession() {
+  stash();
+  if (!structs.length) return status('保存する構造がありません', true);
+  status('セッションを書き出し中…');
+  try {
+    const {s, skipped} = await buildSession();
     const blob = new Blob([JSON.stringify(s)], {type: 'application/json'});
     const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
     const base = structs.map(x => x.name).slice(0, 3).join('_') + (structs.length > 3 ? '_etc' : '');
@@ -2996,6 +3546,9 @@ async function restoreStruct(j) {
 async function openSession(file) {
   let s;
   try { s = JSON.parse(await readText(file)); } catch (e) { return status('セッションファイルを読めませんでした: ' + e.message, true); }
+  return openSessionObj(s);
+}
+async function openSessionObj(s, auto) {
   if (!s || s.app !== 'pdb-density-viewer') return status('このビューアのセッションファイルではありません', true);
   if (s.version === 1 || !s.structs) {   // single-structure sessions from the earlier version
     s.structs = [{structure: s.structure, pdbId: s.pdbId, chains: s.chains, het: s.het, extras: s.extras, ifc: s.ifc, sym: s.sym, focus: s.view && s.view.focus}];
@@ -3005,17 +3558,21 @@ async function openSession(file) {
   status('セッションを復元中…');
   if (Array.isArray(s.colors)) recent = s.colors.slice(0, 8);
   if (s.palette) $('#palette').value = s.palette;
+  if (s.colorBy) { const cb = /^rainbow/.test(s.colorBy) ? 'rainbowcb' : s.colorBy; if ([...$('#colorBy').options].some(o => o.value === cb)) { $('#colorBy').value = cb; rainbowMode = cb === 'rainbowcb' ? cb : ''; } }
   const v = s.view || {};
   if (v.bg) { $('#bg').value = v.bg; stage.setParameters({backgroundColor: v.bg}); }
   if (v.cam) { $('#cam').value = v.cam; stage.setParameters({cameraType: v.cam}); }
   if (v.look && LOOKS[v.look]) { $('#look').value = v.look; applyLook(); }
   if (v.outline !== undefined) setOutline(v.outline);
+  if (v.cartOp !== undefined) setCartOp(v.cartOp);
   if (v.lbl) { Object.assign(lblPref, v.lbl); lblWriteUI(); lblSavePref(); lblRetext(); lblStyle(); lblFrame(); }
   if (Array.isArray(v.lblOff)) { lblOff.clear(); v.lblOff.forEach(([k, o]) => lblOff.set(k, o)); }
   if (v.fog !== undefined) setFog(v.fog);
   if (v.focusSc !== undefined) $('#focusSc').checked = v.focusSc;
+  if (v.focusSurf !== undefined) $('#focusSurf').checked = v.focusSurf;
   if (v.focusZoom !== undefined) $('#focusZoom').checked = v.focusZoom;
   if (v.focusIx !== undefined) $('#focusIx').checked = v.focusIx;
+  if (v.focusScope) { focusScope = v.focusScope; $('#focusScope').value = focusScope; }
   if (v.focusDist !== undefined) $('#focusDist').checked = v.focusDist;
   if (v.seq !== undefined) $('#seqOn').checked = v.seq;
   if (v.hb) { Object.assign(HBSET, CRIT_DEFAULT, v.hb); writeCritUI(); }
@@ -3035,11 +3592,14 @@ async function openSession(file) {
   renderAllPanels(); buildSeq();
   if (v.orientation) stage.viewerControls.orient(v.orientation);
   // maps (after the view so density boxes are fetched around the saved centre)
-  const groups = new Map();
+  const groups = new Map(), mtzs = new Map();
   for (const m of s.maps || []) {
     if (m.rv !== 1 && m.box) m.box = Math.round(m.box / 2);     // older sessions stored the cube edge
-    const src = m.source || {}, set = mapSettings(m);
-    if (src.type === 'server') {
+    const src = m.source || {}, set = {...mapSettings(m), ...(m.group ? {group: m.group} : {})};
+    if (src.type === 'mtz') {
+      if (!mtzs.has(src.name)) mtzs.set(src.name, {group: src.group, box: src.box, data: null, sets: {}});
+      const t = mtzs.get(src.name); if (src.data) t.data = src.data; t.sets[src.channel] = set;
+    } else if (src.type === 'server') {
       const k = src.src + '|' + src.id;
       if (!groups.has(k)) groups.set(k, {src: src.src, id: src.id, label: src.label, box: m.box, ch: []});
       groups.get(k).ch.push([m.name, m.kind, src.channel, set]);
@@ -3052,12 +3612,17 @@ async function openSession(file) {
     }
   }
   for (const g of groups.values()) addServer(g.src, g.id, g.label, g.ch, g.box);
+  for (const [nm, t] of mtzs) {
+    if (!t.data) { status(`MTZ ${nm} は埋め込まれていません。ファイルを画面にドロップしてください`, true); continue; }
+    await loadMtz(dataURLToFile(t.data, nm), t);
+  }
   maps.forEach(m => { if (m.mc && !m.visible) m.reps.forEach(r => r.setVisibility(false)); });
   const S = structs[active];
   if (S && S._focus) { lastFocus = Array.isArray(S._focus) ? S._focus : [S._focus]; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
   if (v.spin) { $('#spin').checked = true; stage.setSpin(true); }
   if (v.orientation) stage.viewerControls.orient(v.orientation);
-  status(`セッションを復元しました（構造 ${structs.length} 個、保存日時 ${new Date(s.saved).toLocaleString()}）`);
+  status(auto ? `前回の作業を復元しました（構造 ${structs.length} 個、${new Date(s.saved).toLocaleString()} の状態）`
+              : `セッションを復元しました（構造 ${structs.length} 個、保存日時 ${new Date(s.saved).toLocaleString()}）`);
 }
 $('#saveSes').onclick = saveSession;
 $('#openSes').onclick = () => $('#sesFile').click();
@@ -3073,9 +3638,19 @@ async function loadPdbEntry(id, asm) {
   else if (!S && asm) status(`${id} の生物学的集合体 ${asm} を読み込めませんでした（この番号の集合体が登録されていない可能性があります）`, true);
   return S;
 }
+/* PDB IDs: the classic 4 characters (1abc), or the 12-character extended form (pdb_00001abc for old entries,
+   pdb_1000axyz for entries deposited from 21 July 2027). pdb_0000xxxx is the same entry as xxxx, so it is
+   turned into the 4-character ID that every service understands; true extended IDs are kept in lower case. */
+function normPdbId(raw) {
+  const v = String(raw || '').trim().toLowerCase();
+  let m = v.match(/^pdb_0000([0-9][0-9a-z]{3})$/); if (m) return m[1].toUpperCase();
+  if (/^[0-9][0-9a-z]{3}$/.test(v)) return v.toUpperCase();
+  if (/^pdb_[0-9a-z]{8}$/.test(v)) return v;
+  return null;
+}
 function loadById() {
-  const id = $('#pdbId').value.trim().toUpperCase();
-  if (!/^[0-9A-Z_]{4,12}$/.test(id)) return status('PDB IDは4文字（例 4DRB）で入力してください', true);
+  const id = normPdbId($('#pdbId').value);
+  if (!id) return status('PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください', true);
   loadPdbEntry(id, +$('#pdbAsm').value || 0);
 }
 $('#loadPdb').onclick = loadById;
@@ -3099,7 +3674,7 @@ async function sniffStruct(f) {
 }
 async function handleFile(f, asMap = false) {
   let {ext, gz} = extOf(f.name);
-  if (!gz && !asMap && !STRUCT_EXT.includes(ext) && !MAP_EXT[ext] && ext !== 'json' && ext !== 'dx') {
+  if (!gz && !asMap && !STRUCT_EXT.includes(ext) && !MAP_EXT[ext] && ext !== 'json' && ext !== 'dx' && ext !== 'mtz') {
     const guess = await sniffStruct(f);
     if (guess) { ext = guess; status(`${f.name} を ${guess === 'cif' ? 'mmCIF' : 'PDB'} 形式として読み込みます`); }
   }
@@ -3108,6 +3683,8 @@ async function handleFile(f, asMap = false) {
     loadStructure(f, {ext, compressed: gz ? 'gz' : false, name: f.name.replace(/\.txt$/i, '')}, {type: 'file', file: f, name: f.name, ext, gz}, /^[0-9a-z]{4}$/i.test(stem) ? stem.toUpperCase() : '');
   } else if (ext === 'dx' && comp && !asMap) {
     loadApbs(f);                      // a .dx dropped onto a loaded structure is almost always an APBS potential
+  } else if (ext === 'mtz') {
+    loadMtz(f);
   } else if (MAP_EXT[ext]) {
     loadMap(f, {ext: MAP_EXT[ext], compressed: gz ? 'gz' : false, name: f.name, box: ext === 'mrc' ? 0 : 10}, f.name, $('#mapKind').value,
             {type: 'file', file: f, name: f.name, ext: MAP_EXT[ext], gz});
@@ -3421,7 +3998,7 @@ $('#symShowOrig').onclick = () => symBackToOrig(false);
 
 /* ---------- click: centre + neighbourhood ---------- */
 function clearFocusDraw() {
-  focusReps.forEach(r => comp.removeRepresentation(r)); focusReps = [];
+  focusReps.forEach(r => comp.removeRepresentation(r)); focusReps = []; focusShownIdx = [];
   setLabelSet('focus', null, []);
   if (focusShape) { stage.removeComponent(focusShape); focusShape = null; }
   spotRestore();
@@ -3528,7 +4105,9 @@ let focusItems = [];
 const FT_KEY = 'pdv_focus_types';
 const focusTypeOn = (() => { const d = {hb: true, salt: true, pi: true, catpi: true, metal: true, water: true, halogen: true, hyd: true, cont: true};
   try { Object.assign(d, JSON.parse(localStorage.getItem(FT_KEY) || '{}')); } catch (e) {} return d; })();
-let flistMin = true;      // the list starts folded: open it with ▸ 開く when the details are needed
+let flistMin = true;
+let focusScope = (() => { try { return localStorage.getItem('pdv_focus_scope') || 'all'; } catch (e) { return 'all'; } })();
+function setFocusScope(v) { focusScope = v === 'sel' ? 'sel' : 'all'; try { localStorage.setItem('pdv_focus_scope', focusScope); } catch (e) {} const sel = $('#focusScope'); if (sel) sel.value = focusScope; if (lastFocus) focusOn(lastFocus, false); }      // the list starts folded: open it with ▸ 開く when the details are needed
 let optsHintSeen = (() => { try { return localStorage.getItem('pdv_opts_hint') === '1'; } catch (e) { return false; } })();
 /* backbone–backbone = both ends are protein main-chain atoms (N, CA, C, O …); DNA sugar–phosphate counts as "other",
    so main-chain NH → phosphate contacts stay visible */
@@ -3542,7 +4121,7 @@ const saveFocusPrefs = () => { try { localStorage.setItem(FT_KEY, JSON.stringify
 const ixPartner = it => it.w ? `HOH${it.w.rs}` : '';
 function drawFocusShape() {
   if (focusShape) { stage.removeComponent(focusShape); focusShape = null; }
-  const shown = focusItems.filter(itemShown);
+  const shown = focusItems.filter(it => itemShown(it) && !it._hid);
   if (shown.length) focusShape = lineShape(shown, $('#focusDist').checked);
 }
 function renderFlist() {
@@ -3560,6 +4139,8 @@ function renderFlist() {
     <div class="ft"><label title="タンパク質の主鎖原子（N・CA・C・O）どうし。ヘリックスやβシートの水素結合など"><input type="checkbox" data-c="bb" ${focusCat.bb ? 'checked' : ''}>主鎖どうし ${nbb}</label>
       <label title="側鎖・核酸・リガンド・水・金属が関わるもの（主鎖とDNAリン酸の水素結合なども含む）"><input type="checkbox" data-c="other" ${focusCat.other ? 'checked' : ''}>それ以外 ${focusItems.length - nbb}</label>
       <button data-k="all">全表示</button><button data-k="none">全非表示</button></div>
+    ${$('#focusSc').checked ? `<div class="ft"><span class="small">範囲</span><label title="スティックで表示している残基（クリックした残基と周囲5Å）どうしの相互作用をすべて表示します"><input type="radio" name="fscope" data-s="all" ${focusScope === 'all' ? 'checked' : ''}>表示中の残基すべて</label>
+      <label title="クリックした残基が関わる相互作用だけを表示します"><input type="radio" name="fscope" data-s="sel" ${focusScope === 'sel' ? 'checked' : ''}>クリックした残基のみ</label></div>` : ''}
     <table>${rows.map(({it, i}) => `<tr class="ix" data-i="${i}" style="${itemShown(it) ? '' : 'opacity:.35'}">
       <td><span class="sw" style="background:${IT[it.t].c}"></span> ${IT[it.t].n}${it.sub ? '（' + it.sub + '）' : ''}${isBBBB(it) ? ' <span style="opacity:.7">主鎖</span>' : ''}</td>
       <td>${atomLabel(it.a)}</td><td>${it.w ? '⇄ ' + ixPartner(it) + ' ⇄' : '⇄'}</td><td>${atomLabel(it.b)}</td>
@@ -3574,6 +4155,7 @@ $('#flist').addEventListener('input', e => {
   const c = e.target.dataset.c;
   if (c) { focusCat[c] = e.target.checked; saveFocusPrefs(); drawFocusShape(); renderFlist(); return; }
   if (e.target.dataset.k === 'spot') { $('#spotOn').checked = e.target.checked; if (lastFocus) focusOn(lastFocus, false); }
+  if (e.target.dataset.s) setFocusScope(e.target.dataset.s);
 });
 $('#flist').addEventListener('click', async e => {
   const k = e.target.dataset.k;
@@ -3604,11 +4186,23 @@ $('#flist').addEventListener('click', async e => {
   stage.animationControls.move([(it.a.x + it.b.x) / 2, (it.a.y + it.b.y) / 2, (it.a.z + it.b.z) / 2], 400);
 });
 $('#focusListOn').oninput = renderFlist;
+$('#hydStyle').value = hydStyle;
+$('#hydStyle').onchange = e => {
+  hydStyle = e.target.value === 'line' ? 'line' : 'dots';
+  try { localStorage.setItem('pdv_hyd', hydStyle); } catch (er) {}
+  drawFocusShape(); if (ifc) drawIfc();
+};
 $('#spotOn').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
 $('#spotMode').onchange = () => { if (lastFocus) focusOn(lastFocus, false); };
 const saveStick = () => { try { localStorage.setItem(STICK_KEY, JSON.stringify(stickPref)); } catch (e) {} };
-$('#focusStyle').innerHTML = styleOpts('');
-function writeStickUI() { $('#focusStyle').value = styleVal(stickPref.style, stickPref.w); }
+$('#focusStyle').innerHTML = styleOpts('', false);
+function writeStickUI() { $('#focusStyle').value = styleVal(stickPref.style, stickPref.w); $('#stickPart').value = stickPref.part === 'side' ? 'side' : 'all'; $('#stickNuc').value = ['bb', 'base'].includes(stickPref.nuc) ? stickPref.nuc : 'all'; }
+$('#stickPart').onchange = $('#stickNuc').onchange = () => {
+  stickPref.part = $('#stickPart').value === 'side' ? 'side' : 'all';
+  stickPref.nuc = ['bb', 'base'].includes($('#stickNuc').value) ? $('#stickNuc').value : 'all'; saveStick();
+  if (lastFocus) focusOn(lastFocus, false);
+  structs.forEach(S => S.groups && S.groups.length && drawGroups(S));
+};
 writeStickUI();
 $('#focusStyle').onchange = e => {
   const {t, w} = parseStyle(e.target.value);
@@ -3643,16 +4237,37 @@ function focusOn(list, move) {
       const rk = ap.residueIndex;
       if (!seenRes.has(rk) && (ap.atomname === 'CA' || ap.atomname === "C1'")) { seenRes.add(rk); lab.push(i); }
     });
-    if (idx.length) focusReps.push(...focusDraw(idx));
+    // side chain only: protein N, C, O, OXT are left out (Pro keeps N for its ring); they come back below for residues
+    // whose main chain takes part in a listed interaction, so no interaction line ends in empty space
+    const sideOnly = stickTrimOn();
+    const mcHide = i => stickHide(ap, i);
+    const drawIdx = sideOnly ? idx.filter(i => !mcHide(i)) : idx;
+    if (drawIdx.length) focusReps.push(...focusDraw(drawIdx));
+    focusShownIdx = idx.slice();
+    if ($('#focusSurf').checked) {
+      const own = st.getAtomIndices(new NGL.Selection(`(${list.map(focusSele).join(' or ')}) and not hydrogen and not water`)) || [];
+      if (own.length) focusReps.push(...surfByChain(comp, own, chainColor));
+    }
     if (move) { if (idx.length) comp.autoView('@' + idx.join(','), 500); else stage.animationControls.move([last.x, last.y, last.z], 400); }
     if ($('#focusIx').checked) {
       const items = [], seen = new Set();
       const ck = o => o.i !== undefined ? 'i' + o.i : `${o.x.toFixed(2)},${o.y.toFixed(2)},${o.z.toFixed(2)}`;
-      for (const f of list) {
+      // scope "all": every interaction among the residues drawn as sticks (the clicked ones and their 5 Å surroundings);
+      // scope "sel": only interactions that involve a clicked residue
+      const useAll = focusScope === 'all' && $('#focusSc').checked;
+      let srcRes = list;
+      const shownSet = new Set(idx);
+      if (useAll) {
+        const byRes = new Map();
+        idx.forEach(i => { ap.index = i; const k = ap.residueIndex; if (!byRes.has(k)) byRes.set(k, {chainname: ap.chainname, resno: ap.resno, inscode: ap.inscode || '', modelIndex: ap.modelIndex}); });
+        srcRes = [...byRes.values()];
+      }
+      for (const f of srcRes) {
         const nb = st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(focusSele(f)), 5)), partner = [];
         nb.forEach(i => {
           ap.index = i;
           if (ap.isWater() || ap.element === 'H' || ap.modelIndex !== f.modelIndex) return;
+          if (useAll && !shownSet.has(i)) return;
           const self = ap.chainname === f.chainname && ap.resno === f.resno && (ap.inscode || '') === (f.inscode || '');
           const adjacent = ap.chainname === f.chainname && Math.abs(ap.resno - f.resno) === 1 && ap.isPolymer();
           if (!self && !adjacent) partner.push(i);
@@ -3663,6 +4278,20 @@ function focusOn(list, move) {
           const k = it.t + '|' + [ck(it.a), ck(it.b)].sort().join('|') + (it.w ? '|w' + ck(it.w) : '');
           if (!seen.has(k)) { seen.add(k); items.push(it); }      // two selected residues facing each other: count once
         });
+      }
+      if (sideOnly) {
+        const bbRes = new Set();
+        items.forEach(it => {
+          if (!itemShown(it)) return;                 // categories switched off (e.g. main chain–main chain) bring nothing back
+          const ends = [it.a, it.b, it.w].filter(a => a && a.i !== undefined);
+          // base pairing / stacking inside the nucleic acid: with "backbone only" (or "base only") the hidden part stays
+          // hidden and the line is not drawn (still listed in the table)
+          if (stickPref.nuc !== 'all' && ends.every(a => { ap.index = a.i; return ap.isNucleic(); }) && ends.some(a => mcHide(a.i))) { it._hid = true; return; }
+          ends.forEach(a => { if (mcHide(a.i)) { ap.index = a.i; bbRes.add(ap.residueIndex); } });
+        });
+        // the hidden part of those residues, plus the atom it hangs from (CA, or C1' for nucleotides)
+        const extra = bbRes.size ? idx.filter(i => { const h = mcHide(i); return bbRes.has(ap.residueIndex) && (h || ap.atomname === 'CA' || ap.atomname.replace(/\*/g, "'") === "C1'"); }) : [];
+        if (extra.length) focusReps.push(...focusDraw(extra));
       }
       focusItems = items; drawFocusShape(); renderFlist();
       const cnt = {}; items.forEach(it => cnt[it.t] = (cnt[it.t] || 0) + 1);
@@ -3925,9 +4554,22 @@ function drawGroups(S) {
     (g.reps || []).forEach(r => { try { S.comp.removeRepresentation(r); } catch (e) {} });
     g.reps = [];
     if (!g.on || !g.res.length) return;
-    const sele = `(${g.res.map(focusSele).join(' or ')}) and not hydrogen`, p = {sele, color: 'element', colorValue: hexNum(g.color)}, w = g.w || 1;
+    const sele = `(${g.res.map(focusSele).join(' or ')}) and not hydrogen`, w = g.w || 1;
+    // side chain only (sticks and ball & stick; CPK and the surface keep whole residues)
+    let sSele = sele;
+    if (stickTrimOn()) {
+      const ap = S.comp.structure.getAtomProxy(), keep = [];
+      (S.comp.structure.getAtomIndices(new NGL.Selection(sele)) || []).forEach(i => { if (!stickHide(ap, i)) keep.push(i); });
+      sSele = keep.length ? '@' + keep.join(',') : 'none';
+    }
+    const p = {sele: sSele, color: 'element', colorValue: hexNum(g.color)};
     const add = (t, q) => g.reps.push(S.comp.addRepresentation(t, {...p, ...q}));
-    if (g.style === 'spacefill') add('spacefill', {});
+    if (g.style === 'spacefill') add('spacefill', {sele});
+    else if (g.style === 'surface') {
+      // ChimeraX-like: the group colour (darker) for sticks inside a lighter translucent surface of the same colour
+      g.reps.push(S.comp.addRepresentation('licorice', {sele: sSele, color: 'element', colorValue: hexNum(mixHex(g.color, '#000000', 0.25)), radiusScale: 0.7}));
+      g.reps.push(S.comp.addRepresentation('surface', {sele, color: g.color, opacity: SURF_OP, surfaceType: 'av', probeRadius: 1.4, side: 'front', depthWrite: false, roughness: 1, metalness: 0, disablePicking: true}));
+    }
     else if (g.style === 'ball+stick') { add('licorice', {radiusScale: 0.55 * w}); add('spacefill', {radiusType: 'vdw', radiusScale: 0.19 * (1 + (w - 1) / 2)}); }
     else add('licorice', {radiusScale: 0.7 * w});
   });
@@ -4233,6 +4875,9 @@ $('#seq').addEventListener('mouseleave', clearHL);
   addEventListener('resize', () => { if (panel.style.display === 'block') setH(h); });
 }
 $('#focusSc').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
+$('#focusSurf').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
+$('#focusScope').value = focusScope;
+$('#focusScope').onchange = e => setFocusScope(e.target.value);
 $('#focusIx').oninput = $('#focusDist').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
 
 /* ---------- view / export ---------- */
@@ -4243,7 +4888,7 @@ const LOOKS = {
   std:   {roughness: 0.4,  metalness: 0,   light: 1.2,  ambient: 0.3},
   matte: {roughness: 1.0,  metalness: 0,   light: 0.85, ambient: 0.5},
   flat:  {roughness: 1.0,  metalness: 0,   light: 0.3,  ambient: 1.0},
-  gloss: {roughness: 0.15, metalness: 0.1, light: 1.3,  ambient: 0.25}
+  soft:  {roughness: 1.0,  metalness: 0,   light: 0.55, ambient: 0.75}
 };
 const lookMat = () => { const L = LOOKS[$('#look').value] || LOOKS.std; return {roughness: L.roughness, metalness: L.metalness}; };
 function applyLook() {
@@ -4284,7 +4929,8 @@ function setLabelSet(src, c, atomIdx) {
   if (!c || !atomIdx || !atomIdx.length) { lblFrame(); return; }
   c.lblId = c.lblId || ++lblSeq;
   const st = c.structure, ap = st.getAtomProxy(), sid = (structs.find(S => S.comp === c) || {}).name || c.name || c.lblId;   // by name: stays valid when a session is reopened
-  const items = [...new Set(atomIdx)].sort((a, b) => a - b).map(i => {
+  const keys = new Set();
+  const items = [...new Set(atomIdx)].sort((a, b) => a - b).filter(i => { ap.index = i; const k = `${ap.chainname}|${ap.resno}|${ap.inscode || ''}`; if (keys.has(k)) return false; keys.add(k); return true; }).map(i => {
     ap.index = i;
     const key = `${sid}|${ap.chainname}|${ap.resno}|${ap.inscode || ''}`;
     const el = document.createElement('div'); el.className = 'rlbl';
@@ -4304,6 +4950,7 @@ const lblFig = () => lblPref.mode === 'fig';
 function lblNglClear(S) { (S.reps || []).forEach(r => { try { S.comp.removeRepresentation(r); } catch (e) {} }); S.reps = []; }
 function lblNgl(S) {
   lblNglClear(S);
+  return;     // NGL's bitmap-font labels look jagged when enlarged; the HTML layer is used for both modes now
   if (lblFig() || !S.items.length) return;
   const {fg, bg} = lblColors(), ifc = S.src === 'ifc';
   const r = S.comp.addRepresentation('label', {sele: '@' + S.items.map(it => it.i).join(','), labelType: 'text', labelText: Object.fromEntries(S.items.map(it => [it.i, it.text])),   // keyed by atom index
@@ -4337,23 +4984,77 @@ function lblAnchor(S, it, W, H) {
 function lblShown(S) { return S.on && S.comp.visible && stage.compList.includes(S.comp); }
 function lblFrame() {
   const svg = $('#lblLines'); if (!svg) return;
-  if (!lblFig()) { lblSets.forEach(S => S.items.forEach(it => it.el.style.display = 'none')); svg.innerHTML = ''; return; }
-  const lines = [], {fg} = lblColors();
+  const fig = lblFig(), lines = [], {fg, bg} = lblColors();
   lblSets.forEach(S => {
     const show = lblShown(S);
     S.items.forEach(it => {
       const a = show && lblAnchor(S, it);
       if (!a) { it.el.style.display = 'none'; return; }
-      const o = lblOff.get(it.key) || [0, 0], w = it.el.offsetWidth || 0, h = it.el.offsetHeight || 0;
-      it.el.style.display = '';
-      it.el.style.transform = `translate(${Math.round(a[0] + o[0] - w / 2)}px, ${Math.round(a[1] + o[1] - h / 2)}px)`;
-      if (lblPref.line && Math.hypot(o[0], o[1]) > Math.max(w, h) * 0.6) {
-        const e = lblEdge(a, [a[0] + o[0], a[1] + o[1]], w, h);
-        lines.push(`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${e[0].toFixed(1)}" y2="${e[1].toFixed(1)}"/>`);
+      const o = fig ? (lblOff.get(it.key) || [0, 0]) : [0, 0], w = it.el.offsetWidth || 0, h = it.el.offsetHeight || 0;
+      const e = it.el.style;
+      e.display = '';
+      it.el.classList.toggle('ana', !fig);
+      e.opacity = !fig && it.occ ? '0.25' : '1';
+      e.background = !fig && S.src === 'ifc' ? bg + '8c' : 'transparent';
+      e.transform = `translate(${Math.round(a[0] + o[0] - w / 2)}px, ${Math.round(a[1] + o[1] - h / 2)}px)`;
+      if (fig && lblPref.line && Math.hypot(o[0], o[1]) > Math.max(w, h) * 0.6) {
+        const q = lblEdge(a, [a[0] + o[0], a[1] + o[1]], w, h);
+        lines.push(`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"/>`);
       }
     });
   });
   svg.innerHTML = lines.length ? `<g stroke="${fg}" stroke-width="1" opacity="0.8">${lines.join('')}</g>` : '';
+  if (!fig) lblOccSchedule();
+}
+/* Analysis mode: dim a label whose atom is hidden behind other parts of the molecule (as NGL's 3D labels were).
+   Once the view stops moving, the atoms that are drawn (backbone/cartoon, nucleic acids, ligands and the sticks
+   around a clicked residue) are projected into a coarse depth map of the screen; a label is hidden when
+   something is clearly nearer to the camera at its position. */
+let lblOccT = 0, focusShownIdx = [];
+function lblOccSchedule() { clearTimeout(lblOccT); lblOccT = setTimeout(lblOcclusion, 140); }
+function lblOcclusion() {
+  if (lblFig() || !lblSets.size || !stage.viewer || !stage.viewer.camera) return;
+  const V = stage.viewer, cam = V.camera, W = V.width, H = V.height, cs = 4, gw = Math.ceil(W / cs), gh = Math.ceil(H / cs);
+  if (!gw || !gh) return;
+  const depth = new Float32Array(gw * gh).fill(Infinity);
+  const camPos = new NGL.Vector3().setFromMatrixPosition(cam.matrixWorld), right = new NGL.Vector3().setFromMatrixColumn(cam.matrixWorld, 0).normalize();
+  const own = new Set(); lblSets.forEach(S => S.items.forEach(it => own.add(`${S.comp.lblId}|${it.chain}|${it.resno}|${it.ic}`)));
+  const v = new NGL.Vector3(), q = new NGL.Vector3();
+  const R = 1.1;                                          // Å drawn around each atom
+  const splat = (c, wx, wy, wz) => {
+    v.set(wx, wy, wz).applyMatrix4(c._lblM);
+    const d = v.distanceTo(camPos);
+    q.copy(v).addScaledVector(right, R).project(cam); v.project(cam);
+    if (v.z > 1 || v.z < -1) return;
+    const x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H, r = Math.max(cs, Math.abs((q.x - v.x) / 2 * W));
+    const x0 = Math.max(0, ((x - r) / cs) | 0), x1 = Math.min(gw - 1, ((x + r) / cs) | 0), y0 = Math.max(0, ((y - r) / cs) | 0), y1 = Math.min(gh - 1, ((y + r) / cs) | 0);
+    for (let yy = y0; yy <= y1; yy++) for (let xx = x0; xx <= x1; xx++) { const k = yy * gw + xx; if (d < depth[k]) depth[k] = d; }
+  };
+  // see-through cartoons hide nothing; only the opaque parts count
+  const sele = new NGL.Selection(cartOp < 0.7 ? 'not water and not hydrogen and (ligand or ion)' : 'not water and not hydrogen and (backbone or nucleic or ligand or ion)');
+  stage.compList.forEach(c => {
+    if (!c.structure || !c.visible) return;
+    c._lblM = V.modelGroup.matrixWorld.clone().multiply(c.matrix);
+    const id = c.lblId;
+    c.structure.eachAtom(a => { if (!own.has(`${id}|${a.chainname}|${a.resno}|${a.inscode || ''}`)) splat(c, a.x, a.y, a.z); }, sele);
+    if (c === comp && focusShownIdx.length) {
+      const ap = c.structure.getAtomProxy();
+      for (const i of focusShownIdx) { ap.index = i; if (!own.has(`${id}|${ap.chainname}|${ap.resno}|${ap.inscode || ''}`)) splat(c, ap.x, ap.y, ap.z); }
+    }
+  });
+  lblSets.forEach(S => {
+    if (!lblShown(S)) return;
+    const M = V.modelGroup.matrixWorld.clone().multiply(S.comp.matrix);
+    S.items.forEach(it => {
+      v.set(it.x, it.y, it.z).applyMatrix4(M);
+      const d = v.distanceTo(camPos); v.project(cam);
+      const x = ((v.x + 1) / 2 * W / cs) | 0, y = ((1 - v.y) / 2 * H / cs) | 0;
+      let near = Infinity;
+      if (x >= 0 && y >= 0 && x < gw && y < gh) near = depth[y * gw + x];
+      it.occ = near < d - 4.5;          // clearly in front (neighbouring atoms of the same stretch are ignored)
+      it.el.style.opacity = it.occ ? '0.25' : '1';
+    });
+  });
 }
 /* where the line from the atom meets the edge of the label box (centre c, size w × h) */
 function lblEdge(a, c, w, h) {
@@ -4367,6 +5068,7 @@ window.addEventListener('resize', () => setTimeout(lblFrame, 50));
 function lblDragSetup(it) {
   let st = null;
   it.el.addEventListener('pointerdown', e => {
+    if (!lblFig()) return;
     e.stopPropagation(); e.preventDefault();
     const o = lblOff.get(it.key) || [0, 0];
     st = {x: e.clientX, y: e.clientY, o: o.slice()};
@@ -4428,18 +5130,22 @@ function lblDraw(ctx, W, H, snap) {
       ctx.globalAlpha = 0.8; ctx.strokeStyle = fg; ctx.lineWidth = Math.max(1, s);
       ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(e[0], e[1]); ctx.stroke(); ctx.globalAlpha = 1;
     }
+    ctx.globalAlpha = l.alpha ?? 1;
+    if (l.box) { ctx.fillStyle = bg; ctx.globalAlpha *= 0.55; ctx.fillRect(cx - l.w * s / 2, cy - l.h * s / 2, l.w * s, l.h * s); ctx.globalAlpha = l.alpha ?? 1; }
     if (lblPref.halo) { ctx.strokeStyle = bg; ctx.lineWidth = 3 * s; ctx.strokeText(l.text, cx, cy); }
     ctx.fillStyle = fg; ctx.fillText(l.text, cx, cy);
+    ctx.globalAlpha = 1;
   });
   ctx.restore();
 }
 function lblSnapshot() {
   const out = []; out.vw = stage.viewer.width; out.vh = stage.viewer.height; out.col = lblColors();
-  if (!lblFig()) return out;          // analysis mode: NGL draws the labels into the image itself
+  const fig = lblFig();
   lblSets.forEach(S => { if (!lblShown(S)) return; S.items.forEach(it => {
     const a = lblAnchor(S, it); if (!a) return;
-    const o = lblOff.get(it.key) || [0, 0], w = it.el.offsetWidth, h = it.el.offsetHeight;
-    out.push({a, c: [a[0] + o[0], a[1] + o[1]], w, h, text: it.text, line: lblPref.line && Math.hypot(o[0], o[1]) > Math.max(w, h) * 0.6});
+    const o = fig ? (lblOff.get(it.key) || [0, 0]) : [0, 0], w = it.el.offsetWidth, h = it.el.offsetHeight;
+    out.push({a, c: [a[0] + o[0], a[1] + o[1]], w, h, text: it.text, alpha: !fig && it.occ ? 0.25 : 1, box: !fig && S.src === 'ifc',
+      line: fig && lblPref.line && Math.hypot(o[0], o[1]) > Math.max(w, h) * 0.6});
   }); });
   return out;
 }
@@ -4518,7 +5224,19 @@ function setFog(level) {
   try { localStorage.setItem('pdv_fog', $('#fogSel').value); } catch (e) {}
 }
 $('#outline').onchange = e => setOutline(e.target.value);
+$('#cartOp').oninput = e => setCartOp(1 - e.target.value / 100);
+setCartOp(cartOp);
 $('#fogSel').onchange = e => setFog(e.target.value);
+const SOFT_PAL = ['#f6c27a', '#9fd3f0', '#a9b8f5', '#b5dea4', '#f3aebd', '#d3bdf0', '#f0dd8c', '#9fe0d2'];
+$('#softPreset').onclick = () => {
+  $('#look').value = 'soft'; applyLook(); try { localStorage.setItem('pdv_look', 'soft'); } catch (e) {}
+  $('#bg').value = 'white'; $('#bg').onchange({target: $('#bg')});
+  setOutline(1); setFog(1);
+  let k = 0;
+  chains.forEach(ch => { ch.color = ch.nucleic ? '#d2d2d2' : SOFT_PAL[k++ % SOFT_PAL.length]; chainReps(ch); });
+  refreshChainColored(); drawSym(); renderSeq(); renderAllPanels();
+  status('淡い表示にしました（Chain の色を淡い色に変更。色は「構造」タブで1本ずつ変えられます）');
+};
 $('#toonPreset').onclick = () => {
   $('#look').value = 'flat'; applyLook(); try { localStorage.setItem('pdv_look', 'flat'); } catch (e) {}
   $('#bg').value = 'white'; $('#bg').onchange({target: $('#bg')});
@@ -4627,15 +5345,367 @@ const DEMO_ID = '';            // '' = open empty
   let id = DEMO_ID;
   try {
     const q = new URLSearchParams(location.search);
-    if (q.has('pdb')) id = (q.get('pdb') || '').trim().toUpperCase();
+    if (q.has('pdb')) { if ((q.get('pdb') || '').trim()) setTimeout(() => openShared(q), 0); return; }
   } catch (e) {}
-  if (!id || id === 'NONE' || !/^[0-9A-Z_]{4,12}$/.test(id)) return;
+  id = normPdbId(id);
+  if (!id) return;
   $('#pdbId').value = id;
   loadById();
 })();
+/* =====================================================================
+   Share the current view as a link
+   ?pdb=7DA1,1D66&asm=0,1&act=0&sel=A:46,A:47&v=<16 numbers>&look=soft&ol=1&fog=1&bg=white&cop=80
+   ===================================================================== */
+/* compact data for links: JSON → deflate (when the browser has CompressionStream) → base64url */
+const b64u = u8 => { let b = ''; for (let i = 0; i < u8.length; i += 0x8000) b += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const unb64u = t => { const b = atob(t.replace(/-/g, '+').replace(/_/g, '/')), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
+async function packLink(obj) {
+  const raw = new TextEncoder().encode(JSON.stringify(obj));
+  if (typeof CompressionStream === 'undefined') return 'j' + b64u(raw);
+  const buf = await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();
+  return 'z' + b64u(new Uint8Array(buf));
+}
+async function unpackLink(t) {
+  let u = unb64u(t.slice(1));
+  if (t[0] === 'z') u = new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+  return JSON.parse(new TextDecoder().decode(u));
+}
+/* colours and styles of every structure, plus maps that can be fetched again from a server or URL */
+function shareStyle(ok) {
+  const d = {p: $('#palette').value, cb: $('#colorBy').value, s: ok.map(st => ({
+    v: st.visible === false ? 0 : 1,
+    c: st.chains.map(c => [c.name, c.color, c.type, (c.surf ? 1 : 0) | (c.visible === false ? 2 : 0)]),
+    h: st.ui ? [st.ui.lig ? 1 : 0, st.ui.ion ? 1 : 0, st.ui.wat ? 1 : 0, st.ui.ligColor] : null,
+    e: st.extras.map(x => [x.s, x.t, x.col, x.elem ? 1 : 0]),
+    g: (st.groups || []).map(g => [g.name, g.res.map(f => [f.chainname, f.resno, f.inscode || '', f.modelIndex || 0, f.resname || '']), g.on ? 1 : 0, g.color, g.style, g.w || 1])
+  })), m: []};
+  let skipped = 0;
+  const done = new Set();
+  for (const m of maps) {
+    const set = {...mapSettings(m), ...(m.group ? {group: m.group} : {})};
+    if (m.srv && m.srv.src !== 'mtz') {
+      if (done.has(m.srv)) continue; done.add(m.srv);
+      d.m.push({t: 's', src: m.srv.src, id: m.srv.id, label: m.srv.label, box: m.srv.box, ch: m.srv.maps.map(x => [x.name, x.kind, x.channel, {...mapSettings(x), ...(x.group ? {group: x.group} : {})}])});
+    } else if (m.source && m.source.type === 'url') d.m.push({t: 'u', src: m.source, name: m.name, kind: m.kind, set});
+    else skipped++;
+  }
+  return {d, skipped};
+}
+async function shareLink() {
+  stash();
+  const ok = structs.filter(st => st.structSrc && st.structSrc.type === 'pdb');
+  if (!ok.length) return {err: 'リンクで共有できるのは PDB ID で開いた構造だけです（手元のファイルはセッションの .json で渡してください）'};
+  const q = new URLSearchParams();
+  q.set('pdb', ok.map(st => st.structSrc.id).join(','));
+  if (ok.some(st => st.structSrc.asm)) q.set('asm', ok.map(st => st.structSrc.asm || 0).join(','));
+  const ai = ok.indexOf(structs[active]);
+  if (ai > 0) q.set('act', ai);
+  if (ai >= 0 && Array.isArray(lastFocus) && lastFocus.length)
+    q.set('sel', lastFocus.map(f => `${f.chainname}:${f.resno}${f.inscode || ''}`).join(','));
+  q.set('v', stage.viewerControls.getOrientation().toArray().map(x => +x.toFixed(3)).join(','));
+  // always written, so the receiver's own saved preferences do not change the picture
+  q.set('look', $('#look').value); q.set('ol', outlineLevel); q.set('fog', $('#fogSel').value);
+  q.set('bg', $('#bg').value); q.set('cop', Math.round((1 - cartOp) * 100));
+  if (stickPref.part === 'side') q.set('sp', 'side');
+  if (stickPref.nuc !== 'all') q.set('sn', stickPref.nuc);
+  const sty = shareStyle(ok);
+  q.set('st', await packLink(sty.d));
+  const skipped = structs.length - ok.length;
+  return {url: location.origin + location.pathname + '?' + q.toString().replace(/%2C/g, ',').replace(/%3A/g, ':'), skipped, mapSkipped: sty.skipped};
+}
+$('#shareBtn').onclick = async () => {
+  const r = await shareLink();
+  if (r.err) return status(r.err, true);
+  const box = $('#shareUrl'); box.value = r.url; box.style.display = ''; box.select();
+  const miss = [r.skipped ? `手元のファイルから開いた構造 ${r.skipped} 個` : '', r.mapSkipped ? `手元のファイルから開いたマップ ${r.mapSkipped} 個` : ''].filter(Boolean);
+  const note = miss.length ? `（${miss.join('と')}は入っていません。全部渡すときはセッションの .json を送ってください）` : '';
+  if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+    try { await navigator.share({title: 'ShikaMol', url: r.url}); return status('リンクを共有しました' + note); } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  try { await navigator.clipboard.writeText(r.url); status('リンクをコピーしました。メールやチャットに貼り付けて送れます' + note); }
+  catch (e) { status('下の欄のリンクをコピーしてください' + note); }
+};
+$('#shareUrl').onclick = e => e.target.select();
+/* open a shared link: called on page load when ?pdb= is present */
+async function openShared(q) {
+  const ids = (q.get('pdb') || '').split(',').map(normPdbId).filter(Boolean);
+  if (!ids.length) return;
+  const asms = (q.get('asm') || '').split(',').map(x => +x || 0);
+  for (let i = 0; i < ids.length; i++) await loadPdbEntry(ids[i], asms[i] || 0);
+  if (!structs.length) return;
+  let sty = null;
+  if (q.get('st')) { try { sty = await unpackLink(q.get('st')); } catch (e) { log('リンクの色・表示形式を読めませんでした: ' + (e.message || e)); } }
+  if (sty) {
+    if (sty.p && PALETTES[sty.p]) $('#palette').value = sty.p;
+    if (/^rainbow/.test(sty.cb || '')) { $('#colorBy').value = 'rainbowcb'; rainbowMode = 'rainbowcb'; }
+    (sty.s || []).forEach((t, i) => {
+      if (!structs[i] || !t) return;
+      if (i !== active) activate(i);
+      try {
+        undoApplyStruct({
+          chains: (t.c || []).map(([name, color, type, f]) => ({name, color, type, surf: !!(f & 1), visible: !(f & 2)})),
+          het: t.h ? {lig: !!t.h[0], ion: !!t.h[1], wat: !!t.h[2], ligColor: t.h[3]} : null,
+          extras: (t.e || []).map(([s, tt, col, elem]) => ({s, t: tt, col, elem: !!elem})),
+          groups: (t.g || []).map(([name, res, on, color, style, w], k) => ({id: 'g' + k, name, on: !!on, color, style, w,
+            res: res.map(([chainname, resno, inscode, modelIndex, resname]) => ({chainname, resno, inscode, modelIndex, resname}))}))
+        });
+      } catch (e) { log('リンクの表示形式の適用に失敗: ' + (e.message || e)); }
+      stash();
+      if (t.v === 0) setStructVisible(i, false);
+    });
+  }
+  const act = Math.min(+q.get('act') || 0, structs.length - 1);
+  if (act !== active) activate(act);
+  const look = q.get('look'); if (look && LOOKS[look]) { $('#look').value = look; applyLook(); }
+  if (q.has('ol')) setOutline(+q.get('ol') || 0);
+  if (q.has('fog')) { $('#fogSel').value = q.get('fog'); setFog(q.get('fog')); }
+  if (q.has('bg') && [...$('#bg').options].some(o => o.value === q.get('bg'))) { $('#bg').value = q.get('bg'); $('#bg').dispatchEvent(new Event('change')); }
+  if (q.get('sp') === 'side') { stickPref.part = 'side'; writeStickUI(); }
+  if (['bb', 'base'].includes(q.get('sn'))) { stickPref.nuc = q.get('sn'); writeStickUI(); }   // not saved as the receiver's own preference
+  if (q.has('cop')) setCartOp(1 - Math.min(100, Math.max(0, +q.get('cop') || 0)) / 100);
+  const sel = (q.get('sel') || '').split(',').map(x => x.match(/^(.+):(-?\d+)([A-Za-z]?)$/)).filter(Boolean);
+  if (sel.length && comp) {
+    const list = [], ap = comp.structure.getAtomProxy();
+    for (const [, ch, no, ins] of sel) {
+      const sele = new NGL.Selection(`${no}${ins ? '^' + ins : ''}:${ch} and /0`), view = comp.structure.getView(sele);
+      if (!view.atomCount) continue;
+      let pick = -1; view.eachAtom(a => { if (pick < 0 || a.atomname === 'CA' || a.atomname === "C1'") pick = a.index; });
+      ap.index = pick; list.push(focusOf(ap));
+    }
+    if (list.length) { lastFocus = list; setInfo(infoBase = infoFor(list)); focusOn(list, false); }
+  }
+  const v = (q.get('v') || '').split(',').map(Number);
+  if (v.length === 16 && v.every(isFinite)) stage.viewerControls.orient(v);
+  renderAllPanels(); renderSeq();
+  // maps last, so density boxes are fetched around the shared view
+  for (const m of (sty && sty.m) || []) {
+    try {
+      if (m.t === 's') addServer(m.src, m.id, m.label, m.ch, m.box);
+      else if (m.t === 'u') await loadMap(m.src.url, {ext: m.src.ext, name: m.name}, m.name, m.kind, m.src, m.set);
+    } catch (e) { log('リンクのマップを読み込めませんでした: ' + (e.message || e)); }
+  }
+  status(`共有されたリンクの表示を開きました（${structs.map(s => s.name).join('、')}）`);
+}
+
+/* =====================================================================
+   Undo / redo of display operations
+   A snapshot of the display state (chain colours and styles, ligand/ion/water, extra
+   selections, saved groups, current selection, structure visibility, look, maps) is taken
+   shortly after each user action; when it differs from the previous one, the previous one
+   goes on the undo stack. Camera moves are not recorded. Loading or removing a structure or
+   map is not undone (the other steps still are, for what is still open).
+   ===================================================================== */
+const undoStack = [], redoStack = [];
+let undoCur = null, undoBusy = false, undoT = null;
+const clone = o => JSON.parse(JSON.stringify(o));
+function undoSnap() {
+  stash();
+  return {
+    active: structs[active] ? structs[active].sid : null,
+    g: {look: $('#look').value, outline: outlineLevel, fog: $('#fogSel').value, cartOp, bg: $('#bg').value},
+    st: structs.map(st => ({sid: st.sid, vis: st.visible !== false,
+      chains: st.chains.map(c => ({name: c.name, color: c.color, type: c.type, surf: !!c.surf, visible: c.visible})),
+      het: st.ui ? {lig: st.ui.lig, ion: st.ui.ion, wat: st.ui.wat, ligColor: st.ui.ligColor} : null,
+      extras: st.extras.map(x => ({s: x.s, t: x.t, col: x.col, elem: x.elem})),
+      groups: (st.groups || []).map(g => ({id: g.id, name: g.name, res: clone(g.res), on: !!g.on, color: g.color, style: g.style, w: g.w || 1})),
+      focus: st.lastFocus ? clone(st.lastFocus) : null})),
+    maps: maps.map(m => ({m, level: m.level, color: m.color, neg: m.neg, style: m.style, vis: !!m.visible}))
+  };
+}
+/* compare two snapshots on what they have in common (structures by id, maps by object) */
+function undoSig(a, b) {
+  const sids = new Set(b.st.map(x => x.sid)), ms = new Set(b.maps.map(x => x.m));
+  const pick = x => JSON.stringify({g: x.g, act: x.active, st: x.st.filter(t => sids.has(t.sid)), maps: x.maps.filter(t => ms.has(t.m)).map(t => [t.level, t.color, t.neg, t.style, t.vis])});
+  return [pick(a), pick({...b, st: b.st.filter(t => a.st.some(u => u.sid === t.sid)), maps: b.maps.filter(t => a.maps.some(u => u.m === t.m))})];
+}
+function undoRecord() {
+  if (undoBusy) return;
+  const now = undoSnap();
+  if (!undoCur) { undoCur = now; return undoUI(); }
+  const [a, b] = undoSig(undoCur, now);
+  const sameSet = undoCur.st.length === now.st.length && now.st.every(t => undoCur.st.some(u => u.sid === t.sid)) && undoCur.maps.length === now.maps.length;
+  if (a !== b) { undoStack.push(undoCur); if (undoStack.length > 60) undoStack.shift(); redoStack.length = 0; }
+  else if (sameSet && JSON.stringify(undoCur.g) === JSON.stringify(now.g)) { undoCur = now; return; }
+  undoCur = now; undoUI();
+}
+function undoSoon() { if (undoBusy) return; clearTimeout(undoT); undoT = setTimeout(undoRecord, 450); }
+['click', 'change', 'pointerup', 'keyup'].forEach(ev => document.addEventListener(ev, e => {
+  if (e.target && e.target.closest && e.target.closest('#undoBtn,#redoBtn')) return;
+  undoSoon();
+}, true));
+function undoUI() { $('#undoBtn').disabled = !undoStack.length; $('#redoBtn').disabled = !redoStack.length; }
+
+function undoApplyStruct(t) {
+  // works on the globals of the active structure
+  t.chains.forEach(sc => { const c = chains.find(x => x.name === sc.name); if (c) { Object.assign(c, sc); chainReps(c); } });
+  if (t.het) {
+    $('#showLig').checked = t.het.lig; $('#showIon').checked = t.het.ion; $('#showWat').checked = t.het.wat;
+    $('#ligColor').dataset.v = t.het.ligColor; $('#ligColor').style.background = t.het.ligColor;
+    applyHet();
+  }
+  if (JSON.stringify(extras.map(x => ({s: x.s, t: x.t, col: x.col, elem: x.elem}))) !== JSON.stringify(t.extras)) {
+    extras.forEach(x => { try { comp.removeRepresentation(x.rep); } catch (e) {} }); extras = [];
+    t.extras.forEach(x => { try { addExtra(x.s, x.t, x.col, x.elem); } catch (e) {} });
+    renderExtras();
+  }
+  const S = structs[active];
+  (S.groups || []).forEach(g => (g.reps || []).forEach(r => { try { comp.removeRepresentation(r); } catch (e) {} }));
+  S.groups = t.groups.map(g => ({...clone(g), reps: []}));
+  drawGroups(S); renderGroups();
+  refreshChainColored(); drawSym(); renderChains();
+}
+async function undoApply(snap) {
+  undoBusy = true; clearTimeout(undoT);
+  try {
+    stash();
+    const cur = undoSnap(), back = structs[active] ? structs[active].sid : null;
+    // global look
+    const g = snap.g, cg = cur.g;
+    if (g.look !== cg.look) { $('#look').value = g.look; applyLook(); }
+    if (g.outline !== cg.outline) setOutline(g.outline);
+    if (g.fog !== cg.fog) { $('#fogSel').value = g.fog; setFog(g.fog); }
+    if (g.cartOp !== cg.cartOp) setCartOp(g.cartOp);
+    if (g.bg !== cg.bg) { $('#bg').value = g.bg; $('#bg').dispatchEvent(new Event('change')); }
+    // structures
+    for (const t of snap.st) {
+      const i = structs.findIndex(x => x.sid === t.sid), c = cur.st.find(x => x.sid === t.sid);
+      if (i < 0 || !c) continue;
+      if (t.vis !== c.vis) setStructVisible(i, t.vis);
+      const diff = ['chains', 'het', 'extras', 'groups'].some(k => JSON.stringify(t[k]) !== JSON.stringify(c[k]));
+      if (!diff) continue;
+      if (i !== active) activate(i);
+      undoApplyStruct(t);
+      stash();
+    }
+    const bi = structs.findIndex(x => x.sid === back);
+    if (bi >= 0 && bi !== active) activate(bi);
+    // current selection (active structure only)
+    const t = snap.st.find(x => x.sid === back), c = cur.st.find(x => x.sid === back);
+    if (t && c && JSON.stringify(t.focus) !== JSON.stringify(c.focus)) {
+      if (t.focus && t.focus.length) { lastFocus = t.focus; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
+      else { clearFocusDraw(); seqMark(null); lastFocus = null; focusRef = null; $('#info').style.display = 'none'; }
+    }
+    // maps
+    let mc = false;
+    for (const t of snap.maps) {
+      const m = t.m; if (!maps.includes(m)) continue;
+      if (m.level !== t.level || m.color !== t.color || m.neg !== t.neg || m.style !== t.style) { Object.assign(m, {level: t.level, color: t.color, neg: t.neg, style: t.style}); mapReps(m); mc = true; }
+      if (!!m.visible !== t.vis) { m.visible = t.vis; m.reps.forEach(r => r.setVisibility(t.vis)); if (t.vis && m.srv) srvFetch(m.srv); mc = true; }
+    }
+    if (mc) renderMaps();
+    stash(); renderAllPanels(); renderSeq();
+  } catch (e) { log('元に戻す操作に失敗: ' + (e.message || e)); }
+  finally { undoCur = undoSnap(); undoBusy = false; undoUI(); }
+}
+function undo() {
+  clearTimeout(undoT); undoRecord();          // capture anything not yet recorded
+  if (!undoStack.length) return status('これ以上戻せません');
+  redoStack.push(undoCur);
+  undoApply(undoStack.pop()); status('1つ前の表示に戻しました');
+}
+function redo() {
+  if (!redoStack.length) return status('やり直す操作はありません');
+  undoStack.push(undoCur);
+  undoApply(redoStack.pop()); status('やり直しました');
+}
+$('#undoBtn').onclick = undo;
+$('#redoBtn').onclick = redo;
+document.addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z') return;
+  const el = e.target; if (el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && /^(text|search|number|)$/.test(el.type)))) return;
+  e.preventDefault(); e.shiftKey ? redo() : undo();
+});
+
+/* =====================================================================
+   Accidental "back" protection (phones / tablets)
+   1) History guard: one extra history entry is added (on a user tap, so browsers honour it).
+      Back button / iPhone edge swipe then only pops that entry; a notice is shown and a second
+      back leaves the page. The guard is re-armed on the next tap.
+   2) Auto-save: the work is kept in this browser (IndexedDB, never sent anywhere) every few
+      seconds and when the page is hidden; on the next open a banner offers to restore it.
+   ===================================================================== */
+let histArmed = false;
+function histArm() {
+  if (histArmed || !structs.length || !history.pushState) return;
+  try { history.pushState({shikamol: 1}, ''); histArmed = true; } catch (e) {}
+}
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, histArm, true));
+window.addEventListener('popstate', () => {
+  if (!histArmed) return;
+  histArmed = false;
+  if (!structs.length) return;
+  autoSave(true);
+  status('ページを離れないように止めました。ページを離れるには、もう一度「戻る」を押してください（作業は自動保存されています）');
+});
+window.addEventListener('beforeunload', e => { if (structs.length) { autoSave(true); e.preventDefault(); e.returnValue = ''; } });
+
+const AS_DB = 'shikamol', AS_STORE = 'autosave';
+function asDb() {
+  return new Promise((res, rej) => {
+    if (typeof indexedDB === 'undefined') return rej(new Error('no IndexedDB'));
+    const r = indexedDB.open(AS_DB, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore(AS_STORE);
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+async function asDo(mode, fn) {
+  const db = await asDb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(AS_STORE, mode), st = tx.objectStore(AS_STORE), r = fn(st);
+    tx.oncomplete = () => { db.close(); res(r && r.result); }; tx.onerror = () => { db.close(); rej(tx.error); };
+  });
+}
+let asLast = '', asBusy = false, asPrev = null, asHad = false;
+async function autoSave(force) {
+  if (asBusy || window.__noAutosave) return;
+  asBusy = true;
+  try {
+    if (!structs.length) {
+      // only forget the saved work when structures were opened and then closed in this visit
+      if (asHad && asLast !== 'empty') { await asDo('readwrite', st => st.delete('cur')); asLast = 'empty'; }
+      return;
+    }
+    asHad = true;
+    stash();
+    const {s} = await buildSession();
+    // compare without the embedded files, so an unchanged state is not written again
+    const sig = JSON.stringify(s, (k, v) => (k === 'data' && typeof v === 'string') ? v.length : (k === 'saved' ? 0 : v));
+    if (!force && sig === asLast) return;
+    await asDo('readwrite', st => st.put(s, 'cur'));
+    asLast = sig;
+  } catch (e) { log('自動保存に失敗: ' + (e.message || e)); }
+  finally { asBusy = false; }
+}
+if (typeof indexedDB !== 'undefined') setInterval(() => { if (!document.hidden) autoSave(); }, 5000);
+document.addEventListener('visibilitychange', () => { if (document.hidden) autoSave(true); });
+window.addEventListener('pagehide', () => autoSave(true));
+
+function asBanner(s) {
+  const names = (s.structs || []).map(x => x.name || (x.structure && (x.structure.id || x.structure.name))).filter(Boolean);
+  const b = document.createElement('div');
+  b.id = 'asBanner';
+  b.innerHTML = `<div><b>前回の作業が残っています</b><br><span></span></div>
+    <div class="asBtns"><button class="pri" data-a="ok">復元する</button><button data-a="no">破棄する</button></div>`;
+  b.querySelector('span').textContent = `${names.slice(0, 3).join('、')}${names.length > 3 ? ` ほか ${names.length - 3} 個` : ''}（${new Date(s.saved).toLocaleString()} の状態）`;
+  b.onclick = async e => {
+    const a = e.target.dataset && e.target.dataset.a; if (!a) return;
+    b.remove();
+    if (a === 'ok') { status('前回の作業を復元中…'); await openSessionObj(s, true); }
+    asPrev = null;
+  };
+  document.body.appendChild(b);
+}
+(async function asStartup() {
+  if (window.__noAutosave) return;
+  try {
+    const s = await asDo('readonly', st => st.get('cur'));
+    if (s && Array.isArray(s.structs) && s.structs.length) { asPrev = s; asBanner(s); }
+  } catch (e) {}
+})();
+
 /* handle for the browser console and automated tests */
 window.MV = {get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
-  chainReps, symCompAt: (a, pp) => symCompAt(a, pp), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
+  chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }
 </script>
 </body>

@@ -1,19 +1,21 @@
-# SHOWmol
+<img src="apple-touch-icon.png" width="72" align="right" alt="">
 
-**S**tructure **H**ighlighting & **O**bservation on the **W**eb
+# ShikaMol
+
+A molecular viewer that runs in your browser.
 
 **English** | [日本語](README.ja.md)
 
 A molecular viewer that runs entirely in the web browser. Load a PDB ID or a file, and you can display the structure, overlay electron density or cryo-EM maps, analyse interactions between residues, and export high-resolution images for papers — all on one screen. No installation is needed. It works in browsers on computers, iPads and smartphones.
 
-**▶ Open the viewer: https://strb-sho7.github.io/molviewer/**
+**▶ Open the viewer: https://strb-sho7.github.io/shikamol/**
 
 ---
 
 ## Getting started
 
 1. Open the address above.
-2. In the "Structure" tab on the left, type a PDB ID (e.g. `1D66`) and press "Load". You can also load a local `.pdb` / `.cif` file (drag and drop works too).
+2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". You can also load a local `.pdb` / `.cif` file (drag and drop works too).
 3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are shown as a list and as dashed lines. Click the background to clear.
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.
@@ -23,7 +25,7 @@ The interface is in Japanese by default; switch to English with the language men
 Add `?pdb=` to the end of the address to load that structure when the page opens. This is handy for handing out "today's structure" in a class.
 
 ```
-https://strb-sho7.github.io/molviewer/?pdb=1D66
+https://strb-sho7.github.io/shikamol/?pdb=7DA1
 ```
 
 ## Features
@@ -73,10 +75,12 @@ https://strb-sho7.github.io/molviewer/?pdb=1D66
 
 Recent versions of Chrome, Edge, Safari or Firefox. A browser with WebGL is required.
 
+If index.html is downloaded and opened on its own, without ngl.js in the same folder, NGL is loaded from the internet (unpkg).
+
 ## Libraries, data and methods
 
 **Library**
-- NGL Viewer (MIT licence)
+- NGL Viewer 2.3.1 (MIT licence). ShikaMol loads `ngl.js` from the same folder (the unmodified `dist/ngl.js` of the npm package ngl 2.3.1). Licence texts, including those of three.js, Mol\*, chroma.js, sprintf-js and JS-Signals contained in `ngl.js`, are in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt).
   - Rose AS, Hildebrand PW. NGL Viewer: a web application for molecular visualization. *Nucleic Acids Res.* 2015;43:W576–W579. doi:[10.1093/nar/gkv402](https://doi.org/10.1093/nar/gkv402)
   - Rose AS, et al. NGL viewer: web-based molecular graphics for large complexes. *Bioinformatics.* 2018;34:3755–3758. doi:[10.1093/bioinformatics/bty419](https://doi.org/10.1093/bioinformatics/bty419)
 
