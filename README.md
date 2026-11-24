@@ -48,6 +48,8 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis
 - Biological assemblies: load the assembly coordinates registered at RCSB
 - Load and superpose multiple structures
+- Keep a selection in each structure: clicking a residue in another structure leaves the previous structure's sticks and interactions in place, so any residues can be compared side by side, even when numbering differs
+- Linked display: the residues with the same chain name and number as the selection are shown as sticks in the other structures too, with interactions calculated for each (for comparing apo and holo forms, mutants, etc.); saved selections can be applied to all structures at once
 
 **Electron density and maps**
 - X-ray structures: 2mFo-DFc / mFo-DFc maps from the PDBe density server, shown in a sphere around the clicked residue
