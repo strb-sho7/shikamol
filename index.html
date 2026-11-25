@@ -36,6 +36,13 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #symList label.on{color:#ffd27a}
 #symList code{font-size:11px;opacity:.85}
 #lblLayer{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+#scaleBar{position:absolute;right:16px;bottom:14px;display:none;text-align:center;font:700 13px Arial,Helvetica,sans-serif;pointer-events:none}
+#scaleBar .bar{height:4px;margin-top:3px;border-radius:1px}
+.mlbl{position:absolute;left:0;top:0;white-space:nowrap;pointer-events:none;font:700 13px Arial,Helvetica,sans-serif;line-height:1.15;padding:0 2px}
+#measList .mrow{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #22262e;font-size:12px}
+#measList .mrow b{min-width:5.5em;text-align:right}
+#measList .mrow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#measKind{margin-left:2px}
 #lblLayer svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 .rlbl{position:absolute;left:0;top:0;white-space:nowrap;pointer-events:auto;cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;line-height:1.15;padding:0 1px;font-family:Arial,Helvetica,sans-serif}
 .rlbl.drag{outline:1px dashed #4da3ff}
@@ -329,6 +336,11 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   </div>
 
   <div class="tabpane" data-tab="ana">
+  <details class="card" id="measBox"><summary><b>測定（距離・角度・二面角）</b> <span class="small" id="measCount"></span></summary>
+    <div class="small">分子ウィンドウ右上の「📏 測定」を押してから、原子を順にタップします。原子をはっきり選ぶには、スティック表示の部分をタップしてください（カートゥーンをタップすると Cα になります）。</div>
+    <div id="measList"></div>
+    <div class="row"><button id="measCopy">一覧をコピー</button><button id="measClear">すべて消す</button></div>
+  </details>
   <h2>Chain間の相互作用 <span class="small an"></span></h2>
   <div class="row">
     <div class="ifpair"><select id="ifA"></select><span class="small">と</span><select id="ifB"></select></div>
@@ -501,6 +513,9 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     </select></div>
   <div class="frow"><span class="fl">カートゥーン<small>透明度</small></span><div class="fc"><input type="range" id="cartOp" min="0" max="90" step="5" value="0"><span class="lv">0%</span></div></div>
   <div class="frow"><span class="fl">まとめて設定</span><div class="fc btns"><button id="toonPreset" title="質感をフラット、背景を白、輪郭線を標準、奥のぼかしを強めにします">イラスト風</button><button id="softPreset" title="Chain の色を淡い色にし、質感を「淡い」、背景を白、輪郭線を細めにします">淡い色調</button></div></div>
+  <div class="frow"><span class="fl">スケールバー</span><label title="画面の右下に、拡大率に合わせた長さ（Å）の目盛りを出します。論文用の画像にも入ります。正確なのは平行投影のときで、透視投影では画面中心の奥行きでの目安です"><input type="checkbox" id="scaleOn"> 表示する</label></div>
+  <div class="frow"><span class="fl">分子の寸法</span><div class="fc"><label><input type="checkbox" id="dimOn"> 表示</label><select id="dimTarget" title="寸法を測る対象"></select></div></div>
+  <div class="small" id="dimInfo"></div>
   <div class="row">
     <label><input type="checkbox" id="seqOn" checked> 配列（1文字）を画面下に表示</label>
   </div>
@@ -608,7 +623,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="viewport"></div>
     <div id="lblLayer"><svg id="lblLines"></svg></div>
     <div id="boxLayer"><div id="boxRect"></div></div>
-    <div id="vtools"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div>
+    <div id="vtools"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div>
     <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）">★ 選択を保存</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
     <div id="flist"></div>
     <div id="status">PDB IDを入力して「読込」</div>
@@ -842,7 +857,7 @@ const EXACT = new Map(Object.entries({
   'クリックした残基から指定した半径の内側はそのまま、外側を薄くします（濃さ 0 で外側を消します）。表面・リガンド・ほかの構造も外側として薄くなります。「色を背景に近づける」は透けないので、手前にある部分がクリックした場所を隠すことがあります。':
     'Inside the chosen radius stays as is; everything outside is faded (strength 0 hides it), including surfaces, ligands and other structures. "Blend toward background" is opaque, so parts in front can hide the site.',
   '薄くする方法': 'Fade by', '色を背景に近づける（透けない）': 'Blend toward background (opaque)', '半透明（手前も透ける）': 'Transparent (see-through)', '外側の濃さ': 'Outside strength',
-  '周りを薄く': 'Fade surroundings', '▭ 範囲選択': '▭ Box select', 'PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください。複数のときはスペースかカンマで区切ります': 'Enter a PDB ID of 4 characters (e.g. 7DA1) or 12 characters starting with pdb_ (e.g. pdb_00007da1). Separate several IDs with spaces or commas', 'PDB ID（例 7DA1、複数は 7DA1 1D66）': 'PDB ID (e.g. 7DA1; several: 7DA1 1D66)', 'スペースかカンマで区切ると、複数の ID を順に読み込みます': 'Separate several IDs with spaces or commas to load them one after another', '文字の色': 'Text colour', '白・黒（背景に合わせる）': 'White/black (to suit the background)', 'ラベルの文字色。「Chainの色」はカートゥーンと同じ色（N末→C末の色分けのときはその残基の色）。白背景では淡い色を少し濃くして読みやすくします': 'Label text colour. "Chain colour" uses the cartoon colour (the residue’s colour with N→C colouring); on a white background pale colours are darkened a little for readability', '自動（おすすめ）': 'Auto (recommended)', '構造ベース（配列に頼らない）': 'Structure-based (sequence-independent)', 'Cα の対応付けの方法': 'How Cα atoms are paired', '自動：BLOSUM62 の配列アライメントで Cα を対応付け、配列一致度が 30% 未満のときや当てはまりが悪いときは構造ベース（TM-align と同じ考え方）に切り替えます。外れ値（RMSD の2倍を超えるずれ）を除きながら5回まで当てはめ直します（PyMOL の align と同じ）。': 'Auto: Cα atoms are paired by a BLOSUM62 sequence alignment; below 30% identity, or when the fit is poor, it switches to a structure-based alignment (the TM-align idea). Pairs deviating more than 2 × RMSD are rejected over up to 5 cycles (as in PyMOL align).', '全Chainを同じ色にする（構造全体を1色で塗ります）': 'Give all chains the same colour (colour the whole structure)', '📌 残す': '📌 Keep', '📌 残す中': '📌 Keeping', '複数の構造': 'Several structures', '2つ以上開いたとき': 'when two or more are open', '1つの構造だけ選択': 'Select in one structure at a time', '構造ごとに選択を残す': 'Keep a selection in each structure', '同じ番号を連動して表示': 'Link the same residue numbers', '構造を2つ以上開いているときの選択の扱い': 'How selections work with two or more structures', '「構造ごとに選択を残す」：別の構造の残基をクリックしても前の構造の表示が残り、構造ごとに好きな残基を並べて比べられます（番号がずれていても使えます）。「同じ番号を連動して表示」：Chain 名と残基番号が同じ残基を、ほかの構造にも自動で表示します。': '"Keep a selection in each structure": clicking a residue in another structure leaves the previous structure’s display in place, so you can compare any residues side by side (works even when numbering differs). "Link the same residue numbers": the residues with the same chain name and number are shown in the other structures automatically.', 'ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します': 'Keep this structure’s selection (sticks and interactions) when you click a residue in another structure', 'ほかの構造の残基をクリックしても、前の構造の選択（スティックと相互作用）を残します。背景をクリックすると全部消えます': 'Selections stay in each structure when you click residues in another one. Click the background to clear them all', '構造ごとの選択を残さない表示に戻しました（いつも1つの構造だけ）': 'Back to one selection at a time', '🔗 連動': '🔗 Link', '🔗 連動中': '🔗 Linked', 'ほかの構造にも同じ残基を表示（連動）': 'Show the same residues in the other structures (linked)', '連動表示をオフにしました': 'Linked display turned off', 'ほかの構造でも、Chain名と残基番号が同じ残基を表示します（相互作用も構造ごとに計算します）': 'The residues with the same chain name and number are shown in the other structures too (interactions are calculated for each structure)', '構造を2つ以上開いているとき、選んだ残基と同じ Chain 名・残基番号の残基を、ほかの構造でもスティック表示し、相互作用も構造ごとに計算します（アポ型とホロ型、変異体などの比較向け）': 'With two or more structures open, the residues with the same chain name and number as the selection are shown as sticks in the other structures as well, and interactions are calculated for each structure (for comparing apo and holo forms, mutants, etc.)', 'ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）': 'Show the residues with the same chain name and number as sticks in the other structures (interactions per structure)', ': ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': ': Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', ': 手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra & Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': ': Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', '表をコピー': 'Copy table', 'ConSurfの結果': 'ConSurf results', 'MSAから計算': 'From an MSA', '出力:': 'Output:', '⑤ 保存と共有': '⑤ Save & share', '表示の状態を .json に保存、またはリンクで共有': 'save the view as .json, or share it as a link', '🔗 今の表示をリンクで共有': '🔗 Share this view as a link', '処理中': 'Working', 'ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': 'Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', 'をダウンロードして読み込みます。グレード（1〜9）と色は ConSurf の出力そのものです。論文の図にはこちらを使ってください。': 'and load it here. Grades (1–9) and colours are exactly ConSurf\u2019s output; use this for figures in papers.', '手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra &amp; Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': 'Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', 'アラインメントの中から、選んだChainの配列に最も近い配列を自動で探して対応づけます。グレードは ConSurf と同じく、平均からの差を保存側・可変側それぞれ 4.5 区間に分けた 9 段階です。その位置に残基をもつ配列が 6 本未満の位置と、ギャップが 30% を超える位置（元のスクリプトが点数を付けない位置）は「データ不足」（黄色）にします。': 'The sequence in the alignment closest to the selected chain is found and mapped automatically. As in ConSurf, the nine grades split the deviation from the mean into 4.5 intervals on the conserved and variable sides. Positions with fewer than 6 sequences, or more than 30% gaps (positions the original script does not score), are marked "insufficient data" (yellow).', '色分けはカートゥーン・スティック・表面と、画面下の配列に反映されます。表面の色が「Chainの色」のとき、表面も保存度で塗ります。': 'Colours are applied to cartoons, sticks, surfaces and the sequence strip. When the surface colour is "Chain colour", the surface is coloured by conservation too.', 'PDB ID で開いた構造、Chainごとの色と表示形式、リガンド・水の表示、保存した選択、選んでいる残基、視点、見た目、サーバーから読み込んだ電子密度（レベルと色）がリンクに入ります。リンクを開いた人は同じ画面から始められます。手元のファイル（構造・マップ・MTZ）はリンクに入りません（全部渡すときはセッションの .json を送ってください）。': 'The link holds the structures opened by PDB ID, chain colours and styles, ligand and water display, saved selections, the selected residues, the viewpoint, the look, and density fetched from servers (level and colour). Whoever opens it starts from the same screen. Local files (structures, maps, MTZ) are not included; send the session .json to pass on everything.', '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with', '（Mac は': ' (Mac:', 'でオフ）': 'turns it off)', 'ShikaMol — ブラウザで動く分子ビューア': 'ShikaMol — a molecular viewer in your browser', '色覚の多様性に配慮した配色（viridis）': 'Colour-blind-safe palette (viridis)', '硫黄は原子が大きく、S が関わる水素結合は長めになるため（Mol* は 4.1 Å まで）': 'Sulfur is larger, so H-bonds involving S are longer (Mol* allows up to 4.1 Å)', 'Lys・Arg・His と Asp・Glu・リン酸のように、電荷をもつ基どうしの水素結合は塩橋と同じ相互作用です。オフにすると「水素結合」と「塩橋」の2行で表示します': 'An H-bond between charged groups (Lys, Arg, His with Asp, Glu, phosphate) is the same interaction as the salt bridge. Turn off to list it as two rows, "H-bond" and "Salt bridge"', 'タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます': 'Whether protein sticks include the main chain (N, C, O). With "side chain only", the main chain is still drawn for residues whose main chain takes part in an interaction', '核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます': 'Which part of nucleotides is drawn as sticks. A hidden part is still drawn for nucleotides where it takes part in an interaction', '疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）': 'How hydrophobic contacts (carbon–carbon) are drawn. Dots are fine points on the facing sides of the two carbons (a 3D take on LigPlot+ "eyelashes")', '1つ前の表示に戻す（Ctrl／⌘＋Z）': 'Undo the last change (Ctrl/⌘+Z)', '戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）': 'Redo (Ctrl/⌘+Shift+Z)', 'オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します': 'While on, dragging a rectangle in the viewer selects the residues inside it (dragging with Alt/Option does the same). With Ctrl/⌘/Shift held, or with "+ Add to selection" on, they are added to the selection', 'いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）': 'Save the current selection under a name (listed under "Saved selections and history" in the Structures tab)', 'オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け': 'While on, tapped (clicked) residues are added to the selection, like holding Ctrl/⌘. For tablets', '疎水性の描き方': 'Hydrophobic contacts', 'Chain間の解析にも共通': 'also for chain interfaces', 'ドット': 'Dots', '点線': 'Dashed line', 'イラスト風': 'Illustration', '淡い色調': 'Soft colours', '解像度の目安': 'dpi presets', '黒': 'Black', '白': 'White', '紺グレー': 'Slate', '標準（少し光沢）': 'Standard (slight gloss)', 'マット（光沢なし）': 'Matte (no gloss)', 'フラット（イラスト風）': 'Flat (illustration-like)', '光沢あり': 'Glossy', '淡い（やわらかい光）': 'Soft (gentle light)', 'なし': 'None', '細め': 'Thin', '太め': 'Thick', '強め': 'Strong', '解析用（残基の上・奥は薄く）': 'Analysis (on the residues, dimmed when behind)', '図用（動かせる・重ならないように並べる）': 'Figure (movable, no overlaps)', 'Arg51': 'Arg51', 'R51': 'R51', 'ARG51': 'ARG51', '界面解析のときだけ': 'Interface analysis only', '付ける': 'Always', '付けない': 'Never', '小': 'Small', '中': 'Medium', '大': 'Large', '特大': 'Extra large', '背景': 'Background', '投影': 'Projection', '質感': 'Look', '輪郭線': 'Outline', '奥のぼかし': 'Depth fade', '透明度': 'transparency', 'まとめて設定': 'Presets', '表記': 'Style', 'Chain名': 'Chain name', '文字の大きさ': 'Text size', '論文の段組': 'journal columns', '1段': '1 col', '1.5段': '1.5 col', '2段': '2 col', '供与体–受容体': 'donor–acceptor', '炭素どうし': 'carbon–carbon', '環の重心間': 'ring centroids', 'カチオン–π': 'Cation–π', '電荷中心–環の重心': 'charge–ring centroid', '手元のマップ': 'Local map', 'ファイルの種類': 'file type', '開く…': 'Open…', 'すべてのマップ': 'all maps', 'と': 'and', '主鎖＋側鎖': 'Main + side chain', '側鎖のみ': 'Side chain only', 'タンパク質': 'Protein', '核酸': 'Nucleic acid', 'スティックで描く部分': 'Parts drawn as sticks', '全体': 'Whole', '骨格のみ（リン酸・糖）': 'Backbone only (phosphate, sugar)', '塩基のみ': 'Base only', '↶ 戻す': '↶ Undo', '1つ前の表示に戻しました': 'Undid the last change', 'やり直しました': 'Redone', 'これ以上戻せません': 'Nothing more to undo', 'やり直す操作はありません': 'Nothing to redo', '四角の中に残基がありませんでした': 'No residues inside the box', '範囲選択: オフ（ドラッグで回転に戻ります）': 'Box select: off (dragging rotates again)',
+  '周りを薄く': 'Fade surroundings', '▭ 範囲選択': '▭ Box select', '配列アライメント': 'Sequence alignment', '残基番号': 'Residue numbers', '📏 測定': '📏 Measure', '距離（2原子）': 'Distance (2 atoms)', '角度（3原子）': 'Angle (3 atoms)', '二面角（4原子）': 'Dihedral (4 atoms)', '測るもの': 'What to measure', 'オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）': 'While on, tapped (clicked) atoms are measured: distance, angle or dihedral (Esc turns it off)', '測定（距離・角度・二面角）': 'Measurements (distance, angle, dihedral)', '分子ウィンドウ右上の「📏 測定」を押してから、原子を順にタップします。原子をはっきり選ぶには、スティック表示の部分をタップしてください（カートゥーンをタップすると Cα になります）。': 'Press "📏 Measure" at the top right of the viewer, then tap the atoms in order. To pick a particular atom, tap where it is shown as sticks (tapping a cartoon picks the Cα).', '一覧をコピー': 'Copy list', 'まだ測定はありません': 'No measurements yet', 'この測定を消す': 'Remove this measurement', 'スケールバー': 'Scale bar', '表示する': 'Show', '分子の寸法': 'Dimensions', '寸法を測る対象': 'What to measure', '画面の右下に、拡大率に合わせた長さ（Å）の目盛りを出します。論文用の画像にも入ります。正確なのは平行投影のときで、透視投影では画面中心の奥行きでの目安です': 'A bar of a round length (Å) for the current zoom at the bottom right; included in exported images. Exact with orthographic projection; with perspective it holds at the depth of the screen centre', '透視投影なので、画面中心の奥行きでの目安です（正確に使うときは平行投影にしてください）': 'Perspective projection: valid at the depth of the screen centre (use orthographic projection for exact use)', '測定をすべて消しました': 'All measurements cleared', '測定の一覧をコピーしました（表計算ソフトに貼り付けられます）': 'Measurements copied (paste into a spreadsheet)', 'コピーする測定がありません': 'No measurements to copy', '測定: オン。原子を順にタップしてください（右の欄で距離・角度・二面角を切り替え。Esc かもう一度押すとオフ）': 'Measure: on. Tap atoms in order (choose distance, angle or dihedral on the right; Esc or press again to turn off)', '測定: オフ（測った値は残ります。「解析」タブの「測定」で消せます）': 'Measure: off (the values stay; remove them under "Measurements" in the Analysis tab)', 'スケールバーを表示しました。透視投影では手前と奥で縮尺が違うので、正確に使うときは「投影」を平行投影にしてください': 'Scale bar shown. With perspective the scale differs between front and back; for exact use set "Projection" to orthographic', '寸法を測れる原子がありません': 'No atoms to measure', 'PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください。複数のときはスペースかカンマで区切ります': 'Enter a PDB ID of 4 characters (e.g. 7DA1) or 12 characters starting with pdb_ (e.g. pdb_00007da1). Separate several IDs with spaces or commas', 'PDB ID（例 7DA1、複数は 7DA1 1D66）': 'PDB ID (e.g. 7DA1; several: 7DA1 1D66)', 'スペースかカンマで区切ると、複数の ID を順に読み込みます': 'Separate several IDs with spaces or commas to load them one after another', '文字の色': 'Text colour', '白・黒（背景に合わせる）': 'White/black (to suit the background)', 'ラベルの文字色。「Chainの色」はカートゥーンと同じ色（N末→C末の色分けのときはその残基の色）。白背景では淡い色を少し濃くして読みやすくします': 'Label text colour. "Chain colour" uses the cartoon colour (the residue’s colour with N→C colouring); on a white background pale colours are darkened a little for readability', '自動（おすすめ）': 'Auto (recommended)', '構造ベース（配列に頼らない）': 'Structure-based (sequence-independent)', 'Cα の対応付けの方法': 'How Cα atoms are paired', '自動：BLOSUM62 の配列アライメントで Cα を対応付け、配列一致度が 30% 未満のときや当てはまりが悪いときは構造ベース（TM-align と同じ考え方）に切り替えます。外れ値（RMSD の2倍を超えるずれ）を除きながら5回まで当てはめ直します（PyMOL の align と同じ）。': 'Auto: Cα atoms are paired by a BLOSUM62 sequence alignment; below 30% identity, or when the fit is poor, it switches to a structure-based alignment (the TM-align idea). Pairs deviating more than 2 × RMSD are rejected over up to 5 cycles (as in PyMOL align).', '全Chainを同じ色にする（構造全体を1色で塗ります）': 'Give all chains the same colour (colour the whole structure)', '📌 残す': '📌 Keep', '📌 残す中': '📌 Keeping', '複数の構造': 'Several structures', '2つ以上開いたとき': 'when two or more are open', '1つの構造だけ選択': 'Select in one structure at a time', '構造ごとに選択を残す': 'Keep a selection in each structure', '同じ番号を連動して表示': 'Link the same residue numbers', '構造を2つ以上開いているときの選択の扱い': 'How selections work with two or more structures', '「構造ごとに選択を残す」：別の構造の残基をクリックしても前の構造の表示が残り、構造ごとに好きな残基を並べて比べられます（番号がずれていても使えます）。「同じ番号を連動して表示」：Chain 名と残基番号が同じ残基を、ほかの構造にも自動で表示します。': '"Keep a selection in each structure": clicking a residue in another structure leaves the previous structure’s display in place, so you can compare any residues side by side (works even when numbering differs). "Link the same residue numbers": the residues with the same chain name and number are shown in the other structures automatically.', 'ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します': 'Keep this structure’s selection (sticks and interactions) when you click a residue in another structure', 'ほかの構造の残基をクリックしても、前の構造の選択（スティックと相互作用）を残します。背景をクリックすると全部消えます': 'Selections stay in each structure when you click residues in another one. Click the background to clear them all', '構造ごとの選択を残さない表示に戻しました（いつも1つの構造だけ）': 'Back to one selection at a time', '🔗 連動': '🔗 Link', '🔗 連動中': '🔗 Linked', 'ほかの構造にも同じ残基を表示（連動）': 'Show the same residues in the other structures (linked)', '連動表示をオフにしました': 'Linked display turned off', 'ほかの構造でも、Chain名と残基番号が同じ残基を表示します（相互作用も構造ごとに計算します）': 'The residues with the same chain name and number are shown in the other structures too (interactions are calculated for each structure)', '構造を2つ以上開いているとき、選んだ残基と同じ Chain 名・残基番号の残基を、ほかの構造でもスティック表示し、相互作用も構造ごとに計算します（アポ型とホロ型、変異体などの比較向け）': 'With two or more structures open, the residues with the same chain name and number as the selection are shown as sticks in the other structures as well, and interactions are calculated for each structure (for comparing apo and holo forms, mutants, etc.)', 'ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）': 'Show the residues with the same chain name and number as sticks in the other structures (interactions per structure)', ': ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': ': Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', ': 手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra & Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': ': Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', '表をコピー': 'Copy table', 'ConSurfの結果': 'ConSurf results', 'MSAから計算': 'From an MSA', '出力:': 'Output:', '⑤ 保存と共有': '⑤ Save & share', '表示の状態を .json に保存、またはリンクで共有': 'save the view as .json, or share it as a link', '🔗 今の表示をリンクで共有': '🔗 Share this view as a link', '処理中': 'Working', 'ConSurf サーバー（consurf.tau.ac.il）で計算し、結果ページから': 'Run the ConSurf server (consurf.tau.ac.il) and, from the results page, download', 'をダウンロードして読み込みます。グレード（1〜9）と色は ConSurf の出力そのものです。論文の図にはこちらを使ってください。': 'and load it here. Grades (1–9) and colours are exactly ConSurf\u2019s output; use this for figures in papers.', '手元の多重配列アラインメント（FASTA・A3M・Clustal・Stockholm）から、Jensen–Shannon divergence（Capra &amp; Singh 2007、BLOSUM62 の背景頻度、Henikoff の配列重み、前後3残基の窓で平滑化）で保存度を計算します。ConSurf の Rate4Site（系統樹を使うベイズ推定）とは別の方法なので、グレードは近い傾向になりますが一致はしません。': 'Conservation is calculated from your own multiple sequence alignment (FASTA, A3M, Clustal, Stockholm) as Jensen–Shannon divergence (Capra & Singh 2007; BLOSUM62 background, Henikoff sequence weights, smoothed over a ±3-residue window). This differs from ConSurf\u2019s Rate4Site (Bayesian, tree-based), so grades follow a similar trend but do not match exactly.', 'アラインメントの中から、選んだChainの配列に最も近い配列を自動で探して対応づけます。グレードは ConSurf と同じく、平均からの差を保存側・可変側それぞれ 4.5 区間に分けた 9 段階です。その位置に残基をもつ配列が 6 本未満の位置と、ギャップが 30% を超える位置（元のスクリプトが点数を付けない位置）は「データ不足」（黄色）にします。': 'The sequence in the alignment closest to the selected chain is found and mapped automatically. As in ConSurf, the nine grades split the deviation from the mean into 4.5 intervals on the conserved and variable sides. Positions with fewer than 6 sequences, or more than 30% gaps (positions the original script does not score), are marked "insufficient data" (yellow).', '色分けはカートゥーン・スティック・表面と、画面下の配列に反映されます。表面の色が「Chainの色」のとき、表面も保存度で塗ります。': 'Colours are applied to cartoons, sticks, surfaces and the sequence strip. When the surface colour is "Chain colour", the surface is coloured by conservation too.', 'PDB ID で開いた構造、Chainごとの色と表示形式、リガンド・水の表示、保存した選択、選んでいる残基、視点、見た目、サーバーから読み込んだ電子密度（レベルと色）がリンクに入ります。リンクを開いた人は同じ画面から始められます。手元のファイル（構造・マップ・MTZ）はリンクに入りません（全部渡すときはセッションの .json を送ってください）。': 'The link holds the structures opened by PDB ID, chain colours and styles, ligand and water display, saved selections, the selected residues, the viewpoint, the look, and density fetched from servers (level and colour). Whoever opens it starts from the same screen. Local files (structures, maps, MTZ) are not included; send the session .json to pass on everything.', '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with', '（Mac は': ' (Mac:', 'でオフ）': 'turns it off)', 'ShikaMol — ブラウザで動く分子ビューア': 'ShikaMol — a molecular viewer in your browser', '色覚の多様性に配慮した配色（viridis）': 'Colour-blind-safe palette (viridis)', '硫黄は原子が大きく、S が関わる水素結合は長めになるため（Mol* は 4.1 Å まで）': 'Sulfur is larger, so H-bonds involving S are longer (Mol* allows up to 4.1 Å)', 'Lys・Arg・His と Asp・Glu・リン酸のように、電荷をもつ基どうしの水素結合は塩橋と同じ相互作用です。オフにすると「水素結合」と「塩橋」の2行で表示します': 'An H-bond between charged groups (Lys, Arg, His with Asp, Glu, phosphate) is the same interaction as the salt bridge. Turn off to list it as two rows, "H-bond" and "Salt bridge"', 'タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます': 'Whether protein sticks include the main chain (N, C, O). With "side chain only", the main chain is still drawn for residues whose main chain takes part in an interaction', '核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます': 'Which part of nucleotides is drawn as sticks. A hidden part is still drawn for nucleotides where it takes part in an interaction', '疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）': 'How hydrophobic contacts (carbon–carbon) are drawn. Dots are fine points on the facing sides of the two carbons (a 3D take on LigPlot+ "eyelashes")', '1つ前の表示に戻す（Ctrl／⌘＋Z）': 'Undo the last change (Ctrl/⌘+Z)', '戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）': 'Redo (Ctrl/⌘+Shift+Z)', 'オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します': 'While on, dragging a rectangle in the viewer selects the residues inside it (dragging with Alt/Option does the same). With Ctrl/⌘/Shift held, or with "+ Add to selection" on, they are added to the selection', 'いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）': 'Save the current selection under a name (listed under "Saved selections and history" in the Structures tab)', 'オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け': 'While on, tapped (clicked) residues are added to the selection, like holding Ctrl/⌘. For tablets', '疎水性の描き方': 'Hydrophobic contacts', 'Chain間の解析にも共通': 'also for chain interfaces', 'ドット': 'Dots', '点線': 'Dashed line', 'イラスト風': 'Illustration', '淡い色調': 'Soft colours', '解像度の目安': 'dpi presets', '黒': 'Black', '白': 'White', '紺グレー': 'Slate', '標準（少し光沢）': 'Standard (slight gloss)', 'マット（光沢なし）': 'Matte (no gloss)', 'フラット（イラスト風）': 'Flat (illustration-like)', '光沢あり': 'Glossy', '淡い（やわらかい光）': 'Soft (gentle light)', 'なし': 'None', '細め': 'Thin', '太め': 'Thick', '強め': 'Strong', '解析用（残基の上・奥は薄く）': 'Analysis (on the residues, dimmed when behind)', '図用（動かせる・重ならないように並べる）': 'Figure (movable, no overlaps)', 'Arg51': 'Arg51', 'R51': 'R51', 'ARG51': 'ARG51', '界面解析のときだけ': 'Interface analysis only', '付ける': 'Always', '付けない': 'Never', '小': 'Small', '中': 'Medium', '大': 'Large', '特大': 'Extra large', '背景': 'Background', '投影': 'Projection', '質感': 'Look', '輪郭線': 'Outline', '奥のぼかし': 'Depth fade', '透明度': 'transparency', 'まとめて設定': 'Presets', '表記': 'Style', 'Chain名': 'Chain name', '文字の大きさ': 'Text size', '論文の段組': 'journal columns', '1段': '1 col', '1.5段': '1.5 col', '2段': '2 col', '供与体–受容体': 'donor–acceptor', '炭素どうし': 'carbon–carbon', '環の重心間': 'ring centroids', 'カチオン–π': 'Cation–π', '電荷中心–環の重心': 'charge–ring centroid', '手元のマップ': 'Local map', 'ファイルの種類': 'file type', '開く…': 'Open…', 'すべてのマップ': 'all maps', 'と': 'and', '主鎖＋側鎖': 'Main + side chain', '側鎖のみ': 'Side chain only', 'タンパク質': 'Protein', '核酸': 'Nucleic acid', 'スティックで描く部分': 'Parts drawn as sticks', '全体': 'Whole', '骨格のみ（リン酸・糖）': 'Backbone only (phosphate, sugar)', '塩基のみ': 'Base only', '↶ 戻す': '↶ Undo', '1つ前の表示に戻しました': 'Undid the last change', 'やり直しました': 'Redone', 'これ以上戻せません': 'Nothing more to undo', 'やり直す操作はありません': 'Nothing to redo', '四角の中に残基がありませんでした': 'No residues inside the box', '範囲選択: オフ（ドラッグで回転に戻ります）': 'Box select: off (dragging rotates again)',
   '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または ': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with ', '（Mac は ': ' (Mac: ', '）を押しながらドラッグ。四角の中の残基をまとめて選択（': '). Selects the residues inside the box (', ' でオフ）': ' turns it off)', '＋ 追加選択': '+ Add to selection', '追加選択: オフ': 'Add to selection: off',
   'タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン': 'Tablet: one finger rotates, two fingers zoom and pan. On the sequence, hold a letter briefly, then slide to select a stretch. To pick several residues, turn on "+ Add to selection" in the info box', '★ 選択を保存': '★ Save selection', '選択の保存と履歴': 'Saved selections and history', '表示': 'Show', '＋追加': '+ Add', '★ 保存': '★ Save',
   '選んだ残基の周囲5Åもスティック表示': 'Also show residues within 5 Å as sticks', '選んだ場所にズーム': 'Zoom to the selection',
@@ -967,6 +982,13 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^(距離|角度|二面角): (.+?)（(.+)）$/, (m, k, v, a) => `${{'距離': 'Distance', '角度': 'Angle', '二面角': 'Dihedral'}[k]}: ${v} (${a})`),
+  P(/^(距離|角度|二面角): (\d+) 個目の原子 (.+?) を選びました。あと (\d+) 個$/, (m, k, n, a, r) => `${{'距離': 'Distance', '角度': 'Angle', '二面角': 'Dihedral'}[k]}: atom ${n} ${a} picked; ${r} more`),
+  P(/^(.+?)：最大径 (.+?) Å、主軸方向 (.+?) Å（重原子 (.+?) 個、水を除く）$/, (m, t, d, l, n) => `${t.replace(/ 全体$/, ' (whole)')}: maximum diameter ${d} Å, ${l} Å along the principal axes (${n} heavy atoms, water excluded)`),
+  P(/^最大径 (.+)$/, (m, d) => `Max. diameter ${d}`),
+  P(/^(.+) 全体$/, (m, n) => `${n} (whole)`),
+  P(/^(距離|角度|二面角)：(.+)$/, (m, k, a) => `${{'距離': 'Distance', '角度': 'Angle', '二面角': 'Dihedral'}[k]}: ${a}`),
+  P(/^(\d+) 件$/, (m, n) => `${n}`),
   P(/^(.+?) を読み込み中…（(\d+) \/ (\d+)）$/, (m, id, k, n) => `Loading ${id}… (${k} / ${n})`),
   P(/^(?:(\d+) 個を読み込みました（(.+?)）)?。?(?:読み込めなかった ID: (.+?)（登録されていない ID か、通信の失敗の可能性があります）)?。?(?:ID の形式ではないため飛ばしたもの: (.+))?$/, (m, n, ok, f, b) =>
     [n ? `Loaded ${n} structure(s) (${ok.replace(/、/g, ', ')})` : '', f ? `Could not load: ${f.replace(/、/g, ', ')} (not a released ID, or a network problem)` : '', b ? `Skipped (not an ID): ${b.replace(/、/g, ', ')}` : ''].filter(Boolean).join('. ')),
@@ -1274,6 +1296,7 @@ function renderAllPanels() {
   renderStructs(); renderChains(); renderExtras(); fillIfSelects(); fillConsChain(); renderCons(); renderEmHint(); renderIfc(); renderSeq(); renderGroups(); renderSymList();
   document.querySelectorAll('.an').forEach(x => x.textContent = structs[active] ? '— ' + structs[active].name : '');
   linkUI();
+  try { dimPanels(); if (measures.length || measPend.length) measDraw(); } catch (e) {}
 }
 /* Disulfide bonds that the file does not record (no CONECT / struct_conn, e.g. files written by refinement or
    model-building programs, predicted models, or structures rebuilt from symmetry mates): bond two cysteine SG atoms
@@ -1616,6 +1639,7 @@ function afterMove(msg) {
   if (sym) { clearSymComps(); sym = null; $('#symOn').checked = false; $('#symInfo').textContent = '構造を動かしたため、対称分子の表示を解除しました（元の位置に戻すと再び使えます）。'; }
   if (ifc) runIfc(ifc.chA, ifc.chB, ifc.cut, false);
   renderStructs();
+  try { measRefresh(); dimDraw(true); } catch (e) {}
   if (msg) $('#supInfo').textContent = msg;
 }
 /* superpose the active structure onto structs[refIdx]; returns a result object or a string error */
@@ -1735,9 +1759,38 @@ const chainColor = name => { const c = chains.find(x => x.name === name); return
 
 function chainReps(ch) {
   ch.reps.forEach(r => comp.removeRepresentation(r)); ch.reps = [];
+  bridgesSoon();
   if (!ch.visible) return;
   repSpecs(ch).forEach(([t, p]) => ch.reps.push(comp.addRepresentation(t, p)));
   spotRefresh();
+}
+/* whole-chain displays: draw the covalent bonds between chains (and to shown ligands) when both sides show those atoms.
+   Run once after a batch of chainReps() calls. */
+const SC_TYPES = {'cartoon+sc': 'licorice', licorice: 'licorice', 'ball+stick': 'ball+stick', line: 'line', spacefill: null};
+let bridgeT = 0;
+function bridgesSoon() { if (bridgeT) return; bridgeT = 1; Promise.resolve().then(() => { bridgeT = 0; try { updateBridges(); } catch (e) {} }); }
+function updateBridges() {
+  const c = comp; if (!c || !c.structure) return;
+  (c.__bridges || []).forEach(r => { try { c.removeRepresentation(r); } catch (e) {} }); c.__bridges = [];
+  const cb = crossBonds(c.structure, null); if (!cb.length) return;
+  const byName = new Map(chains.map(ch => [ch.name, ch])), ligOn = $('#showLig').checked, ap = c.structure.getAtomProxy();
+  const groups = new Map();       // style -> atoms
+  cb.forEach(([i, j]) => {
+    const ends = [i, j].map(k => { ap.index = k; return {poly: ap.isPolymer(), ch: byName.get(ap.chainname)}; });
+    let style = null;
+    for (const e of ends) {
+      if (e.poly) { const t = e.ch && e.ch.visible ? SC_TYPES[e.ch.type] : null; if (!t) return; style = style || t; }
+      else if (!ligOn) return;
+    }
+    if (!style) return;
+    if (!groups.has(style)) groups.set(style, new Set());
+    groups.get(style).add(i).add(j);
+  });
+  groups.forEach((set, style) => {
+    ap.index = [...set][0];
+    const ch = byName.get(ap.chainname) || chains[0];
+    c.__bridges.push(c.addRepresentation(style, {sele: '@' + [...set].join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(ch ? ch.color : '#cccccc')})}));
+  });
 }
 /* spotlight is on and something it faded was rebuilt or toggled: redo it (once, after the current handler) */
 function spotRefresh() { if (spot.live && lastFocus) { clearTimeout(spot.rt); spot.rt = setTimeout(() => lastFocus && focusOn(lastFocus, false), 0); } }
@@ -1773,6 +1826,20 @@ function repSpecs(ch) {
 }
 
 /* sticks whose carbons follow the chain colour (N, O, S … stay element-coloured) */
+/* Covalent bonds that cross the pieces drawn separately: between two chains (e.g. an interchain disulfide or isopeptide)
+   or between a polymer and a ligand (covalent ligands, crosslinkers). NGL draws a bond only when both atoms are in the
+   same representation, so these need their own small representation. set: restrict to these atom indices. */
+function crossBonds(st, set) {
+  const out = [];
+  st.eachBond(b => {
+    const a1 = b.atom1, a2 = b.atom2;
+    if (set && (!set.has(a1.index) || !set.has(a2.index))) return;
+    if (a1.isWater() || a2.isWater() || a1.element === 'H' || a2.element === 'H') return;
+    const p1 = a1.isPolymer(), p2 = a2.isPolymer();
+    if ((p1 && p2 && a1.chainname !== a2.chainname) || p1 !== p2) out.push([a1.index, a2.index, p1 ? a1.chainname : a2.chainname]);
+  });
+  return out;
+}
 function sticksByChain(indices, extra = {}, style = 'licorice', ligStyle = style === 'licorice' ? 'ball+stick' : style) {
   const byChain = new Map(), lig = [];
   const st = comp.structure, ap = st.getAtomProxy();
@@ -1784,6 +1851,12 @@ function sticksByChain(indices, extra = {}, style = 'licorice', ligStyle = style
   const reps = [];
   for (const [n, idx] of byChain) reps.push(comp.addRepresentation(style, {sele: '@' + idx.join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(n))}), ...extra}));
   if (lig.length) reps.push(comp.addRepresentation(ligStyle, {sele: '@' + lig.join(','), color: 'element', colorValue: hexNum($('#ligColor').dataset.v), ...extra}));
+  // bonds between chains / to ligands among the atoms drawn here
+  const cb = crossBonds(st, new Set(indices));
+  if (cb.length) {
+    const at = [...new Set(cb.flatMap(([i, j]) => [i, j]))];
+    reps.push(comp.addRepresentation(style, {sele: '@' + at.join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(cb[0][2]))}), ...extra}));
+  }
   return reps;
 }
 /* how clicked residues and interface residues are drawn: style (stick / ball & stick / CPK) and stick thickness */
@@ -2304,6 +2377,7 @@ $('#palette').addEventListener('change', e => {
 function applyHet() {
   if (!comp) return;
   hetReps.forEach(r => comp.removeRepresentation(r)); hetReps = [];
+  bridgesSoon();
   if ($('#showLig').checked) hetReps.push(comp.addRepresentation('ball+stick', {sele: 'ligand and not hydrogen', color: 'element', colorValue: hexNum($('#ligColor').dataset.v)}));
   if ($('#showIon').checked) hetReps.push(comp.addRepresentation('spacefill', {sele: 'ion', radiusScale: 0.28, color: 'element'}));
   if ($('#showWat').checked) hetReps.push(comp.addRepresentation('spacefill', {sele: 'water and not hydrogen', radiusScale: 0.2, color: '#ff5050'}));
@@ -3615,7 +3689,7 @@ async function buildSession() {
         s.maps.push({...base, source: {type: 'file', name: m.source.name, ext: m.source.ext, gz: m.source.gz, data: big ? null : await fileToDataURL(m.source.file)}});
       }
     }
-    s.view = {orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, cartOp, lbl: {...lblPref}, lblOff: [...lblOff],
+    s.view = {meas: measToJSON(), scale: scaleOn, orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, cartOp, lbl: {...lblPref}, lblOff: [...lblOff],
               focusSc: $('#focusSc').checked, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
               focusIx: $('#focusIx').checked, focusScope, focusDist: $('#focusDist').checked, seq: $('#seqOn').checked,
               hb: {...HBSET}, ifCat: {...ifCat}, focusCat: {...focusCat}, stick: {...stickPref},
@@ -3716,6 +3790,8 @@ async function openSessionObj(s, auto) {
   if (v.outline !== undefined) setOutline(v.outline);
   if (v.cartOp !== undefined) setCartOp(v.cartOp);
   if (v.lbl) { Object.assign(lblPref, v.lbl); lblWriteUI(); lblSavePref(); lblRetext(); lblStyle(); lblFrame(); }
+  if (Array.isArray(v.meas)) measFromJSON(v.meas);
+  if (typeof v.scale === 'boolean') { scaleOn = v.scale; $('#scaleOn').checked = scaleOn; ovlFrame(); }
   if (Array.isArray(v.lblOff)) { lblOff.clear(); v.lblOff.forEach(([k, o]) => lblOff.set(k, o)); }
   if (v.fog !== undefined) setFog(v.fog);
   if (v.focusSc !== undefined) $('#focusSc').checked = v.focusSc;
@@ -4584,6 +4660,13 @@ function unfocus() {
 }
 stage.signals.clicked.add(pp => {
   if (!comp) return;
+  if (measOn) {                       // measuring: clicks pick atoms instead of selecting residues
+    if (!pp) return;
+    const a = pickedAtom(pp); if (!a) return;
+    let c = pp.component;
+    if (sym && sym.comps.length && pp.component === comp) { const sc = symCompAt(a, pp); if (sc) c = sc; }
+    measPick(c, a); return;
+  }
   if (!pp) { if (lastFocus || (keepOn && structs.some(S => S.lastFocus))) unfocus(); return; }
   if (sym && sym.comps.length && pp.component === comp) {
     const a = pickedAtom(pp), c = a && symCompAt(a, pp);
@@ -5596,7 +5679,8 @@ async function exportImage() {
   const {W, H, dpi, asp} = imgTarget();
   if (W > 16000 || H > 16000 || W * H > 200e6 || (IOS && W * H > 16.7e6)) return status(`画像が大きすぎます（${IOS ? 'iPad・iPhone では約 1,670 万画素まで' : '一辺 16,000 px まで'}）。幅か dpi を下げてください`, true);
   try { clearHL(); } catch (e) {}
-  const lblSnap = lblSnapshot();
+  const lblSnap = lblSnapshot(), ovSnap = ovlSnapshot(), sbSnap = scaleSnapshot();
+  ovSnap.vw = stage.viewer.width; ovSnap.vh = stage.viewer.height;
   const cont = stage.viewer.container, vw0 = stage.viewer.width, vh0 = stage.viewer.height;
   const keep = {w: cont.style.width, h: cont.style.height};
   let resized = false;
@@ -5620,6 +5704,13 @@ async function exportImage() {
     ctx.drawImage(bmp, 0, 0, W, H);
     if (bmp.close) bmp.close();
     lblDraw(ctx, W, H, lblSnap);
+    if (ovSnap.length) {                // measurement and dimension values
+      const s = H / ovSnap.vh, ox = (W - ovSnap.vw * s) / 2, bgc = lblColors().bg;
+      ctx.save(); ctx.font = `bold ${13 * s}px Arial, Helvetica, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+      ovSnap.forEach(o => { const x = ox + o.c[0] * s, y = o.c[1] * s; ctx.strokeStyle = bgc; ctx.lineWidth = 3 * s; ctx.strokeText(o.text, x, y); ctx.fillStyle = o.col; ctx.fillText(o.text, x, y); });
+      ctx.restore();
+    }
+    scaleDraw(ctx, W, H, sbSnap);
     const png = await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error('PNGを作れませんでした（メモリ不足の可能性）')), 'image/png'));
     const u8 = pngSetDpi(new Uint8Array(await png.arrayBuffer()), dpi);
     const nm = (structs[active] && structs[active].name) || pdbId || 'structure';
@@ -6001,9 +6092,308 @@ function asBanner(s) {
   } catch (e) {}
 })();
 
+/* =====================================================================
+   Measurements (distance, angle, dihedral), scale bar and molecular dimensions
+   - Values are drawn as overlay text (crisp at any zoom) and lines/dashes as an NGL shape.
+   - Positions are in scene coordinates: atom coordinates moved by the component's transform
+     (identity for loaded structures; symmetry copies have their own).
+   ===================================================================== */
+const MEAS_COL = '#ffd54a', MEAS_COLN = [1, 0.835, 0.29];
+let measOn = false, measPend = [], measures = [], measShape = null, measSeq = 0;
+const ovl = [];                       // overlay texts: {pos: [x,y,z], text, col, el, owner}
+const mV = typeof NGL !== 'undefined' ? new NGL.Vector3() : null;
+function worldPos(c, ap) {
+  const v = new NGL.Vector3(ap.x, ap.y, ap.z);
+  if (c && c.matrix) v.applyMatrix4(c.matrix);
+  return [v.x, v.y, v.z];
+}
+function atomTag(c, ap) {
+  const S = structs.find(x => x.comp === c);
+  const sn = structs.length > 1 ? `${S ? S.name : (c.name || '')} ` : '';
+  return `${sn}${ap.chainname}:${resLabel3(ap.resname)}${ap.resno}${ap.inscode || ''} ${ap.atomname}`;
+}
+const resLabel3 = r => r ? r.charAt(0) + r.slice(1).toLowerCase() : '';
+const vsub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const vdot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const vcross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const vlen = a => Math.hypot(a[0], a[1], a[2]);
+function measValue(m) {
+  const P = m.atoms.map(a => a.pos);
+  if (P.length === 2) return vlen(vsub(P[0], P[1]));
+  if (P.length === 3) { const u = vsub(P[0], P[1]), w = vsub(P[2], P[1]); return Math.acos(Math.max(-1, Math.min(1, vdot(u, w) / (vlen(u) * vlen(w))))) * 180 / Math.PI; }
+  // dihedral A-B-C-D (IUPAC sign convention)
+  const b0 = vsub(P[0], P[1]), b1 = vsub(P[2], P[1]), b2 = vsub(P[3], P[2]);
+  const n1 = vlen(b1), b1n = [b1[0] / n1, b1[1] / n1, b1[2] / n1];
+  const v = vsub(b0, b1n.map(x => x * vdot(b0, b1n))), w = vsub(b2, b1n.map(x => x * vdot(b2, b1n)));
+  return Math.atan2(vdot(vcross(b1n, v), w), vdot(v, w)) * 180 / Math.PI;
+}
+const measText = m => m.atoms.length === 2 ? `${m.val.toFixed(2)} Å` : `${m.val.toFixed(1)}°`;
+const MEAS_KIND = {2: '距離', 3: '角度', 4: '二面角'};
+function dashTo(shape, a, b, col, r, name) {
+  const d = vlen(vsub(b, a)), n = Math.max(1, Math.round(d / 0.35));
+  for (let k = 0; k < n; k += 2) {
+    const t0 = k / n, t1 = Math.min(1, (k + 1) / n);
+    shape.addCylinder([a[0] + (b[0] - a[0]) * t0, a[1] + (b[1] - a[1]) * t0, a[2] + (b[2] - a[2]) * t0],
+                      [a[0] + (b[0] - a[0]) * t1, a[1] + (b[1] - a[1]) * t1, a[2] + (b[2] - a[2]) * t1], col, r, name);
+  }
+}
+function measDraw() {
+  if (measShape) { try { stage.removeComponent(measShape); } catch (e) {} measShape = null; }
+  ovlClear('meas');
+  // drop measurements whose structure was closed
+  measures = measures.filter(m => m.atoms.every(a => stage.compList.includes(a.comp)));
+  measPend = measPend.filter(a => stage.compList.includes(a.comp));
+  if (measures.length || measPend.length) {
+    const sh = new NGL.Shape('measurements');
+    measures.forEach(m => {
+      const P = m.atoms.map(a => a.pos), nm = `${MEAS_KIND[P.length]} ${measText(m)}`;
+      for (let k = 0; k + 1 < P.length; k++) dashTo(sh, P[k], P[k + 1], MEAS_COLN, 0.06, nm);
+      P.forEach(p => sh.addSphere(p, MEAS_COLN, 0.16, nm));
+      // where the number goes: middle of the line, the middle atom for angles, the middle bond for dihedrals
+      const at = P.length === 2 ? P[0].map((x, i) => (x + P[1][i]) / 2) : P.length === 3 ? P[1] : P[1].map((x, i) => (x + P[2][i]) / 2);
+      ovlAdd('meas', at, measText(m), MEAS_COL);
+    });
+    measPend.forEach(a => sh.addSphere(a.pos, MEAS_COLN, 0.35, a.tag));
+    measShape = stage.addComponentFromObject(sh);
+    measShape.addRepresentation('buffer', {opacity: 1});
+  }
+  renderMeasList();
+  ovlFrame();
+}
+function measPick(c, ap) {
+  const n = +$('#measKind').value || 2;
+  const a = {comp: c, i: ap.index, pos: worldPos(c, ap), tag: atomTag(c, ap), sname: (structs.find(x => x.comp === c) || {}).name || ''};
+  if (measPend.length && measPend[measPend.length - 1].comp === c && measPend[measPend.length - 1].i === a.i) return;   // same atom twice
+  measPend.push(a);
+  if (measPend.length >= n) {
+    const m = {id: ++measSeq, atoms: measPend.slice(0, n)};
+    m.val = measValue(m);
+    measures.push(m); measPend = [];
+    status(`${MEAS_KIND[n]}: ${measText(m)}（${m.atoms.map(x => x.tag).join(' – ')}）`);
+  } else status(`${MEAS_KIND[n]}: ${measPend.length} 個目の原子 ${a.tag} を選びました。あと ${n - measPend.length} 個`);
+  measDraw();
+}
+function setMeasMode(on) {
+  measOn = on; measPend = [];
+  $('#measBtn').classList.toggle('on', on);
+  $('#measKind').style.display = on ? '' : 'none';
+  if (on && boxMode) setBoxMode(false);
+  measDraw();
+  status(on ? '測定: オン。原子を順にタップしてください（右の欄で距離・角度・二面角を切り替え。Esc かもう一度押すとオフ）' : '測定: オフ（測った値は残ります。「解析」タブの「測定」で消せます）');
+}
+$('#measBtn').onclick = () => setMeasMode(!measOn);
+$('#measKind').onchange = () => { measPend = []; measDraw(); };
+addEventListener('keydown', e => { if (e.key === 'Escape' && measOn) setMeasMode(false); });
+function renderMeasList() {
+  const box = $('#measList'); if (!box) return;
+  $('#measCount').textContent = measures.length ? `${measures.length} 件` : '';
+  box.innerHTML = measures.length ? measures.map(m => `<div class="mrow" data-id="${m.id}"><b>${measText(m)}</b><span title="${esc(m.atoms.map(a => a.tag).join(' – '))}">${MEAS_KIND[m.atoms.length]}：${esc(m.atoms.map(a => a.tag).join(' – '))}</span><button data-k="del" title="この測定を消す">×</button></div>`).join('')
+    : '<div class="small">まだ測定はありません</div>';
+}
+$('#measList').addEventListener('click', e => {
+  if (e.target.dataset.k !== 'del') return;
+  const id = +e.target.closest('.mrow').dataset.id;
+  measures = measures.filter(m => m.id !== id); measDraw();
+});
+$('#measClear').onclick = () => { measures = []; measPend = []; measDraw(); status('測定をすべて消しました'); };
+$('#measCopy').onclick = async () => {
+  if (!measures.length) return status('コピーする測定がありません');
+  const t = ['種類\t値\t単位\t原子'].concat(measures.map(m => `${MEAS_KIND[m.atoms.length]}\t${m.atoms.length === 2 ? m.val.toFixed(3) : m.val.toFixed(2)}\t${m.atoms.length === 2 ? 'Å' : '°'}\t${m.atoms.map(a => a.tag).join(' – ')}`)).join('\n');
+  try { await navigator.clipboard.writeText(t); status('測定の一覧をコピーしました（表計算ソフトに貼り付けられます）'); } catch (e) { status('コピーできませんでした', true); }
+};
+/* sessions: atoms are stored by structure name and atom index */
+function measToJSON() { return measures.map(m => m.atoms.map(a => [a.sname, a.i])); }
+function measFromJSON(list) {
+  measures = []; measPend = [];
+  (list || []).forEach(atoms => {
+    const A = [];
+    for (const [sn, i] of atoms) {
+      const S = structs.find(x => x.name === sn); if (!S || !S.comp || i >= S.comp.structure.atomCount) return;
+      const ap = S.comp.structure.getAtomProxy(i);
+      A.push({comp: S.comp, i, pos: worldPos(S.comp, ap), tag: atomTag(S.comp, ap), sname: sn});
+    }
+    if (A.length >= 2 && A.length <= 4) { const m = {id: ++measSeq, atoms: A}; m.val = measValue(m); measures.push(m); }
+  });
+  measDraw();
+}
+/* after a structure moves (superposition): refresh positions and values */
+function measRefresh() {
+  measures.forEach(m => { m.atoms.forEach(a => { if (a.comp.structure) a.pos = worldPos(a.comp, a.comp.structure.getAtomProxy(a.i)); }); m.val = measValue(m); });
+  if (measures.length || measPend.length) measDraw();
+}
+
+/* ---------- overlay texts ---------- */
+function ovlAdd(owner, pos, text, col) {
+  const el = document.createElement('div'); el.className = 'mlbl'; el.textContent = text;
+  $('#lblLayer').appendChild(el);
+  ovl.push({owner, pos, text, col, el});
+}
+function ovlClear(owner) { for (let k = ovl.length - 1; k >= 0; k--) if (ovl[k].owner === owner) { ovl[k].el.remove(); ovl.splice(k, 1); } }
+function ovlScreen(pos) {
+  const V = stage.viewer; if (!V || !V.camera) return null;
+  mV.set(pos[0], pos[1], pos[2]).applyMatrix4(V.modelGroup.matrixWorld).project(V.camera);
+  if (mV.z > 1 || mV.z < -1) return null;
+  return [(mV.x + 1) / 2 * V.width, (1 - mV.y) / 2 * V.height];
+}
+function ovlFrame() {
+  if (!stage.viewer || !stage.viewer.camera) return;
+  const {bg} = lblColors();
+  const halo = [[-1, -1], [1, -1], [-1, 1], [1, 1], [0, 1.4], [0, -1.4], [1.4, 0], [-1.4, 0]].map(([a, b]) => `${a}px ${b}px 0 ${bg}`).join(',');
+  const placed = [];                    // keep values that sit at the same spot (e.g. distance and angle on one bond) apart
+  ovl.forEach(o => {
+    const a = ovlScreen(o.pos);
+    if (!a) { o.el.style.display = 'none'; o.cx = null; return; }
+    const e = o.el.style; e.display = ''; e.color = o.col; e.textShadow = halo;
+    const w = o.el.offsetWidth, h = o.el.offsetHeight;
+    let x = a[0] - w / 2, y = a[1] - h - 6;
+    for (let k = 0; k < 8 && placed.some(r => x < r[0] + r[2] && x + w > r[0] && y < r[1] + r[3] && y + h > r[1]); k++) y -= h + 1;
+    placed.push([x, y, w, h]);
+    o.cx = x + w / 2; o.cy = y + h / 2;
+    e.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+  });
+  scaleFrame();
+}
+if (stage.viewer && stage.viewer.signals && stage.viewer.signals.rendered) stage.viewer.signals.rendered.add(() => { if (ovl.length || scaleOn) ovlFrame(); });
+/* texts for an exported image (same format as the residue labels) */
+function ovlSnapshot() {
+  ovlFrame();
+  return ovl.map(o => o.cx == null ? null : {c: [o.cx, o.cy], text: o.text, col: o.col}).filter(Boolean);
+}
+
+/* ---------- scale bar ---------- */
+let scaleOn = false;
+try { scaleOn = localStorage.getItem('pdv_scale') === '1'; } catch (e) {}
+/* screen pixels per Å at the rotation centre (the scene origin the camera looks at) */
+function pxPerA() {
+  const V = stage.viewer; if (!V || !V.camera) return 0;
+  const p0 = new NGL.Vector3(0, 0, 0).project(V.camera), p1 = new NGL.Vector3(1, 0, 0).project(V.camera);
+  return Math.abs(p1.x - p0.x) / 2 * V.width;
+}
+function scaleLen(ppa) {
+  for (const L of [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000]) if (L * ppa >= 50) return L;
+  return 5000;
+}
+function scaleFrame() {
+  const el = $('#scaleBar'); if (!el) return;
+  if (!scaleOn || !structs.length) { el.style.display = 'none'; return; }
+  const ppa = pxPerA(); if (!ppa) return;
+  const L = scaleLen(ppa), {fg} = lblColors();
+  el.style.display = 'block'; el.style.color = fg;
+  el.querySelector('.t').textContent = `${L} Å`;
+  const b = el.querySelector('.bar'); b.style.width = Math.round(L * ppa) + 'px'; b.style.background = fg;
+  el.title = $('#cam').value === 'orthographic' ? '' : '透視投影なので、画面中心の奥行きでの目安です（正確に使うときは平行投影にしてください）';
+}
+(function () {
+  const d = document.createElement('div'); d.id = 'scaleBar'; d.innerHTML = '<div class="t"></div><div class="bar"></div>';
+  $('#lblLayer').appendChild(d);
+})();
+$('#scaleOn').checked = scaleOn;
+$('#scaleOn').onchange = e => {
+  scaleOn = e.target.checked; try { localStorage.setItem('pdv_scale', scaleOn ? '1' : '0'); } catch (er) {}
+  ovlFrame();
+  if (scaleOn && $('#cam').value !== 'orthographic') status('スケールバーを表示しました。透視投影では手前と奥で縮尺が違うので、正確に使うときは「投影」を平行投影にしてください');
+};
+function scaleSnapshot() {
+  if (!scaleOn || !structs.length) return null;
+  const ppa = pxPerA(); if (!ppa) return null;
+  const L = scaleLen(ppa);
+  return {L, px: L * ppa, vw: stage.viewer.width, vh: stage.viewer.height, col: lblColors().fg};
+}
+function scaleDraw(ctx, W, H, sb) {
+  if (!sb) return;
+  const s = H / sb.vh, w = sb.px * s, x1 = W - 16 * s, x0 = x1 - w, y = H - 14 * s;
+  ctx.save();
+  ctx.fillStyle = sb.col; ctx.fillRect(x0, y - 4 * s, w, 4 * s);
+  ctx.font = `bold ${13 * s}px Arial, Helvetica, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(`${sb.L} Å`, (x0 + x1) / 2, y - 7 * s);
+  ctx.restore();
+}
+
+/* ---------- molecular dimensions ----------
+   Heavy atoms (no water) of the chosen structure or chain: the longest distance between two atoms (maximum diameter,
+   found from the extreme atoms in 162 directions) and the lengths along the three principal axes. */
+let dimOn = false, dimShape = null, dimKey = '';
+function jacobi3(A) {
+  const a = A.map(r => r.slice()), V = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+  for (let sweep = 0; sweep < 50; sweep++) {
+    let off = 0; for (let p = 0; p < 3; p++) for (let q = p + 1; q < 3; q++) off += a[p][q] * a[p][q];
+    if (off < 1e-18) break;
+    for (let p = 0; p < 3; p++) for (let q = p + 1; q < 3; q++) {
+      if (Math.abs(a[p][q]) < 1e-15) continue;
+      const th = (a[q][q] - a[p][p]) / (2 * a[p][q]), t = Math.sign(th || 1) / (Math.abs(th) + Math.sqrt(th * th + 1));
+      const c = 1 / Math.sqrt(t * t + 1), s = t * c;
+      for (let k = 0; k < 3; k++) { const akp = a[k][p], akq = a[k][q]; a[k][p] = c * akp - s * akq; a[k][q] = s * akp + c * akq; }
+      for (let k = 0; k < 3; k++) { const apk = a[p][k], aqk = a[q][k]; a[p][k] = c * apk - s * aqk; a[q][k] = s * apk + c * aqk; }
+      for (let k = 0; k < 3; k++) { const vkp = V[k][p], vkq = V[k][q]; V[k][p] = c * vkp - s * vkq; V[k][q] = s * vkp + c * vkq; }
+    }
+  }
+  return [0, 1, 2].map(i => ({val: a[i][i], vec: [V[0][i], V[1][i], V[2][i]]})).sort((x, y) => y.val - x.val);
+}
+const DIR162 = (() => { const N = 162, g = Math.PI * (3 - Math.sqrt(5)), out = [];
+  for (let k = 0; k < N; k++) { const y = 1 - 2 * (k + 0.5) / N, r = Math.sqrt(1 - y * y), t = g * k; out.push([Math.cos(t) * r, y, Math.sin(t) * r]); } return out; })();
+function dimCompute(S, chain) {
+  const st = S.comp.structure, P = [];
+  st.eachAtom(a => { if (a.modelIndex !== 0 || a.isWater() || a.element === 'H' || (chain && a.chainname !== chain)) return; P.push(worldPos(S.comp, a)); });
+  if (P.length < 2) return null;
+  const n = P.length, c = [0, 0, 0];
+  P.forEach(p => { c[0] += p[0] / n; c[1] += p[1] / n; c[2] += p[2] / n; });
+  const C = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  P.forEach(p => { const d = vsub(p, c); for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) C[i][j] += d[i] * d[j] / n; });
+  const axes = jacobi3(C).map(e => {
+    let lo = Infinity, hi = -Infinity; P.forEach(p => { const t = vdot(vsub(p, c), e.vec); if (t < lo) lo = t; if (t > hi) hi = t; });
+    return {vec: e.vec, lo, hi, len: hi - lo};
+  });
+  // maximum diameter: the farthest pair among the extreme atoms in many directions
+  const cand = new Set();
+  DIR162.forEach(u => { let bi = 0, bv = -Infinity, si = 0, sv = Infinity; P.forEach((p, i) => { const t = vdot(p, u); if (t > bv) { bv = t; bi = i; } if (t < sv) { sv = t; si = i; } }); cand.add(bi); cand.add(si); });
+  const ci = [...cand]; let best = [0, 1], bd = -1;
+  for (let i = 0; i < ci.length; i++) for (let j = i + 1; j < ci.length; j++) { const d = vlen(vsub(P[ci[i]], P[ci[j]])); if (d > bd) { bd = d; best = [ci[i], ci[j]]; } }
+  return {n, c, axes, maxD: bd, ends: [P[best[0]], P[best[1]]]};
+}
+function dimTargets() {
+  const S = structs[active]; if (!S) return [];
+  return [{v: '', t: `${S.name} 全体`}].concat(chains.map(c => ({v: c.name, t: `${S.name} Chain ${c.name}${c.desc ? '（' + c.desc.slice(0, 24) + '）' : ''}`})));
+}
+function renderDimTargets() {
+  const sel = $('#dimTarget'); if (!sel) return;
+  const cur = sel.value, opts = dimTargets();
+  sel.innerHTML = opts.length ? opts.map(o => `<option value="${esc(o.v)}">${esc(o.t)}</option>`).join('') : '<option value="">（構造なし）</option>';
+  if (opts.some(o => o.v === cur)) sel.value = cur;
+}
+function dimDraw(force) {
+  const S = structs[active], chain = $('#dimTarget').value;
+  const key = dimOn && S ? `${S.sid}|${chain}|${S.comp.structure.atomCount}|${S.xf ? 'x' : ''}|${S.orig ? 'o' : ''}` : '';
+  if (!force && key === dimKey) return;
+  dimKey = key;
+  if (dimShape) { try { stage.removeComponent(dimShape); } catch (e) {} dimShape = null; }
+  ovlClear('dim');
+  if (!dimOn || !S) { $('#dimInfo').textContent = ''; ovlFrame(); return; }
+  const r = dimCompute(S, chain);
+  if (!r) { $('#dimInfo').textContent = '寸法を測れる原子がありません'; ovlFrame(); return; }
+  const sh = new NGL.Shape('dimensions'), cols = [[0.5, 0.83, 1], [0.6, 0.88, 0.48], [1, 0.62, 0.71]], colHex = ['#80d4ff', '#9be07a', '#ff9db5'];
+  r.axes.forEach((ax, k) => {
+    const a = [0, 1, 2].map(i => r.c[i] + ax.vec[i] * ax.lo), b = [0, 1, 2].map(i => r.c[i] + ax.vec[i] * ax.hi);
+    const nm = `主軸 ${k + 1}: ${ax.len.toFixed(1)} Å`;
+    sh.addCylinder(a, b, cols[k], 0.12, nm);
+    const ah = Math.min(2.5, ax.len * 0.08);   // arrow heads
+    sh.addCone(a.map((x, i) => x + ax.vec[i] * ah), a, cols[k], 0.6, nm); sh.addCone(b.map((x, i) => x - ax.vec[i] * ah), b, cols[k], 0.6, nm);
+    ovlAdd('dim', b, `${ax.len.toFixed(0)} Å`, colHex[k]);
+  });
+  dashTo(sh, r.ends[0], r.ends[1], [1, 0.7, 0.28], 0.1, `最大径 ${r.maxD.toFixed(1)} Å`);
+  ovlAdd('dim', r.ends[0].map((x, i) => (x + r.ends[1][i]) / 2), `最大径 ${r.maxD.toFixed(0)} Å`, '#ffb347');
+  dimShape = stage.addComponentFromObject(sh); dimShape.addRepresentation('buffer', {});
+  const L = r.axes.map(a => a.len.toFixed(0));
+  $('#dimInfo').textContent = `${$('#dimTarget').selectedOptions[0] ? $('#dimTarget').selectedOptions[0].textContent : S.name}：最大径 ${r.maxD.toFixed(1)} Å、主軸方向 ${L.join(' × ')} Å（重原子 ${r.n.toLocaleString()} 個、水を除く）`;
+  ovlFrame();
+}
+$('#dimOn').onchange = e => { dimOn = e.target.checked; dimDraw(true); };
+$('#dimTarget').onchange = () => dimDraw(true);
+/* keep the target list and the drawing in step with the structures */
+function dimPanels() { renderDimTargets(); if (dimOn) dimDraw(); }
+
 /* handle for the browser console and automated tests */
 window.MV = {get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
-  chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
+  chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), measPick: (c, a) => measPick(c, a), get measures() { return measures; }, pxPerA: () => pxPerA(), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }
 </script>
 </body>
