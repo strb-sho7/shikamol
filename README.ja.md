@@ -15,8 +15,8 @@ PDB ID かファイルを読み込むだけで、構造の表示、電子密度�
 ## 使い方
 
 1. 上のアドレスを開きます。
-2. 左の「構造」タブで、PDB ID（例 `7DA1`。`pdb_00007da1` のような 12 文字の形でも可）を入力して「読込」を押します。`7DA1 1D66 3PQR` のようにスペースかカンマで区切ると、複数の構造をまとめて読み込めます。手元の `.pdb` / `.cif` ファイルを読み込むこともできます（ドラッグ＆ドロップ可）。
-3. 分子ウィンドウで残基をクリック（タブレットではタップ）すると、その残基にズームし、周囲 5 Å 以内の相互作用が一覧と点線で表示されます。背景をクリックすると解除されます。
+2. 左の「構造」タブで、PDB ID（例 `7DA1`。`pdb_00007da1` のような 12 文字の形でも可）を入力して「読込」を押します。`7DA1 1D66 3PQR` のようにスペースかカンマで区切ると、複数の構造をまとめて読み込めます。UniProt ID（例 `P04637`）を入れると、AlphaFold Database の予測構造を読み込みます。手元の `.pdb` / `.cif` ファイルを読み込むこともできます（ドラッグ＆ドロップ可）。
+3. 分子ウィンドウで残基をクリック（タブレットではタップ）すると、その残基にズームし、周囲 5 Å 以内の相互作用が一覧と点線で表示されます。背景をクリックすると解除され、背景をダブルクリック（タブレットではダブルタップ）すると全体表示と奥行きの見え方が元に戻ります。
 
 ### アドレスで構造を指定する
 
@@ -24,11 +24,14 @@ PDB ID かファイルを読み込むだけで、構造の表示、電子密度�
 
 ```
 https://strb-sho7.github.io/shikamol/?pdb=7DA1
+https://strb-sho7.github.io/shikamol/?pdb=AF-P04637
 ```
+
+AlphaFold の予測構造は `AF-` に続けて UniProt ID を書きます。
 
 ### 今の表示をリンクで共有する
 
-「表示・出力」タブの「⑤ 保存と共有」→「🔗 今の表示をリンクで共有」を押すと、今の画面を再現するリンクができます。リンクを開いた人は、同じ構造・色・表示形式・選んでいる残基・視点から始められます。PDB ID で開いた構造が対象です（手元のファイルはリンクに入らないので、セッションの `.json` を渡してください）。
+「表示・出力」タブの「⑤ 保存と共有」→「🔗 今の表示をリンクで共有」を押すと、今の画面を再現するリンクができます。リンクを開いた人は、同じ構造・色・表示形式・選んでいる残基・視点から始められます。PDB ID と UniProt ID で開いた構造が対象です（手元のファイルはリンクに入らないので、セッションの `.json` を渡してください）。
 
 ## 主な機能
 
@@ -64,6 +67,13 @@ https://strb-sho7.github.io/shikamol/?pdb=7DA1
   - 距離の判定基準は「解析」タブで変更可能（水素結合の初期値はドナー–アクセプター間 3.5 Å、硫黄が関わる場合は +0.6 Å）
 - Chain 間の界面の解析：界面の残基の組、埋没表面積（BSA）、界面面積
 - 保存度（ConSurf 風）：多重配列アラインメント（MSA）から計算するか、ConSurf の結果ファイルを読み込んで色分け
+- 変異の位置：変異のリスト（R51A、p.Arg51Ala など）を貼り付けると、構造の上に位置を表示
+  - 元の残基が構造と合うかを確かめ、番号がずれていれば正しいずれを提案
+  - それぞれの位置の埋もれ具合・二次構造・保存度・相互作用を一覧にし、構造から分かる注意点（埋もれた位置への電荷の持ち込み、ヘリックス中の Pro、ジスルフィド結合や塩橋の切断など）を表示
+  - グループ名を付けると色分け。各行に数値（FoldX などの ΔΔG、活性の値）を書くと、その値で青–白–赤に色分け
+  - UniProt の番号で入力可能（PDB ID で開いた構造は PDBe の SIFTS で変換、AlphaFold の予測構造はそのまま）
+  - 表のコピー、セッション保存、共有リンクに対応
+- AlphaFold の予測構造：UniProt ID で読み込み、予測の信頼度（pLDDT）を AlphaFold Database と同じ4段階の色で表示（構造ごとに、Chain の表の「一括」の色ボタンで切り替え。全構造まとめては「構造」タブ上の「全構造」の色の欄）
 
 **出力**
 - 測定：分子ウィンドウ右上の「📏 測定」を押し、原子をタップして距離・角度・二面角を測定
@@ -112,6 +122,9 @@ index.html だけをダウンロードして開いた場合は、同じフォル
 - RCSB PDB（座標、エントリー情報、生物学的集合体）
 - PDBe の密度サーバー（X 線結晶構造の電子密度）
 - EMDB（クライオ電顕マップと推奨の等高線レベル）
+- AlphaFold Database（予測構造。データは CC BY 4.0。使ったときは次の論文を引用してください）
+  - Varadi M, et al. AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences. *Nucleic Acids Res.* 2024;52:D368–D375. doi:[10.1093/nar/gkad1011](https://doi.org/10.1093/nar/gkad1011)
+- PDBe の SIFTS（PDB と UniProt の残基番号の対応。変異の位置を UniProt の番号で入れたとき）
 
 **計算方法**
 - 相互作用の種類と判定基準は、PLIP と Mol* を参考にしています。
@@ -128,6 +141,10 @@ index.html だけをダウンロードして開いた場合は、同じフォル
   - Krissinel E, Henrick K. Inference of macromolecular assemblies from crystalline state. *J. Mol. Biol.* 2007;372:774–797. doi:[10.1016/j.jmb.2007.05.022](https://doi.org/10.1016/j.jmb.2007.05.022)
 - 保存度は Jensen–Shannon divergence で計算し、ConSurf と同じ 9 段階に分けて色分けしています。
   - Capra JA, Singh M. Predicting functionally important residues from sequence conservation. *Bioinformatics.* 2007;23:1875–1882. doi:[10.1093/bioinformatics/btm270](https://doi.org/10.1093/bioinformatics/btm270)
+- 変異の位置の埋もれ具合は、溶媒露出表面積を Gly-X-Gly での最大値（理論値）で割った相対値です。注意点の項目は Missense3D が使っている構造の特徴を参考にしています（安定性の変化 ΔΔG の予測ではありません）。側鎖の大きさの変化には残基の体積を使っています。
+  - Tien MZ, Meyer AG, Sydykova DK, Spielman SJ, Wilke CO. Maximum allowed solvent accessibilites of residues in proteins. *PLoS ONE* 2013;8:e80635. doi:[10.1371/journal.pone.0080635](https://doi.org/10.1371/journal.pone.0080635)
+  - Ittisoponpisan S, Islam SA, Khanna T, Alhuzimi E, David A, Sternberg MJE. Can predicted protein 3D structures provide reliable insights into whether missense variants are disease associated? *J. Mol. Biol.* 2019;431:2197–2212. doi:[10.1016/j.jmb.2019.04.009](https://doi.org/10.1016/j.jmb.2019.04.009)
+  - Zamyatnin AA. Protein volume in solution. *Prog. Biophys. Mol. Biol.* 1972;24:107–123. doi:[10.1016/0079-6107(72)90005-3](https://doi.org/10.1016/0079-6107(72)90005-3)
 
 ## 作者
 

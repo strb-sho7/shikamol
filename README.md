@@ -15,8 +15,8 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 ## Getting started
 
 1. Open the address above.
-2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
-3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are shown as a list and as dashed lines. Click the background to clear.
+2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
+3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are shown as a list and as dashed lines. Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.
 
@@ -26,11 +26,14 @@ Add `?pdb=` to the end of the address to load that structure when the page opens
 
 ```
 https://strb-sho7.github.io/shikamol/?pdb=7DA1
+https://strb-sho7.github.io/shikamol/?pdb=AF-P04637
 ```
+
+For an AlphaFold prediction, write `AF-` followed by the UniProt ID.
 
 ### Sharing the current view as a link
 
-In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share this view as a link". The link reproduces the current screen: whoever opens it starts from the same structure, colours, representations, selected residues and viewpoint. It covers structures opened by PDB ID (local files are not included; send the session `.json` instead).
+In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share this view as a link". The link reproduces the current screen: whoever opens it starts from the same structure, colours, representations, selected residues and viewpoint. It covers structures opened by PDB ID or UniProt ID (local files are not included; send the session `.json` instead).
 
 ## Features
 
@@ -66,6 +69,13 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
   - Distance criteria can be changed in the "Analysis" tab (default hydrogen-bond limit: 3.5 Å donor–acceptor, +0.6 Å when sulfur is involved)
 - Interface analysis between chains: residue pairs at the interface, buried surface area (BSA), and interface area
 - Conservation (ConSurf-style): calculate from a multiple sequence alignment (MSA), or load a ConSurf result file
+- Mutation positions: paste a list of mutations (R51A, p.Arg51Ala, …) to show the positions on the structure
+  - Checks the original residue against the structure and suggests the right numbering offset when they do not match
+  - Lists burial, secondary structure, conservation and interactions for each position, with points the structure raises (a charge brought into a buried site, Pro inside a helix, a broken disulfide or salt bridge, …)
+  - Group names colour the positions; a number on each line (ΔΔG from FoldX and the like, activities) colours them blue–white–red
+  - Input in UniProt numbering is possible (converted with PDBe SIFTS for entries opened by PDB ID; AlphaFold models need no conversion)
+  - The table can be copied, and the list is kept in sessions and share links
+- AlphaFold predictions: open by UniProt ID and colour by prediction confidence (pLDDT) in the four bands of the AlphaFold Database (per structure with the colour button in the "All" row of the chain table, or for every structure from the "All structures" colour menu at the top of the Structure tab)
 
 **Output**
 - Measurements: press "📏 Measure" at the top right of the viewer and tap atoms to measure distances, angles and dihedrals
@@ -114,6 +124,9 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
 - RCSB PDB (coordinates, entry information, biological assemblies)
 - PDBe density server (electron density for X-ray structures)
 - EMDB (cryo-EM maps and recommended contour levels)
+- AlphaFold Database (predicted models; data under CC BY 4.0 — please cite the paper below when you use them)
+  - Varadi M, et al. AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences. *Nucleic Acids Res.* 2024;52:D368–D375. doi:[10.1093/nar/gkad1011](https://doi.org/10.1093/nar/gkad1011)
+- PDBe SIFTS (residue mapping between PDB and UniProt, for mutation positions entered in UniProt numbering)
 
 **Methods**
 - Interaction types and criteria follow PLIP and Mol*.
@@ -130,6 +143,10 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
   - Krissinel E, Henrick K. Inference of macromolecular assemblies from crystalline state. *J. Mol. Biol.* 2007;372:774–797. doi:[10.1016/j.jmb.2007.05.022](https://doi.org/10.1016/j.jmb.2007.05.022)
 - Conservation is calculated as Jensen–Shannon divergence and coloured in the same nine grades as ConSurf.
   - Capra JA, Singh M. Predicting functionally important residues from sequence conservation. *Bioinformatics.* 2007;23:1875–1882. doi:[10.1093/bioinformatics/btm270](https://doi.org/10.1093/bioinformatics/btm270)
+- For mutation positions, burial is the solvent-accessible surface area divided by the theoretical maximum in Gly-X-Gly. The points to note follow the structural features used by Missense3D (they are not a ΔΔG prediction); side-chain size changes use residue volumes.
+  - Tien MZ, Meyer AG, Sydykova DK, Spielman SJ, Wilke CO. Maximum allowed solvent accessibilites of residues in proteins. *PLoS ONE* 2013;8:e80635. doi:[10.1371/journal.pone.0080635](https://doi.org/10.1371/journal.pone.0080635)
+  - Ittisoponpisan S, Islam SA, Khanna T, Alhuzimi E, David A, Sternberg MJE. Can predicted protein 3D structures provide reliable insights into whether missense variants are disease associated? *J. Mol. Biol.* 2019;431:2197–2212. doi:[10.1016/j.jmb.2019.04.009](https://doi.org/10.1016/j.jmb.2019.04.009)
+  - Zamyatnin AA. Protein volume in solution. *Prog. Biophys. Mol. Biol.* 1972;24:107–123. doi:[10.1016/0079-6107(72)90005-3](https://doi.org/10.1016/0079-6107(72)90005-3)
 
 ## Author
 

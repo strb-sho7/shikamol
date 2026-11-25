@@ -70,6 +70,18 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #maps .maprow{border-top:1px solid var(--line);margin-top:6px;padding-top:4px}
 #maps .mapkind{color:#8fa8ff}#maps .mapkind.diff{color:#6ee06e}
 
+.mcard{border:1px solid var(--line,#444);border-radius:6px;padding:5px 8px;margin:5px 0;cursor:pointer}
+.mcard:hover{border-color:var(--acc)}
+.mcard.bad{cursor:default;opacity:.8}
+.mhead{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mdot{width:10px;height:10px;border-radius:50%;flex:none}
+.mgrp{font-size:11px;padding:0 6px;border-radius:8px;background:#5aa9ff22;border:1px solid #5aa9ff55}
+.mok{color:#3fbf6f}.mbad{color:var(--warn,#e0a030)}
+.mflag{font-size:12px;margin-top:2px;display:flex;gap:5px}.mflag .mi{flex:none}.mflag.l2{color:var(--warn,#e0a030)}.mflag.l1{opacity:.85}
+.mbest{margin-top:4px}
+.plb{font-size:11px;padding:1px 6px;margin-left:4px;border-radius:8px}.plb.on{background:#0053D6;color:#fff;border-color:#0053D6}
+.mleg{display:flex;align-items:center;gap:6px;margin-top:4px}.mbar{flex:1;height:10px;border-radius:3px;border:1px solid var(--line,#444)}
+#mutTxt{width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:13px}
 #deerRun{position:absolute;left:10px;bottom:10px;width:84px;height:58px;padding:2px 4px;border-radius:10px;background:rgba(20,24,30,.72);z-index:5;pointer-events:none;display:none}
 #deerRun.on{display:block}
 #deerRun svg{width:100%;height:100%;overflow:visible}
@@ -224,6 +236,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 .sqr{white-space:nowrap;padding:12px 0 3px}
 .sqr.off{opacity:.35}
 .sqc{display:inline-block;width:3.2em;font-weight:700;font-family:system-ui,sans-serif;font-size:12px}
+.sqc{display:inline-flex;vertical-align:bottom;overflow:hidden;white-space:nowrap;padding-right:.4em;box-sizing:border-box}.sqc .sqn{overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}.sqc .sqk{flex:none}
 .sqr i{font-style:normal;display:inline-block;width:1.05ch;text-align:center;cursor:pointer;position:relative;padding:2px 0;border-radius:2px}
 .sqr i:hover{background:#ffffff33}
 .sqr i.on{background:#fff;color:#000!important}
@@ -266,7 +279,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 
   <div class="tabpane" data-tab="struct">
   <div class="row">
-    <input type="text" id="pdbId" placeholder="PDB ID（例 7DA1、複数は 7DA1 1D66）" maxlength="300" title="スペースかカンマで区切ると、複数の ID を順に読み込みます">
+    <input type="text" id="pdbId" placeholder="PDB ID（例 7DA1）か UniProt ID（例 P04637）" maxlength="300" title="UniProt ID を入れると、AlphaFold Database の予測構造を読み込みます。スペースかカンマで区切ると、複数の ID を順に読み込みます">
     <select id="pdbAsm" title="非対称単位（登録された座標そのまま）か、PDBに登録された生物学的集合体か">
       <option value="0">非対称単位</option><option value="1">生物学的集合体 1</option><option value="2">生物学的集合体 2</option>
     </select>
@@ -277,11 +290,14 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <button id="structBtn">手元の構造ファイル…</button>
     <span>.pdb / .cif（ドラッグ＆ドロップ可）</span>
   </div>
+  <div class="row" id="globalTools" style="display:none" title="この行の操作は、開いているすべての構造に効きます">
+    <span class="small">全構造：</span>
+    <select id="colorBy" style="flex:1;min-width:0"><option value="chain">色: Chainごと</option><option value="struct">色: 構造ごとに単色</option><option value="rainbowcb" title="色覚の多様性に配慮した配色（viridis）">色: N末→C末（紫→緑→黄）</option><option value="plddt" title="AlphaFold などの予測構造の信頼度。B 因子の欄に入っている値で、AlphaFold Database と同じ4段階の色で塗ります（ColabFold などで予測した手元のファイルにも使えます）">色: pLDDT（予測の信頼度）</option></select>
+    <button id="closeAll" style="flex:none" title="開いている構造とマップをすべて閉じます（確認が出ます）">すべて閉じる</button>
+  </div>
   <div id="structs"></div>
   <div class="row" id="structTools" style="display:none">
     <span class="small">クリックした構造が編集対象（下のChain・相互作用・対称分子の設定はその構造に効きます）</span>
-    <select id="colorBy"><option value="chain">色: Chainごと</option><option value="struct">色: 構造ごとに単色</option><option value="rainbowcb" title="色覚の多様性に配慮した配色（viridis）">色: N末→C末（紫→緑→黄）</option></select>
-    <button id="closeAll">すべて閉じる</button>
   </div>
   <div id="supBox" class="card" style="display:none">
     <h3 style="margin-top:2px">重ね合わせ（Cα）</h3>
@@ -468,6 +484,35 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div id="extras"></div>
   <div class="small">選択式はNGL形式: <kbd>:A</kbd> Chain, <kbd>10-20</kbd> 残基番号, <kbd>LYS</kbd> 残基名, <kbd>.CA</kbd> 原子名, <kbd>and / or / not</kbd></div>
 
+  <h2>変異の位置 <span class="small an"></span></h2>
+  <div class="small">変異のリストを貼り付けて「表示」を押すと、構造の上に変異の位置を出し、それぞれの位置について構造から分かること（埋もれ具合・二次構造・保存度・相互作用）と注意点を並べます。</div>
+  <textarea id="mutTxt" rows="4" spellcheck="false" placeholder="R51A 活性低下&#10;K102E 変化なし&#10;p.Asp150Asn&#10;A:77"></textarea>
+  <div class="frow"><span class="fl">Chain</span><select id="mutChain" title="変異を入れるChain。「自動」は、その番号の残基があるタンパク質のChainすべて（ホモ多量体ではすべてのコピー）"></select></div>
+  <div class="frow"><span class="fl">番号</span><select id="mutNum" title="入力の番号が、構造ファイルの番号か UniProt の番号か。UniProt の番号は、PDB ID で開いた構造では SIFTS の対応表で変換し、AlphaFold の予測構造ではそのまま使います"><option value="struct">構造の番号</option><option value="unp">UniProt の番号</option></select></div>
+  <div class="frow"><span class="fl">色分け</span><div class="fc"><select id="mutColorBy" title="変異の位置の色。「数値」は、各行に書いた数値（FoldX などの ΔΔG、活性の値など）で青–白–赤に塗ります"><option value="group">グループごと</option><option value="value">数値（ΔΔG など）</option></select><label id="mutRevL" style="display:none" title="ΔΔG の符号の約束がツールによって逆のときに使います"><input type="checkbox" id="mutRev"> 小さいほど赤</label></div></div>
+  <div class="frow"><span class="fl">番号のずれ<small>入力の番号に足す数</small></span><input type="number" id="mutOff" value="0" step="1" style="width:72px" title="論文や UniProt の番号と構造の番号がずれているとき。例：入力の 51 番が構造では 54 番なら +3"></div>
+  <div class="row"><button class="pri" id="mutRun">表示</button><button id="mutClear">消去</button></div>
+  <div id="mutInfo" class="small"></div>
+  <div class="row" id="mutTools" style="display:none">
+    <label><input type="checkbox" id="mutShow" checked> 3D表示</label>
+    <button id="mutSelAll" title="変異の位置をまとめて選択し、それぞれの相互作用を分子ウィンドウに出します">まとめて選択</button>
+    <button id="mutCopy">表をコピー（TSV）</button>
+  </div>
+  <div id="mutList"></div>
+  <details class="small"><summary>書き方と判定基準</summary>
+    <div style="margin-top:4px">
+      <div><b>書き方</b>：<span>「R51A」（1文字表記）、「Arg51Ala」「p.Arg51Ala」（3文字表記・HGVS）、「51」（番号だけ）、「A:R51A」（Chain を指定）。「R51*」は終止。1行に1つ書き、後ろに空白をあけてグループ名を書くと、グループごとに色を分けます（例「R51A 活性低下」）。数値を書いた場合は、表にその値を載せます。カンマで区切って1行に並べることもできます。「#」から後ろは無視します。</span></div>
+      <div><b>数値</b>：<span>各行の後ろに数値を書くと（「R51A 1.8」「R51A 活性低下 1.8」、表計算ソフトからコピーした2列、CSV の「R51A,1.8」、FoldX の「RA51A」形式も可）、「色分け」を「数値」にしたときにその値で塗ります。0 をはさむときは 0 を白にして青（負）–赤（正）、正の値だけなら白–赤、負の値だけなら青–白です。同じ位置に複数の変異があるときは平均で塗ります。FoldX などの ΔΔG は正が不安定化ですが、ツールによって符号が逆なので、「小さいほど赤」で入れ替えられます。数字を含まない行（表の見出し）は読み飛ばします。</span></div>
+      <div><b>UniProt の番号</b>：<span>PDB ID で開いた構造では、PDBe の SIFTS（PDB と UniProt の残基の対応表）で構造の番号に変換します。AlphaFold の予測構造は、構造の番号がそのまま UniProt の番号です。手元のファイルでは使えないので、「番号のずれ」で合わせてください。</span></div>
+      <div><b>照合</b>：<span>元の残基（R51A の R）が構造の残基と合うかを確かめます。合わないものが多いときは、元の残基が最も多く一致する番号のずれを提案します。</span></div>
+      <div><b>埋もれ具合</b>：<span>残基の溶媒露出表面積（Shrake–Rupley 法。界面解析と同じ計算）を、Gly-X-Gly での最大値（Tien et al. 2013 の理論値）で割った相対値です。露出 20% 未満を「埋もれている」、50% 未満を「一部露出」、それ以上を「表面」としています（ShikaMol での目安）。ほかのChain・核酸・リガンドも含めた構造全体で計算し、Chain 単独のときより 5% 以上小さければ、単独の値も併記します。</span></div>
+      <div><b>二次構造・保存度</b>：<span>二次構造はファイルの記載、なければ NGL が割り当てたものです。保存度は「保存度（ConSurf風）」でデータを読み込んだときだけ表示します。</span></div>
+      <div><b>相互作用</b>：<span>残基をクリックしたときと同じ判定（「判定条件」の設定）で、隣の残基以外との相互作用を載せます。「（主鎖）」は主鎖の原子による相互作用です。疎水性相互作用は数が多いので載せていません。</span></div>
+      <div><b>注意点</b>：<span>Missense3D（Ittisoponpisan et al. 2019）が使っている構造の特徴を参考にしています。⚠ は不安定化や機能の喪失につながりやすいもの、• は知っておくとよいものです。対象は、埋もれた位置での側鎖の大きさの変化（±30 Å³ 以上。残基の体積は Zamyatnin 1972）、電荷の持ち込み・逆転・消失、疎水性の位置への親水性残基、ヘリックスやストランドの途中の Pro、φ &gt; 0 の Gly の置換、ジスルフィド結合の切断、側鎖による水素結合・塩橋などの喪失、塩橋の相手との反発、高い保存度（グレード 8–9）、ほかの分子との接触面です。</span></div>
+      <div><span>これは構造から分かる手がかりで、安定性の変化（ΔΔG）の予測ではありません。変異後の構造は作らず、元の構造だけから判定しています。</span></div>
+    </div>
+  </details>
+
   </div>
 
   <div class="tabpane" data-tab="map">
@@ -621,7 +666,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div class="secbody">
   <div class="small">
     左ドラッグ: 回転　右ドラッグ: 平行移動　ホイール: ズーム<br>
-    <kbd>Shift</kbd>＋ホイール: 奥行きクリップ（スラブ）<br>原子をクリック: その周囲にズーム<br><kbd>Ctrl</kbd>/<kbd>⌘</kbd>＋クリック: 残基を追加（選択済みなら外す）<br><kbd>Shift</kbd>＋クリック: 前回クリックした残基からその残基までを鎖に沿ってまとめて追加<br>同じ残基を再クリック: 解除<br>範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または <kbd>Alt</kbd>（Mac は <kbd>Option</kbd>）を押しながらドラッグ。四角の中の残基をまとめて選択（<kbd>Esc</kbd> でオフ）<br>タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン<br>画面下の配列をドラッグ: その範囲をまとめて選択（<kbd>Ctrl</kbd>/<kbd>⌘</kbd>/<kbd>Shift</kbd> を押しながらだと追加）<br>背景をクリック: 解除して全体表示
+    ホイールを押し込んでドラッグ: ズームと奥行きクリップ<br>
+    <kbd>Shift</kbd>＋ホイール: 奥行きクリップ（スラブ）<br>原子をクリック: その周囲にズーム<br><kbd>Ctrl</kbd>/<kbd>⌘</kbd>＋クリック: 残基を追加（選択済みなら外す）<br><kbd>Shift</kbd>＋クリック: 前回クリックした残基からその残基までを鎖に沿ってまとめて追加<br>同じ残基を再クリック: 解除<br>範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または <kbd>Alt</kbd>（Mac は <kbd>Option</kbd>）を押しながらドラッグ。四角の中の残基をまとめて選択（<kbd>Esc</kbd> でオフ）<br>タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン<br>画面下の配列をドラッグ: その範囲をまとめて選択（<kbd>Ctrl</kbd>/<kbd>⌘</kbd>/<kbd>Shift</kbd> を押しながらだと追加）<br>背景をクリック: 解除して全体表示<br>背景をダブルクリック（タブレットはダブルタップ）: 全体表示に戻し、奥行きクリップも元に戻す
   </div>
   </div>
   </details>
@@ -750,6 +796,12 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "pLDDT をやめて Chain の色に戻す": "Stop pLDDT colouring (back to chain colours)", "pLDDT（予測の信頼度）の4段階の色で塗る": "Colour by pLDDT (prediction confidence), four bands",
+  "全構造：": "All structures:", "この行の操作は、開いているすべての構造に効きます": "This row applies to every open structure",
+  "閉じる構造はありません": "Nothing to close", "すべて閉じました": "All closed", "開いている構造とマップをすべて閉じます（確認が出ます）": "Close every open structure and map (asks first)",
+  "この構造を予測の信頼度（pLDDT、B 因子の欄の値）で、AlphaFold Database と同じ4段階の色に塗ります。もう一度押すと Chain の色に戻ります": "Colour this structure by prediction confidence (pLDDT, from the B-factor column) in the four bands of the AlphaFold Database. Press again to return to chain colours",
+  "PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください。AlphaFold の予測構造は UniProt ID（例 P04637）で読み込めます。複数のときはスペースかカンマで区切ります": "Enter a PDB ID of 4 characters (e.g. 7DA1) or 12 characters starting with pdb_ (e.g. pdb_00007da1). AlphaFold predicted models open with a UniProt ID (e.g. P04637). Separate several IDs with spaces or commas", "PDB ID（例 7DA1）か UniProt ID（例 P04637）": "PDB ID (e.g. 7DA1) or UniProt ID (e.g. P04637)", "UniProt ID を入れると、AlphaFold Database の予測構造を読み込みます。スペースかカンマで区切ると、複数の ID を順に読み込みます": "A UniProt ID opens the AlphaFold Database prediction. Separate several IDs with spaces or commas to load them one after another", "色: pLDDT（予測の信頼度）": "Colour: pLDDT (prediction confidence)", "AlphaFold などの予測構造の信頼度。B 因子の欄に入っている値で、AlphaFold Database と同じ4段階の色で塗ります（ColabFold などで予測した手元のファイルにも使えます）": "Confidence of predicted models, read from the B-factor column and coloured in the four bands of the AlphaFold Database (also works for local files from ColabFold and the like)", "AlphaFold Database のエントリーページを開く": "Open the AlphaFold Database entry", "UniProt のエントリーページを開く": "Open the UniProt entry", "番号": "Numbering", "構造の番号": "Structure numbering", "UniProt の番号": "UniProt numbering", "色分け": "Colour by", "グループごと": "Group", "数値（ΔΔG など）": "Value (ΔΔG etc.)", "小さいほど赤": "Lower is red", "入力の番号が、構造ファイルの番号か UniProt の番号か。UniProt の番号は、PDB ID で開いた構造では SIFTS の対応表で変換し、AlphaFold の予測構造ではそのまま使います": "Whether the input numbers follow the structure file or UniProt. UniProt numbers are converted with the SIFTS mapping for entries opened by PDB ID, and used as they are for AlphaFold models", "変異の位置の色。「数値」は、各行に書いた数値（FoldX などの ΔΔG、活性の値など）で青–白–赤に塗ります": "Colour of the positions. \"Value\" colours blue–white–red by the number written on each line (ΔΔG from FoldX and the like, activities, …)", "ΔΔG の符号の約束がツールによって逆のときに使います": "For tools whose ΔΔG sign convention is the other way round", "数値": "Values", "各行の後ろに数値を書くと（「R51A 1.8」「R51A 活性低下 1.8」、表計算ソフトからコピーした2列、CSV の「R51A,1.8」、FoldX の「RA51A」形式も可）、「色分け」を「数値」にしたときにその値で塗ります。0 をはさむときは 0 を白にして青（負）–赤（正）、正の値だけなら白–赤、負の値だけなら青–白です。同じ位置に複数の変異があるときは平均で塗ります。FoldX などの ΔΔG は正が不安定化ですが、ツールによって符号が逆なので、「小さいほど赤」で入れ替えられます。数字を含まない行（表の見出し）は読み飛ばします。": "Write a number after each mutation (\"R51A 1.8\", \"R51A reduced 1.8\", two columns pasted from a spreadsheet, CSV \"R51A,1.8\", or FoldX \"RA51A\") and set \"Colour by\" to \"Value\". Ranges spanning 0 use white at 0, blue for negative and red for positive; only positive values go white–red, only negative blue–white. Several mutations at one position are averaged. ΔΔG from FoldX and similar is positive for destabilising, but some tools use the opposite sign: \"Lower is red\" swaps it. Lines without digits (table headers) are skipped.", "PDB ID で開いた構造では、PDBe の SIFTS（PDB と UniProt の残基の対応表）で構造の番号に変換します。AlphaFold の予測構造は、構造の番号がそのまま UniProt の番号です。手元のファイルでは使えないので、「番号のずれ」で合わせてください。": "For entries opened by PDB ID, numbers are converted with PDBe SIFTS (the residue mapping between PDB and UniProt). AlphaFold models are numbered like UniProt already. Not available for local files; use the numbering offset instead.", "UniProt の番号との対応（SIFTS）を PDBe から取得しています…": "Fetching the UniProt mapping (SIFTS) from PDBe…", "UniProt の番号：AlphaFold の予測構造なので、構造の番号がそのまま UniProt の番号です": "UniProt numbering: an AlphaFold model, so the structure numbers are UniProt numbers", "UniProt の番号への変換は、PDB ID か UniProt ID で開いた構造だけで使えます。構造の番号で表示しています": "UniProt numbering is available only for structures opened by PDB ID or UniProt ID; structure numbers are used", "数値の付いた変異がないので、グループで色分けしています": "No mutations have values, so they are coloured by group", "SIFTS の対応表を取得できませんでした": "Could not fetch the SIFTS mapping",
+  "相互作用": "Interactions", "変異の位置": "Mutation positions", "変異のリストを貼り付けて「表示」を押すと、構造の上に変異の位置を出し、それぞれの位置について構造から分かること（埋もれ具合・二次構造・保存度・相互作用）と注意点を並べます。": "Paste a list of mutations and press \"Show\": the positions are shown on the structure, and for each one the panel lists what the structure tells about it (burial, secondary structure, conservation, interactions) with points to note.", "R51A 活性低下\nK102E 変化なし\np.Asp150Asn\nA:77": "R51A reduced\nK102E unchanged\np.Asp150Asn\nA:77", "自動（その番号があるChainすべて）": "Auto (every chain with that number)", "変異を入れるChain。「自動」は、その番号の残基があるタンパク質のChainすべて（ホモ多量体ではすべてのコピー）": "Chain to mutate. \"Auto\" uses every protein chain that has a residue with that number (all copies in a homo-oligomer)", "番号のずれ": "Numbering offset", "入力の番号に足す数": "added to the input numbers", "論文や UniProt の番号と構造の番号がずれているとき。例：入力の 51 番が構造では 54 番なら +3": "For when the numbering in papers or UniProt differs from the structure. E.g. if input 51 is 54 in the structure, use +3", "まとめて選択": "Select all", "変異の位置をまとめて選択し、それぞれの相互作用を分子ウィンドウに出します": "Select all mutation positions and show their interactions in the viewer", "書き方と判定基準": "Input format and criteria", "書き方": "Format", "照合": "Check", "埋もれ具合": "Burial", "二次構造・保存度": "Secondary structure and conservation", "注意点": "Points to note", "「R51A」（1文字表記）、「Arg51Ala」「p.Arg51Ala」（3文字表記・HGVS）、「51」（番号だけ）、「A:R51A」（Chain を指定）。「R51*」は終止。1行に1つ書き、後ろに空白をあけてグループ名を書くと、グループごとに色を分けます（例「R51A 活性低下」）。数値を書いた場合は、表にその値を載せます。カンマで区切って1行に並べることもできます。「#」から後ろは無視します。": "\"R51A\" (one-letter), \"Arg51Ala\" or \"p.Arg51Ala\" (three-letter, HGVS), \"51\" (number only), \"A:R51A\" (with a chain). \"R51*\" is a stop. One per line; a group name after a space colours the groups differently (e.g. \"R51A reduced\"). A number there is listed in the table. Several can share a line separated by commas. Text after \"#\" is ignored.", "元の残基（R51A の R）が構造の残基と合うかを確かめます。合わないものが多いときは、元の残基が最も多く一致する番号のずれを提案します。": "Whether the original residue (the R of R51A) matches the structure. When many do not, the numbering offset that matches the most is suggested.", "残基の溶媒露出表面積（Shrake–Rupley 法。界面解析と同じ計算）を、Gly-X-Gly での最大値（Tien et al. 2013 の理論値）で割った相対値です。露出 20% 未満を「埋もれている」、50% 未満を「一部露出」、それ以上を「表面」としています（ShikaMol での目安）。ほかのChain・核酸・リガンドも含めた構造全体で計算し、Chain 単独のときより 5% 以上小さければ、単独の値も併記します。": "Solvent-accessible surface area of the residue (Shrake–Rupley, as in the interface analysis) divided by its maximum in Gly-X-Gly (theoretical values of Tien et al. 2013). Below 20% is \"buried\", below 50% \"partly exposed\", otherwise \"surface\" (ShikaMol’s rule of thumb). It is calculated in the whole model, other chains, nucleic acids and ligands included; when this is at least 5% lower than for the chain alone, both values are given.", "二次構造はファイルの記載、なければ NGL が割り当てたものです。保存度は「保存度（ConSurf風）」でデータを読み込んだときだけ表示します。": "Secondary structure from the file, or as assigned by NGL. Conservation is shown only when data are loaded under \"Conservation (ConSurf-like)\".", "残基をクリックしたときと同じ判定（「判定条件」の設定）で、隣の残基以外との相互作用を載せます。「（主鎖）」は主鎖の原子による相互作用です。疎水性相互作用は数が多いので載せていません。": "Interactions with anything but the neighbouring residues, judged as for a clicked residue (the \"Criteria\" settings). \"(main chain)\" marks interactions made by main-chain atoms. Hydrophobic contacts are too many to list and are left out.", "Missense3D（Ittisoponpisan et al. 2019）が使っている構造の特徴を参考にしています。⚠ は不安定化や機能の喪失につながりやすいもの、• は知っておくとよいものです。対象は、埋もれた位置での側鎖の大きさの変化（±30 Å³ 以上。残基の体積は Zamyatnin 1972）、電荷の持ち込み・逆転・消失、疎水性の位置への親水性残基、ヘリックスやストランドの途中の Pro、φ > 0 の Gly の置換、ジスルフィド結合の切断、側鎖による水素結合・塩橋などの喪失、塩橋の相手との反発、高い保存度（グレード 8–9）、ほかの分子との接触面です。": "Based on the structural features used by Missense3D (Ittisoponpisan et al. 2019). ⚠ marks changes that tend to destabilise or disrupt function; • marks things worth knowing. Checked: change in side-chain size at a buried site (±30 Å³ or more; residue volumes from Zamyatnin 1972), a buried charge introduced, reversed or lost, a hydrophilic residue at a hydrophobic site, Pro inside a helix or strand, replacing a Gly with φ > 0, a broken disulfide, loss of side-chain H-bonds, salt bridges and similar, repulsion with a salt-bridge partner, high conservation (grade 8–9), and contact surfaces with other molecules.", "これは構造から分かる手がかりで、安定性の変化（ΔΔG）の予測ではありません。変異後の構造は作らず、元の構造だけから判定しています。": "These are clues from the structure, not a prediction of the stability change (ΔΔG). No mutant model is built; everything is judged from the original structure.", "このずれを使う": "Use this offset", "ここで翻訳が止まり、これより C 末側が失われます": "Translation stops here; everything C-terminal of it is lost", "埋もれた位置に電荷を持ち込みます": "Introduces a charge at a buried site", "埋もれた位置で電荷が逆になります": "Reverses a buried charge", "埋もれた位置の電荷がなくなります": "Removes a buried charge", "埋もれた疎水性の位置に親水性の残基を持ち込みます": "Puts a hydrophilic residue at a buried hydrophobic site", "埋もれた位置に Pro が入ります": "Introduces Pro at a buried site", "Pro がなくなり、この位置の主鎖が動きやすくなります": "Removes a Pro; the main chain here becomes more flexible", "変異の表示を消しました": "Mutation display cleared", "変異の表をコピーしました（表計算ソフトに貼り付けられます）": "Mutation table copied (paste into a spreadsheet)", "コピーできませんでした": "Could not copy", "先に構造を開いてください": "Open a structure first", "変異": "Mutation", "グループ": "Group", "値": "Value", "構造の残基": "Residue in structure", "露出(%)": "Exposure (%)", "Chain単独の露出(%)": "Exposure, chain alone (%)", "二次構造": "Secondary structure", "φ(°)": "φ (°)", "保存度": "Conservation", "一致": "match", "不一致": "mismatch", "構造にない": "not in structure",
   'PDB ID（例 7DA1）': 'PDB ID (e.g. 7DA1)',
   '読込': 'Load', 'カートゥーンの透明度': 'Cartoon transparency', '相互作用も表示': 'Show interactions', '範囲: 表示中の残基すべて': 'Scope: all residues shown', '範囲: クリックした残基のみ': 'Scope: clicked residues only',
   '表示中の残基すべて': 'All residues shown', 'クリックした残基のみ': 'Clicked residues only', '範囲': 'Scope',
@@ -906,7 +958,7 @@ const EXACT = new Map(Object.entries({
   '原子をクリック: その周囲にズーム': 'Click an atom: zoom to it', '＋クリック: 残基を追加（選択済みなら外す）': '+ click: add the residue (or remove it if already focused)',
   '＋クリック: 前回クリックした残基からその残基までを鎖に沿ってまとめて追加': '+ click: add every residue along the chain from the last clicked one',
   '同じ残基を再クリック: 解除': 'Click the same residue again: clear',
-  '背景をクリック: 解除して全体表示': 'Click the background: clear and fit all',
+  '背景をクリック: 解除して全体表示': 'Click the background: clear and fit all', 'ホイールを押し込んでドラッグ: ズームと奥行きクリップ': 'Drag with the wheel pressed: zoom and depth clipping', '背景をダブルクリック（タブレットはダブルタップ）: 全体表示に戻し、奥行きクリップも元に戻す': 'Double-click the background (double-tap on tablets): fit all and reset depth clipping',
   'エラーログ（': 'Error log (',
   'PDB IDを入力して「読込」': 'Enter a PDB ID and press Load',
   'ここにドロップ（構造 or マップ）': 'Drop here (structure or map)',
@@ -994,6 +1046,36 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^開いている構造 (\d+) 個(?:とマップ (\d+) 個)?をすべて閉じます。色・選択・解析などの設定も消えます（必要ならセッションを保存してから閉じてください）。閉じてよいですか？$/, (m, n, k) => `Close all ${n} structure(s)${k ? ` and ${k} map(s)` : ''}? Colours, selections and analysis settings will be lost too (save a session first if you need them).`),
+  P(/^(.+) を予測の信頼度（pLDDT）で色分けしました：(.+)$/, (m, n, b) => `${n} coloured by prediction confidence (pLDDT): ${b.replace(/ 以上（非常に高い）/, ' and above (very high)').replace(/（高い）/, ' (high)').replace(/（低い）/, ' (low)').replace(/ 未満（非常に低い）/, ' and below (very low)').replace(/・/g, ', ')}`),
+  P(/^(.+) を Chain ごとの色に戻しました$/, (m, n) => `${n}: back to chain colours`),
+  P(/^AlphaFold の予測構造 (.+?)(?:（(.+)）)?を読み込みました。予測の信頼度（pLDDT）で色分けしています（Chain の色に戻すには、Chain の表の「一括」の色ボタンを押します）$/, (m, n, d) => `Loaded the AlphaFold model ${n}${d ? ' (' + d + ')' : ''}, coloured by prediction confidence (pLDDT). To return to chain colours, use the colour button in the "All" row of the chain table`),
+  P(/^AlphaFold の予測構造 (.+) を探しています…$/, (m, a) => `Looking for the AlphaFold model of ${a}…`),
+  P(/^(.+) の予測構造は AlphaFold Database にありません（UniProt ID を確かめてください）$/, (m, a) => `No AlphaFold Database model for ${a} (check the UniProt ID)`),
+  P(/^(.+) の予測構造を読み込めませんでした（UniProt ID が正しいか、通信できるかを確かめてください）$/, (m, a) => `Could not load the model of ${a} (check the UniProt ID and the connection)`),
+  P(/^AlphaFold の予測構造 (.+?)(?:（(.+)）)?を読み込みました。(予測の信頼度（pLDDT）で色分けしています|「色: pLDDT」で予測の信頼度（pLDDT）を色分けできます)$/, (m, n, d, k) => `Loaded the AlphaFold model ${n}${d ? ' (' + d + ')' : ''}. ` + (k[0] === '予' ? 'Coloured by prediction confidence (pLDDT)' : 'Choose "Colour: pLDDT" to colour by prediction confidence')),
+  P(/^予測の信頼度（pLDDT）で色分けしています：(.+)。PDB ID で開いた実験構造は灰色です（手元のファイルは B 因子の欄の値で塗ります）$/, (m, b) => `Coloured by prediction confidence (pLDDT): ${b.replace(/ 以上（非常に高い）/, ' and above (very high)').replace(/（高い）/, ' (high)').replace(/（低い）/, ' (low)').replace(/ 未満（非常に低い）/, ' and below (very low)').replace(/・/g, ', ')}. Experimental entries opened by PDB ID are grey (local files are coloured by their B-factor column)`),
+  P(/^UniProt の番号：SIFTS の対応表で構造の番号に変換しています（(.+)）$/, (m, a) => `UniProt numbering: converted to structure numbers with the SIFTS mapping (${a.replace(/、/g, ', ')})`),
+  P(/^UniProt の番号との対応を取得できませんでした（(.+)）。構造の番号で表示しています$/, (m, e) => `Could not get the UniProt mapping (${tr(e)}); structure numbers are used`),
+  P(/^数値 (\d+) 件で色分け（位置ごとの平均。数値のない変異は灰色）$/, (m, n) => `Coloured by ${n} values (mean per position; mutations without a value are grey)`),
+  P(/^UniProt (-?\d+) 番 = 構造の (-?\d+) 番$/, (m, a, b) => `UniProt ${a} = structure ${b}`),
+  P(/^構造にありません（UniProt (-?\d+) 番）$/, (m, n) => `Not in the structure (UniProt ${n})`),
+  P(/^(\d+) 件：元の残基が一致 (\d+)(?:、一致しない (\d+))?(?:、構造にない (\d+))?(?:（読めない書き方 (\d+)）)?$/, (m, n, ok, df, no, bad) => `${n} entries: ${ok} match the original residue` + (df ? `, ${df} do not` : '') + (no ? `, ${no} not in the structure` : '') + (bad ? ` (${bad} unreadable)` : '')),
+  P(/^番号のずれを ([+-]?\d+) にすると、(\d+) 件中 (\d+) 件で元の残基が一致します$/, (m, o, a, b) => `With a numbering offset of ${o}, ${b} of ${a} match the original residue`),
+  P(/^(\d+) 行目：読めない書き方です$/, (m, n) => `line ${n}: could not read this`),
+  P(/^構造にありません（(-?\d+) 番）$/, (m, n) => `Not in the structure (no. ${n})`),
+  P(/^✗ 構造では (.+)$/, (m, r) => `✗ ${r} in the structure`),
+  P(/^変異 (\d+) 件のうち (\d+) 件を表示しました(?:（読めなかった行 (\d+) 件）)?(。番号がずれているかもしれません（「解析」タブの提案を見てください）)?$/, (m, n, k, bad, off) => `Showing ${k} of ${n} mutations` + (bad ? ` (${bad} unreadable lines)` : '') + (off ? '. The numbering may be offset (see the suggestion in the Analysis tab)' : '')),
+  P(/^ジスルフィド結合（(.+) と）が切れます$/, (m, x) => `Breaks the disulfide bond (with ${x})`),
+  P(/^埋もれた位置で側鎖が小さくなり、内部に空洞ができる可能性（(.+) Å³）$/, (m, v) => `Smaller side chain at a buried site: may leave a cavity (${v} Å³)`),
+  P(/^埋もれた位置で側鎖が大きくなり、周りとぶつかる可能性（(.+) Å³）$/, (m, v) => `Larger side chain at a buried site: may clash with its surroundings (${v} Å³)`),
+  P(/^(ヘリックス|βストランド)の途中に Pro が入ります（主鎖の水素結合が切れ、曲がりやすい）$/, (m, k) => `Pro inside a ${k === 'ヘリックス' ? 'helix' : 'β-strand'} (breaks a main-chain H-bond and kinks the chain)`),
+  P(/^Gly でないと取りにくい主鎖の角度（φ = (.+)°）の位置を、別の残基に変えます$/, (m, v) => `Replaces a Gly whose main-chain angle (φ = ${v}°) is hard for other residues`),
+  P(/^(ヘリックス|βストランド)の途中に Gly が入ります（不安定になりやすい）$/, (m, k) => `Gly inside a ${k === 'ヘリックス' ? 'helix' : 'β-strand'} (tends to destabilise)`),
+  P(/^塩橋の相手（(.+)）と同じ電荷になり、反発します$/, (m, x) => `Same charge as its salt-bridge partner (${x}): repulsion`),
+  P(/^側鎖の(.+?)（(.+)）が(変わる|失われる)可能性$/, (m, t, x, k) => `Side-chain ${tr(t).replace(/^(?!H-)./, c => c.toLowerCase())} (${x}) may be ${k === '変わる' ? 'altered' : 'lost'}`),
+  P(/^保存度が高い位置です（グレード (\d)）$/, (m, g) => `Highly conserved position (grade ${g})`),
+  P(/^ほかの分子との接触面にあります（(.+)）$/, (m, x) => `At a contact surface with other molecules (${tr(x)})`),
   P(/^📏 測定 (\d+) 件$/, (m, n) => `📏 Measurements: ${n}`),
   P(/^原子を(\d)個、順にタップしてください$/, (m, n) => `Tap ${n} atoms in order`),
   P(/^(距離|角度|二面角): (.+?)（(.+)）$/, (m, k, v, a) => `${{'距離': 'Distance', '角度': 'Angle', '二面角': 'Dihedral'}[k]}: ${v} (${a})`),
@@ -1104,6 +1186,7 @@ const PATTERNS = [
   P(/^・(.+?): 失敗（(.*)）$/, (m, a, e) => `· ${a}: failed (${tr(e)})`),
 ];
 const FRAGS = Object.entries({
+  "表面（露出 ": "surface (exposed ", "保存度 データ不足": "conservation: insufficient data", "保存度 ": "conservation ", "相互作用: ": "Interactions: ", "（主鎖）": " (main chain)", "（核酸）": " (nucleic acid)", "（リガンド・イオン）": " (ligand/ion)", "埋もれている": "buried", "一部露出": "partly exposed", "（露出 ": " (exposed ", "、Chain 単独では ": ", chain alone ", "αヘリックス": "α-helix", "3₁₀ヘリックス": "3₁₀-helix", "πヘリックス": "π-helix", "βストランド": "β-strand", "βブリッジ": "β-bridge", "ループ": "loop", "；": "; ", " ・ ": " · ",
   '（重ね合わせ済み）': ' (superposed)', '（PDBeファイル）': ' (PDBe file)', '（RCSBファイル）': ' (RCSB file)',
   '水を介した水素結合': 'Water bridge', 'ハロゲン結合': 'Halogen bond', '金属配位': 'Metal coordination', 'πスタッキング': 'π-stacking', 'カチオン-π': 'Cation–π', 'その他の接触': 'Other contact', '水素結合': 'H-bond', '塩橋': 'Salt bridge',
   '疎水性': 'Hydrophobic', '環の重心': 'ring centroid', '平行': 'parallel', 'T字': 'T-shaped', '接触': 'contact', '最短': 'closest',
@@ -1222,10 +1305,12 @@ let recent = [];
 try { recent = JSON.parse(localStorage.getItem('pdv_recent') || '[]'); } catch (e) {}
 let popCb = null;
 const pop = $('#pop');
-function openPicker(anchor, current, cb) {
+let popExtra = null;
+function openPicker(anchor, current, cb, extra) {
   popCb = c => { anchor.style.background = c; anchor.dataset.v = c; remember(c); closePicker(); cb(c); };
+  popExtra = extra ? () => { closePicker(); extra.onClick(); } : null;
   const sw = ([n, c]) => `<button class="c${c.toLowerCase() === (current || '').toLowerCase() ? ' on' : ''}" data-c="${c}" data-n="${n}" style="background:${c}" title="${n}"></button>`;
-  pop.innerHTML = `
+  pop.innerHTML = `${extra ? `<button id="popExtra" style="width:100%;margin-bottom:8px">${extra.label}</button>` : ''}
     <div class="grid">${COLORS.map(sw).join('')}</div>
     <div class="nm" id="popName">${(COLORS.find(x => x[1] === current) || ['', current])[0] || current || ''}</div>
     ${recent.length ? `<div class="lbl">最近使った色</div><div class="grid">${recent.map(c => sw([c, c])).join('')}</div>` : ''}
@@ -1242,6 +1327,7 @@ function remember(c) {
   try { localStorage.setItem('pdv_recent', JSON.stringify(recent)); } catch (e) {}
 }
 pop.addEventListener('click', e => {
+  if (e.target.id === 'popExtra' && popExtra) return popExtra();
   e.stopPropagation();
   if (e.target.dataset.c && popCb) popCb(e.target.dataset.c);
   if (e.target.id === 'popOk') {
@@ -1307,7 +1393,7 @@ function activate(i) {
   if (keepOn && lastFocus) { infoBase = infoFor(lastFocus); focusOn(lastFocus, false); }   // its kept selection becomes the one listed
 }
 function renderAllPanels() {
-  renderStructs(); renderChains(); renderExtras(); fillIfSelects(); fillConsChain(); renderCons(); renderEmHint(); renderIfc(); renderSeq(); renderGroups(); renderSymList();
+  renderStructs(); renderChains(); renderExtras(); fillIfSelects(); fillConsChain(); renderCons(); renderEmHint(); renderIfc(); renderSeq(); renderGroups(); renderSymList(); renderMut();
   document.querySelectorAll('.an').forEach(x => x.textContent = structs[active] ? '— ' + structs[active].name : '');
   linkUI();
   try { dimPanels(); if (measures.length || measPend.length) measDraw(); } catch (e) {}
@@ -1378,6 +1464,12 @@ function removeStruct(i) {
   renderAllPanels(); buildSeq();
   spotRefresh();
 }
+$('#closeAll').onclick = () => {
+  if (!structs.length && !maps.length) return status('閉じる構造はありません');
+  const msg = `開いている構造 ${structs.length} 個${maps.length ? `とマップ ${maps.length} 個` : ''}をすべて閉じます。色・選択・解析などの設定も消えます（必要ならセッションを保存してから閉じてください）。閉じてよいですか？`;
+  if (!confirm(LANG === 'en' ? tr(msg) : msg)) return;
+  clearAll(); status('すべて閉じました');
+};
 function clearAll() {
   hl = null;
   spot.ghosts = []; spot.hidden = []; spot.sym = []; spot.live = false;      // their components are removed below
@@ -1405,6 +1497,7 @@ const entryLinks = id => {
   const lo = id.toLowerCase();
   return `<a class="lnk" href="https://www.rcsb.org/structure/${id}" target="_blank" rel="noopener" title="RCSB PDBのエントリーページを開く">RCSB ↗</a>`;
 };
+const afLinks = acc => `<a class="lnk" href="https://alphafold.ebi.ac.uk/entry/${acc}" target="_blank" rel="noopener" title="AlphaFold Database のエントリーページを開く">AFDB ↗</a> <a class="lnk" href="https://www.uniprot.org/uniprotkb/${acc}" target="_blank" rel="noopener" title="UniProt のエントリーページを開く">UniProt ↗</a>`;
 function renderStructs() {
   stash();
   const panel = $('#chainPanel');
@@ -1413,9 +1506,10 @@ function renderStructs() {
     const desc = esc(st.comp.structure.title || '');
     const isA = i === active, open = isA && stOpen;
     const id = st.structSrc && st.structSrc.type === 'pdb' ? st.structSrc.id : '';
+    const afId = st.structSrc && st.structSrc.type === 'af' ? st.structSrc.id : '';
     return `<div class="st${isA ? ' on' : ''}${open ? ' open' : ''}" data-i="${i}">
       <input type="checkbox" data-k="vis" ${st.visible ? 'checked' : ''} title="表示/非表示">
-      <div class="head"><span class="nm">${esc(st.name)}</span>${st.xf ? '<span class="small">（重ね合わせ済み）</span>' : ''}${id ? entryLinks(id) : ''}</div>
+      <div class="head"><span class="nm">${esc(st.name)}</span>${st.xf ? '<span class="small">（重ね合わせ済み）</span>' : ''}${id ? entryLinks(id) : ''}${afId ? afLinks(afId) : ''}</div>
       <div class="btns">
         <button class="x" data-k="zoom" title="この構造にズーム">◎</button>
         <button class="x" data-k="del" title="閉じる">✕</button>
@@ -1426,6 +1520,7 @@ function renderStructs() {
   }).join('');
   if (active >= 0 && stOpen && $('#stbody')) $('#stbody').appendChild(panel);
   $('#structTools').style.display = structs.length ? 'flex' : 'none';
+  $('#globalTools').style.display = structs.length || maps.length ? 'flex' : 'none';
   renderSup();
   renderActiveBar();
 }
@@ -1465,7 +1560,6 @@ $('#structs').addEventListener('input', e => {
   if (!row || e.target.dataset.k !== 'vis') return;   // inputs inside the colour panel are handled by their own listeners
   setStructVisible(+row.dataset.i, e.target.checked);
 });
-$('#closeAll').onclick = clearAll;
 
 /* ---------- superposition ---------- */
 /* ---------- superposition core (pairing, Horn quaternion fit, PyMOL-style outlier rejection) ---------- */
@@ -1803,7 +1897,7 @@ function updateBridges() {
   groups.forEach((set, style) => {
     ap.index = [...set][0];
     const ch = byName.get(ap.chainname) || chains[0];
-    c.__bridges.push(c.addRepresentation(style, {sele: '@' + [...set].join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(ch ? ch.color : '#cccccc')})}));
+    c.__bridges.push(c.addRepresentation(style, {sele: '@' + [...set].join(','), ...(rbFor(c.structure) ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(ch ? ch.color : '#cccccc')})}));
   });
 }
 /* spotlight is on and something it faded was rebuilt or toggled: redo it (once, after the current handler) */
@@ -1822,7 +1916,7 @@ function setCartOp(v) {
 function repSpecs(ch) {
   const out = [];
   const n = ch.name, s = `:${n} and polymer`, cs = consActive(ch);
-  const rb = !cs && rainbowMode;
+  const rb = !cs && rbFor(comp && comp.structure);
   const c = cs ? CONS_SCHEME : rb ? RB_SCHEME : ch.color;
   const add = (t, p) => out.push([t, p]);
   const el = cs ? {color: CONS_SCHEME} : rb ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(ch.color)};
@@ -1863,13 +1957,13 @@ function sticksByChain(indices, extra = {}, style = 'licorice', ligStyle = style
     else lig.push(i);
   }
   const reps = [];
-  for (const [n, idx] of byChain) reps.push(comp.addRepresentation(style, {sele: '@' + idx.join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(n))}), ...extra}));
+  for (const [n, idx] of byChain) reps.push(comp.addRepresentation(style, {sele: '@' + idx.join(','), ...(rbFor(comp.structure) ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(n))}), ...extra}));
   if (lig.length) reps.push(comp.addRepresentation(ligStyle, {sele: '@' + lig.join(','), color: 'element', colorValue: hexNum($('#ligColor').dataset.v), ...extra}));
   // bonds between chains / to ligands among the atoms drawn here
   const cb = crossBonds(st, new Set(indices));
   if (cb.length) {
     const at = [...new Set(cb.flatMap(([i, j]) => [i, j]))];
-    reps.push(comp.addRepresentation(style, {sele: '@' + at.join(','), ...(rainbowMode ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(cb[0][2]))}), ...extra}));
+    reps.push(comp.addRepresentation(style, {sele: '@' + at.join(','), ...(rbFor(comp.structure) ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(chainColor(cb[0][2]))}), ...extra}));
   }
   return reps;
 }
@@ -1975,7 +2069,15 @@ function rbT(a) {
   const r = m.get(a.chainIndex);
   return r ? (r[1] > r[0] ? (a.residueIndex - r[0]) / (r[1] - r[0]) : 0) : -1;
 }
-const rbColor = a => { const t = rbT(a); return t < 0 ? 0xc8c8c8 : rampColor(rainbowMode === 'rainbowcb' ? RAMP_CB : RAMP_RB, t); };
+/* N→C or pLDDT colouring: for every structure from the colour menu, or pLDDT for one structure (its "All" row) */
+const stFlag = (s, k) => !!(s && (s[k] || (s.structure && s.structure[k])));
+const rbFor = st => rainbowMode || (stFlag(st, '__plddt') ? 'plddt' : '');
+const rbColor = a => {
+  const s = a.structure;
+  if (stFlag(s, '__plddt')) return plddtColor(a.bfactor);
+  if (rainbowMode === 'plddt') return stFlag(s, '__exp') ? 0xc8c8c8 : plddtColor(a.bfactor);   // entries opened by PDB ID (experimental) stay grey
+  const t = rbT(a); return t < 0 ? 0xc8c8c8 : rampColor(rainbowMode === 'rainbowcb' ? RAMP_CB : RAMP_RB, t);
+};
 const EL_COL = {N: 0x3050f8, O: 0xff0d0d, S: 0xffff30, P: 0xff8000, SE: 0xffa100, H: 0xffffff};
 const RB_SCHEME = NGL.ColormakerRegistry.addScheme(function () { this.atomColor = rbColor; }, 'nc-rainbow');
 // sticks: carbon in the N→C colour, other elements in their usual colours
@@ -2284,7 +2386,7 @@ $('#surfOp').onchange = () => { stash(); spotRefresh(); };
 /* ---------- colour by structure (one colour per structure) ---------- */
 $('#colorBy').onchange = e => {
   const v = e.target.value;
-  rainbowMode = v === 'rainbow' || v === 'rainbowcb' ? v : '';
+  rainbowMode = v === 'rainbow' || v === 'rainbowcb' || v === 'plddt' ? v : '';
   if (!structs.length) return;
   const byStruct = v === 'struct', back = active;
   const pal = PALETTES[$('#palette').value];
@@ -2301,7 +2403,8 @@ $('#colorBy').onchange = e => {
   });
   activate(back);
   renderChains(); renderSeq();
-  status(rainbowMode ? `N末から C末（核酸は 5'から 3'）に向かって、Chainごとに紫→緑→黄で塗っています。クリックした残基のスティックの炭素も同じ色です`
+  status(rainbowMode === 'plddt' ? '予測の信頼度（pLDDT）で色分けしています：' + PLDDT_BANDS.map(b => b[2]).join('・') + '。PDB ID で開いた実験構造は灰色です（手元のファイルは B 因子の欄の値で塗ります）'
+    : rainbowMode ? `N末から C末（核酸は 5'から 3'）に向かって、Chainごとに紫→緑→黄で塗っています。クリックした残基のスティックの炭素も同じ色です`
     : byStruct ? '構造ごとに単色で表示しています（Chainの色パネルで個別に変えることもできます）' : 'Chainごとの色に戻しました');
 };
 
@@ -2319,7 +2422,7 @@ function renderChains() {
       <input type="checkbox" data-k="allvis" title="全Chainの表示/非表示">
       <span class="cname">一括</span>
       <span class="desc">全Chainにまとめて適用</span>
-      <button class="sw" data-k="allcol" style="background:${sameCol || 'conic-gradient(#e06666 0 25%, #6fa8dc 0 50%, #93c47d 0 75%, #ffd966 0)'}" title="全Chainを同じ色にする（構造全体を1色で塗ります）"></button>
+      <button class="sw" data-k="allcol" style="background:${comp && comp.structure.__plddt ? PLDDT_GRAD : sameCol || 'conic-gradient(#e06666 0 25%, #6fa8dc 0 50%, #93c47d 0 75%, #ffd966 0)'}" title="全Chainを同じ色にする（構造全体を1色で塗ります）"></button>
       <select data-k="alltype"><option value="" ${same ? '' : 'selected'}>（混在）</option>${typeOpts(same)}</select>
       <span class="surfc"><input type="checkbox" data-k="allsurf" title="全Chainの表面を表示/非表示"></span>
       <button class="x" data-k="allzoom" title="構造全体にズーム">◎</button>
@@ -2329,7 +2432,7 @@ function renderChains() {
       <input type="checkbox" data-k="vis" ${c.visible ? 'checked' : ''} title="表示/非表示">
       <span class="cname">${c.name}</span>
       <span class="desc" data-k="desc" title="${esc(c.desc)}">${esc(c.desc) || '（分子名なし）'} <span class="small">(${c.nres}${c.nucleic ? ' nt' : ' aa'})</span></span>
-      <button class="sw" data-k="col" style="background:${c.color}" title="色を選ぶ"></button>
+      <button class="sw" data-k="col" style="background:${comp && comp.structure.__plddt ? PLDDT_GRAD : c.color}" title="色を選ぶ"></button>
       <select data-k="type">${typeOpts(c.type)}</select>
       <span class="surfc"><input type="checkbox" data-k="surf" ${c.surf ? 'checked' : ''} title="このChainに表面を重ねて表示"></span>
       <button class="x" data-k="zoom" title="このChainにズーム">◎</button>
@@ -2362,19 +2465,33 @@ $('#chains').addEventListener('input', e => {
   chainReps(ch); drawSym(); renderSeq();
   renderChains();   // refresh the bulk row (checked / partly checked)
 });
+function setPlddt(on, quiet) {
+  if (!comp) return;
+  comp.structure.__plddt = !!on;
+  chains.forEach(chainReps); refreshChainColored(); drawSym(); renderSeq(); renderChains();
+  try { if (lblPref.color === 'chain') lblStyle(); } catch (e) {}
+  if (!quiet) status(on ? `${structs[active].name} を予測の信頼度（pLDDT）で色分けしました：` + PLDDT_BANDS.map(b => b[2]).join('・') : `${structs[active].name} を Chain ごとの色に戻しました`);
+}
 $('#chains').addEventListener('click', e => {
+  if (e.target.dataset.k === 'plddt') return setPlddt(!(comp && comp.structure.__plddt));
   if (e.target.dataset.k === 'allcol') {
     const S = structs[active];
+    const pl = comp && !comp.structure.__exp ? {label: comp.structure.__plddt ? 'pLDDT をやめて Chain の色に戻す' : 'pLDDT（予測の信頼度）の4段階の色で塗る', onClick: () => setPlddt(!comp.structure.__plddt)} : null;
     return openPicker(e.target, chains[0] ? chains[0].color : '#cccccc', c => {
+      if (comp) comp.structure.__plddt = false;
       chains.forEach(ch => { ch.color = c; chainReps(ch); });
       if (S) S.prevColors = null;              // this colour is now the structure's own colour
       refreshChainColored(); drawSym(); renderSeq(); renderChains();
       status(`${S ? S.name : '構造'} の全Chainを同じ色にしました（Chainごとの色は各行の色ボタンで変えられます）`);
-    });
+    }, pl);
   }
   if (e.target.dataset.k === 'col') {
     const ch = chains[+e.target.closest('.chain').dataset.i];
-    return openPicker(e.target, ch.color, c => { ch.color = c; chainReps(ch); refreshChainColored(); drawSym(); renderSeq(); });
+    return openPicker(e.target, ch.color, c => {
+      if (comp && comp.structure.__plddt) { comp.structure.__plddt = false; ch.color = c; chains.forEach(chainReps); renderChains(); }
+      else { ch.color = c; chainReps(ch); }
+      refreshChainColored(); drawSym(); renderSeq();
+    });
   }
   if (e.target.dataset.k === 'allzoom') { if (comp) comp.autoView(600); return; }
   if (e.target.dataset.k !== 'zoom') return;
@@ -3665,7 +3782,7 @@ const mapSettings = m => ({level: m.level, color: m.color, neg: m.neg, style: m.
 
 async function structToJSON(st) {
   const src = st.structSrc;
-  const structure = src.type === 'pdb' ? {type: 'pdb', id: src.id, asm: src.asm || 0}
+  const structure = src.type === 'pdb' ? {type: 'pdb', id: src.id, asm: src.asm || 0} : src.type === 'af' ? {type: 'af', id: src.id}
     : {type: 'file', name: src.name, ext: src.ext, gz: src.gz, data: await fileToDataURL(src.file)};
   const u = st.ui;
   return {
@@ -3679,7 +3796,8 @@ async function structToJSON(st) {
     sym: {on: u.symOn && !st.xf, cut: u.symCut, opacity: u.symOp},
     focus: st.lastFocus,
     groups: (st.groups || []).map(g => ({name: g.name, res: g.res, on: !!g.on, color: g.color, style: g.style, w: g.w || 1})),
-    cons: st.cons || null
+    cons: st.cons || null, plddt: !!(st.comp && st.comp.structure.__plddt),
+    mut: st.mut ? {txt: st.mut.txt, ch: st.mut.ch || '', off: st.mut.off || 0, hide: !!st.mut.hide, num: st.mut.num || 'struct', cb: st.mut.cb || 'group', rev: !!st.mut.rev} : null
   };
 }
 async function buildSession() {
@@ -3730,6 +3848,7 @@ async function restoreStruct(j) {
   const st = j.structure;
   let S;
   if (st.type === 'pdb') S = await loadPdbEntry(st.id, st.asm || 0);
+  else if (st.type === 'af') S = await loadAfEntry(st.id, true);
   else {
     const f = dataURLToFile(st.data, st.name);
     S = await loadStructure(f, {ext: st.ext, compressed: st.gz ? 'gz' : false, name: st.name}, {type: 'file', file: f, name: st.name, ext: st.ext, gz: st.gz}, j.pdbId || '');
@@ -3744,6 +3863,7 @@ async function restoreStruct(j) {
   }
   if (j.prevColors) S.prevColors = j.prevColors;
   if (j.cons) { S.cons = j.cons; consRebuild(S); renderCons(); }
+  if (j.plddt !== undefined && !!j.plddt !== !!S.comp.structure.__plddt) setPlddt(!!j.plddt, true);
   (j.chains || []).forEach(sc => {
     const c = chains.find(x => x.name === sc.name); if (!c) return;
     const old = sc.type === 'surface';             // earlier versions had "surface" as a display style
@@ -3777,6 +3897,7 @@ async function restoreStruct(j) {
   if (Array.isArray(j.groups)) S.groups = j.groups.filter(g => g && Array.isArray(g.res)).map((g, i) => ({id: 'g' + i, name: String(g.name || ''), res: g.res,
     on: !!g.on, color: /^#[0-9a-f]{6}$/i.test(g.color) ? g.color : GROUP_COLS[i % GROUP_COLS.length], style: parseStyle(g.style).t, w: parseStyle(`x|${g.w}`).w, reps: []}));
   drawGroups(S);
+  if (j.mut && j.mut.txt) { S.mut = {txt: String(j.mut.txt), ch: j.mut.ch || '', off: +j.mut.off || 0, hide: !!j.mut.hide, num: j.mut.num === 'unp' ? 'unp' : 'struct', cb: j.mut.cb === 'value' ? 'value' : 'group', rev: !!j.mut.rev}; try { mutRun(true); } catch (e) { log('変異の表示の復元に失敗: ' + (e.message || e)); } }
   stash();
   if (j.visible === false) setStructVisible(structs.indexOf(S), false);
   return S;
@@ -3796,7 +3917,7 @@ async function openSessionObj(s, auto) {
   status('セッションを復元中…');
   if (Array.isArray(s.colors)) recent = s.colors.slice(0, 8);
   if (s.palette) $('#palette').value = s.palette;
-  if (s.colorBy) { const cb = /^rainbow/.test(s.colorBy) ? 'rainbowcb' : s.colorBy; if ([...$('#colorBy').options].some(o => o.value === cb)) { $('#colorBy').value = cb; rainbowMode = cb === 'rainbowcb' ? cb : ''; } }
+  if (s.colorBy) { const cb = /^rainbow/.test(s.colorBy) ? 'rainbowcb' : s.colorBy; if ([...$('#colorBy').options].some(o => o.value === cb)) { $('#colorBy').value = cb; rainbowMode = cb === 'rainbowcb' || cb === 'plddt' ? cb : ''; } }
   const v = s.view || {};
   if (v.bg) { $('#bg').value = v.bg; stage.setParameters({backgroundColor: v.bg}); }
   if (v.cam) { $('#cam').value = v.cam; stage.setParameters({cameraType: v.cam}); }
@@ -3874,6 +3995,7 @@ const pdbUrl = (id, asm) => asm ? `https://files.rcsb.org/download/${id}-assembl
 const asmName = (id, asm) => asm ? `${id} 集合体${asm}` : id;
 async function loadPdbEntry(id, asm) {
   const S = await loadStructure(pdbUrl(id, asm), {ext: 'cif', name: id}, asm ? {type: 'pdb', id, asm} : {type: 'pdb', id}, id);
+  if (S) S.comp.structure.__exp = true;
   if (S && asm) { S.name = asmName(id, asm); renderAllPanels(); status(`${S.name}（${S.comp.structure.atomCount.toLocaleString()} 原子、Chain ${S.chains.length} 本）を読み込みました。複製されたChainは A-2 のような名前です`); }
   else if (!S && asm) status(`${id} の生物学的集合体 ${asm} を読み込めませんでした（この番号の集合体が登録されていない可能性があります）`, true);
   return S;
@@ -3888,6 +4010,42 @@ function normPdbId(raw) {
   if (/^pdb_[0-9a-z]{8}$/.test(v)) return v;
   return null;
 }
+/* UniProt accessions (P04637, A0A024R161) or AlphaFold DB entry names (AF-P04637-F1): AlphaFold predicted models */
+function normAfId(raw) {
+  let v = String(raw || '').trim().toUpperCase();
+  const m = v.match(/^AF-([A-Z0-9]+)-F\d+$/); if (m) v = m[1];
+  return /^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2})$/.test(v) ? v : null;
+}
+const PLDDT_BANDS = [[90, 0x0053D6, '90 以上（非常に高い）'], [70, 0x65CBF3, '70–90（高い）'], [50, 0xFFDB13, '50–70（低い）'], [-1, 0xFF7D45, '50 未満（非常に低い）']];
+const PLDDT_GRAD = 'linear-gradient(to right,#FF7D45 0 25%,#FFDB13 0 50%,#65CBF3 0 75%,#0053D6 0)';
+const plddtColor = b => PLDDT_BANDS.find(x => b >= x[0])[1];
+/* AlphaFold DB: the API gives the current file names (the model version changes over time); if the API cannot be
+   reached, the usual file names are tried directly */
+async function loadAfEntry(acc, quiet) {
+  status(`AlphaFold の予測構造 ${acc} を探しています…`);
+  let info = null;
+  try {
+    const r = await fetch(`https://alphafold.ebi.ac.uk/api/prediction/${acc}`);
+    if (r.status === 404) { status(`${acc} の予測構造は AlphaFold Database にありません（UniProt ID を確かめてください）`, true); return null; }
+    if (r.ok) { const j = await r.json(); const list = Array.isArray(j) ? j : [j]; info = list.find(e => e && e.entryId === `AF-${acc}-F1`) || list[0] || null; }
+  } catch (e) { log('AlphaFold Database の API に接続できませんでした: ' + (e.message || e)); }
+  const urls = [];
+  if (info) { const u = info.cifUrl || info.modelUrl || info.model_url || info.pdbUrl; if (u) urls.push(u); }
+  if (!urls.length) [6, 5, 4].forEach(v => urls.push(`https://alphafold.ebi.ac.uk/files/AF-${acc}-F1-model_v${v}.cif`));
+  let S = null;
+  for (const u of urls) {
+    S = await loadStructure(u, {ext: /\.pdb$/i.test(u) ? 'pdb' : 'cif', name: `AF-${acc}`}, {type: 'af', id: acc}, '');
+    if (S) break;
+  }
+  if (!S) { status(`${acc} の予測構造を読み込めませんでした（UniProt ID が正しいか、通信できるかを確かめてください）`, true); return null; }
+  S.af = {acc, gene: info && info.gene || '', desc: info && (info.uniprotDescription || info.description) || '', ver: info && (info.latestVersion || '') || ''};
+  S.name = `AF ${acc}${S.af.gene ? ' ' + S.af.gene : ''}`;
+  S.comp.structure.__af = true;
+  setPlddt(true, true);
+  renderAllPanels();
+  status(`AlphaFold の予測構造 ${S.name}${S.af.desc ? '（' + S.af.desc + '）' : ''}を読み込みました。予測の信頼度（pLDDT）で色分けしています（Chain の色に戻すには、Chain の表の「一括」の色ボタンを押します）`);
+  return S;
+}
 /* one or more IDs, separated by spaces, commas or semicolons (7DA1 1D66, 3PQR); loaded one after another,
    with a single summary at the end of the ones that could not be read */
 let loadingIds = false;
@@ -3895,16 +4053,19 @@ async function loadById() {
   if (loadingIds) return;
   const toks = $('#pdbId').value.split(/[\s,，、;；]+/).filter(Boolean);
   const ids = [], bad = [];
-  toks.forEach(t => { const id = normPdbId(t); if (!id) bad.push(t); else if (!ids.includes(id)) ids.push(id); });
-  if (!ids.length) return status('PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください。複数のときはスペースかカンマで区切ります', true);
+  toks.forEach(t => {
+    const id = normPdbId(t), af = id ? null : normAfId(t), key = id || (af && 'AF-' + af);
+    if (!key) bad.push(t); else if (!ids.some(x => x.key === key)) ids.push({key, id: id || af, af: !!af});
+  });
+  if (!ids.length) return status('PDB ID は 4 文字（例 7DA1）か、pdb_ で始まる 12 文字（例 pdb_00007da1）で入力してください。AlphaFold の予測構造は UniProt ID（例 P04637）で読み込めます。複数のときはスペースかカンマで区切ります', true);
   const asm = +$('#pdbAsm').value || 0, ok = [], failed = [];
   loadingIds = true;
   try {
     for (let k = 0; k < ids.length; k++) {
-      if (ids.length > 1) status(`${ids[k]} を読み込み中…（${k + 1} / ${ids.length}）`);
+      if (ids.length > 1) status(`${ids[k].key} を読み込み中…（${k + 1} / ${ids.length}）`);
       let S = null;
-      try { S = await loadPdbEntry(ids[k], asm); } catch (e) { S = null; }
-      (S ? ok : failed).push(ids[k]);
+      try { S = ids[k].af ? await loadAfEntry(ids[k].id, ids.length > 1) : await loadPdbEntry(ids[k].id, asm); } catch (e) { S = null; }
+      (S ? ok : failed).push(ids[k].key);
     }
   } finally { loadingIds = false; }
   if (ids.length === 1 && !bad.length) return;       // a single ID keeps the usual message
@@ -4714,7 +4875,16 @@ stage.signals.clicked.add(pp => {
     const pp = stage.pickingControls.pick(e.clientX - r.left, r.height - (e.clientY - r.top));
     if (pp) pp.tapPos = {x: e.clientX - r.left, y: r.height - (e.clientY - r.top)};   // where the finger was (NGL's own mouse position may lag on touch)
     stage.signals.clicked.dispatch(pp);
+    // a second tap on the background within 0.35 s: back to the whole view
+    const now = performance.now();
+    if (!pp && lastBgTap && now - lastBgTap.t < 350 && Math.hypot(e.clientX - lastBgTap.x, e.clientY - lastBgTap.y) < 30) { lastBgTap = null; resetView(); }
+    else lastBgTap = pp ? null : {t: now, x: e.clientX, y: e.clientY};
   };
+  let lastBgTap = null;
+  cv.addEventListener('dblclick', e => {
+    const r = cv.getBoundingClientRect();
+    if (!stage.pickingControls.pick(e.clientX - r.left, r.height - (e.clientY - r.top))) resetView();
+  });
   cv.addEventListener('pointerup', end);
   cv.addEventListener('pointercancel', end);
 })();
@@ -5084,8 +5254,9 @@ function renderSeq() {
       const gs = CD ? ` style="background:${g === undefined ? '#d0d0d0' : CONS_HEX[g]};color:${g >= 8 ? '#fff' : '#222'}"` : '';
       html += `<i data-c="${ci}" data-r="${ri}" data-k="${s.sid}|${s.ch}|${r.rs}|${r.ic}"${tick ? ` class="t" data-n="${r.rs}"` : ''}${gs} title="${s.ch}:${r.rn}${r.rs}${r.ic}${g !== undefined ? ' ・ 保存度 ' + (g || 'データ不足') : ''}">${ONE[r.rn] || 'X'}</i>`;
     });
-    const lab = multi ? `${S.name}:${s.ch}` : s.ch;
-    return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:${multi ? 7 : 3.2}em" title="${lab}">${lab}</span>${html}</div>`;
+    // long structure names are cut with "…" so the chain name stays visible; the full name is in the tooltip
+    const lab = multi ? `<span class="sqn">${esc(S.name)}</span><span class="sqk">:${esc(s.ch)}</span>` : esc(s.ch);
+    return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:${multi ? 7 : 3.2}em" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}">${lab}</span>${html}</div>`;
   }).join('');
   if (lastFocus) seqMark(lastFocus);
 }
@@ -5351,7 +5522,7 @@ function setLabelSet(src, c, atomIdx) {
     ap.index = i;
     const key = `${sid}|${ap.chainname}|${ap.resno}|${ap.inscode || ''}`;
     const el = document.createElement('div'); el.className = 'rlbl';
-    const it = {i, key, x: ap.x, y: ap.y, z: ap.z, text: lblText(ap, src), el, resname: ap.resname, resno: ap.resno, ic: ap.inscode || '', chain: ap.chainname};
+    const it = {i, key, x: ap.x, y: ap.y, z: ap.z, text: (src === 'mut' && mutLblCur && mutLblCur.get(`${ap.chainname}|${ap.resno}|${ap.inscode || ''}`)) || lblText(ap, src), el, resname: ap.resname, resno: ap.resno, ic: ap.inscode || '', chain: ap.chainname};
     el.textContent = it.text;
     lblDragSetup(it);
     $('#lblLayer').appendChild(el);
@@ -5378,7 +5549,7 @@ function lblNgl(S) {
 }
 function lblNglAll() { lblSets.forEach(lblNgl); }
 function labelSetVisible(src, c, on) { const S = c && lblSets.get(`${src}|${c.lblId}`); if (S) { S.on = on; (S.reps || []).forEach(r => r.setVisibility(on)); lblFrame(); } }
-function lblRetext() { lblSets.forEach(S => S.items.forEach(it => { const ap = {resname: it.resname, resno: it.resno, inscode: it.ic, chainname: it.chain}; it.text = lblText(ap, S.src); it.el.textContent = it.text; })); lblNglAll(); }
+function lblRetext() { lblSets.forEach(S => S.src !== 'mut' && S.items.forEach(it => { const ap = {resname: it.resname, resno: it.resno, inscode: it.ic, chainname: it.chain}; it.text = lblText(ap, S.src); it.el.textContent = it.text; })); lblNglAll(); }
 function setLblMode(m) {
   lblPref.mode = m === 'fig' ? 'fig' : 'ngl'; $('#lblMode').value = lblPref.mode; lblSavePref();
   document.querySelectorAll('.lblFigOnly').forEach(e => e.style.display = lblFig() ? '' : 'none');
@@ -5391,7 +5562,7 @@ function lblItemColor(S, it, fg) {
   if (lblPref.color !== 'chain') return fg;
   let col = null;
   try {
-    if (rainbowMode && S.comp.structure) { const ap = S.comp.structure.getAtomProxy(it.i); col = '#' + rbColor(ap).toString(16).padStart(6, '0'); }
+    if (S.comp.structure && rbFor(S.comp.structure)) { const ap = S.comp.structure.getAtomProxy(it.i); col = '#' + rbColor(ap).toString(16).padStart(6, '0'); }
     else {
       const St = structs.find(x => x.comp === S.comp), list = St && St === structs[active] ? chains : St ? St.chains : null;
       const ch = list && list.find(c => c.name === it.chain); col = ch ? ch.color : null;
@@ -5692,7 +5863,14 @@ $('#spin').onchange = e => stage.setSpin(e.target.checked);
     d.addEventListener('toggle', () => { st[k] = d.open; try { localStorage.setItem('pdv_secs', JSON.stringify(st)); } catch (e) {} });
   });
 })();
-$('#resetView').onclick = () => comp ? comp.autoView(600) : stage.autoView();
+/* whole view: position and zoom, and the focus (near clipping and depth fade) that dragging with the wheel pressed
+   or Shift + wheel changes, back to the start; also on a double-click (double-tap) on the background */
+function resetView() {
+  stage.setParameters({clipNear: 0, clipFar: 100});
+  setFog($('#fogSel').value);
+  if (structs.filter(S => S.visible !== false).length > 1 || !comp) stage.autoView(600); else comp.autoView(600);
+}
+$('#resetView').onclick = resetView;
 /* publication PNG: width in mm / inch / px at a chosen dpi; the dpi is written into the PNG (pHYs chunk) */
 const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
 const crc32 = u8 => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
@@ -5823,7 +6001,9 @@ function shareStyle(ok) {
     c: st.chains.map(c => [c.name, c.color, c.type, (c.surf ? 1 : 0) | (c.visible === false ? 2 : 0)]),
     h: st.ui ? [st.ui.lig ? 1 : 0, st.ui.ion ? 1 : 0, st.ui.wat ? 1 : 0, st.ui.ligColor] : null,
     e: st.extras.map(x => [x.s, x.t, x.col, x.elem ? 1 : 0]),
-    g: (st.groups || []).map(g => [g.name, g.res.map(f => [f.chainname, f.resno, f.inscode || '', f.modelIndex || 0, f.resname || '']), g.on ? 1 : 0, g.color, g.style, g.w || 1])
+    g: (st.groups || []).map(g => [g.name, g.res.map(f => [f.chainname, f.resno, f.inscode || '', f.modelIndex || 0, f.resname || '']), g.on ? 1 : 0, g.color, g.style, g.w || 1]),
+    ...(st.comp && st.comp.structure.__plddt ? {pl: 1} : st.structSrc && st.structSrc.type === 'af' ? {pl: 0} : {}),
+    ...(st.mut && st.mut.txt ? {u: [st.mut.txt, st.mut.ch || '', st.mut.off || 0, st.mut.hide ? 1 : 0, st.mut.num === 'unp' ? 1 : 0, st.mut.cb === 'value' ? 1 : 0, st.mut.rev ? 1 : 0]} : {})
   })), m: []};
   let skipped = 0;
   const done = new Set();
@@ -5839,10 +6019,10 @@ function shareStyle(ok) {
 }
 async function shareLink() {
   stash();
-  const ok = structs.filter(st => st.structSrc && st.structSrc.type === 'pdb');
+  const ok = structs.filter(st => st.structSrc && (st.structSrc.type === 'pdb' || st.structSrc.type === 'af'));
   if (!ok.length) return {err: 'リンクで共有できるのは PDB ID で開いた構造だけです（手元のファイルはセッションの .json で渡してください）'};
   const q = new URLSearchParams();
-  q.set('pdb', ok.map(st => st.structSrc.id).join(','));
+  q.set('pdb', ok.map(st => st.structSrc.type === 'af' ? 'AF-' + st.structSrc.id : st.structSrc.id).join(','));
   if (ok.some(st => st.structSrc.asm)) q.set('asm', ok.map(st => st.structSrc.asm || 0).join(','));
   const ai = ok.indexOf(structs[active]);
   if (ai > 0) q.set('act', ai);
@@ -5876,16 +6056,17 @@ $('#shareBtn').onclick = async () => {
 $('#shareUrl').onclick = e => e.target.select();
 /* open a shared link: called on page load when ?pdb= is present */
 async function openShared(q) {
-  const ids = (q.get('pdb') || '').split(',').map(normPdbId).filter(Boolean);
+  const ids = (q.get('pdb') || '').split(',').map(t => { const p = normPdbId(t); if (p) return {id: p}; const a = normAfId(t); return a ? {id: a, af: true} : null; }).filter(Boolean);
   if (!ids.length) return;
   const asms = (q.get('asm') || '').split(',').map(x => +x || 0);
-  for (let i = 0; i < ids.length; i++) await loadPdbEntry(ids[i], asms[i] || 0);
+  for (let i = 0; i < ids.length; i++) await (ids[i].af ? loadAfEntry(ids[i].id, true) : loadPdbEntry(ids[i].id, asms[i] || 0));
   if (!structs.length) return;
   let sty = null;
   if (q.get('st')) { try { sty = await unpackLink(q.get('st')); } catch (e) { log('リンクの色・表示形式を読めませんでした: ' + (e.message || e)); } }
   if (sty) {
     if (sty.p && PALETTES[sty.p]) $('#palette').value = sty.p;
     if (/^rainbow/.test(sty.cb || '')) { $('#colorBy').value = 'rainbowcb'; rainbowMode = 'rainbowcb'; }
+    if (sty.cb === 'plddt') { $('#colorBy').value = 'plddt'; rainbowMode = 'plddt'; }
     (sty.s || []).forEach((t, i) => {
       if (!structs[i] || !t) return;
       if (i !== active) activate(i);
@@ -5898,6 +6079,8 @@ async function openShared(q) {
             res: res.map(([chainname, resno, inscode, modelIndex, resname]) => ({chainname, resno, inscode, modelIndex, resname}))}))
         });
       } catch (e) { log('リンクの表示形式の適用に失敗: ' + (e.message || e)); }
+      if (t.pl !== undefined && !!t.pl !== !!structs[i].comp.structure.__plddt) setPlddt(!!t.pl, true);
+      if (Array.isArray(t.u) && t.u[0]) { structs[i].mut = {txt: String(t.u[0]), ch: t.u[1] || '', off: +t.u[2] || 0, hide: !!t.u[3], num: t.u[4] ? 'unp' : 'struct', cb: t.u[5] ? 'value' : 'group', rev: !!t.u[6]}; try { mutRun(true); } catch (e) { log('リンクの変異の表示に失敗: ' + (e.message || e)); } }
       stash();
       if (t.v === 0) setStructVisible(i, false);
     });
@@ -6484,7 +6667,432 @@ $('#dimTarget').onchange = e => { dimOn = e.target.value !== '-'; dimDraw(true);
 function dimPanels() { renderDimTargets(); if (dimOn) dimDraw(); }
 
 /* handle for the browser console and automated tests */
-window.MV = {status, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
+/* =====================================================================
+   Mutation positions: paste a list (R51A, p.Arg51Ala, 51, A:51 …), check it against the structure,
+   show the positions as sticks with labels, and list for each one what the structure tells about it
+   (burial, secondary structure, conservation, interactions) with structural warnings in the spirit of
+   Missense3D (Ittisoponpisan et al. 2019): buried charge, cavity, clash, proline in a helix, glycine with φ > 0,
+   broken disulfide / salt bridge / hydrogen bond. These are flags to look at, not a ΔΔG prediction.
+   ===================================================================== */
+const AA3 = {ALA:'A',ARG:'R',ASN:'N',ASP:'D',CYS:'C',GLN:'Q',GLU:'E',GLY:'G',HIS:'H',ILE:'I',LEU:'L',LYS:'K',MET:'M',PHE:'F',PRO:'P',SER:'S',THR:'T',TRP:'W',TYR:'Y',VAL:'V',TER:'*'};
+const AA1to3 = Object.fromEntries(Object.entries(AA3).filter(([k]) => k !== 'TER').map(([k, v]) => [v, k]));
+// residue volumes, Å³ (Zamyatnin 1972)
+const AA_VOL = {G: 60.1, A: 88.6, S: 89.0, C: 108.5, D: 111.1, P: 112.7, N: 114.1, T: 116.1, E: 138.4, V: 140.0, Q: 143.8,
+  H: 153.2, M: 162.9, I: 166.7, L: 166.7, K: 168.6, R: 173.4, F: 189.9, Y: 193.6, W: 227.8};
+// maximum accessible surface area in Gly-X-Gly, Å² (Tien et al. 2013, theoretical)
+const AA_MAXASA = {A: 129, R: 274, N: 195, D: 193, C: 167, E: 223, Q: 225, G: 104, H: 224, I: 197, L: 201, K: 236, M: 224,
+  F: 240, P: 159, S: 155, T: 172, W: 285, Y: 263, V: 174};
+const AA_CHG = {D: -1, E: -1, K: 1, R: 1};
+const AA_HYDPHOB = new Set('AVLIMFWC'.split(''));
+const AA_POLAR = new Set('STNQHY'.split(''));
+const MUT_COLS = ['#ff4f9a', '#ffb000', '#00c2ff', '#7cdd3a', '#b27cff', '#ff7a3d', '#3dd6b5', '#9aa0a6'];
+const RSA_BURIED = 0.2, RSA_EXPOSED = 0.5;
+var mutLblCur = null;
+
+function mutParse(text) {
+  const out = [];
+  String(text || '').split(/\r?\n/).forEach((line0, ln) => {
+    const line = line0.replace(/#.*/, '').trim(); if (!line) return;
+    if (!/\d/.test(line)) return;              // a header row of a table ("mutation  ddG")
+    // "R51A, K102E" on one line, "R51A<TAB>group", "R51A 1.8", "R51A group 1.8", or "R51A,1.8" (CSV)
+    const segs = line.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+    segs.forEach(seg => {
+      const prev = out[out.length - 1];
+      if (isFinite(+seg) && prev && !prev.bad && prev.line === ln + 1 && prev.value === null) { prev.value = +seg; return; }
+      const tok = seg.split(/\s+/), spec = tok.shift();
+      const m = mutSpec(spec);
+      if (!m) { out.push({src: seg, bad: true, line: ln + 1}); return; }
+      let v = null;
+      if (tok.length && tok[tok.length - 1] !== '' && isFinite(+tok[tok.length - 1])) v = +tok.pop();
+      out.push({...m, src: spec, group: tok.join(' '), value: v, line: ln + 1});
+    });
+  });
+  return out;
+}
+function mutSpec(s0) {
+  let s = s0.trim().replace(/^p\./i, ''), ch = '';
+  const c = s.match(/^([A-Za-z0-9]{1,4})[:\/](.+)$/); if (c) { ch = c[1]; s = c[2]; }
+  let m = s.match(/^([A-Za-z]{3})?(-?\d+)([A-Za-z]{3}|\*|=)?$/);
+  if (m && (m[1] || m[3]) && (!m[1] || AA3[m[1].toUpperCase()]) && (!m[3] || m[3].length < 3 || AA3[m[3].toUpperCase()])) {
+    const wt = m[1] ? AA3[m[1].toUpperCase()] : '', mt = !m[3] ? '' : m[3] === '*' ? '*' : m[3] === '=' ? '=' : AA3[m[3].toUpperCase()];
+    if (wt !== '*') return {ch, wt, no: +m[2], mt};
+  }
+  // FoldX style: wild type, chain, number, mutant (RA51A)
+  m = !ch && s.toUpperCase().match(/^([ACDEFGHIKLMNPQRSTVWY])([A-Z])(-?\d+)([ACDEFGHIKLMNPQRSTVWY])$/);
+  if (m) return {ch: m[2], wt: m[1], no: +m[3], mt: m[4]};
+  m = s.toUpperCase().match(/^([ACDEFGHIKLMNPQRSTVWY])?(-?\d+)([ACDEFGHIKLMNPQRSTVWY*=X])?$/);
+  if (m) return {ch, wt: m[1] || '', no: +m[2], mt: m[3] === 'X' ? '' : (m[3] || '')};
+  return null;
+}
+/* the structure's protein residues: chain → resno → {one, rp info}; first model, first insertion code */
+function mutResIndex() {
+  const st = comp.structure, idx = new Map();
+  st.eachResidue(r => {
+    if (!r.isProtein() || r.modelIndex !== 0) return;
+    let m = idx.get(r.chainname); if (!m) idx.set(r.chainname, m = new Map());
+    if (!m.has(r.resno)) m.set(r.resno, {one: ONE[r.resname] || 'X', rn: r.resname, ch: r.chainname, rs: r.resno, ic: r.inscode || '', ri: r.index});
+  });
+  return idx;
+}
+/* match entries to residues; chain '' = every protein chain that has the position (homo-oligomers: all copies) */
+function mutMatch(entries, ch, off, idx, mapNo) {
+  const chainsAll = [...idx.keys()];
+  return entries.map(e => {
+    if (e.bad) return e;
+    const no = e.no + off, want = e.ch || ch;
+    const cands = (want ? [want] : chainsAll).map(c => { const n = mapNo ? mapNo(c, no) : no; return n === null ? null : idx.get(c) && idx.get(c).get(n); }).filter(Boolean);
+    if (!cands.length) return {...e, sno: no, res: [], status: 'none'};
+    const ok = e.wt ? cands.filter(r => r.one === e.wt) : cands;
+    if (ok.length) return {...e, sno: no, res: ok, status: e.wt ? 'ok' : 'nowt'};
+    return {...e, sno: no, res: [cands[0]], status: 'diff'};
+  });
+}
+/* best numbering offset for the entries that give the wild type (−600…600) */
+function mutBestOffset(entries, ch, idx) {
+  const E = entries.filter(e => !e.bad && e.wt); if (E.length < 2) return null;
+  const chs = ch ? [ch] : [...idx.keys()];
+  let best = {off: 0, n: -1};
+  for (let off = -600; off <= 600; off++) {
+    let n = 0;
+    for (const e of E) { const w = e.ch ? [e.ch] : chs; if (w.some(c => { const r = idx.get(c) && idx.get(c).get(e.no + off); return r && r.one === e.wt; })) n++; }
+    if (n > best.n || (n === best.n && Math.abs(off) < Math.abs(best.off))) best = {off, n};
+  }
+  return {...best, of: E.length};
+}
+const mutSele = r => `(${r.rs}${r.ic ? '^' + r.ic : ''}:${r.ch} and /0)`;
+function mutPhi(st, r) {
+  const at = {}; st.eachAtom(a => { at[a.atomname] = new NGL.Vector3(a.x, a.y, a.z); }, new NGL.Selection(mutSele(r)));
+  let C0 = null;
+  st.eachAtom(a => { if (a.atomname === 'C') C0 = new NGL.Vector3(a.x, a.y, a.z); }, new NGL.Selection(`(${r.rs - 1}:${r.ch} and /0)`));
+  if (!C0 || !at.N || !at.CA || !at.C || C0.distanceTo(at.N) > 2.0) return null;
+  return mutDihedral(C0, at.N, at.CA, at.C);
+}
+function mutDihedral(p0, p1, p2, p3) {
+  const b0 = p0.clone().sub(p1), b1 = p2.clone().sub(p1), b2 = p3.clone().sub(p2);
+  b1.normalize();
+  const v = b0.clone().sub(b1.clone().multiplyScalar(b0.dot(b1))), w = b2.clone().sub(b1.clone().multiplyScalar(b2.dot(b1)));
+  const x = v.dot(w), y = b1.clone().cross(v).dot(w);
+  return Math.atan2(y, x) * 180 / Math.PI;
+}
+const SS_NAME = {h: 'αヘリックス', g: '3₁₀ヘリックス', i: 'πヘリックス', e: 'βストランド', b: 'βブリッジ'};
+const ssKind = c => 'hgi'.includes(c) && c ? 'helix' : 'eb'.includes(c) && c ? 'strand' : 'loop';
+/* everything the structure says about one residue */
+function mutAnalyse(st, r) {
+  const ap = st.getAtomProxy(), rp = st.getResidueProxy(r.ri);
+  const sel = mutSele(r), info = {r};
+  // burial: SASA of the residue in the whole model (all chains, ligands, nucleic acids) and in its own chain alone
+  try {
+    const own = collectAtoms(sel + ' and not hydrogen');
+    const near = st.getAtomSetWithinSelection(new NGL.Selection(sel), 10), envIdx = [];
+    near.forEach(i => { ap.index = i; if (ap.modelIndex === 0 && !ap.isWater() && ap.element !== 'H') envIdx.push(i); });
+    const env = envIdx.length ? collectAtoms('@' + envIdx.join(',')) : own;
+    const envChain = env.filter(a => a.ch === r.ch && a.kind === 'prot');
+    const s1 = sasaOf(own, env), s0 = sasaOf(own, envChain);
+    const sum = m => own.reduce((s, a) => s + (m.get(a.i) || 0), 0), mx = AA_MAXASA[r.one];
+    if (mx) { info.rsa = sum(s1) / mx; info.rsa0 = sum(s0) / mx; }
+  } catch (e) { log('露出度の計算に失敗: ' + (e.message || e)); }
+  info.ss = rp.sstruc || '';
+  const prev = st.getResidueProxy(r.ri - 1);
+  info.ssPrev = prev && prev.chainname === r.ch ? prev.sstruc || '' : '';
+  info.phi = mutPhi(st, r);
+  const cm = st.__cons; info.cons = cm ? cm.get(consKey(r.ch, r.rs, r.ic)) : undefined;
+  // disulfide
+  // (eachBondedAtom moves the same proxy, so the own residue index is read first)
+  if (r.one === 'C') st.eachAtom(a => { if (a.atomname !== 'SG') return; const own = a.residueIndex; a.eachBondedAtom(b => { if (b.atomname === 'SG' && b.residueIndex !== own) info.ss_bond = `${b.chainname !== r.ch ? b.chainname + ':' : ''}Cys${b.resno}`; }); }, new NGL.Selection(sel));
+  // interactions with everything but the residue itself and its chain neighbours (as for a clicked residue)
+  const partner = [];
+  st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(sel), 5)).forEach(i => {
+    ap.index = i;
+    if (ap.isWater() || ap.element === 'H' || ap.modelIndex !== 0) return;
+    const self = ap.chainname === r.ch && ap.resno === r.rs && (ap.inscode || '') === r.ic;
+    const adj = ap.chainname === r.ch && Math.abs(ap.resno - r.rs) === 1 && ap.isPolymer();
+    if (!self && !adj) partner.push(i);
+  });
+  info.ix = []; info.contacts = new Set();
+  if (partner.length) {
+    const res = analyseSel(sel + ' and not hydrogen and not water', '@' + partner.join(','), 4.0);
+    for (const p of res.pairs) {
+      const b = p.rb, who = mutPartnerName(b, r.ch);
+      if (b.ch !== r.ch || b.kind !== 'prot') info.contacts.add(b.kind === 'nuc' ? `Chain ${b.ch}（核酸）` : b.kind === 'lig' ? `${b.rn}（リガンド・イオン）` : `Chain ${b.ch}`);
+      for (const it of p.items) {
+        if (it.t === 'hyd') continue;
+        const sc = !(it.a && it.a.an && (PROT_BB.has(it.a.an) || it.a.an === 'CA'));
+        info.ix.push({t: it.t, who, sc, sub: it.sub || '', d: it.d, pch: b.kind === 'prot' ? (AA_CHG[ONE[b.rn]] || 0) : b.kind === 'nuc' ? -1 : 0});
+      }
+    }
+  }
+  return info;
+}
+function mutPartnerName(b, ch) {
+  if (b.kind === 'nuc') return `${b.ch}:${b.rn}${b.rs}${b.ic}`;
+  if (b.kind === 'lig') return `${b.rn}${b.rs}`;
+  return `${b.ch !== ch ? b.ch + ':' : ''}${b.rn[0]}${b.rn.slice(1).toLowerCase()}${b.rs}${b.ic}`;
+}
+/* the warnings: [level, text] — level 2: likely to destabilise or disrupt, 1: worth knowing */
+function mutFlags(e, I) {
+  const F = [], wt = I.r.one, mt = e.mt, buried = I.rsa !== undefined && I.rsa < RSA_BURIED;
+  if (mt === '*') F.push([2, 'ここで翻訳が止まり、これより C 末側が失われます']);
+  if (mt && mt !== '=' && mt !== '*' && mt !== wt) {
+    if (I.ss_bond) F.push([2, `ジスルフィド結合（${I.ss_bond} と）が切れます`]);
+    const dv = AA_VOL[mt] - AA_VOL[wt];
+    if (buried) {
+      if (dv <= -30) F.push([2, `埋もれた位置で側鎖が小さくなり、内部に空洞ができる可能性（${dv.toFixed(0)} Å³）`]);
+      if (dv >= 30) F.push([2, `埋もれた位置で側鎖が大きくなり、周りとぶつかる可能性（+${dv.toFixed(0)} Å³）`]);
+      const cw = AA_CHG[wt] || 0, cm = AA_CHG[mt] || 0;
+      if (cm && !cw) F.push([2, '埋もれた位置に電荷を持ち込みます']);
+      else if (cw && cm && cw !== cm) F.push([2, '埋もれた位置で電荷が逆になります']);
+      else if (cw && !cm) F.push([1, '埋もれた位置の電荷がなくなります']);
+      if (AA_HYDPHOB.has(wt) && AA_POLAR.has(mt)) F.push([2, '埋もれた疎水性の位置に親水性の残基を持ち込みます']);
+      if (mt === 'P') F.push([2, '埋もれた位置に Pro が入ります']);
+    }
+    const kind = ssKind(I.ss);
+    if (mt === 'P' && kind !== 'loop' && ssKind(I.ssPrev) === kind) F.push([2, `${kind === 'helix' ? 'ヘリックス' : 'βストランド'}の途中に Pro が入ります（主鎖の水素結合が切れ、曲がりやすい）`]);
+    if (wt === 'G' && I.phi !== null && I.phi > 0) F.push([2, `Gly でないと取りにくい主鎖の角度（φ = +${I.phi.toFixed(0)}°）の位置を、別の残基に変えます`]);
+    if (mt === 'G' && kind !== 'loop') F.push([1, `${kind === 'helix' ? 'ヘリックス' : 'βストランド'}の途中に Gly が入ります（不安定になりやすい）`]);
+    if (wt === 'P') F.push([1, 'Pro がなくなり、この位置の主鎖が動きやすくなります']);
+    // side-chain interactions of the wild type
+    const cw = AA_CHG[wt] || 0, cm = AA_CHG[mt] || 0, lost = new Map();
+    for (const x of I.ix) {
+      if (!x.sc) continue;
+      if (x.t === 'salt' && cm && cm === -cw) { F.push([2, `塩橋の相手（${x.who}）と同じ電荷になり、反発します`]); continue; }
+      const keep = (x.t === 'salt' && cm && cm === cw) || (x.t === 'pi' && 'FYWH'.includes(mt)) || (x.t === 'catpi' && ((cw && cm === cw) || ('FYW'.includes(wt) && 'FYW'.includes(mt))));
+      const name = IT[x.t] ? IT[x.t].n : x.t;
+      const k = name;
+      if (!lost.has(k)) lost.set(k, {keep, who: new Set()});
+      lost.get(k).who.add(x.who); if (!keep) lost.get(k).keep = false;
+    }
+    for (const [name, o] of lost) F.push([o.keep ? 1 : 2, `側鎖の${name}（${[...o.who].join('、')}）が${o.keep ? '変わる' : '失われる'}可能性`]);
+  }
+  if (I.cons !== undefined && I.cons >= 8) F.push([1, `保存度が高い位置です（グレード ${I.cons}）`]);
+  if (I.contacts && I.contacts.size) F.push([1, `ほかの分子との接触面にあります（${[...I.contacts].join('、')}）`]);
+  return F;
+}
+function mutBurialText(I) {
+  if (I.rsa === undefined) return '';
+  const p = Math.round(I.rsa * 100), w = I.rsa < RSA_BURIED ? '埋もれている' : I.rsa < RSA_EXPOSED ? '一部露出' : '表面';
+  const solo = I.rsa0 !== undefined && I.rsa0 - I.rsa > 0.05 ? `、Chain 単独では ${Math.round(I.rsa0 * 100)}%` : '';
+  return `${w}（露出 ${p}%${solo}）`;
+}
+function mutSSText(I) { return SS_NAME[I.ss] || 'ループ'; }
+function mutIxText(I) {
+  const by = new Map();
+  for (const x of I.ix) { const n = IT[x.t] ? IT[x.t].n : x.t; if (!by.has(n)) by.set(n, new Set()); by.get(n).add(x.who + (x.sc ? '' : '（主鎖）')); }
+  return [...by].map(([n, s]) => `${n} ${[...s].join('、')}`).join('；');
+}
+const mutName = e => e.bad ? e.src : `${e.wt || ''}${e.no}${e.mt || ''}`;
+/* run: parse, match, draw, analyse, list */
+/* UniProt numbering. AlphaFold models are numbered like UniProt. For entries opened by PDB ID, the SIFTS mapping
+   (PDBe API) gives, per chain, segments of UniProt positions and the author residue numbers they start at. */
+async function mutLoadSifts(S) {
+  const id = String(S.structSrc.id).toLowerCase(), segs = {}, acc = {};
+  let j = null;
+  for (const ep of ['uniprot_segments', 'uniprot']) {
+    try { const r = await fetch(`https://www.ebi.ac.uk/pdbe/api/mappings/${ep}/${id}`); if (r.ok) { j = await r.json(); break; } } catch (e) {}
+  }
+  const U = j && (j[id] || j[Object.keys(j)[0]]) && (j[id] || j[Object.keys(j)[0]]).UniProt;
+  if (!U) throw new Error('SIFTS の対応表を取得できませんでした');
+  for (const [a, d] of Object.entries(U)) for (const m of d.mappings || []) {
+    const c = m.chain_id, a0 = m.start && m.start.author_residue_number;
+    if (!c || a0 === undefined || a0 === null) continue;
+    (segs[c] = segs[c] || []).push({u0: m.unp_start, u1: m.unp_end, a0: +a0});
+    acc[c] = acc[c] ? (acc[c].includes(a) ? acc[c] : acc[c] + '・' + a) : a;
+  }
+  return {segs, acc};
+}
+function mutMapper(S) {
+  if (!S.mut || S.mut.num !== 'unp') return null;
+  if (S.structSrc && S.structSrc.type === 'af') return null;             // already UniProt numbering
+  const U = S.unp; if (!U || !U.segs) return null;
+  return (c, u) => {
+    const L = U.segs[c] || U.segs[c.replace(/-\d+$/, '')];             // copies in assemblies: A-2 → A
+    const g = L && L.find(x => u >= x.u0 && u <= x.u1);
+    return g ? g.a0 + (u - g.u0) : null;
+  };
+}
+// numbers (ΔΔG etc.) on a blue–white–red scale; per residue the mean of its entries
+const MUT_RAMP = [[0, 0x2166ac], [0.25, 0x67a9cf], [0.5, 0xf7f7f7], [0.75, 0xef8a62], [1, 0xb2182b]];
+function mutScale(vals, rev) {
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  let a, b;
+  if (lo < 0 && hi > 0) { const m = Math.max(-lo, hi); a = -m; b = m; } else if (hi <= 0) { a = lo; b = 0; } else { a = 0; b = hi; }
+  if (a === b) b = a + 1;
+  const t = v => { let x = lo < 0 && hi > 0 ? (v - a) / (b - a) : hi <= 0 ? 0.5 * (v - a) / (b - a) : 0.5 + 0.5 * (v - a) / (b - a); return rev ? 1 - x : x; };
+  return {lo: a, hi: b, col: v => '#' + rampColor(MUT_RAMP, t(v)).toString(16).padStart(6, '0'), split: lo < 0 && hi > 0 ? 'both' : hi <= 0 ? 'neg' : 'pos'};
+}
+function mutRun(silent) {
+  const S = structs[active]; if (!S || !comp) return;
+  mutClearDraw(S);
+  const M = S.mut; if (!M || !M.txt.trim()) { S.mutRes = null; renderMut(); return; }
+  if (M.num === 'unp' && S.structSrc && S.structSrc.type === 'pdb' && !S.unp) {
+    if (S.unpLoading) return;
+    S.unpLoading = true; status('UniProt の番号との対応（SIFTS）を PDBe から取得しています…');
+    mutLoadSifts(S).then(u => { S.unp = u; }).catch(e => { S.unp = {err: e.message || String(e)}; })
+      .finally(() => { S.unpLoading = false; if (structs[active] === S) mutRun(silent); });
+    return;
+  }
+  const entries = mutParse(M.txt), idx = mutResIndex(), mapNo = mutMapper(S);
+  const list = mutMatch(entries, M.ch, M.off || 0, idx, mapNo);
+  if (mapNo) list.forEach(e => { e.unpNo = true; });
+  const groups = [...new Set(list.filter(e => !e.bad && e.group).map(e => e.group))];
+  // groups take the palette in order; entries without a group are pink when there are no groups, grey otherwise
+  let colOf = e => e.group ? MUT_COLS[groups.indexOf(e.group) % (MUT_COLS.length - 1)] : groups.length ? MUT_COLS[MUT_COLS.length - 1] : MUT_COLS[0];
+  let scale = null;
+  const vals = list.filter(e => !e.bad && e.value !== null && e.res.length);
+  if (M.cb === 'value' && vals.length) {
+    const byRes = new Map();
+    vals.forEach(e => e.res.forEach(r => { const k = `${r.ch}|${r.rs}|${r.ic}`; (byRes.get(k) || byRes.set(k, []).get(k)).push(e.value); }));
+    const mean = new Map([...byRes].map(([k, v]) => [k, v.reduce((x, y) => x + y, 0) / v.length]));
+    scale = mutScale([...mean.values()], !!M.rev);
+    colOf = e => { const r = e.res[0], m = r && mean.get(`${r.ch}|${r.rs}|${r.ic}`); return m === undefined ? '#9aa0a6' : scale.col(m); };
+  }
+  const st = comp.structure;
+  list.forEach(e => {
+    if (e.bad || !e.res.length) return;
+    e.col = colOf(e);
+    try { e.info = mutAnalyse(st, e.res[0]); e.flags = mutFlags(e, e.info); }
+    catch (err) { log(`${mutName(e)} の解析に失敗: ` + (err.message || err)); }
+  });
+  S.mutRes = {list, groups, best: null, scale, nVal: vals.length, unp: M.num === 'unp' ? (S.structSrc && S.structSrc.type === 'af' ? {af: true} : mapNo ? {acc: S.unp.acc} : {err: S.unp && S.unp.err || 'local'}) : null};
+  const withWt = list.filter(e => !e.bad && e.wt), okN = withWt.filter(e => e.status === 'ok').length;
+  if (!mapNo && withWt.length >= 2 && okN < withWt.length) {
+    const b = mutBestOffset(entries, M.ch, idx);
+    if (b && b.off !== (M.off || 0) && b.n > okN) S.mutRes.best = b;
+  }
+  mutDraw(S);
+  renderMut();
+  if (!silent) {
+    const shown = list.filter(e => !e.bad && e.res.length).length, bad = list.filter(e => e.bad).length;
+    status(`変異 ${list.length - bad} 件のうち ${shown} 件を表示しました` + (bad ? `（読めなかった行 ${bad} 件）` : '') + (S.mutRes.best ? '。番号がずれているかもしれません（「解析」タブの提案を見てください）' : ''));
+  }
+}
+function mutClearDraw(S) {
+  (S.mutReps || []).forEach(r => { try { S.comp.removeRepresentation(r); } catch (e) {} });
+  S.mutReps = [];
+  setLabelSet('mut', S.comp, null);
+}
+function mutDraw(S) {
+  const R = S.mutRes; if (!R) return;
+  const byCol = new Map(), lab = [], text = new Map(), st = S.comp.structure, cnt = new Map();
+  R.list.forEach(e => (e.bad ? [] : e.res).forEach(r => { const k = `${r.ch}|${r.rs}|${r.ic}`; cnt.set(k, (cnt.get(k) || 0) + 1); }));
+  R.list.forEach(e => {
+    if (e.bad || !e.res.length) return;
+    e.res.forEach(r => {
+      if (!byCol.has(e.col)) byCol.set(e.col, []);
+      byCol.get(e.col).push(mutSele(r));
+      st.eachAtom(a => { if (a.atomname === 'CA') { lab.push(a.index); const k = `${r.ch}|${r.rs}|${r.ic}`, n = cnt.get(k); text.set(k, (n > 1 ? `${e.wt || r.one}${e.no}（${n}）` : mutName(e)) + (e.res.length > 1 ? `(${r.ch})` : '')); } }, new NGL.Selection(mutSele(r)));
+    });
+  });
+  if (S.mut && S.mut.hide) return;
+  for (const [col, sels] of byCol) {
+    const sele = `(${sels.join(' or ')}) and sidechainAttached and not hydrogen`;
+    S.mutReps.push(S.comp.addRepresentation('licorice', {sele, color: 'element', colorValue: hexNum(col), radiusScale: 1.15, multipleBond: 'symmetric'}));
+  }
+  mutLblCur = text;
+  try { setLabelSet('mut', S.comp, lab); } finally { mutLblCur = null; }
+}
+function mutCards(R) {
+  if (!R) return '';
+  return R.list.map((e, k) => {
+    if (e.bad) return `<div class="mcard bad"><b>${esc(e.src)}</b> <span class="small">${e.line} 行目：読めない書き方です</span></div>`;
+    const r = e.res[0];
+    const chk = e.status === 'none' ? `<span class="mbad">${e.unpNo ? `構造にありません（UniProt ${e.sno} 番）` : `構造にありません（${e.sno} 番）`}</span>`
+      : e.status === 'diff' ? `<span class="mbad">✗ 構造では ${r.rn[0] + r.rn.slice(1).toLowerCase()}${r.rs}</span>`
+      : e.status === 'ok' ? `<span class="mok">✓ ${r.rn[0] + r.rn.slice(1).toLowerCase()}${r.rs}</span>` : `${r.rn[0] + r.rn.slice(1).toLowerCase()}${r.rs}`;
+    const chs = e.res.length ? `Chain ${e.res.map(x => x.ch).join('・')}` : '';
+    const I = e.info, F = e.flags || [];
+    const lines = I ? [
+      ...(e.unpNo && r && r.rs !== e.sno ? [`UniProt ${e.sno} 番 = 構造の ${r.rs} 番`] : []),
+      [mutBurialText(I), mutSSText(I), I.cons === undefined ? '' : I.cons === 0 ? '保存度 データ不足' : `保存度 ${I.cons}`].filter(Boolean).join(' ・ '),
+      I.ix.length ? '相互作用: ' + mutIxText(I) : '特定の相互作用なし'
+    ] : [];
+    return `<div class="mcard" data-k="${k}"><div class="mhead"><span class="mdot" style="background:${e.col || '#888'}"></span><b>${esc(mutName(e))}</b>`
+      + `${e.group ? ` <span class="mgrp">${esc(e.group)}</span>` : ''}${e.value !== null && e.value !== undefined ? ` <span class="mgrp">${e.value}</span>` : ''}`
+      + ` <span class="small">${chs}</span> <span class="small">${chk}</span></div>`
+      + lines.map(t => `<div class="small">${esc(t)}</div>`).join('')
+      + F.map(([lv, t]) => `<div class="mflag l${lv}"><span class="mi">${lv === 2 ? '⚠' : '•'}</span>${esc(t)}</div>`).join('')
+      + `</div>`;
+  }).join('');
+}
+function renderMut() {
+  const S = structs[active], box = $('#mutList'); if (!box) return;
+  const sel = $('#mutChain'), v = S && S.mut ? S.mut.ch : sel.value;
+  const names = chains.filter(c => !c.nucleic).map(c => [c.name, `Chain ${c.name}${c.desc ? ' ' + esc(c.desc.slice(0, 18)) : ''}`]);
+  opts(sel, [['', '自動（その番号があるChainすべて）'], ...names]);
+  sel.value = names.some(n => n[0] === v) ? v : '';
+  if (S && S.mut) { if (document.activeElement !== $('#mutTxt')) $('#mutTxt').value = S.mut.txt; $('#mutOff').value = S.mut.off || 0;
+    $('#mutNum').value = S.mut.num || 'struct'; $('#mutColorBy').value = S.mut.cb || 'group'; $('#mutRev').checked = !!S.mut.rev; }
+  else if (!S) { $('#mutTxt').value = ''; $('#mutOff').value = 0; }
+  $('#mutRevL').style.display = $('#mutColorBy').value === 'value' ? '' : 'none';
+  const R = S && S.mutRes;
+  $('#mutTools').style.display = R ? '' : 'none';
+  $('#mutShow').checked = !(S && S.mut && S.mut.hide);
+  let info = '';
+  if (R) {
+    const ok = R.list.filter(e => e.status === 'ok').length, diff = R.list.filter(e => e.status === 'diff').length, none = R.list.filter(e => e.status === 'none').length;
+    const nb = R.list.filter(e => e.bad).length;
+    info = `${R.list.length - nb} 件：元の残基が一致 ${ok}` + (diff ? `、一致しない ${diff}` : '') + (none ? `、構造にない ${none}` : '') + (nb ? `（読めない書き方 ${nb}）` : '');
+    if (R.unp) info += '<div>' + (R.unp.af ? 'UniProt の番号：AlphaFold の予測構造なので、構造の番号がそのまま UniProt の番号です'
+      : R.unp.acc ? `UniProt の番号：SIFTS の対応表で構造の番号に変換しています（${Object.entries(R.unp.acc).map(([c, a]) => `Chain ${c} = ${a}`).join('、')}）`
+      : R.unp.err === 'local' ? '<span class="mbad">UniProt の番号への変換は、PDB ID か UniProt ID で開いた構造だけで使えます。構造の番号で表示しています</span>'
+      : `<span class="mbad">UniProt の番号との対応を取得できませんでした（${esc(R.unp.err)}）。構造の番号で表示しています</span>`) + '</div>';
+    if (R.scale) {
+      const sc = R.scale, f = v => +v.toFixed(2);
+      info += `<div class="mleg"><span>${f(sc.lo)}</span><span class="mbar" style="background:linear-gradient(to right,${(sc.split === 'pos' ? [0.5, 0.75, 1] : sc.split === 'neg' ? [0, 0.25, 0.5] : [0, 0.25, 0.5, 0.75, 1]).map(t => '#' + rampColor(MUT_RAMP, S.mut.rev ? 1 - t : t).toString(16).padStart(6, '0')).join(',')})"></span><span>${f(sc.hi)}</span></div><div>数値 ${R.nVal} 件で色分け（位置ごとの平均。数値のない変異は灰色）</div>`;
+    } else if (S.mut && S.mut.cb === 'value') info += '<div class="mbad">数値の付いた変異がないので、グループで色分けしています</div>';
+    if (R.best) info += `<div class="mbest">番号のずれを ${R.best.off > 0 ? '+' : ''}${R.best.off} にすると、${R.best.of} 件中 ${R.best.n} 件で元の残基が一致します <button id="mutUseBest" data-off="${R.best.off}">このずれを使う</button></div>`;
+  }
+  $('#mutInfo').innerHTML = info;
+  box.innerHTML = mutCards(R);
+}
+function mutTSV(R) {
+  const head = ['変異', 'グループ', '値', 'Chain', '構造の残基', '照合', '露出(%)', 'Chain単独の露出(%)', '埋もれ具合', '二次構造', 'φ(°)', '保存度', '相互作用', '注意点'];
+  const rows = R.list.filter(e => !e.bad).map(e => {
+    const r = e.res[0], I = e.info || {};
+    return [mutName(e), e.group || '', e.value ?? '', e.res.map(x => x.ch).join('・'), r ? r.rn + r.rs : '',
+      {ok: '一致', diff: '不一致', none: '構造にない', nowt: '—'}[e.status] || '',
+      I.rsa !== undefined ? (I.rsa * 100).toFixed(0) : '', I.rsa0 !== undefined ? (I.rsa0 * 100).toFixed(0) : '',
+      I.rsa !== undefined ? mutBurialText(I).replace(/（.*/, '') : '', I.ss !== undefined ? mutSSText(I) : '', I.phi != null ? I.phi.toFixed(0) : '',
+      I.cons ?? '', I.ix ? mutIxText(I) : '', (e.flags || []).map(f => f[1]).join(' / ')];
+  });
+  const out = [head, ...rows];
+  return (LANG === 'en' ? out.map(r => r.map(c => tr(String(c)))) : out).map(r => r.join('\t')).join('\n');
+}
+function mutSetFrom(run) {
+  const S = structs[active]; if (!S) return;
+  S.mut = {...(S.mut || {}), txt: $('#mutTxt').value, ch: $('#mutChain').value, off: +$('#mutOff').value || 0,
+    num: $('#mutNum').value, cb: $('#mutColorBy').value, rev: $('#mutRev').checked};
+  if (run) mutRun();
+}
+$('#mutRun').onclick = () => { if (!comp) return status('先に構造を開いてください', true); mutSetFrom(true); };
+$('#mutClear').onclick = () => { const S = structs[active]; if (!S) return; mutClearDraw(S); S.mut = null; S.mutRes = null; $('#mutTxt').value = ''; $('#mutOff').value = 0; renderMut(); status('変異の表示を消しました'); };
+['#mutNum', '#mutColorBy', '#mutRev'].forEach(q => $(q).addEventListener('change', () => {
+  $('#mutRevL').style.display = $('#mutColorBy').value === 'value' ? '' : 'none';
+  const S = structs[active]; if (S && S.mutRes) mutSetFrom(true);
+}));
+$('#mutShow').onchange = e => { const S = structs[active]; if (!S || !S.mut) return; S.mut.hide = !e.target.checked; mutClearDraw(S); mutDraw(S); };
+$('#mutCopy').onclick = async () => {
+  const S = structs[active]; if (!S || !S.mutRes) return;
+  try { await navigator.clipboard.writeText(mutTSV(S.mutRes)); status('変異の表をコピーしました（表計算ソフトに貼り付けられます）'); } catch (e) { status('コピーできませんでした', true); }
+};
+$('#mutSelAll').onclick = () => {
+  const S = structs[active]; if (!S || !S.mutRes) return;
+  const st = comp.structure, ap = st.getAtomProxy(), list = [];
+  S.mutRes.list.forEach(e => (e.res || []).forEach(r => st.eachAtom(a => { if (a.atomname === 'CA') { ap.index = a.index; list.push(focusOf(ap)); } }, new NGL.Selection(mutSele(r)))));
+  if (list.length) applySelection(list);
+};
+$('#mutInfo').addEventListener('click', e => {
+  const b = e.target.closest('#mutUseBest'); if (!b) return;
+  $('#mutOff').value = b.dataset.off; mutSetFrom(true);
+});
+$('#mutList').addEventListener('click', e => {
+  const c = e.target.closest('.mcard[data-k]'); const S = structs[active]; if (!c || !S || !S.mutRes) return;
+  const ent = S.mutRes.list[+c.dataset.k], r = ent && ent.res && ent.res[0]; if (!r) return;
+  const st = comp.structure; let pick = -1;
+  st.eachAtom(a => { if (pick < 0 || a.atomname === 'CA') pick = a.index; }, new NGL.Selection(mutSele(r)));
+  if (pick >= 0) selectAtom(st.getAtomProxy(pick), 'set');
+});
+
+window.MV = {status, mutAnalyse, mutResIndex, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
   chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), measPick: (c, a) => measPick(c, a), get measures() { return measures; }, pxPerA: () => pxPerA(), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }
 </script>
