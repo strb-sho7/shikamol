@@ -68,8 +68,11 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Conservation (ConSurf-style): calculate from a multiple sequence alignment (MSA), or load a ConSurf result file
 
 **Output**
-- Measurements: tap atoms to measure distances, angles and dihedrals (copy the list; kept in sessions and exported images)
-- Scale bar (Å) and molecular dimensions (maximum diameter and lengths along the principal axes)
+- Measurements: press "📏 Measure" at the top right of the viewer and tap atoms to measure distances, angles and dihedrals
+  - Values are listed in the viewer; hide or remove them one by one or all at once (hidden ones are left out of exported images)
+  - Copy the list; kept in sessions and exported images
+- Scale bar (Å)
+- Molecular dimensions (maximum diameter and lengths along the principal axes): choose the whole structure or a chain in the Display & export tab ("Off" removes them)
 - PNG export for papers: set the width (mm / inch / px) and resolution (dpi); 600 dpi and above is supported (labels included)
 - Copy the interaction list (paste into a spreadsheet)
 - Save and open sessions: the display and analysis state is saved as a `.json` file
