@@ -218,6 +218,7 @@ kbd{background:#2b3240;border-radius:3px;padding:0 4px;font-size:11px}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 #ipane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
 #ipane .row{margin:3px 0}
+#ipane .ifsl{display:inline-flex;align-items:center;gap:6px}#ipane .ifsl input{width:120px;flex:none}#ipane .ifsl .lv{width:3em;flex:none;text-align:left}
 #ipane button{font-size:12px;padding:2px 9px}#ipane .chip{font-size:12px}
 .ifr{padding:5px 6px;border-bottom:1px solid #22262e;cursor:pointer;font-size:12.5px}
 .ifr:hover{background:#1a1e26}
@@ -735,7 +736,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   </div>
   <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
   <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
-  <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="ipane"><div class="row" id="ifTools" style="display:none">    <label><input type="checkbox" id="ifShow" checked> 3D表示</label><label class="small"><input type="checkbox" id="ifLabels" checked> 残基名</label><label class="small"><input type="checkbox" id="ifDist"> 距離</label><button id="ifOpts" title="表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）">⚙ 表示設定</button>        <button id="ifCopy">表をコピー（TSV）</button>    <button id="ifClear">リセット</button>  </div><div class="row small" id="ifEmph" style="display:none"><span>強調:</span><label>ほかのChain <select data-emph="other"><option value="show">そのまま</option><option value="fade">薄くする</option><option value="hide">隠す</option></select></label><label>解析した Chain のカートゥーン <select data-emph="self"><option value="normal">そのまま</option><option value="fade">半透明</option></select></label></div><div id="ifList"></div></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
+  <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="ipane"><div class="row" id="ifTools" style="display:none">    <label><input type="checkbox" id="ifShow" checked> 3D表示</label><label class="small"><input type="checkbox" id="ifLabels" checked> 残基名</label><label class="small"><input type="checkbox" id="ifDist"> 距離</label><button id="ifOpts" title="表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）">⚙ 表示設定</button>        <button id="ifCopy">表をコピー（TSV）</button>    <button id="ifClear">リセット</button>  </div><div class="row small" id="ifEmph" style="display:none"><span>強調:</span><label>ほかのChain <select data-emph="other"><option value="show">そのまま</option><option value="fade">薄くする</option><option value="hide">隠す</option></select></label><label class="ifsl">解析した Chain のカートゥーンの透明度 <input type="range" data-emph="selfT" min="0" max="90" step="5" value="0"><span class="lv" id="ifSelfV">0%</span></label></div><div id="ifList"></div></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -833,6 +834,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "解析した Chain のカートゥーンの透明度": "Transparency of the analysed chains’ cartoons",
   "文字の背景": "Text background", "自動（画面の背景に合わせた半透明）": "Auto (see-through, like the screen background)", "白": "White", "黒": "Black", "なし": "None", "ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります": "A box behind the label text, for both analysis and figure labels and in exported images. With white the text turns black, with black it turns white",
   "強調:": "Emphasis:", "ほかのChain": "Other chains", "そのまま": "As is", "薄くする": "Fade", "隠す": "Hide", "解析した Chain のカートゥーン": "Cartoon of the analysed chains", "半透明": "See-through", "「それ以外すべて」と解析したときは、ほかの Chain はありません": "With \"everything else\" there are no other chains",
   "⚙ 表示設定": "⚙ Display settings", "表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）": "Style (sticks, CPK), thickness, side chain only and so on are set in the display settings of the Display & export tab (shared with clicked residues)", "残基名": "Residue names", "距離": "Distances",
@@ -3017,13 +3019,19 @@ function lineShape(items, showD) {
    cartoons normal or see-through (their interface sticks keep their colours). Chain settings themselves are not changed:
    the chains are simply redrawn when the analysis is cleared or hidden. */
 const IFE_KEY = 'pdv_ifc_emph';
-const ifcEmph = (() => { const d = {other: 'show', self: 'normal'}; try { Object.assign(d, JSON.parse(localStorage.getItem(IFE_KEY) || '{}')); } catch (e) {} return d; })();
-const ifcEmphOn = () => ifcEmph.other !== 'show' || ifcEmph.self !== 'normal';
+const ifcEmph = (() => { const d = {other: 'show', selfT: 0}; try { Object.assign(d, JSON.parse(localStorage.getItem(IFE_KEY) || '{}')); } catch (e) {}
+  if (d.self === 'fade' && !d.selfT) d.selfT = 70; delete d.self; d.selfT = Math.min(90, Math.max(0, +d.selfT || 0)); return d; })();
+const ifcEmphOn = () => ifcEmph.other !== 'show' || ifcEmph.selfT > 0;
+const isCartoonRep = r => { const t = r.repr && r.repr.type; return t === 'cartoon' || t === 'base' || t === 'backbone'; };
+function ifcSelfOpacity(ch) {
+  const op = 1 - ifcEmph.selfT / 100;
+  ch.reps.forEach(r => { if (isCartoonRep(r)) r.setParameters(op < 0.995 ? {opacity: op, depthWrite: true, side: 'front'} : cartOpParams()); });
+}
 function emphChain(ch) {
   if (!ifc || !ifcEmphOn() || !$('#ifShow').checked) return;
   const T = ifc.chB === '*' ? null : new Set([ifc.chA, ifc.chB]);
   if (!T || T.has(ch.name)) {
-    if (ifcEmph.self === 'fade') ch.reps.forEach(r => { const t = r.repr && r.repr.type; if (t === 'cartoon' || t === 'base' || t === 'backbone') r.setParameters({opacity: 0.3, depthWrite: true, side: 'front'}); });
+    if (ifcEmph.selfT > 0) ifcSelfOpacity(ch);
   } else if (ifcEmph.other === 'fade') ch.reps.forEach(r => r.setParameters({opacity: 0.15, depthWrite: false, side: 'front'}));
   else if (ifcEmph.other === 'hide') ch.reps.forEach(r => r.setVisibility(false));
 }
@@ -3041,6 +3049,7 @@ function renderIfc() {
   $('#ifTools').style.display = ifc ? 'flex' : 'none';
   $('#ifEmph').style.display = ifc ? 'flex' : 'none';
   document.querySelectorAll('#ifEmph select').forEach(x => { x.value = ifcEmph[x.dataset.emph]; });
+  $('#ifEmph input[data-emph=selfT]').value = ifcEmph.selfT; $('#ifSelfV').textContent = ifcEmph.selfT + '%';
   const oth = $('#ifEmph select[data-emph=other]'); oth.disabled = !!(ifc && ifc.chB === '*'); oth.title = oth.disabled ? '「それ以外すべて」と解析したときは、ほかの Chain はありません' : '';
   critTypesSync(null);
   if (!ifc) { listEl.innerHTML = ''; return; }
@@ -3164,8 +3173,17 @@ $('#ifLabels').oninput = drawIfc;
 $('#ifShow').oninput = e => { setIfcVisible(e.target.checked); if (ifcEmphOn()) ifcEmphRedraw(); };
 $('#ipane').addEventListener('change', e => {
   const k = e.target.dataset.emph; if (!k) return;
+  if (k === 'selfT') { ifcEmph.selfT = +e.target.value; try { localStorage.setItem(IFE_KEY, JSON.stringify(ifcEmph)); } catch (er) {} return; }
   ifcEmph[k] = e.target.value; try { localStorage.setItem(IFE_KEY, JSON.stringify(ifcEmph)); } catch (er) {}
   ifcEmphRedraw();
+});
+// the slider changes the analysed chains' cartoons as it moves
+$('#ipane').addEventListener('input', e => {
+  if (e.target.dataset.emph !== 'selfT' || !ifc) return;
+  ifcEmph.selfT = +e.target.value; $('#ifSelfV').textContent = ifcEmph.selfT + '%';
+  if (!$('#ifShow').checked) return;
+  const T = ifc.chB === '*' ? null : new Set([ifc.chA, ifc.chB]);
+  chains.forEach(ch => { if (!T || T.has(ch.name)) ifcSelfOpacity(ch); });
 });
 $('#ifDist').oninput = drawIfc;
 $('#ifA').onchange = () => { if ($('#ifB').value === $('#ifA').value) { const o = chains.find(c => c.name !== $('#ifA').value); if (o) $('#ifB').value = o.name; } };
@@ -5724,9 +5742,9 @@ function lblColors() { const dark = darkBg(); return {fg: dark ? '#ffffff' : '#1
    text (and its outline) switches to the readable colour */
 function lblBox() {
   const m = lblPref.bgm, {bg} = lblColors();
-  if (m === 'white') return {fill: '#ffffff', a: 0.85};
-  if (m === 'black') return {fill: '#000000', a: 0.75};
-  if (m === 'auto') return {fill: bg, a: 0.55};
+  if (m === 'white') return {fill: '#ffffff', a: 0.55};
+  if (m === 'black') return {fill: '#000000', a: 0.5};
+  if (m === 'auto') return {fill: bg, a: 0.4};
   return null;
 }
 function lblInk() {
