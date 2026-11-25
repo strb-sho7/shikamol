@@ -271,7 +271,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #seq.light{background:#ffffff}
 .sqr{white-space:nowrap;padding:12px 0 3px}
 .sqr.off{opacity:.35}
-.sqc{display:inline-block;width:3.2em;font-weight:700;font-family:system-ui,sans-serif;font-size:12px}
+.sqc{cursor:pointer;display:inline-block;width:3.2em;font-weight:700;font-family:system-ui,sans-serif;font-size:12px}
 .sqc{display:inline-flex;vertical-align:bottom;overflow:hidden;white-space:nowrap;padding-right:.4em;box-sizing:border-box}.sqc .sqn{overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}.sqc .sqk{flex:none}
 .sqr i{font-style:normal;display:inline-block;width:1.05ch;text-align:center;cursor:pointer;position:relative;padding:2px 0;border-radius:2px}
 .sqr i:hover{background:#ffffff33}
@@ -1123,6 +1123,7 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^(.+)（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）$/, (m, n) => `${n} (click: select every residue of this chain; Ctrl/⌘+click adds it to the selection)`),
   P(/^(選択|この残基): (.+?)(?:（(\d+) 残基）)?$/, (m, k, l, n) => `${k === '選択' ? 'Selection' : 'This residue'}: ${l}${n ? ` (${n} residues)` : ''}`),
   P(/^Chain (.+) の色を変える…$/, (m, c) => `Change the colour of chain ${c}…`),
   P(/^Chain (.+) を隠す$/, (m, c) => `Hide chain ${c}`),
@@ -5003,6 +5004,7 @@ function clearOtherFocus() {
   });
 }
 
+var focusStay = false;
 function focusOn(list, move) {
   if (list && !Array.isArray(list)) list = [list];      // sessions from earlier versions stored one residue
   list = list || [];
@@ -5034,7 +5036,8 @@ function focusOn(list, move) {
       const own = st.getAtomIndices(new NGL.Selection(`(${list.map(focusSele).join(' or ')}) and not hydrogen and not water`)) || [];
       if (own.length) focusReps.push(...surfByChain(comp, own, chainColor));
     }
-    if (move) { if (idx.length) comp.autoView('@' + idx.join(','), 500); else stage.animationControls.move([last.x, last.y, last.z], 400); }
+    // a whole chain picked from its name: the view stays as it is
+    if (move && !focusStay) { if (idx.length) comp.autoView('@' + idx.join(','), 500); else stage.animationControls.move([last.x, last.y, last.z], 400); }
     if ($('#focusIx').checked) {
       const items = focusInteractions(st, ap, list, idx);
       if (sideOnly) {
@@ -5050,7 +5053,7 @@ function focusOn(list, move) {
       const ls = linkSumText(); if (ls) setInfo(infoBase + `\n🔗 ${ls}`);
     }
     applySpot(list);
-    setLabelSet('focus', comp, lab);
+    setLabelSet('focus', comp, list.noLbl ? [] : lab);   // whole chains picked from their names: no residue names
   } catch (err) { log('周囲表示: ' + (err.message || err)); }
 }
 function unfocus() {
@@ -5486,7 +5489,7 @@ function renderSeq() {
     });
     // long structure names are cut with "…" so the chain name stays visible; the full name is in the tooltip
     const lab = multi ? `<span class="sqn">${esc(S.name)}</span><span class="sqk">:${esc(s.ch)}</span>` : esc(s.ch);
-    return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:${multi ? 7 : 3.2}em" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}">${lab}</span>${html}</div>`;
+    return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:${multi ? 7 : 3.2}em" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）">${lab}</span>${html}</div>`;
   }).join('');
   if (lastFocus) seqMark(lastFocus);
 }
@@ -5554,6 +5557,23 @@ addEventListener('pointerup', () => {
 });
 $('#seq').addEventListener('click', e => {
   if (seqSkipClick) return;
+  // the chain name: select every residue of that chain; the view is not moved
+  const c = e.target.closest('.sqc[data-c]');
+  if (c && comp) {
+    const row = seqData[+c.dataset.c]; if (!row) return;
+    const i = structs.findIndex(x => x.sid === row.sid); if (i < 0) return;
+    const add = i === active && modeOf(e) !== 'set';
+    if (i !== active) activate(i);
+    const st = comp.structure, picked = row.res.map(r => focusOf(st.getAtomProxy(r.ti)));
+    let list = picked;
+    if (add && Array.isArray(lastFocus)) { const have = new Set(lastFocus.map(focusKey)); list = lastFocus.concat(picked.filter(f => !have.has(focusKey(f)))); }
+    clearHL();
+    focusRef = null;
+    list.noLbl = !(add && Array.isArray(lastFocus)) || !!lastFocus.noLbl;   // chains picked from their names get no residue labels
+    focusStay = true;
+    try { applySelection(list, null); } finally { focusStay = false; }
+    return;
+  }
   const t = e.target.closest('i'); if (!t || !comp) return;
   const row = seqData[+t.dataset.c], r = row.res[+t.dataset.r];
   const i = structs.findIndex(x => x.sid === row.sid); if (i < 0) return;
