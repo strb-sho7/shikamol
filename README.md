@@ -19,7 +19,7 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
    - Clicking a chain name at the left of the sequence strip selects every residue of that chain and outlines the chain in red (the view does not move, and no sticks, 5 Å surroundings, interactions or labels are drawn; Ctrl/⌘+click adds it to the selection).
    - The browser's own right-click menu is turned off over the viewer.
-   - Right-click opens a menu for the selection (or the residue under the pointer): always show as sticks etc. or hide, colour, labels, centre/zoom here, add residues within 5 Å, save or clear the selection, colour or hide the chain, fit all.
+   - Right-click opens a menu for the selection (or the residue under the pointer): always show as sticks etc. or hide, colour, labels, centre/zoom here, add residues within 5 Å, save or clear the selection, the chain's style (cartoon, sticks, CPK …), surface, colour and visibility, fit all. With chains picked from their names, the menu lists the chain items.
    - The mouse bindings can be switched under "How to use" between "ShikaMol standard" and "PyMOL-like" (PyMOL's 3-Button Viewing: wheel-press drag translates, right drag zooms, the wheel moves the clipping slab, Ctrl+wheel zooms, Shift+left drag adds a box selection).
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.

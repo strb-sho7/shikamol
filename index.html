@@ -89,6 +89,7 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #ctxMenu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:inherit;padding:5px 8px;border-radius:5px;font-size:13px}
 #ctxMenu button:hover{background:#5aa9ff26}
 #ctxMenu .mrow{display:flex;flex-wrap:wrap;gap:2px;padding:0 4px 3px}
+#ctxMenu .mrow button.on{background:#5aa9ff33;border-color:#5aa9ff88}
 #ctxMenu .mrow button{width:auto;flex:1 1 auto;text-align:center;border:1px solid #2c313b;padding:3px 6px}
 #ctxMenu .msep{height:1px;background:#2c313b;margin:3px 4px}
 #deerRun{position:absolute;left:10px;bottom:10px;width:84px;height:58px;padding:2px 4px;border-radius:10px;background:rgba(20,24,30,.72);z-index:5;pointer-events:none;display:none}
@@ -861,6 +862,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "分子表面を付ける": "Add molecular surface", "分子表面を消す": "Remove molecular surface",
   "マウス操作": "Mouse", "ShikaMol 標準": "ShikaMol standard", "PyMOL 互換": "PyMOL-like", "PyMOL 互換は 3-Button Viewing と同じ割り当てです": "PyMOL-like follows the 3-Button Viewing bindings", "左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム": "Left drag: rotate   Wheel-press drag: translate   Right drag: zoom", "ホイール: 切り取り面（スラブ）": "Wheel: clipping slab", "＋ホイール: ズーム": "+wheel: zoom", "＋左ドラッグ: 四角の中の残基を選択に追加": "+left drag: add residues in a box to the selection", "ホイールの押し込み（クリック）: その原子を中心に": "Wheel click: centre on the atom", "右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）": "Right click: menu for the selection (or the residue under the pointer): style, colour, label, centre, 5 Å around …", "常に表示": "Always show", "スティック": "Sticks", "ボール＆スティック": "Ball & stick", "CPK": "CPK", "表面": "Surface", "常に表示をやめる（隠す）": "Stop always showing (hide)", "色を変える…": "Change colour…", "ラベルを付ける": "Add labels", "ラベルを消す": "Remove labels", "ここを中心に": "Centre here", "ここにズーム": "Zoom here", "周囲 5 Å も選択に加える": "Add the residues within 5 Å", "選択を保存": "Save selection", "選択を解除": "Clear selection", "この残基を選択": "Select this residue", "全体表示に戻す": "Fit all", "何も選んでいません": "Nothing selected", "常に表示をやめました": "Stopped always showing", "ラベルを消しました": "Labels removed", "ラベルを付けました": "Labels added", "マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）": "Mouse set to PyMOL-like (wheel = clipping slab, Ctrl+wheel = zoom)", "マウス操作を ShikaMol 標準にしました": "Mouse set to ShikaMol standard",
   "解析した Chain のカートゥーンの透明度": "Transparency of the analysed chains’ cartoons",
   "文字の背景": "Text background", "自動（画面の背景に合わせた半透明）": "Auto (see-through, like the screen background)", "白": "White", "黒": "Black", "なし": "None", "ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります": "A box behind the label text, for both analysis and figure labels and in exported images. With white the text turns black, with black it turns white",
@@ -1123,6 +1125,12 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^Chain (.+) の表示形式$/, (m, c) => `Chain ${c}: style`),
+  P(/^Chain (.+) を表示する$/, (m, c) => `Show chain ${c}`),
+  P(/^Chain (.+) を表示しました$/, (m, c) => `Chain ${c} shown`),
+  P(/^Chain (.+) を(.+)で表示しました$/, (m, c, t) => `Chain ${c} shown as ${tr(t)}`),
+  P(/^Chain (.+) に分子表面を付けました$/, (m, c) => `Molecular surface added to chain ${c}`),
+  P(/^Chain (.+) の分子表面を消しました$/, (m, c) => `Molecular surface of chain ${c} removed`),
   P(/^(.+)（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）$/, (m, n) => `${n} (click: select every residue of this chain; Ctrl/⌘+click adds it to the selection)`),
   P(/^(選択|この残基): (.+?)(?:（(\d+) 残基）)?$/, (m, k, l, n) => `${k === '選択' ? 'Selection' : 'This residue'}: ${l}${n ? ` (${n} residues)` : ''}`),
   P(/^Chain (.+) の色を変える…$/, (m, c) => `Change the colour of chain ${c}…`),
@@ -7463,10 +7471,23 @@ function openCtxMenu(cx, cy) {
   if (!m) { m = document.createElement('div'); m.id = 'ctxMenu'; document.body.appendChild(m); m.addEventListener('click', ctxAct); }
   const n = T.list.length, has = n > 0;
   const head = has ? `${T.sel ? '選択' : 'この残基'}: ${esc(selLabel(T.list, 3))}${n > 1 ? `（${n} 残基）` : ''}` : '何も選んでいません';
-  const S = structs[active], ch = T.ch && chains.find(c => c.name === T.ch);
+  const S = structs[active];
+  // the chains the chain items act on: every chain of a chain selection (picked from the chain names), else the chain under the pointer
+  T.chs = (T.sel && T.list.chainSel ? [...new Set(T.list.map(f => f.chainname))] : T.ch ? [T.ch] : []).map(n => chains.find(c => c.name === n)).filter(Boolean);
+  const cs = T.chs, cName = cs.map(c => c.name).join(', '), chainMode = !!(T.sel && T.list.chainSel);
+  const curType = cs.length && cs.every(c => c.type === cs[0].type) ? cs[0].type : '';
+  const chainHtml = cs.length ? `<div class="msep"></div><div class="ms">Chain ${esc(cName)} の表示形式</div>
+    <div class="mrow">${TYPES.filter(t => t[0] !== 'none').map(([v, l]) => `<button data-a="chtype" data-s="${v}"${v === curType ? ' class="on"' : ''}>${l}</button>`).join('')}</div>
+    <button data-a="chsurf">${cs.every(c => c.surf) ? '分子表面を消す' : '分子表面を付ける'}</button>
+    <button data-a="chcolor">Chain ${esc(cName)} の色を変える…</button>
+    ${cs.some(c => !c.visible) ? `<button data-a="chshow">Chain ${esc(cName)} を表示する</button>` : `<button data-a="chhide">Chain ${esc(cName)} を隠す</button>`}` : '';
   const shown = has && (S.groups || []).some(g => g.on && ctxOverlap(g.res, T.list));
   const lab = has && ctxLabelOn(T.list);
-  m.innerHTML = `<div class="mh">${head}</div>` + (has ? `
+  m.innerHTML = `<div class="mh">${head}</div>` + (chainMode ? chainHtml.replace('<div class="msep"></div>', '') + `
+    <div class="msep"></div>
+    <button data-a="zoom">ここにズーム</button>
+    <div class="msep"></div>
+    <button data-a="save">選択を保存</button><button data-a="clear">選択を解除</button>` : (has ? `
     <div class="ms">常に表示</div>
     <div class="mrow"><button data-a="show" data-s="licorice">スティック</button><button data-a="show" data-s="ball+stick">ボール＆スティック</button><button data-a="show" data-s="spacefill">CPK</button><button data-a="show" data-s="surface">表面</button></div>
     ${shown ? '<button data-a="hide">常に表示をやめる（隠す）</button>' : ''}
@@ -7477,8 +7498,7 @@ function openCtxMenu(cx, cy) {
     <button data-a="zoom">ここにズーム</button>
     <div class="msep"></div>
     <button data-a="around">周囲 5 Å も選択に加える</button>
-    ${T.sel ? '<button data-a="save">選択を保存</button><button data-a="clear">選択を解除</button>' : '<button data-a="select">この残基を選択</button>'}` : '') + `
-    ${ch ? `<div class="msep"></div><button data-a="chcolor">Chain ${esc(ch.name)} の色を変える…</button><button data-a="chhide">Chain ${esc(ch.name)} を隠す</button>` : ''}
+    ${T.sel ? '<button data-a="save">選択を保存</button><button data-a="clear">選択を解除</button>' : '<button data-a="select">この残基を選択</button>'}` : '') + chainHtml) + `
     <div class="msep"></div><button data-a="fit">全体表示に戻す</button>`;
   m.style.display = 'block';
   const w = m.offsetWidth, h = m.offsetHeight;
@@ -7501,12 +7521,13 @@ function ctxAct(e) {
   const b = e.target.closest('button[data-a]'); if (!b || !ctxT) return;
   const a = b.dataset.a, T = ctxT, S = structs[active], list = T.list;
   const STY = {licorice: 'スティック', 'ball+stick': 'ボール＆スティック', spacefill: 'CPK', surface: '表面'};
+  const cs = T.chs || [], cName = cs.map(c => c.name).join(', ');
+  const chDone = msg => { cs.forEach(chainReps); drawSym(); renderSeq(); renderChains(); if (Array.isArray(lastFocus) && lastFocus.chainSel) focusOn(lastFocus, false); status(msg); };
   if (a === 'color' || a === 'chcolor') {
-    const ch = chains.find(c => c.name === T.ch);
-    const cur = a === 'chcolor' ? (ch ? ch.color : '#cccccc') : '#ffd54a';
+    const cur = a === 'chcolor' ? (cs[0] ? cs[0].color : '#cccccc') : '#ffd54a';
     return openPicker(b, cur, c => {
       ctxClose();
-      if (a === 'chcolor') { if (!ch) return; if (comp) comp.structure.__plddt = false; ch.color = c; chainReps(ch); refreshChainColored(); drawSym(); renderSeq(); renderChains(); return status(`Chain ${ch.name} の色を変えました`); }
+      if (a === 'chcolor') { if (!cs.length) return; if (comp) comp.structure.__plddt = false; cs.forEach(ch => ch.color = c); refreshChainColored(); return chDone(`Chain ${cName} の色を変えました`); }
       let g = (S.groups || []).find(x => x.res.length === list.length && x.res.every(f => list.some(y => focusKey(y) === focusKey(f))));
       if (!g) { g = saveGroup(list); g.style = 'licorice'; }
       g.color = c; g.on = true; drawGroups(S); renderGroups();
@@ -7541,7 +7562,10 @@ function ctxAct(e) {
   if (a === 'select') return applySelection(list);
   if (a === 'save') { const g = saveGroup(list); btab = 'grp'; bottomUpdate(); return status(`選択を「${g.name}」として保存しました。画面下の「保存した選択」で名前を変えたり、あとで呼び出したりできます`); }
   if (a === 'clear') return unfocus();
-  if (a === 'chhide') { const ch = chains.find(c => c.name === T.ch); if (!ch) return; ch.visible = false; chainReps(ch); drawSym(); renderSeq(); renderChains(); return status(`Chain ${ch.name} を隠しました（Chain の表の ☑ で戻せます）`); }
+  if (a === 'chhide') { if (!cs.length) return; cs.forEach(ch => ch.visible = false); return chDone(`Chain ${cName} を隠しました（Chain の表の ☑ で戻せます）`); }
+  if (a === 'chshow') { cs.forEach(ch => ch.visible = true); return chDone(`Chain ${cName} を表示しました`); }
+  if (a === 'chtype') { const t = TYPES.find(x => x[0] === b.dataset.s); cs.forEach(ch => { ch.type = b.dataset.s; ch.visible = true; }); return chDone(`Chain ${cName} を${t ? t[1] : ''}で表示しました`); }
+  if (a === 'chsurf') { const on = !cs.every(c => c.surf); cs.forEach(ch => ch.surf = on); return chDone(on ? `Chain ${cName} に分子表面を付けました` : `Chain ${cName} の分子表面を消しました`); }
   if (a === 'fit') return resetView();
 }
 $('#mouseMode').onchange = e => { applyMouseMode(e.target.value); status(mouseMode === 'pymol' ? 'マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）' : 'マウス操作を ShikaMol 標準にしました'); };
