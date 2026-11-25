@@ -57,7 +57,8 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #lblLayer svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 .rlbl{position:absolute;left:0;top:0;white-space:nowrap;pointer-events:auto;cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;line-height:1.15;padding:0 1px;font-family:Arial,Helvetica,sans-serif}
 .rlbl.drag{outline:1px dashed #4da3ff}
-.rlbl.ana{pointer-events:none;cursor:default;border-radius:3px;padding:0 3px}
+.rlbl.ana{pointer-events:none;cursor:default}
+.rlbl.bx{border-radius:3px;padding:0 3px}
 #info,#status{z-index:4}
 #maps .mapgroup{padding:6px 8px}
 #maps .mapgroup>summary{list-style:none;display:flex;align-items:center;gap:6px;cursor:pointer;flex-wrap:wrap}
@@ -95,6 +96,9 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #infoT{white-space:pre-line}
 #linkBtn.on,#keepBtn.on{background:#2f5d8a;color:#fff;border-color:#4a86c2}
 .frow{display:flex;align-items:center;gap:8px;margin:5px 0}
+#critBox .frow>.fl{flex-basis:10.5em;display:block}#critBox .frow>.fl small{display:block;padding-left:34px}#critBox .frow>.fl>.dot{margin:0 5px 0 4px;vertical-align:-1px}
+#critBox .ift{margin:0;vertical-align:-2px}#critBox .dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
+#critBox .ifn{margin-left:auto;font-size:12px;font-variant-numeric:tabular-nums;min-width:2em;text-align:right;color:var(--ink,#e8eaee)}
 .frow>.fl{flex:0 0 6.6em;font-size:12px;line-height:1.25;color:var(--mute,#9aa3ad)}
 .frow>.fl small{display:block;font-size:10.5px;opacity:.8}
 .frow>select,.frow>.fc{flex:1 1 auto;min-width:0;max-width:280px}
@@ -212,7 +216,9 @@ kbd{background:#2b3240;border-radius:3px;padding:0 4px;font-size:11px}
 #pop .lbl{font-size:11px;color:var(--mute);margin:8px 0 4px}
 .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:14px;padding:2px 9px 2px 6px;font-size:12px;background:#0f1115}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
-#ifList{max-height:300px;overflow-y:auto}
+#ipane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
+#ipane .row{margin:3px 0}
+#ipane button{font-size:12px;padding:2px 9px}#ipane .chip{font-size:12px}
 .ifr{padding:5px 6px;border-bottom:1px solid #22262e;cursor:pointer;font-size:12.5px}
 .ifr:hover{background:#1a1e26}
 .ifr .res{font-family:ui-monospace,monospace;font-weight:600}
@@ -243,8 +249,12 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #oplog .tm{color:#7f8796;margin-right:8px;font-variant-numeric:tabular-nums}
 #oplog .er{color:var(--warn)}
 #gpane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
-#btabs{flex:none;display:none;gap:2px;padding:3px 8px 0;background:#14171d;border-bottom:1px solid #2c313b}
-#btabs button{font-size:12px;padding:3px 12px;border-radius:6px 6px 0 0;border:1px solid #2c313b;border-bottom:0;background:transparent;color:#9aa2b1}
+#btabs{flex:none;display:none;gap:2px;padding:3px 8px 0;background:#14171d;border-bottom:1px solid #2c313b;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#btabs::-webkit-scrollbar{display:none}
+#btabs.more{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent)}
+#btabs.less{-webkit-mask-image:linear-gradient(to right,transparent,#000 36px);mask-image:linear-gradient(to right,transparent,#000 36px)}
+#btabs.more.less{-webkit-mask-image:linear-gradient(to right,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
+#btabs button{flex:none;white-space:nowrap;font-size:12px;padding:3px 12px;border-radius:6px 6px 0 0;border:1px solid #2c313b;border-bottom:0;background:transparent;color:#9aa2b1}
 #btabs button.on{background:#0b0d11;color:#e8eaee;font-weight:700}
 #btabs button:disabled{opacity:.4}
 #btIxN{margin-left:4px;font-weight:400}
@@ -386,12 +396,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div class="ifpair"><select id="ifA"></select><span class="small">と</span><select id="ifB"></select></div>
     <button class="pri" id="ifRun">解析</button>
   </div>
-  <div class="row small">
-    接触とみなす距離 <input type="number" id="ifCut" value="4.0" step="0.1" min="3" max="6" style="width:64px"> Å
-    <label><input type="checkbox" id="ifLabels" checked> 残基名</label>
-    <label><input type="checkbox" id="ifDist"> 距離</label>
-  </div>
   <details class="card" id="critBox" style="margin:6px 0" open><summary><b>判定条件</b>（クリックしたときの相互作用と Chain 間の解析に共通）</summary>
+  <div class="small" style="margin:2px 0 4px">左の ☑ は Chain 間の解析で表示する種類、右の数字は見つかった数です。</div>
   <div class="frow"><span class="fl">水素結合<small>供与体–受容体</small></span><select id="hbMax">
       <option value="3.2">3.2 Å（厳しめ）</option>
       <option value="3.35">3.35 Å（LIGPLOT・NUCPLOT）</option>
@@ -411,17 +417,12 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div class="frow"><span class="fl">カチオン–π<small>電荷中心–環の重心</small></span><select data-crit="catpi"><option value="4.5">4.5 Å</option><option value="5">5.0 Å</option><option value="6">6.0 Å（PLIP・Mol*）</option></select></div>
   <div class="frow"><span class="fl">金属配位</span><select data-crit="metal"><option value="2.6">2.6 Å</option><option value="2.8">2.8 Å</option><option value="3">3.0 Å（PLIP・Mol*）</option></select></div>
   <div class="frow"><span class="fl">ハロゲン結合</span><select data-crit="hal"><option value="3.5">3.5 Å</option><option value="4">4.0 Å（PLIP・Mol*）</option></select></div>
+  <div class="frow"><span class="fl">水を介した水素結合</span><span class="small">水素結合と同じ上限</span></div>
+  <div class="frow"><span class="fl">その他の接触<small>重原子間</small></span><div class="fc" style="white-space:nowrap;flex-wrap:nowrap;align-items:center;gap:4px" title="Chain 間の解析で、重原子どうしがこの距離以内なら「その他の接触」とします"><input type="number" id="ifCut" value="4.0" step="0.1" min="3" max="6" style="width:64px"> <span class="small">Å（Chain間のみ）</span></div></div>
     <div class="row small"><label title="Lys・Arg・His と Asp・Glu・リン酸のように、電荷をもつ基どうしの水素結合は塩橋と同じ相互作用です。オフにすると「水素結合」と「塩橋」の2行で表示します"><input type="checkbox" id="critMerge"> 塩橋と重なる水素結合は「塩橋（水素結合あり）」の1行にまとめる</label></div>
     <div class="row small"><button id="critReset">初期値に戻す</button><span>水を介した水素結合は水素結合と同じ上限です。設定はセッションにも保存されます。</span></div>
   </details>
-  <div id="ifTypes" class="row"></div>
-  <div id="ifCats" class="row"></div>
-  <div id="ifList"></div>
-  <div class="row" id="ifTools" style="display:none">
-    <label><input type="checkbox" id="ifShow" checked> 3D表示</label>
-    <button id="ifCopy">表をコピー（TSV）</button>
-    <button id="ifClear">リセット</button>
-  </div>
+  <div class="small" id="ifWhere" style="display:none">結果は画面下の「Chain間の相互作用」タブに出ます。</div>
   <details><summary>判定基準</summary>
     <div class="small" style="margin-top:4px">
       PLIP（Salentin et al., 2015）の判定基準（plip/basic/config.py の値）に合わせています。結晶構造には水素原子がないため、水素の角度を使う条件は重原子の角度で近似しています。<br>
@@ -637,6 +638,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   <div class="frow"><span class="fl">Chain名</span><select id="lblChain"><option value="auto">界面解析のときだけ</option><option value="on">付ける</option><option value="off">付けない</option></select></div>
   <div class="frow"><span class="fl">文字の大きさ</span><select id="lblSize"><option value="11">小</option><option value="14" selected>中</option><option value="18">大</option><option value="24">特大</option></select></div>
   <div class="frow"><span class="fl">文字の色</span><select id="lblColor" title="ラベルの文字色。「Chainの色」はカートゥーンと同じ色（N末→C末の色分けのときはその残基の色）。白背景では淡い色を少し濃くして読みやすくします"><option value="mono">白・黒（背景に合わせる）</option><option value="chain">Chainの色</option></select></div>
+  <div class="frow"><span class="fl">文字の背景</span><select id="lblBg" title="ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります"><option value="none">なし</option><option value="auto">自動（画面の背景に合わせた半透明）</option><option value="white">白</option><option value="black">黒</option></select></div>
   <div class="row">
     <label><input type="checkbox" id="lblBold" checked> 太字</label>
     <label><input type="checkbox" id="lblHalo" checked> 縁取り</label>
@@ -732,8 +734,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="drop">ここにドロップ（構造 or マップ）</div>
   </div>
   <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
-  <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
-  <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
+  <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
+  <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="ipane"><div class="row" id="ifTools" style="display:none">    <label><input type="checkbox" id="ifShow" checked> 3D表示</label><label class="small"><input type="checkbox" id="ifLabels" checked> 残基名</label><label class="small"><input type="checkbox" id="ifDist"> 距離</label><button id="ifOpts" title="表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）">⚙ 表示設定</button>        <button id="ifCopy">表をコピー（TSV）</button>    <button id="ifClear">リセット</button>  </div><div class="row small" id="ifEmph" style="display:none"><span>強調:</span><label>ほかのChain <select data-emph="other"><option value="show">そのまま</option><option value="fade">薄くする</option><option value="hide">隠す</option></select></label><label>解析した Chain のカートゥーン <select data-emph="self"><option value="normal">そのまま</option><option value="fade">半透明</option></select></label></div><div id="ifList"></div></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -831,6 +833,12 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "文字の背景": "Text background", "自動（画面の背景に合わせた半透明）": "Auto (see-through, like the screen background)", "白": "White", "黒": "Black", "なし": "None", "ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります": "A box behind the label text, for both analysis and figure labels and in exported images. With white the text turns black, with black it turns white",
+  "強調:": "Emphasis:", "ほかのChain": "Other chains", "そのまま": "As is", "薄くする": "Fade", "隠す": "Hide", "解析した Chain のカートゥーン": "Cartoon of the analysed chains", "半透明": "See-through", "「それ以外すべて」と解析したときは、ほかの Chain はありません": "With \"everything else\" there are no other chains",
+  "⚙ 表示設定": "⚙ Display settings", "表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）": "Style (sticks, CPK), thickness, side chain only and so on are set in the display settings of the Display & export tab (shared with clicked residues)", "残基名": "Residue names", "距離": "Distances",
+  "Chain間の相互作用": "Chain interactions", "「解析」タブで実行した Chain 間の相互作用の解析結果": "Results of the chain–chain interaction analysis run in the Analysis tab", "結果は画面下の「Chain間の相互作用」タブに出ます。": "Results appear in the \"Chain interactions\" tab under the viewer.",
+  "Å（Chain間のみ）": "Å (chain–chain only)", "Chain 間の解析で、重原子どうしがこの距離以内なら「その他の接触」とします": "In the chain–chain analysis, heavy atoms within this distance count as \"Other contact\"",
+  "3D表示に付ける:": "Show in 3D:", "水を介した水素結合": "Water bridge", "水素結合と同じ上限": "same limit as H-bonds", "重原子間": "heavy atoms", "Å（Chain間の解析だけ）": "Å (chain–chain analysis only)", "左の ☑ は Chain 間の解析で表示する種類、右の数字は見つかった数です。": "☑ on the left: types shown in the chain–chain analysis; the number on the right: how many were found.", "Chain間の解析で表示する": "Show in the chain–chain analysis", "全表示": "Show all", "全非表示": "Hide all",
   "操作の記録": "Log", "これまでの操作とその結果の記録（新しいものが下）": "Record of operations and their results (newest at the bottom)", "このページを開いてからの操作の記録です（新しいものが下）": "Operations since this page was opened (newest at the bottom)", "操作の記録をコピーしました": "Log copied", "選択を解除": "Selection cleared",
   "保存した選択": "Saved selections", "保存した選択と最近の選択の履歴": "Saved selections and recent history", "残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。": "Select residues and press \"★ Save selection\" at the top left of the viewer to keep them here under a name. Tick the box on the left to keep them always shown in their colour. They are kept in sessions too.",
   "配列": "Sequence",
@@ -1911,6 +1919,7 @@ function chainReps(ch) {
   bridgesSoon();
   if (!ch.visible) return;
   repSpecs(ch).forEach(([t, p]) => ch.reps.push(comp.addRepresentation(t, p)));
+  try { emphChain(ch); } catch (e) {}
   spotRefresh();
 }
 /* whole-chain displays: draw the covalent bonds between chains (and to shown ligands) when both sides show those atoms.
@@ -2550,9 +2559,17 @@ function applyHet() {
   if (!comp) return;
   hetReps.forEach(r => comp.removeRepresentation(r)); hetReps = [];
   bridgesSoon();
-  if ($('#showLig').checked) hetReps.push(comp.addRepresentation('ball+stick', {sele: 'ligand and not hydrogen', color: 'element', colorValue: hexNum($('#ligColor').dataset.v)}));
-  if ($('#showIon').checked) hetReps.push(comp.addRepresentation('spacefill', {sele: 'ion', radiusScale: 0.28, color: 'element'}));
-  if ($('#showWat').checked) hetReps.push(comp.addRepresentation('spacefill', {sele: 'water and not hydrogen', radiusScale: 0.2, color: '#ff5050'}));
+  // during a chain–chain analysis with "other chains: fade / hide", ligands, ions and waters of the other chains follow suit
+  let keep = null, mode = '';
+  try { if (ifc && ifc.chB !== '*' && ifcEmph.other !== 'show' && $('#ifShow').checked) { keep = `(:${ifc.chA} or :${ifc.chB})`; mode = ifcEmph.other; } } catch (e) {}
+  const add = (type, sele, p) => {
+    if (!keep) return hetReps.push(comp.addRepresentation(type, {sele, ...p}));
+    hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and ${keep}`, ...p}));
+    if (mode === 'fade') hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and not ${keep}`, ...p, opacity: 0.15, depthWrite: false}));
+  };
+  if ($('#showLig').checked) add('ball+stick', 'ligand and not hydrogen', {color: 'element', colorValue: hexNum($('#ligColor').dataset.v)});
+  if ($('#showIon').checked) add('spacefill', 'ion', {radiusScale: 0.28, color: 'element'});
+  if ($('#showWat').checked) add('spacefill', 'water and not hydrogen', {radiusScale: 0.2, color: '#ff5050'});
   spotRefresh();
 }
 ['#showLig','#showIon','#showWat'].forEach(id => $(id).addEventListener('input', () => { applyHet(); drawSym(); }));
@@ -2931,14 +2948,21 @@ function drawIfc() {
     resKeys.add(p.ra.key); resKeys.add(p.rb.key);
     visibleItems(p).forEach(it => { [it.a, it.b].forEach(a => { if (a.an && a.kind === 'prot' && PROT_BB.has(a.an)) bbRes.add(a.key); }); });
   });
-  const idx = [], labelIdx = [];
+  // which atoms: the shared display settings ("side chain only", nucleic-acid parts); atoms that take part in a shown
+  // interaction are always drawn, so no line ends in empty space
+  const used = new Set(); shown.forEach(p => visibleItems(p).forEach(it => { [it.a, it.b, it.w].forEach(a => { if (a && a.i !== undefined) used.add(a.i); }); }));
+  const ap = comp.structure.getAtomProxy(), idx = [], labelIdx = [];
   for (const m of ifc.resMaps) for (const [key, atoms] of m) {
     if (!resKeys.has(key)) continue;
-    atoms.forEach(a => { if (a.kind !== 'prot' || bbRes.has(key) || !PROT_BB.has(a.an)) idx.push(a.i); });
+    atoms.forEach(a => {
+      if (a.kind === 'prot' && bbRes.has(key) && PROT_BB.has(a.an)) return idx.push(a.i);
+      if (!used.has(a.i) && (a.kind === 'prot' || a.kind === 'nuc') && stickHide(ap, a.i)) return;
+      idx.push(a.i);
+    });
     const la = atoms.find(a => a.an === 'CA') || atoms.find(a => a.an === "C1'") || atoms.find(a => a.an === 'N1') || atoms[0];
     labelIdx.push(la.i);
   }
-  if (idx.length) ifc.reps.push(...sticksByChain(idx, {radiusScale: 0.9 * stickPref.w}));
+  if (idx.length) ifc.reps.push(...focusDraw(idx));
   setLabelSet('ifc', comp, $('#ifLabels').checked ? labelIdx : []);
   ifc.shape = lineShape(shown.flatMap(visibleItems), $('#ifDist').checked);
   if (!$('#ifShow').checked) setIfcVisible(false);
@@ -2989,6 +3013,21 @@ function lineShape(items, showD) {
   c.addRepresentation('buffer');
   return c;
 }
+/* emphasis while a chain–chain analysis is shown: the other chains shown / faded / hidden, and the two analysed chains'
+   cartoons normal or see-through (their interface sticks keep their colours). Chain settings themselves are not changed:
+   the chains are simply redrawn when the analysis is cleared or hidden. */
+const IFE_KEY = 'pdv_ifc_emph';
+const ifcEmph = (() => { const d = {other: 'show', self: 'normal'}; try { Object.assign(d, JSON.parse(localStorage.getItem(IFE_KEY) || '{}')); } catch (e) {} return d; })();
+const ifcEmphOn = () => ifcEmph.other !== 'show' || ifcEmph.self !== 'normal';
+function emphChain(ch) {
+  if (!ifc || !ifcEmphOn() || !$('#ifShow').checked) return;
+  const T = ifc.chB === '*' ? null : new Set([ifc.chA, ifc.chB]);
+  if (!T || T.has(ch.name)) {
+    if (ifcEmph.self === 'fade') ch.reps.forEach(r => { const t = r.repr && r.repr.type; if (t === 'cartoon' || t === 'base' || t === 'backbone') r.setParameters({opacity: 0.3, depthWrite: true, side: 'front'}); });
+  } else if (ifcEmph.other === 'fade') ch.reps.forEach(r => r.setParameters({opacity: 0.15, depthWrite: false, side: 'front'}));
+  else if (ifcEmph.other === 'hide') ch.reps.forEach(r => r.setVisibility(false));
+}
+function ifcEmphRedraw() { if (comp) { chains.forEach(chainReps); applyHet(); drawSym(); } }
 function setIfcVisible(on) {
   if (!ifc) return;
   ifc.reps.forEach(r => r.setVisibility(on));
@@ -2997,17 +3036,22 @@ function setIfcVisible(on) {
 }
 
 function renderIfc() {
-  const types = $('#ifTypes'), listEl = $('#ifList');
+  const listEl = $('#ifList');
+  try { bottomUpdate(); } catch (e) {}
   $('#ifTools').style.display = ifc ? 'flex' : 'none';
-  if (!ifc) { types.innerHTML = ''; listEl.innerHTML = ''; $('#ifCats').innerHTML = ''; return; }
+  $('#ifEmph').style.display = ifc ? 'flex' : 'none';
+  document.querySelectorAll('#ifEmph select').forEach(x => { x.value = ifcEmph[x.dataset.emph]; });
+  const oth = $('#ifEmph select[data-emph=other]'); oth.disabled = !!(ifc && ifc.chB === '*'); oth.title = oth.disabled ? '「それ以外すべて」と解析したときは、ほかの Chain はありません' : '';
+  critTypesSync(null);
+  if (!ifc) { listEl.innerHTML = ''; return; }
   const count = {hb: 0, salt: 0, pi: 0, catpi: 0, metal: 0, water: 0, halogen: 0, hyd: 0, cont: 0};
   ifc.pairs.forEach(p => { p.items.forEach(it => count[it.t]++); if (!p.items.length) count.cont++; });
-  types.innerHTML = Object.entries(IT).map(([k, v]) =>
-    `<label class="chip"><input type="checkbox" data-t="${k}" ${ifOn[k] ? 'checked' : ''}><span class="dot" style="background:${v.c}"></span>${v.n} ${count[k]}</label>`).join('');
+  critTypesSync(count);
   const all = ifc.pairs.flatMap(p => p.items), nbb = all.filter(isBBBB).length;
-  $('#ifCats').innerHTML = `<label class="chip" title="タンパク質の主鎖原子（N・CA・C・O）どうし"><input type="checkbox" data-c="bb" ${ifCat.bb ? 'checked' : ''}>主鎖どうし ${nbb}</label>
+  const catsHtml = `<div class="row" style="margin:6px 0 2px">
+    <label class="chip" title="タンパク質の主鎖原子（N・CA・C・O）どうし"><input type="checkbox" data-c="bb" ${ifCat.bb ? 'checked' : ''}>主鎖どうし ${nbb}</label>
     <label class="chip" title="側鎖・核酸・リガンド・水・金属が関わるもの（主鎖とDNAリン酸の水素結合なども含む）"><input type="checkbox" data-c="other" ${ifCat.other ? 'checked' : ''}>それ以外 ${all.length - nbb}</label>
-    <button data-k="all">全表示</button><button data-k="none">全非表示</button>`;
+</div>`;
   const shown = ifc.pairs.filter(pairShown);
   const nRes = new Set(shown.flatMap(p => [p.ra.key, p.rb.key])).size;
   const B = ifc.bsa, bName = ifc.chB === '*' ? 'それ以外' : ifc.chB;
@@ -3018,7 +3062,7 @@ function renderIfc() {
         <table class="bsa"><tr><th>残基</th><th>埋没 Å²</th><th>埋没率</th></tr>${B.perRes.map(r =>
           `<tr data-k="${r.key}"><td>${r.ch}:${r.rn}${r.rs}${r.ic}</td><td>${r.bsa.toFixed(1)}</td><td>${r.sasa > 0 ? Math.round(100 * r.bsa / r.sasa) + '%' : '–'}</td></tr>`).join('')}</table>
       </details></div>` : '';
-  listEl.innerHTML = bsaHtml + `<div class="small" style="margin:4px 0">${ifc.chA} ⇄ ${ifc.chB === '*' ? `${ifc.chA}以外すべて` : ifc.chB}: 残基の組 ${shown.length}（関与する残基 ${nRes}）</div>` +
+  listEl.innerHTML = bsaHtml + catsHtml + `<div class="small" style="margin:4px 0">${ifc.chA} ⇄ ${ifc.chB === '*' ? `${ifc.chA}以外すべて` : ifc.chB}: 残基の組 ${shown.length}（関与する残基 ${nRes}）</div>` +
     (shown.length ? '' : '<div class="small">表示対象の相互作用がありません。種類のチェックや距離を変えてみてください。</div>') +
     shown.map(p => {
       const its = visibleItems(p);
@@ -3053,7 +3097,9 @@ function runIfc(A, B, cut, zoom) {
   if (zoom) $('#ifShow').checked = true;
   try {
     ifc = analyseInterface(A, B, cut);
+    btab = 'ifc';
     drawIfc(); renderIfc();
+    if (ifcEmphOn()) ifcEmphRedraw();
     if (zoom && ifc.pairs.length) comp.autoView('@' + [...new Set(ifc.pairs.flatMap(p => [p.ra.i, p.rb.i]))].join(','), 600);
     status(`${A} ⇄ ${B === '*' ? 'それ以外' : B}: 接触する残基の組 ${ifc.pairs.length}`);
   } catch (e) { status('解析に失敗: ' + (e.message || e), true); }
@@ -3064,6 +3110,7 @@ function clearIfc() {
   if (ifc.shape) stage.removeComponent(ifc.shape);
   setLabelSet('ifc', comp, []);
   ifc = null; renderIfc();
+  if (ifcEmphOn()) ifcEmphRedraw();
 }
 $('#ifClear').onclick = () => {
   clearIfc();
@@ -3074,15 +3121,29 @@ $('#ifClear').onclick = () => {
   if (comp) comp.autoView(600);
   status('相互作用の解析をリセットしました');
 };
-$('#ifTypes').addEventListener('input', e => { const t = e.target.dataset.t; if (!t) return; ifOn[t] = e.target.checked; drawIfc(); renderIfc(); });
+/* the type check boxes sit in the rows of the criteria box: ☑ = shown in the chain–chain analysis, the number = found */
+const CRIT_ROWS = {hb: () => $('#hbMax'), salt: () => $('[data-crit=salt]'), hyd: () => $('[data-crit=hyd]'), pi: () => $('[data-crit=pi]'),
+  catpi: () => $('[data-crit=catpi]'), metal: () => $('[data-crit=metal]'), halogen: () => $('[data-crit=hal]'),
+  water: () => [...document.querySelectorAll('#critBox .frow .fl')].find(x => x.textContent.startsWith('水を介した')), cont: () => $('#ifCut')};
+(function critTypesInit() {
+  for (const [t, f] of Object.entries(CRIT_ROWS)) {
+    const el = f(), row = el && el.closest('.frow'); if (!row) continue;
+    const fl = row.querySelector('.fl');
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.className = 'ift'; cb.dataset.t = t; cb.title = 'Chain間の解析で表示する';
+    const dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = IT[t].c;
+    fl.prepend(dot); fl.prepend(cb);
+    const n = document.createElement('span'); n.className = 'ifn'; n.dataset.t = t; row.appendChild(n);
+  }
+})();
+function critTypesSync(count) {
+  document.querySelectorAll('#critBox input.ift').forEach(cb => { cb.checked = !!ifOn[cb.dataset.t]; });
+  document.querySelectorAll('#critBox .ifn').forEach(n => { n.textContent = count ? String(count[n.dataset.t] || 0) : ''; });
+}
+$('#critBox').addEventListener('input', e => { if (!e.target.classList.contains('ift')) return; ifOn[e.target.dataset.t] = e.target.checked; if (ifc) { drawIfc(); renderIfc(); } });
+
 const saveIfCat = () => { try { localStorage.setItem(IFC_KEY, JSON.stringify(ifCat)); } catch (e) {} };
-$('#ifCats').addEventListener('input', e => { const c = e.target.dataset.c; if (!c) return; ifCat[c] = e.target.checked; saveIfCat(); drawIfc(); renderIfc(); });
-$('#ifCats').addEventListener('click', e => {
-  const k = e.target.dataset.k; if (k !== 'all' && k !== 'none') return;
-  const on = k === 'all';
-  Object.keys(ifOn).forEach(t => ifOn[t] = on); ifCat.bb = ifCat.other = on;
-  saveIfCat(); drawIfc(); renderIfc();
-});
+$('#ifList').addEventListener('input', e => { const c = e.target.dataset.c; if (!c) return; ifCat[c] = e.target.checked; saveIfCat(); drawIfc(); renderIfc(); });
+
 /* H-bond limit: re-run the open analyses */
 function applyHbSetting() {
   try { localStorage.setItem(HB_KEY, JSON.stringify(HBSET)); } catch (e) {}
@@ -3100,7 +3161,12 @@ $('#critMerge').onchange = e => { HBSET.merge = e.target.checked; applyHbSetting
 document.querySelectorAll('[data-crit]').forEach(el => el.onchange = () => { const k = el.dataset.crit; HBSET[k] = k === 'salt' ? el.value : +el.value; applyHbSetting(); });
 $('#critReset').onclick = () => { Object.assign(HBSET, CRIT_DEFAULT); writeCritUI(); applyHbSetting(); status('判定条件を初期値に戻しました'); };
 $('#ifLabels').oninput = drawIfc;
-$('#ifShow').oninput = e => setIfcVisible(e.target.checked);
+$('#ifShow').oninput = e => { setIfcVisible(e.target.checked); if (ifcEmphOn()) ifcEmphRedraw(); };
+$('#ipane').addEventListener('change', e => {
+  const k = e.target.dataset.emph; if (!k) return;
+  ifcEmph[k] = e.target.value; try { localStorage.setItem(IFE_KEY, JSON.stringify(ifcEmph)); } catch (er) {}
+  ifcEmphRedraw();
+});
 $('#ifDist').oninput = drawIfc;
 $('#ifA').onchange = () => { if ($('#ifB').value === $('#ifA').value) { const o = chains.find(c => c.name !== $('#ifA').value); if (o) $('#ifB').value = o.name; } };
 $('#ifList').addEventListener('click', e => {
@@ -4620,11 +4686,12 @@ var btab = 'seq', ixHas = 0, ixKey = '', seqTouch = 0, fOpenSet = null;
 // the filter rows start open on wide windows and folded on phones, where the list itself needs the room
 const fOpen = () => fOpenSet !== null ? fOpenSet : $('#bpane').clientWidth >= 640 || innerWidth >= 640;
 function bottomUpdate() {
-  const hasSeq = !!($('#seqOn').checked && seqData.length), hasIx = ixHas > 0, hasGrp = structs.length > 0;
+  const hasSeq = !!($('#seqOn').checked && seqData.length), hasIx = ixHas > 0, hasGrp = structs.length > 0, hasIfc = !!ifc;
   if (btab === 'ix' && !hasIx) btab = 'seq';
   // the tab shown; btab itself is kept, so the sequence comes back once it is ready
   let eff = btab;
   if (eff === 'grp' && !hasGrp) eff = 'seq';
+  if (eff === 'ifc' && !hasIfc) eff = 'seq';
   if (eff === 'seq' && !hasSeq) eff = hasIx ? 'ix' : 'grp';
   const any = hasSeq || hasIx || hasGrp || btab === 'log', pane = $('#bpane'), was = pane.style.display;
   pane.style.display = $('#seqbar').style.display = any ? 'block' : 'none';
@@ -4632,12 +4699,16 @@ function bottomUpdate() {
   $('#seq').style.display = any && eff === 'seq' ? 'block' : 'none';
   $('#flist').style.display = any && eff === 'ix' ? 'block' : 'none';
   $('#gpane').style.display = any && eff === 'grp' ? 'block' : 'none';
+  $('#ipane').style.display = any && eff === 'ifc' ? 'block' : 'none';
+  $('#btabs button[data-b=ifc]').style.display = hasIfc ? '' : 'none';
+  $('#ifWhere').style.display = hasIfc ? '' : 'none';
   $('#opane').style.display = any && eff === 'log' ? 'block' : 'none';
   if (eff === 'log') { const o = $('#opane'); o.scrollTop = o.scrollHeight; }
   $('#btabs').querySelectorAll('button').forEach(b => {
     b.classList.toggle('on', b.dataset.b === eff);
     b.disabled = b.dataset.b === 'seq' ? !hasSeq : b.dataset.b === 'ix' ? !hasIx : b.dataset.b === 'grp' ? !hasGrp : false;
   });
+  btabsEdges(true);
   const S = structs[active], ng = S && S.groups ? S.groups.length : 0;
   $('#btGrN').textContent = ng ? ` ${ng}` : '';
   $('#btIxN').textContent = hasIx ? ` ${ixHas}` : lastFocus && lastFocus.length && $('#focusIx').checked ? ' 0' : '';
@@ -4652,6 +4723,15 @@ $('#opane').addEventListener('click', async e => {
     try { await navigator.clipboard.writeText(txt); status('操作の記録をコピーしました'); } catch (er) { status('コピーできませんでした', true); }
   }
 });
+/* the tab row scrolls sideways when it does not fit (phones); faded edges show that there is more, and the open tab is kept in view */
+function btabsEdges(reveal) {
+  const bar = $('#btabs'); if (!bar || bar.style.display === 'none') return;
+  if (reveal) { const on = bar.querySelector('button.on'); if (on) { const l = on.offsetLeft - 8, r = on.offsetLeft + on.offsetWidth + 8; if (l < bar.scrollLeft) bar.scrollLeft = l; else if (r > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = r - bar.clientWidth; } }
+  bar.classList.toggle('less', bar.scrollLeft > 2);
+  bar.classList.toggle('more', bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 2);
+}
+$('#btabs').addEventListener('scroll', () => btabsEdges(false), {passive: true});
+addEventListener('resize', () => btabsEdges(true));
 $('#btabs').addEventListener('click', e => { const b = e.target.closest('button[data-b]'); if (!b || b.disabled) return; btab = b.dataset.b; bottomUpdate(); });
 $('#flist').addEventListener('input', e => {
   const t = e.target.dataset.t;
@@ -4665,12 +4745,7 @@ $('#flist').addEventListener('click', async e => {
   const k = e.target.dataset.k;
   if (k === 'opts') {
     if (!optsHintSeen) { optsHintSeen = true; try { localStorage.setItem('pdv_opts_hint', '1'); } catch (er) {} renderFlist(); }
-    showTab('view');
-    const box = $('#focusOpts');
-    box.open = true;
-    box.scrollIntoView({behavior: 'smooth', block: 'start'});
-    box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
-    return;
+    return openDisplayOpts();
   }
   if (k === 'all' || k === 'none') {
     const on = k === 'all';
@@ -4688,6 +4763,15 @@ $('#flist').addEventListener('click', async e => {
   const it = focusItems[+tr.dataset.i]; if (!it) return;
   stage.animationControls.move([(it.a.x + it.b.x) / 2, (it.a.y + it.b.y) / 2, (it.a.z + it.b.z) / 2], 400);
 });
+/* the display settings (style, thickness, side chain only …) shared by clicked residues and the chain–chain analysis */
+function openDisplayOpts() {
+  showTab('view');
+  const box = $('#focusOpts');
+  box.open = true;
+  box.scrollIntoView({behavior: 'smooth', block: 'start'});
+  box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
+}
+$('#ifOpts').onclick = openDisplayOpts;
 $('#focusListOn').oninput = renderFlist;
 $('#hydStyle').value = hydStyle;
 $('#multiSel').onchange = e => setMulti(e.target.value);
@@ -4708,6 +4792,7 @@ $('#stickPart').onchange = $('#stickNuc').onchange = () => {
   stickPref.part = $('#stickPart').value === 'side' ? 'side' : 'all';
   stickPref.nuc = ['bb', 'base'].includes($('#stickNuc').value) ? $('#stickNuc').value : 'all'; saveStick();
   if (lastFocus) focusOn(lastFocus, false);
+  if (ifc) drawIfc();
   structs.forEach(S => S.groups && S.groups.length && drawGroups(S));
 };
 writeStickUI();
@@ -4716,7 +4801,7 @@ $('#focusStyle').onchange = e => {
   const wChanged = w !== stickPref.w && t !== 'spacefill';
   stickPref.style = t; if (t !== 'spacefill') stickPref.w = w;
   saveStick(); if (lastFocus) focusOn(lastFocus, false);
-  if (wChanged && ifc) drawIfc();          // interface sticks follow the chosen thickness
+  if (ifc) drawIfc();                      // the chain–chain analysis follows the same display settings
 };
 $('#spotR').oninput = e => { $('#spotRV').textContent = `半径 ${e.target.value} Å`; clearTimeout(spot.t); spot.t = setTimeout(() => lastFocus && focusOn(lastFocus, false), 200); };
 $('#spotOp').oninput = e => { $('#spotOpV').textContent = (+e.target.value).toFixed(2); clearTimeout(spot.t); spot.t = setTimeout(() => lastFocus && focusOn(lastFocus, false), 120); };
@@ -5574,7 +5659,7 @@ try { const l = localStorage.getItem('pdv_look'); if (l && LOOKS[l]) { $('#look'
    away from its atom; the offset (in screen pixels) is kept per residue, used again when the same residue is
    labelled later, saved in sessions, and drawn into exported PNGs. */
 const LBL_KEY = 'pdv_lbl';
-const lblPref = (() => { const d = {mode: 'ngl', fmt: 'Arg51', chain: 'auto', size: 14, bold: true, halo: true, line: true, color: 'mono'}; try { Object.assign(d, JSON.parse(localStorage.getItem(LBL_KEY) || '{}')); } catch (e) {} return d; })();
+const lblPref = (() => { const d = {mode: 'ngl', fmt: 'Arg51', chain: 'auto', size: 14, bold: true, halo: true, line: true, color: 'mono', bgm: 'none'}; try { Object.assign(d, JSON.parse(localStorage.getItem(LBL_KEY) || '{}')); } catch (e) {} return d; })();
 const lblSets = new Map();        // 'source|component id' -> {src, comp, on, items: [{key, x, y, z, text, el}]}
 const lblOff = new Map();         // residue key -> [dx, dy]
 let lblSeq = 0;
@@ -5635,6 +5720,22 @@ function setLblMode(m) {
   lblNglAll(); lblFrame();
 }
 function lblColors() { const dark = darkBg(); return {fg: dark ? '#ffffff' : '#111111', bg: dark ? '#000000' : '#ffffff'}; }
+/* the box behind label text: none / auto (the screen background, see-through) / white / black; with a white or black box the
+   text (and its outline) switches to the readable colour */
+function lblBox() {
+  const m = lblPref.bgm, {bg} = lblColors();
+  if (m === 'white') return {fill: '#ffffff', a: 0.85};
+  if (m === 'black') return {fill: '#000000', a: 0.75};
+  if (m === 'auto') return {fill: bg, a: 0.55};
+  return null;
+}
+function lblInk() {
+  const m = lblPref.bgm, c = lblColors();
+  if (m === 'white') return {fg: '#111111', bg: '#ffffff', light: true};
+  if (m === 'black') return {fg: '#ffffff', bg: '#000000', light: false};
+  return {...c, light: !darkBg()};
+}
+const hexA = (h, a) => h + Math.round(a * 255).toString(16).padStart(2, '0');
 /* text colour of one label: white/black for the background, or the colour of the residue's chain (the cartoon colour,
    including the N→C colouring); on a light background pale colours are darkened so the text stays readable */
 function lblItemColor(S, it, fg) {
@@ -5648,14 +5749,14 @@ function lblItemColor(S, it, fg) {
     }
   } catch (e) {}
   if (!col) return fg;
-  if (!darkBg()) {
+  if (lblInk().light) {
     const n = parseInt(col.slice(1), 16), lum = (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255;
     if (lum > 0.55) col = mixHex(col, '#000000', Math.min(0.55, (lum - 0.45) * 1.1));
   }
   return col;
 }
 function lblStyle() {
-  const {fg, bg} = lblColors(), sz = +lblPref.size || 14;
+  const {fg, bg} = lblInk(), sz = +lblPref.size || 14;
   const halo = lblPref.halo ? [[-1, -1], [1, -1], [-1, 1], [1, 1], [0, 1.4], [0, -1.4], [1.4, 0], [-1.4, 0]].map(([a, b]) => `${a}px ${b}px 0 ${bg}`).join(',') : 'none';
   lblSets.forEach(S => S.items.forEach(it => { const e = it.el.style; it.col = lblItemColor(S, it, fg); e.fontSize = sz + 'px'; e.fontWeight = lblPref.bold ? '700' : '400'; e.color = it.col; e.textShadow = halo; }));
 }
@@ -5670,7 +5771,7 @@ function lblAnchor(S, it, W, H) {
 function lblShown(S) { return S.on && S.comp.visible && stage.compList.includes(S.comp); }
 function lblFrame() {
   const svg = $('#lblLines'); if (!svg) return;
-  const fig = lblFig(), lines = [], {fg, bg} = lblColors();
+  const fig = lblFig(), lines = [], {fg, bg} = lblColors(), box = lblBox();
   lblSets.forEach(S => {
     const show = lblShown(S);
     S.items.forEach(it => {
@@ -5681,7 +5782,8 @@ function lblFrame() {
       e.display = '';
       it.el.classList.toggle('ana', !fig);
       e.opacity = !fig && it.occ ? '0.25' : '1';
-      e.background = !fig && S.src === 'ifc' ? bg + '8c' : 'transparent';
+      e.background = box ? hexA(box.fill, box.a) : 'transparent';
+      it.el.classList.toggle('bx', !!box);
       e.transform = `translate(${Math.round(a[0] + o[0] - w / 2)}px, ${Math.round(a[1] + o[1] - h / 2)}px)`;
       if (fig && lblPref.line && Math.hypot(o[0], o[1]) > Math.max(w, h) * 0.6) {
         const q = lblEdge(a, [a[0] + o[0], a[1] + o[1]], w, h);
@@ -5817,20 +5919,21 @@ function lblDraw(ctx, W, H, snap) {
       ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(e[0], e[1]); ctx.stroke(); ctx.globalAlpha = 1;
     }
     ctx.globalAlpha = l.alpha ?? 1;
-    if (l.box) { ctx.fillStyle = bg; ctx.globalAlpha *= 0.55; ctx.fillRect(cx - l.w * s / 2, cy - l.h * s / 2, l.w * s, l.h * s); ctx.globalAlpha = l.alpha ?? 1; }
-    if (lblPref.halo) { ctx.strokeStyle = bg; ctx.lineWidth = 3 * s; ctx.strokeText(l.text, cx, cy); }
-    ctx.fillStyle = l.col || fg; ctx.fillText(l.text, cx, cy);
+    const ink = snap.ink || {fg, bg}, bx = snap.box;
+    if (l.box && bx) { ctx.fillStyle = bx.fill; ctx.globalAlpha *= bx.a; ctx.fillRect(cx - l.w * s / 2, cy - l.h * s / 2, l.w * s, l.h * s); ctx.globalAlpha = l.alpha ?? 1; }
+    if (lblPref.halo) { ctx.strokeStyle = ink.bg; ctx.lineWidth = 3 * s; ctx.strokeText(l.text, cx, cy); }
+    ctx.fillStyle = l.col || ink.fg; ctx.fillText(l.text, cx, cy);
     ctx.globalAlpha = 1;
   });
   ctx.restore();
 }
 function lblSnapshot() {
-  const out = []; out.vw = stage.viewer.width; out.vh = stage.viewer.height; out.col = lblColors();
+  const out = []; out.vw = stage.viewer.width; out.vh = stage.viewer.height; out.col = lblColors(); out.ink = lblInk(); out.box = lblBox();
   const fig = lblFig();
   lblSets.forEach(S => { if (!lblShown(S)) return; S.items.forEach(it => {
     const a = lblAnchor(S, it); if (!a) return;
     const o = fig ? (lblOff.get(it.key) || [0, 0]) : [0, 0], w = it.el.offsetWidth, h = it.el.offsetHeight;
-    out.push({a, c: [a[0] + o[0], a[1] + o[1]], w, h, text: it.text, col: it.col, alpha: !fig && it.occ ? 0.25 : 1, box: !fig && S.src === 'ifc',
+    out.push({a, c: [a[0] + o[0], a[1] + o[1]], w, h, text: it.text, col: it.col, alpha: !fig && it.occ ? 0.25 : 1, box: !!lblBox(),
       line: fig && lblPref.line && Math.hypot(o[0], o[1]) > Math.max(w, h) * 0.6});
   }); });
   return out;
@@ -5842,6 +5945,7 @@ function lblWriteUI() {
   $('#lblFmt').value = lblPref.fmt; $('#lblChain').value = lblPref.chain; $('#lblSize').value = String(lblPref.size);
   $('#lblBold').checked = lblPref.bold; $('#lblHalo').checked = lblPref.halo; $('#lblLine').checked = lblPref.line;
   $('#lblColor').value = lblPref.color === 'chain' ? 'chain' : 'mono';
+  $('#lblBg').value = ['auto', 'white', 'black'].includes(lblPref.bgm) ? lblPref.bgm : 'none';
 }
 lblWriteUI();
 $('#lblMode').onchange = e => setLblMode(e.target.value);
@@ -5851,6 +5955,7 @@ $('#lblSize').onchange = e => { lblPref.size = +e.target.value; lblSavePref(); l
 $('#lblBold').onchange = e => { lblPref.bold = e.target.checked; lblSavePref(); lblStyle(); lblNglAll(); lblFrame(); };
 $('#lblHalo').onchange = e => { lblPref.halo = e.target.checked; lblSavePref(); lblStyle(); };
 $('#lblColor').onchange = e => { lblPref.color = e.target.value === 'chain' ? 'chain' : 'mono'; lblSavePref(); lblStyle(); };
+$('#lblBg').onchange = e => { lblPref.bgm = e.target.value; lblSavePref(); lblStyle(); lblFrame(); };
 $('#lblLine').onchange = e => { lblPref.line = e.target.checked; lblSavePref(); lblFrame(); };
 $('#lblAuto').onclick = lblAutoArrange;
 $('#lblReset').onclick = () => { lblOff.clear(); lblFrame(); status('ラベルの位置を元に戻しました'); };
@@ -6115,6 +6220,7 @@ async function shareLink() {
   if (stickPref.nuc !== 'all') q.set('sn', stickPref.nuc);
   if (linkOn && ok.length > 1) q.set('lk', '1');
   if (lblPref.color === 'chain') q.set('lc', 'chain');
+  if (['auto', 'white', 'black'].includes(lblPref.bgm)) q.set('lb', lblPref.bgm);
   const sty = shareStyle(ok);
   q.set('st', await packLink(sty.d));
   const skipped = structs.length - ok.length;
@@ -6173,6 +6279,7 @@ async function openShared(q) {
   if (q.get('sp') === 'side') { stickPref.part = 'side'; writeStickUI(); }
   if (['bb', 'base'].includes(q.get('sn'))) { stickPref.nuc = q.get('sn'); writeStickUI(); }
   if (q.get('lk') === '1') { linkOn = true; linkUI(); }
+  if (['auto', 'white', 'black'].includes(q.get('lb'))) { lblPref.bgm = q.get('lb'); lblWriteUI(); lblStyle(); lblFrame(); }
   if (q.get('lc') === 'chain') { lblPref.color = 'chain'; lblWriteUI(); lblStyle(); }   // not saved as the receiver's own preference   // not saved as the receiver's own preference
   if (q.has('cop')) setCartOp(1 - Math.min(100, Math.max(0, +q.get('cop') || 0)) / 100);
   const sel = (q.get('sel') || '').split(',').map(x => x.match(/^(.+):(-?\d+)([A-Za-z]?)$/)).filter(Boolean);

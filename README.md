@@ -42,7 +42,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Cartoon, sticks, surface and other representations; adjustable cartoon transparency
 - Look: material (standard, matte, flat, soft), outlines, depth fade, and one-click "illustration" and "soft colours" presets
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
-- Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour
+- Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour; text background none, auto, white or black
 - Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
 - Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues
 - Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off (the "Saved selections" tab under the viewer)
@@ -68,7 +68,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
   - Hydrophobic contacts are drawn as fine grey dots on the facing sides of the two carbons (dashed lines are also available)
   - Scope: only interactions of the clicked residue, or all interactions among the residues shown within 5 Å
   - Distance criteria can be changed in the "Analysis" tab (default hydrogen-bond limit: 3.5 Å donor–acceptor, +0.6 Å when sulfur is involved)
-- Interface analysis between chains: residue pairs at the interface, buried surface area (BSA), and interface area
+- Interface analysis between chains: residue pairs at the interface, buried surface area (BSA), and interface area (results in the "Chain interactions" tab under the viewer)
 - Conservation (ConSurf-style): calculate from a multiple sequence alignment (MSA), or load a ConSurf result file
 - Mutation positions: paste a list of mutations (R51A, p.Arg51Ala, …) to show the positions on the structure
   - Checks the original residue against the structure and suggests the right numbering offset when they do not match
