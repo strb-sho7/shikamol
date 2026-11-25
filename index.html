@@ -235,6 +235,13 @@ details.sec .secbody{padding:2px 10px 10px;border-top:1px solid var(--line)}
 details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8px;border-top:1px dashed var(--line)}
 #seq{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;padding:4px 8px 6px;display:none;font:13px/1 ui-monospace,Menlo,Consolas,monospace}
 #bpane{flex:none;height:120px;display:none;min-height:0}
+#opane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#cfd3da;font-size:12px;padding:4px 10px 6px;display:none}
+#opane .oph{display:flex;gap:6px;align-items:center;margin:-4px 0 4px;position:sticky;top:-4px;background:#0b0d11;padding:5px 0 3px;z-index:1}
+#opane .oph button{font-size:11px;padding:1px 8px;white-space:nowrap;flex:none}
+#opane .oph .small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#oplog div{padding:1px 0;border-top:1px solid #ffffff10;white-space:pre-wrap}
+#oplog .tm{color:#7f8796;margin-right:8px;font-variant-numeric:tabular-nums}
+#oplog .er{color:var(--warn)}
 #gpane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
 #btabs{flex:none;display:none;gap:2px;padding:3px 8px 0;background:#14171d;border-bottom:1px solid #2c313b}
 #btabs button{font-size:12px;padding:3px 12px;border-radius:6px 6px 0 0;border:1px solid #2c313b;border-bottom:0;background:transparent;color:#9aa2b1}
@@ -725,8 +732,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="drop">ここにドロップ（構造 or マップ）</div>
   </div>
   <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
-  <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button></div>
-  <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div></div>
+  <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
+  <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -738,6 +745,7 @@ const $ = s => document.querySelector(s);
 /* ---------- error log ---------- */
 let nlog = 0;
 function log(msg) {
+  try { oplog(msg, true); } catch (e) {}
   nlog++; $('#logN').textContent = nlog;
   const t = new Date().toLocaleTimeString();
   $('#log').textContent = `[${t}] ${LANG === 'en' ? tr(msg) : msg}\n` + $('#log').textContent;
@@ -785,7 +793,28 @@ function deerStart() { if (!deerRaf && typeof requestAnimationFrame !== 'undefin
 
 /* a message ending in "…" means work is in progress: the running deer is shown until the next message (or 90 s at most) */
 let deerT = 0;
+/* the operation record (like PyMOL's log): every message shown at the bottom of the molecule window, selections, and errors;
+   messages of work in progress ("…") are left out, their result follows */
+const OPLOG = [];
+function oplog(msg, err) {
+  msg = String(msg || '').trim(); if (!msg || (!err && /…\s*$/.test(msg))) return;
+  const last = OPLOG[OPLOG.length - 1];
+  if (last && last.msg === msg) return;
+  const e = {t: new Date(), msg, err: !!err};
+  OPLOG.push(e); if (OPLOG.length > 500) OPLOG.shift();
+  const box = document.getElementById('oplog'); if (!box) return;
+  box.appendChild(oplogRow(e)); while (box.childNodes.length > 500) box.removeChild(box.firstChild);
+  const o = document.getElementById('opane'); if (o && o.style.display === 'block') o.scrollTop = o.scrollHeight;
+}
+function oplogRow(e) {
+  const d = document.createElement('div'); if (e.err) d.className = 'er';
+  const tm = document.createElement('span'); tm.className = 'tm'; tm.textContent = e.t.toLocaleTimeString('ja-JP', {hour12: false});
+  d.appendChild(tm); d.appendChild(document.createTextNode((e.err ? '⚠ ' : '') + (LANG === 'en' ? tr(e.msg) : e.msg)));
+  return d;
+}
+function oplogRedraw() { const box = document.getElementById('oplog'); if (!box) return; box.innerHTML = ''; OPLOG.forEach(e => box.appendChild(oplogRow(e))); }
 function status(msg, err) {
+  oplog(msg, err);
   const s = $('#status'); s.textContent = msg; s.className = err ? 'err' : ''; if (err) log(msg);
   const busy = !err && /…\s*$/.test(String(msg)), d = document.getElementById('deerRun');
   if (d) { d.classList.toggle('on', busy); clearTimeout(deerT); if (busy) { deerStart(); deerT = setTimeout(() => { d.classList.remove('on'); try { layoutBottom(); } catch (e) {} }, 90000); } }
@@ -802,6 +831,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "操作の記録": "Log", "これまでの操作とその結果の記録（新しいものが下）": "Record of operations and their results (newest at the bottom)", "このページを開いてからの操作の記録です（新しいものが下）": "Operations since this page was opened (newest at the bottom)", "操作の記録をコピーしました": "Log copied", "選択を解除": "Selection cleared",
   "保存した選択": "Saved selections", "保存した選択と最近の選択の履歴": "Saved selections and recent history", "残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。": "Select residues and press \"★ Save selection\" at the top left of the viewer to keep them here under a name. Tick the box on the left to keep them always shown in their colour. They are kept in sessions too.",
   "配列": "Sequence",
   "種類・範囲で絞り込む": "Filter by type and scope",
@@ -1055,6 +1085,7 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^選択: (.*?)（(\d+) 残基）$/, (m, a, n) => `Selected: ${a} (${n} residues)`),
   P(/^開いている構造 (\d+) 個(?:とマップ (\d+) 個)?をすべて閉じます。色・選択・解析などの設定も消えます（必要ならセッションを保存してから閉じてください）。閉じてよいですか？$/, (m, n, k) => `Close all ${n} structure(s)${k ? ` and ${k} map(s)` : ''}? Colours, selections and analysis settings will be lost too (save a session first if you need them).`),
   P(/^(.+) を予測の信頼度（pLDDT）で色分けしました：(.+)$/, (m, n, b) => `${n} coloured by prediction confidence (pLDDT): ${b.replace(/ 以上（非常に高い）/, ' and above (very high)').replace(/（高い）/, ' (high)').replace(/（低い）/, ' (low)').replace(/ 未満（非常に低い）/, ' and below (very low)').replace(/・/g, ', ')}`),
   P(/^(.+) を Chain ごとの色に戻しました$/, (m, n) => `${n}: back to chain colours`),
@@ -1257,6 +1288,7 @@ function setLang(l) {
   document.documentElement.lang = l;
   $('#lang').value = l;
   if (l === 'en') trNode(document.body); else restoreNode(document.body);
+  try { oplogRedraw(); } catch (e) {}
 }
 $('#lang').onchange = e => setLang(e.target.value);
 /* sidebar tabs */
@@ -4594,15 +4626,17 @@ function bottomUpdate() {
   let eff = btab;
   if (eff === 'grp' && !hasGrp) eff = 'seq';
   if (eff === 'seq' && !hasSeq) eff = hasIx ? 'ix' : 'grp';
-  const any = hasSeq || hasIx || hasGrp, pane = $('#bpane'), was = pane.style.display;
+  const any = hasSeq || hasIx || hasGrp || btab === 'log', pane = $('#bpane'), was = pane.style.display;
   pane.style.display = $('#seqbar').style.display = any ? 'block' : 'none';
   $('#btabs').style.display = any ? 'flex' : 'none';
   $('#seq').style.display = any && eff === 'seq' ? 'block' : 'none';
   $('#flist').style.display = any && eff === 'ix' ? 'block' : 'none';
   $('#gpane').style.display = any && eff === 'grp' ? 'block' : 'none';
+  $('#opane').style.display = any && eff === 'log' ? 'block' : 'none';
+  if (eff === 'log') { const o = $('#opane'); o.scrollTop = o.scrollHeight; }
   $('#btabs').querySelectorAll('button').forEach(b => {
     b.classList.toggle('on', b.dataset.b === eff);
-    b.disabled = b.dataset.b === 'seq' ? !hasSeq : b.dataset.b === 'ix' ? !hasIx : !hasGrp;
+    b.disabled = b.dataset.b === 'seq' ? !hasSeq : b.dataset.b === 'ix' ? !hasIx : b.dataset.b === 'grp' ? !hasGrp : false;
   });
   const S = structs[active], ng = S && S.groups ? S.groups.length : 0;
   $('#btGrN').textContent = ng ? ` ${ng}` : '';
@@ -4610,6 +4644,14 @@ function bottomUpdate() {
   if ((was === 'block') !== any) stage.handleResize();
 }
 $('#flist').addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('fdet')) fOpenSet = e.target.open; }, true);
+$('#opane').addEventListener('click', async e => {
+  const k = e.target.dataset.k;
+  if (k === 'opclear') { OPLOG.length = 0; oplogRedraw(); return; }
+  if (k === 'opcopy') {
+    const txt = OPLOG.map(x => `${x.t.toLocaleTimeString('ja-JP', {hour12: false})}\t${x.err ? '⚠ ' : ''}${LANG === 'en' ? tr(x.msg) : x.msg}`).join('\n');
+    try { await navigator.clipboard.writeText(txt); status('操作の記録をコピーしました'); } catch (er) { status('コピーできませんでした', true); }
+  }
+});
 $('#btabs').addEventListener('click', e => { const b = e.target.closest('button[data-b]'); if (!b || b.disabled) return; btab = b.dataset.b; bottomUpdate(); });
 $('#flist').addEventListener('input', e => {
   const t = e.target.dataset.t;
@@ -4865,6 +4907,7 @@ function unfocus() {
   if (!comp) return;
   if (keepOn) clearOtherFocus();
   clearFocusDraw(); seqMark(null);
+  if (lastFocus) oplog('選択を解除');
   lastFocus = null; focusRef = null; $('#info').style.display = 'none'; bottomUpdate();
   if (addMode) $('#addMode').click();
   if ($('#focusZoom').checked) comp.autoView(600);
@@ -5123,6 +5166,7 @@ $('#addMode').onclick = () => {
 /* make `list` (residues) the current selection; `a` = the clicked atom, for the one-residue info line */
 function applySelection(list, a, noHist) {
   if (!list.length) return unfocus();
+  oplog(`選択: ${(structs[active] || {}).name || ''} ${selLabel(list, 6)}（${list.length} 残基）`);
   lastFocus = list;
   setInfo(infoBase = infoFor(list, a));
   if (!noHist) pushHist(list);
@@ -5210,9 +5254,9 @@ function renderGroups() {
       <select data-k="style" title="常に表示するときの表示形式と太さ">${styleOpts(styleVal(g.style, g.w))}</select>
       <button data-k="show" title="この残基を選択した状態にします（周囲5Åと相互作用を表示）。Ctrl／⌘／Shift を押しながら押すと、いまの選択に追加します">この残基を選択</button></div>`).join('')
     : '<div class="small">保存した選択はまだありません。残基を選んで、分子ウィンドウ左上の「★ 選択を保存」を押してください。</div>') +
-    (hs.length ? `<details ${S.histOpen ? 'open' : ''} id="histBox"><summary class="small">最近の選択（${hs.length} 件、自動）</summary>${hs.map((h, i) => `<div class="g" data-h="${i}">
+    (hs.length ? `<div id="histBox"><div class="small" style="margin:10px 0 2px;opacity:.8">最近の選択（${hs.length} 件、自動）</div>${hs.map((h, i) => `<div class="g" data-h="${i}">
       <span class="h" title="${esc(selLabel(h.res, 99))}">${esc(selLabel(h.res, 3))}</span><span class="n">${h.res.length} 残基</span>
-      <button data-k="show" title="この残基を選択した状態にします">選択</button><button data-k="keep" title="名前を付けて保存します">★ 保存</button></div>`).join('')}</details>` : '');
+      <button data-k="show" title="この残基を選択した状態にします">選択</button><button data-k="keep" title="名前を付けて保存します">★ 保存</button></div>`).join('')}</div>` : '');
 }
 $('#groups').addEventListener('click', e => {
   const S = structs[active], k = e.target.dataset.k; if (!S || !k) return;

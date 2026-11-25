@@ -46,6 +46,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
 - Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues
 - Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off (the "Saved selections" tab under the viewer)
+- Log: operations, selections and errors since the page was opened, with times (the "Log" tab under the viewer; can be copied)
 - Box selection: drag a rectangle in the viewer to select the residues inside it
 - Spotlight: fade everything farther than a set distance from the residues of interest
 - Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis
