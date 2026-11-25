@@ -15,7 +15,7 @@ PDB ID かファイルを読み込むだけで、構造の表示、電子密度�
 ## 使い方
 
 1. 上のアドレスを開きます。
-2. 左の「構造」タブで、PDB ID（例 `7DA1`。`pdb_00007da1` のような 12 文字の形でも可）を入力して「読込」を押します。手元の `.pdb` / `.cif` ファイルを読み込むこともできます（ドラッグ＆ドロップ可）。
+2. 左の「構造」タブで、PDB ID（例 `7DA1`。`pdb_00007da1` のような 12 文字の形でも可）を入力して「読込」を押します。`7DA1 1D66 3PQR` のようにスペースかカンマで区切ると、複数の構造をまとめて読み込めます。手元の `.pdb` / `.cif` ファイルを読み込むこともできます（ドラッグ＆ドロップ可）。
 3. 分子ウィンドウで残基をクリック（タブレットではタップ）すると、その残基にズームし、周囲 5 Å 以内の相互作用が一覧と点線で表示されます。背景をクリックすると解除されます。
 
 ### アドレスで構造を指定する
@@ -112,6 +112,7 @@ index.html だけをダウンロードして開いた場合は、同じフォル
 - 相互作用の種類と判定基準は、PLIP と Mol* を参考にしています。
   - Salentin S, et al. PLIP: fully automated protein–ligand interaction profiler. *Nucleic Acids Res.* 2015;43:W443–W447. doi:[10.1093/nar/gkv315](https://doi.org/10.1093/nar/gkv315)
   - Sehnal D, et al. Mol* Viewer: modern web app for 3D visualization and analysis of large biomolecular structures. *Nucleic Acids Res.* 2021;49:W431–W437. doi:[10.1093/nar/gkab314](https://doi.org/10.1093/nar/gkab314)
+- S–S 結合：ファイルに記録（mmCIF の struct_conn、PDB の CONECT）があればそれを使い、記録のない Cys の SG どうしが 2.5 Å 以内にあるときは距離から結合を追加します（追加したときは画面に表示）。
 - 重ね合わせ：Cα を BLOSUM62 とアフィンギャップ（開始 −10、延長 −0.5）の配列アライメントで対応付け、配列一致度が 30% 未満のときなどは TM-score を用いた構造ベースの対応付けに切り替えます。回転は四元数による最小二乗解（Horn の方法）で求め、RMSD の 2 倍を超える外れ値を除いて最大 5 回当てはめ直します。
   - Henikoff S, Henikoff JG. Amino acid substitution matrices from protein blocks. *Proc. Natl. Acad. Sci. USA* 1992;89:10915–10919. doi:[10.1073/pnas.89.22.10915](https://doi.org/10.1073/pnas.89.22.10915)
   - Gotoh O. An improved algorithm for matching biological sequences. *J. Mol. Biol.* 1982;162:705–708. doi:[10.1016/0022-2836(82)90398-9](https://doi.org/10.1016/0022-2836(82)90398-9)

@@ -15,7 +15,7 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 ## Getting started
 
 1. Open the address above.
-2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". You can also load a local `.pdb` / `.cif` file (drag and drop works too).
+2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
 3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are shown as a list and as dashed lines. Click the background to clear.
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.
@@ -114,6 +114,7 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
 - Interaction types and criteria follow PLIP and Mol*.
   - Salentin S, et al. PLIP: fully automated protein–ligand interaction profiler. *Nucleic Acids Res.* 2015;43:W443–W447. doi:[10.1093/nar/gkv315](https://doi.org/10.1093/nar/gkv315)
   - Sehnal D, et al. Mol* Viewer: modern web app for 3D visualization and analysis of large biomolecular structures. *Nucleic Acids Res.* 2021;49:W431–W437. doi:[10.1093/nar/gkab314](https://doi.org/10.1093/nar/gkab314)
+- Disulfide bonds: bonds recorded in the file (mmCIF struct_conn, PDB CONECT) are used; cysteine SG atoms within 2.5 Å without a recorded bond are bonded by distance (reported on screen).
 - Superposition: Cα atoms are paired by sequence alignment with BLOSUM62 and affine gaps (opening −10, extension −0.5); below 30% identity, among other cases, a structure-based pairing using the TM-score is used instead. The rotation is the quaternion least-squares solution (Horn's method), refitted up to 5 times after rejecting outliers beyond 2 × RMSD.
   - Henikoff S, Henikoff JG. Amino acid substitution matrices from protein blocks. *Proc. Natl. Acad. Sci. USA* 1992;89:10915–10919. doi:[10.1073/pnas.89.22.10915](https://doi.org/10.1073/pnas.89.22.10915)
   - Gotoh O. An improved algorithm for matching biological sequences. *J. Mol. Biol.* 1982;162:705–708. doi:[10.1016/0022-2836(82)90398-9](https://doi.org/10.1016/0022-2836(82)90398-9)
