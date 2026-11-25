@@ -4777,7 +4777,7 @@ function bottomUpdate() {
   btabsEdges(true);
   const S = structs[active], ng = S && S.groups ? S.groups.length : 0;
   $('#btGrN').textContent = ng ? ` ${ng}` : '';
-  $('#btIxN').textContent = hasIx ? ` ${ixHas}` : lastFocus && lastFocus.length && $('#focusIx').checked ? ' 0' : '';
+  $('#btIxN').textContent = hasIx ? ` ${ixHas}` : lastFocus && lastFocus.length && !lastFocus.chainSel && $('#focusIx').checked ? ' 0' : '';
   if ((was === 'block') !== any) stage.handleResize();
 }
 $('#flist').addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('fdet')) fOpenSet = e.target.open; }, true);
@@ -5011,6 +5011,14 @@ function focusOn(list, move) {
   clearFocusDraw();
   seqMark(list);
   if (!list.length) return;
+  // whole chains picked from their names in the sequence strip: only the red outline, no sticks, surroundings or interactions
+  if (list.chainSel) {
+    [...new Set(list.map(f => f.chainname))].forEach(n => {
+      const ch = chains.find(c => c.name === n);
+      if (ch && ch.visible) outlineSpecs(ch, `:${n} and /0`).forEach(([t, prm]) => focusReps.push(comp.addRepresentation(t, prm)));
+    });
+    return;
+  }
   const last = list[list.length - 1];
   move = move && $('#focusZoom').checked;
   try {
@@ -5053,7 +5061,7 @@ function focusOn(list, move) {
       const ls = linkSumText(); if (ls) setInfo(infoBase + `\n🔗 ${ls}`);
     }
     applySpot(list);
-    setLabelSet('focus', comp, list.noLbl ? [] : lab);   // whole chains picked from their names: no residue names
+    setLabelSet('focus', comp, lab);
   } catch (err) { log('周囲表示: ' + (err.message || err)); }
 }
 function unfocus() {
@@ -5353,7 +5361,8 @@ const selKey = list => list.map(focusKey).sort().join(';');
 function pushHist(list) {
   const S = structs[active]; if (!S) return;
   S.hist = (S.hist || []).filter(h => selKey(h.res) !== selKey(list));
-  S.hist.unshift({res: list.slice()});
+  const hr = list.slice(); hr.chainSel = !!list.chainSel;
+  S.hist.unshift({res: hr});
   if (S.hist.length > 8) S.hist.length = 8;
   renderGroups();
 }
@@ -5422,7 +5431,8 @@ $('#groups').addEventListener('click', e => {
     let list = item.res.slice();
     if ((e.ctrlKey || e.metaKey || e.shiftKey) && Array.isArray(lastFocus)) {       // with a modifier: add to the current selection
       const have = new Set(lastFocus.map(focusKey)); list = lastFocus.concat(list.filter(f => !have.has(focusKey(f))));
-    }
+      list.chainSel = !!(item.res.chainSel && lastFocus.chainSel);
+    } else list.chainSel = !!item.res.chainSel;
     focusRef = null; applySelection(list, null, true);
     status(`${isH ? selLabel(item.res, 3) : item.name} を選択しました（${item.res.length} 残基）`);
   }
@@ -5569,7 +5579,7 @@ $('#seq').addEventListener('click', e => {
     if (add && Array.isArray(lastFocus)) { const have = new Set(lastFocus.map(focusKey)); list = lastFocus.concat(picked.filter(f => !have.has(focusKey(f)))); }
     clearHL();
     focusRef = null;
-    list.noLbl = !(add && Array.isArray(lastFocus)) || !!lastFocus.noLbl;   // chains picked from their names get no residue labels
+    list.chainSel = !(add && Array.isArray(lastFocus)) || !!lastFocus.chainSel;   // chains picked from their names: outline only
     focusStay = true;
     try { applySelection(list, null); } finally { focusStay = false; }
     return;
@@ -6422,7 +6432,7 @@ function undoSnap() {
       het: st.ui ? {lig: st.ui.lig, ion: st.ui.ion, wat: st.ui.wat, ligColor: st.ui.ligColor} : null,
       extras: st.extras.map(x => ({s: x.s, t: x.t, col: x.col, elem: x.elem})),
       groups: (st.groups || []).map(g => ({id: g.id, name: g.name, res: clone(g.res), on: !!g.on, color: g.color, style: g.style, w: g.w || 1})),
-      focus: st.lastFocus ? clone(st.lastFocus) : null})),
+      focus: st.lastFocus ? clone(st.lastFocus) : null, fch: !!(st.lastFocus && st.lastFocus.chainSel)})),
     maps: maps.map(m => ({m, level: m.level, color: m.color, neg: m.neg, style: m.style, vis: !!m.visible}))
   };
 }
@@ -6495,8 +6505,8 @@ async function undoApply(snap) {
     if (bi >= 0 && bi !== active) activate(bi);
     // current selection (active structure only)
     const t = snap.st.find(x => x.sid === back), c = cur.st.find(x => x.sid === back);
-    if (t && c && JSON.stringify(t.focus) !== JSON.stringify(c.focus)) {
-      if (t.focus && t.focus.length) { lastFocus = t.focus; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
+    if (t && c && (JSON.stringify(t.focus) !== JSON.stringify(c.focus) || t.fch !== c.fch)) {
+      if (t.focus && t.focus.length) { lastFocus = t.focus; lastFocus.chainSel = t.fch; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
       else { clearFocusDraw(); seqMark(null); lastFocus = null; focusRef = null; $('#info').style.display = 'none'; }
     }
     // maps
@@ -7421,7 +7431,7 @@ var lastPtrBtn = 0;
     if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 5 || performance.now() - d.t > 800) return;
     openCtxMenu(e.clientX, e.clientY);
   });
-  cv.addEventListener('contextmenu', e => e.preventDefault());
+  $('#vwrap').addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea, select')) e.preventDefault(); }, true);
 })();
 
 /* ---------- the menu ---------- */

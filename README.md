@@ -17,7 +17,8 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 1. Open the address above.
 2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
 3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
-   - Clicking a chain name at the left of the sequence strip selects every residue of that chain (the view does not move; Ctrl/⌘+click adds it to the selection). Chains picked this way get no residue labels.
+   - Clicking a chain name at the left of the sequence strip selects every residue of that chain and outlines the chain in red (the view does not move, and no sticks, 5 Å surroundings, interactions or labels are drawn; Ctrl/⌘+click adds it to the selection).
+   - The browser's own right-click menu is turned off over the viewer.
    - Right-click opens a menu for the selection (or the residue under the pointer): always show as sticks etc. or hide, colour, labels, centre/zoom here, add residues within 5 Å, save or clear the selection, colour or hide the chain, fit all.
    - The mouse bindings can be switched under "How to use" between "ShikaMol standard" and "PyMOL-like" (PyMOL's 3-Button Viewing: wheel-press drag translates, right drag zooms, the wheel moves the clipping slab, Ctrl+wheel zooms, Shift+left drag adds a box selection).
 
