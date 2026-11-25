@@ -17,6 +17,8 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 1. Open the address above.
 2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
 3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
+   - Right-click opens a menu for the selection (or the residue under the pointer): always show as sticks etc. or hide, colour, labels, centre/zoom here, add residues within 5 Å, save or clear the selection, colour or hide the chain, fit all.
+   - The mouse bindings can be switched under "How to use" between "ShikaMol standard" and "PyMOL-like" (PyMOL's 3-Button Viewing: wheel-press drag translates, right drag zooms, the wheel moves the clipping slab, Ctrl+wheel zooms, Shift+left drag adds a box selection).
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.
 
@@ -93,6 +95,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Undo and redo ("↶" and "↷" at the top right of the viewer, or Ctrl/⌘+Z and Ctrl/⌘+Shift+Z)
 - Automatic saving of your work: when you open the viewer again, you can restore the previous session (kept only in your browser)
 - Protection against accidental "back": on phones and tablets, the first back button press or swipe does not leave the page
+- Phones in portrait: the Structure, Analysis, Density and Display & export panels join the tabs under the viewer, so the screen has two parts, the viewer and one tabbed pane (drag the handle between them to resize)
 - Japanese / English interface
 
 ## Your data

@@ -83,6 +83,14 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 .plb{font-size:11px;padding:1px 6px;margin-left:4px;border-radius:8px}.plb.on{background:#0053D6;color:#fff;border-color:#0053D6}
 .mleg{display:flex;align-items:center;gap:6px;margin-top:4px}.mbar{flex:1;height:10px;border-radius:3px;border:1px solid var(--line,#444)}
 #mutTxt{width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:13px}
+#ctxMenu{position:fixed;z-index:50;display:none;min-width:210px;max-width:300px;background:#1c1f26;border:1px solid #3a404c;border-radius:8px;box-shadow:0 6px 24px #0009;padding:4px;font-size:13px;color:#e8eaee}
+#ctxMenu .mh{padding:4px 8px 6px;color:#9aa2b1;font-size:12px;border-bottom:1px solid #2c313b;margin-bottom:3px}
+#ctxMenu .ms{padding:2px 8px;color:#9aa2b1;font-size:11px}
+#ctxMenu button{display:block;width:100%;text-align:left;background:transparent;border:0;color:inherit;padding:5px 8px;border-radius:5px;font-size:13px}
+#ctxMenu button:hover{background:#5aa9ff26}
+#ctxMenu .mrow{display:flex;flex-wrap:wrap;gap:2px;padding:0 4px 3px}
+#ctxMenu .mrow button{width:auto;flex:1 1 auto;text-align:center;border:1px solid #2c313b;padding:3px 6px}
+#ctxMenu .msep{height:1px;background:#2c313b;margin:3px 4px}
 #deerRun{position:absolute;left:10px;bottom:10px;width:84px;height:58px;padding:2px 4px;border-radius:10px;background:rgba(20,24,30,.72);z-index:5;pointer-events:none;display:none}
 #deerRun.on{display:block}
 #deerRun svg{width:100%;height:100%;overflow:visible}
@@ -91,7 +99,8 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 
 #boxLayer{position:absolute;inset:0;z-index:3;display:none;cursor:crosshair;touch-action:none}
 #boxRect{position:absolute;border:1.5px dashed #5aa9ff;background:#5aa9ff22;display:none;pointer-events:none}
-#status{position:absolute;left:10px;bottom:10px;right:10px;pointer-events:none;font-size:13px;color:#ddd;text-shadow:0 1px 2px #000}
+#status{position:absolute;left:10px;top:10px;max-width:calc(100% - 20px);pointer-events:none;font-size:13px;color:#ddd;background:#000a;padding:4px 10px;border-radius:6px;box-sizing:border-box;opacity:0;transition:opacity .4s;z-index:3}
+#status.show{opacity:1;transition:opacity .15s}
 #status.err{color:var(--warn)}
 #infoT{white-space:pre-line}
 #linkBtn.on,#keepBtn.on{background:#2f5d8a;color:#fff;border-color:#4a86c2}
@@ -116,7 +125,7 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
   background:var(--panel,#1f2430);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 14px;box-shadow:0 6px 24px rgba(0,0,0,.35);font-size:13px;line-height:1.45}
 #asBanner .asBtns{display:flex;gap:6px;flex-shrink:0}
 #asBanner button{padding:6px 12px;font-size:13px}
-#info{position:absolute;left:10px;top:10px;background:#000a;padding:4px 10px;border-radius:6px;font-size:13px;display:none}
+#info{position:absolute;left:10px;bottom:10px;background:#000a;padding:4px 10px;border-radius:6px;font-size:13px;display:none}
 #flist{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#eee;font-size:12px;padding:4px 10px 6px;display:none}
 #flist .fh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
 #flist button{font-size:11px;padding:1px 6px}
@@ -280,6 +289,15 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #groups .h{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
 .sqr i.t::before{content:attr(data-n);position:absolute;left:0;top:-11px;font-size:9px;color:#8a92a1}
 .sqr b{display:inline-block;width:1.4ch;color:#555;font-weight:400}
+#btabs .pb{display:none}
+body.mob #app{display:block;height:100vh;height:100dvh;overflow:hidden}
+body.mob main{height:100vh;height:100dvh}
+body.mob #side{display:none;height:100%;box-sizing:border-box;overflow-y:auto;border-right:0;padding:8px 12px 30px}
+body.mob #tabs{display:none}
+body.mob #stickyTop{top:-8px;margin:0 -12px 8px;padding:4px 10px 4px}
+body.mob #stickyTop:has(#activeBar[style*="none"]){display:none}
+body.mob #btabs .pb{display:inline-block}
+body.mob #btabs .pb.pl{margin-right:10px}
 @media(max-width:760px){#sbar{display:none}#app{grid-template-columns:1fr;grid-template-rows:65vh auto;height:auto}main{height:65vh;order:-1}#side{border-right:0}}
 </style>
 </head>
@@ -680,10 +698,16 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
   </details>
   <details class="sec" data-sec="help"><summary><b>操作方法</b><span class="sechint">マウス・キーボード・タブレット</span></summary>
   <div class="secbody">
+  <div class="frow"><span class="fl">マウス操作</span><select id="mouseMode" title="PyMOL 互換は 3-Button Viewing と同じ割り当てです"><option value="std">ShikaMol 標準</option><option value="pymol">PyMOL 互換</option></select></div>
   <div class="small">
-    左ドラッグ: 回転　右ドラッグ: 平行移動　ホイール: ズーム<br>
+    <span class="mhelp" data-m="std">左ドラッグ: 回転　右ドラッグ: 平行移動　ホイール: ズーム<br>
     ホイールを押し込んでドラッグ: ズームと奥行きクリップ<br>
-    <kbd>Shift</kbd>＋ホイール: 奥行きクリップ（スラブ）<br>原子をクリック: その周囲にズーム<br><kbd>Ctrl</kbd>/<kbd>⌘</kbd>＋クリック: 残基を追加（選択済みなら外す）<br><kbd>Shift</kbd>＋クリック: 前回クリックした残基からその残基までを鎖に沿ってまとめて追加<br>同じ残基を再クリック: 解除<br>範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または <kbd>Alt</kbd>（Mac は <kbd>Option</kbd>）を押しながらドラッグ。四角の中の残基をまとめて選択（<kbd>Esc</kbd> でオフ）<br>タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン<br>画面下の配列をドラッグ: その範囲をまとめて選択（<kbd>Ctrl</kbd>/<kbd>⌘</kbd>/<kbd>Shift</kbd> を押しながらだと追加）<br>背景をクリック: 解除して全体表示<br>背景をダブルクリック（タブレットはダブルタップ）: 全体表示に戻し、奥行きクリップも元に戻す
+    <kbd>Shift</kbd>＋ホイール: 奥行きクリップ（スラブ）<br></span>
+    <span class="mhelp" data-m="pymol" style="display:none">左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム<br>
+    ホイール: 切り取り面（スラブ）　<kbd>Ctrl</kbd>＋ホイール: ズーム<br>
+    <kbd>Shift</kbd>＋左ドラッグ: 四角の中の残基を選択に追加<br></span>
+    ホイールの押し込み（クリック）: その原子を中心に<br>
+    右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）<br>原子をクリック: その周囲にズーム<br><kbd>Ctrl</kbd>/<kbd>⌘</kbd>＋クリック: 残基を追加（選択済みなら外す）<br><kbd>Shift</kbd>＋クリック: 前回クリックした残基からその残基までを鎖に沿ってまとめて追加<br>同じ残基を再クリック: 解除<br>範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または <kbd>Alt</kbd>（Mac は <kbd>Option</kbd>）を押しながらドラッグ。四角の中の残基をまとめて選択（<kbd>Esc</kbd> でオフ）<br>タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン<br>画面下の配列をドラッグ: その範囲をまとめて選択（<kbd>Ctrl</kbd>/<kbd>⌘</kbd>/<kbd>Shift</kbd> を押しながらだと追加）<br>背景をクリック: 解除して全体表示<br>背景をダブルクリック（タブレットはダブルタップ）: 全体表示に戻し、奥行きクリップも元に戻す
   </div>
   </div>
   </details>
@@ -698,7 +722,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="boxLayer"><div id="boxRect"></div></div>
     <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button></div><div id="measPanel"></div></div>
     <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
-    <div id="status">PDB IDを入力して「読込」</div>
+    <div id="status" class="show">PDB IDを入力して「読込」</div>
     <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
  <defs>
   <radialGradient id="runC" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#f1f3f5"/><stop offset="1" stop-color="#7d8793"/></radialGradient>
@@ -735,7 +759,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="drop">ここにドロップ（構造 or マップ）</div>
   </div>
   <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
-  <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
+  <div id="btabs"><button data-b="p-struct" class="pb">構造</button><button data-b="p-ana" class="pb">解析</button><button data-b="p-map" class="pb">電子密度</button><button data-b="p-view" class="pb pl">表示・出力</button><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
   <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="ipane"><div class="row" id="ifTools" style="display:none">    <label><input type="checkbox" id="ifShow" checked> 3D表示</label><label class="small"><input type="checkbox" id="ifLabels" checked> 残基名</label><label class="small"><input type="checkbox" id="ifDist"> 距離</label><button id="ifOpts" title="表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）">⚙ 表示設定</button>        <button id="ifCopy">表をコピー（TSV）</button>    <button id="ifClear">リセット</button>  </div><div class="row small" id="ifEmph" style="display:none"><span>強調:</span><label>ほかのChain <select data-emph="other"><option value="show">そのまま</option><option value="fade">薄くする</option><option value="hide">隠す</option></select></label><label class="ifsl">解析した Chain のカートゥーンの透明度 <input type="range" data-emph="selfT" min="0" max="90" step="5" value="0"><span class="lv" id="ifSelfV">0%</span></label></div><div id="ifList"></div></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
@@ -816,9 +840,12 @@ function oplogRow(e) {
   return d;
 }
 function oplogRedraw() { const box = document.getElementById('oplog'); if (!box) return; box.innerHTML = ''; OPLOG.forEach(e => box.appendChild(oplogRow(e))); }
+let statusT = 0;
 function status(msg, err) {
   oplog(msg, err);
-  const s = $('#status'); s.textContent = msg; s.className = err ? 'err' : ''; if (err) log(msg);
+  { const s0 = document.getElementById('status'); if (s0) { s0.classList.add('show'); clearTimeout(statusT);
+    if (!(!err && /…\s*$/.test(String(msg)))) statusT = setTimeout(() => s0.classList.remove('show'), err ? 8000 : 3500); } }
+  const s = $('#status'); s.textContent = msg; s.classList.toggle('err', !!err); if (err) log(msg);
   const busy = !err && /…\s*$/.test(String(msg)), d = document.getElementById('deerRun');
   if (d) { d.classList.toggle('on', busy); clearTimeout(deerT); if (busy) { deerStart(); deerT = setTimeout(() => { d.classList.remove('on'); try { layoutBottom(); } catch (e) {} }, 90000); } }
   try { layoutBottom(); } catch (e) {}
@@ -834,6 +861,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "マウス操作": "Mouse", "ShikaMol 標準": "ShikaMol standard", "PyMOL 互換": "PyMOL-like", "PyMOL 互換は 3-Button Viewing と同じ割り当てです": "PyMOL-like follows the 3-Button Viewing bindings", "左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム": "Left drag: rotate   Wheel-press drag: translate   Right drag: zoom", "ホイール: 切り取り面（スラブ）": "Wheel: clipping slab", "＋ホイール: ズーム": "+wheel: zoom", "＋左ドラッグ: 四角の中の残基を選択に追加": "+left drag: add residues in a box to the selection", "ホイールの押し込み（クリック）: その原子を中心に": "Wheel click: centre on the atom", "右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）": "Right click: menu for the selection (or the residue under the pointer): style, colour, label, centre, 5 Å around …", "常に表示": "Always show", "スティック": "Sticks", "ボール＆スティック": "Ball & stick", "CPK": "CPK", "表面": "Surface", "常に表示をやめる（隠す）": "Stop always showing (hide)", "色を変える…": "Change colour…", "ラベルを付ける": "Add labels", "ラベルを消す": "Remove labels", "ここを中心に": "Centre here", "ここにズーム": "Zoom here", "周囲 5 Å も選択に加える": "Add the residues within 5 Å", "選択を保存": "Save selection", "選択を解除": "Clear selection", "この残基を選択": "Select this residue", "全体表示に戻す": "Fit all", "何も選んでいません": "Nothing selected", "常に表示をやめました": "Stopped always showing", "ラベルを消しました": "Labels removed", "ラベルを付けました": "Labels added", "マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）": "Mouse set to PyMOL-like (wheel = clipping slab, Ctrl+wheel = zoom)", "マウス操作を ShikaMol 標準にしました": "Mouse set to ShikaMol standard",
   "解析した Chain のカートゥーンの透明度": "Transparency of the analysed chains’ cartoons",
   "文字の背景": "Text background", "自動（画面の背景に合わせた半透明）": "Auto (see-through, like the screen background)", "白": "White", "黒": "Black", "なし": "None", "ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります": "A box behind the label text, for both analysis and figure labels and in exported images. With white the text turns black, with black it turns white",
   "強調:": "Emphasis:", "ほかのChain": "Other chains", "そのまま": "As is", "薄くする": "Fade", "隠す": "Hide", "解析した Chain のカートゥーン": "Cartoon of the analysed chains", "半透明": "See-through", "「それ以外すべて」と解析したときは、ほかの Chain はありません": "With \"everything else\" there are no other chains",
@@ -1095,6 +1123,13 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^(選択|この残基): (.+?)(?:（(\d+) 残基）)?$/, (m, k, l, n) => `${k === '選択' ? 'Selection' : 'This residue'}: ${l}${n ? ` (${n} residues)` : ''}`),
+  P(/^Chain (.+) の色を変える…$/, (m, c) => `Change the colour of chain ${c}…`),
+  P(/^Chain (.+) を隠す$/, (m, c) => `Hide chain ${c}`),
+  P(/^Chain (.+) の色を変えました$/, (m, c) => `Chain ${c} recoloured`),
+  P(/^Chain (.+) を隠しました（Chain の表の ☑ で戻せます）$/, (m, c) => `Chain ${c} hidden (tick it in the chain table to show it again)`),
+  P(/^「(.+)」を(.+)で常に表示しました（画面下の「保存した選択」で変更・解除できます）$/, (m, n, st) => `"${n}" always shown as ${tr(st)} (change or remove it in the "Saved selections" tab)`),
+  P(/^「(.+)」をこの色で常に表示しました（画面下の「保存した選択」で変更・解除できます）$/, (m, n) => `"${n}" always shown in this colour (change or remove it in the "Saved selections" tab)`),
   P(/^選択: (.*?)（(\d+) 残基）$/, (m, a, n) => `Selected: ${a} (${n} residues)`),
   P(/^開いている構造 (\d+) 個(?:とマップ (\d+) 個)?をすべて閉じます。色・選択・解析などの設定も消えます（必要ならセッションを保存してから閉じてください）。閉じてよいですか？$/, (m, n, k) => `Close all ${n} structure(s)${k ? ` and ${k} map(s)` : ''}? Colours, selections and analysis settings will be lost too (save a session first if you need them).`),
   P(/^(.+) を予測の信頼度（pLDDT）で色分けしました：(.+)$/, (m, n, b) => `${n} coloured by prediction confidence (pLDDT): ${b.replace(/ 以上（非常に高い）/, ' and above (very high)').replace(/（高い）/, ' (high)').replace(/（低い）/, ' (low)').replace(/ 未満（非常に低い）/, ' and below (very low)').replace(/・/g, ', ')}`),
@@ -1302,7 +1337,12 @@ function setLang(l) {
 }
 $('#lang').onchange = e => setLang(e.target.value);
 /* sidebar tabs */
+var mobOn = false, mobReady = false, bpaneMode = () => {}, bpaneTall = () => {};
 function showTab(t) {
+  showTabRaw(t);
+  if (mobOn && mobReady && btab !== 'p-' + t) { btab = 'p-' + t; bottomUpdate(); }
+}
+function showTabRaw(t) {
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.dataset.tab === t));
   $('#side').scrollTop = 0;
@@ -4710,8 +4750,10 @@ function bottomUpdate() {
   let eff = btab;
   if (eff === 'grp' && !hasGrp) eff = 'seq';
   if (eff === 'ifc' && !hasIfc) eff = 'seq';
-  if (eff === 'seq' && !hasSeq) eff = hasIx ? 'ix' : 'grp';
-  const any = hasSeq || hasIx || hasGrp || btab === 'log', pane = $('#bpane'), was = pane.style.display;
+  if (!mobOn && eff.startsWith('p-')) eff = btab = 'seq';
+  if (eff === 'seq' && !hasSeq) eff = hasIx ? 'ix' : hasGrp || !mobOn ? 'grp' : 'p-' + curTab();
+  if (eff === 'grp' && !hasGrp && mobOn) eff = 'p-' + curTab();
+  const any = mobOn || hasSeq || hasIx || hasGrp || btab === 'log', pane = $('#bpane'), was = pane.style.display;
   pane.style.display = $('#seqbar').style.display = any ? 'block' : 'none';
   $('#btabs').style.display = any ? 'flex' : 'none';
   $('#seq').style.display = any && eff === 'seq' ? 'block' : 'none';
@@ -4722,6 +4764,11 @@ function bottomUpdate() {
   $('#ifWhere').style.display = hasIfc ? '' : 'none';
   $('#opane').style.display = any && eff === 'log' ? 'block' : 'none';
   if (eff === 'log') { const o = $('#opane'); o.scrollTop = o.scrollHeight; }
+  if (mobOn) {
+    const p = eff.startsWith('p-'), sd = $('#side'), wasP = sd.style.display === 'block';
+    sd.style.display = p ? 'block' : 'none';
+    if (p) { if (curTab() !== eff.slice(2)) showTabRaw(eff.slice(2)); if (!wasP) bpaneTall(); }
+  }
   $('#btabs').querySelectorAll('button').forEach(b => {
     b.classList.toggle('on', b.dataset.b === eff);
     b.disabled = b.dataset.b === 'seq' ? !hasSeq : b.dataset.b === 'ix' ? !hasIx : b.dataset.b === 'grp' ? !hasGrp : false;
@@ -5016,6 +5063,7 @@ function unfocus() {
   if ($('#focusZoom').checked) comp.autoView(600);
 }
 stage.signals.clicked.add(pp => {
+  if (lastPtrBtn === 1 || lastPtrBtn === 2) { lastPtrBtn = 0; return; }     // wheel click centres (NGL), right click opens the menu
   if (!comp) return;
   if (measOn) {                       // measuring: clicks pick atoms instead of selecting residues
     if (!pp) return;
@@ -5156,23 +5204,24 @@ function layoutOverlay() {
   let top = 10, maxW;
   if (!narrow && room >= 300) maxW = room;
   else { top = Math.round(vr.bottom - wr.top) + 6; maxW = W - 20; }
-  info.style.top = top + 'px'; info.style.maxWidth = maxW + 'px';
+  const st = $('#status'); if (st) { st.style.top = top + 'px'; st.style.maxWidth = maxW + 'px'; }
   layoutBottom();
 }
 /* bottom edge of the molecule window: the status line sits between the running deer (left) and the scale bar (right);
    on narrow screens the measurement list is lifted above whichever of the two is taller */
 let lbCache = '';
 function layoutBottom() {
-  const wrap = $('#vwrap'), st = $('#status'), sb = $('#scaleBar'), d = $('#deerRun'), mp = $('#measPanel');
+  const wrap = $('#vwrap'), st = $('#info'), sb = $('#scaleBar'), d = $('#deerRun'), mp = $('#measPanel');
   if (!wrap || !st) return;
   const deerOn = !!(d && d.classList.contains('on'));
   const sbOn = !!(sb && sb.style.display === 'block');
   const left = deerOn ? 10 + (d.offsetWidth || 84) + 8 : 10;
   const right = sbOn ? 16 + sb.offsetWidth + 10 : 10;
   const key = left + ',' + right;
-  if (key !== lbCache) { lbCache = key; st.style.left = left + 'px'; st.style.right = right + 'px'; }
+  if (key !== lbCache) { lbCache = key; st.style.left = left + 'px'; }
+  st.style.maxWidth = Math.max(120, wrap.clientWidth - left - right) + 'px';
   if (mp && mp.classList.contains('bottom')) {
-    const txt = st.textContent.trim() ? st.offsetHeight : 0;
+    const txt = st.style.display !== 'none' ? st.offsetHeight : 0;
     const h = Math.max(txt + 10, sbOn ? sb.offsetHeight + 14 : 0, deerOn ? (d.offsetHeight || 58) + 10 : 0);
     const b = Math.max(52, h + 8) + 'px';
     if (mp.style.bottom !== b) mp.style.bottom = b;
@@ -5180,7 +5229,7 @@ function layoutBottom() {
 }
 if (typeof ResizeObserver !== 'undefined') {
   const ro = new ResizeObserver(() => layoutOverlay()); ['#vwrap', '#vtools', '#info'].forEach(q => { const e = $(q); if (e) ro.observe(e); });
-  const rb = new ResizeObserver(() => layoutBottom()); const e = $('#status'); if (e) rb.observe(e);
+  const rb = new ResizeObserver(() => layoutBottom()); const e = $('#info'); if (e) rb.observe(e);
 }
 addEventListener('resize', placeFlist);
 /* ---------- box selection in the molecule window ----------
@@ -5622,9 +5671,9 @@ $('#seq').addEventListener('mouseleave', clearHL);
 }
 /* drag the bar to resize the sequence panel; the molecule window shrinks/grows with it */
 {
-  const bar = $('#seqbar'), panel = $('#bpane'), DEF = 170;
-  let h = DEF;
-  try { h = +localStorage.getItem('pdv_seqH') || DEF; } catch (e) {}
+  const bar = $('#seqbar'), panel = $('#bpane'), DEF0 = 170;
+  let DEF = DEF0, KEY = 'pdv_seqH', h = DEF;
+  try { h = +localStorage.getItem(KEY) || DEF; } catch (e) {}
   const setH = v => {
     const max = Math.max(40, document.querySelector('main').clientHeight - 140);
     h = Math.round(Math.min(max, Math.max(32, v)));
@@ -5639,10 +5688,18 @@ $('#seq').addEventListener('mouseleave', clearHL);
     const v = h0 - (e.clientY - y0);
     cancelAnimationFrame(raf); raf = requestAnimationFrame(() => setH(v));
   });
-  const end = e => { if (!bar.classList.contains('drag')) return; bar.classList.remove('drag'); try { localStorage.setItem('pdv_seqH', h); } catch (er) {} };
+  const end = e => { if (!bar.classList.contains('drag')) return; bar.classList.remove('drag'); try { localStorage.setItem(KEY, h); } catch (er) {} };
   bar.addEventListener('pointerup', end); bar.addEventListener('pointercancel', end);
-  bar.addEventListener('dblclick', () => { setH(DEF); try { localStorage.setItem('pdv_seqH', DEF); } catch (er) {} });
+  bar.addEventListener('dblclick', () => { setH(DEF); try { localStorage.setItem(KEY, DEF); } catch (er) {} });
   addEventListener('resize', () => { if (panel.style.display === 'block') setH(h); });
+  // phones in portrait: the side panels live in this pane, so it has its own (taller) height
+  bpaneMode = m => {
+    const mainH = document.querySelector('main').clientHeight || innerHeight;
+    KEY = m ? 'pdv_seqHm' : 'pdv_seqH'; DEF = m ? Math.round(mainH * 0.45) : DEF0;
+    let v = 0; try { v = +localStorage.getItem(KEY); } catch (e) {}
+    setH(v || DEF);
+  };
+  bpaneTall = () => { const mainH = document.querySelector('main').clientHeight || innerHeight; if (h < mainH * 0.4) setH(mainH * 0.45); };
 }
 $('#focusSc').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
 $('#focusSurf').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
@@ -7296,6 +7353,189 @@ $('#mutList').addEventListener('click', e => {
   if (pick >= 0) selectAtom(st.getAtomProxy(pick), 'set');
 });
 
+/* =====================================================================
+   Mouse modes and the right-click menu
+   "ShikaMol" (default): left drag rotate, right drag pan, wheel zoom, wheel-press drag zoom + depth, Shift+wheel depth.
+   "PyMOL" (3-Button Viewing): left drag rotate, wheel-press drag pan, right drag zoom, wheel = clipping slab,
+   Ctrl+wheel zoom, Shift+left drag = box select (added), wheel click = centre on the atom.
+   In both, a right click that does not move opens a menu for the selection (or the residue under the pointer).
+   ===================================================================== */
+var mouseMode = (() => { try { return localStorage.getItem('pdv_mouse') === 'pymol' ? 'pymol' : 'std'; } catch (e) { return 'std'; } })();
+function applyMouseMode(m) {
+  mouseMode = m === 'pymol' ? 'pymol' : 'std';
+  try { localStorage.setItem('pdv_mouse', mouseMode); } catch (e) {}
+  const mc = stage.mouseControls, A = NGL.MouseActions;
+  if (mc && A) {
+  mc.preset('default');
+  ['clickPick-ctrl-left', 'clickPick-right'].forEach(t => { try { mc.remove(t); } catch (e) {} });   // Ctrl+click adds residues; right click = menu
+  if (mouseMode === 'pymol') {
+    ['drag-middle', 'drag-right', 'scroll', 'scroll-ctrl', 'scroll-shift', 'drag-shift-left', 'drag-shift-right'].forEach(t => { try { mc.remove(t); } catch (e) {} });
+    mc.add('drag-middle', A.panDrag);
+    mc.add('drag-right', A.zoomDrag);
+    mc.add('scroll', A.focusScroll);
+    mc.add('scroll-shift', A.focusScroll);
+    mc.add('scroll-ctrl', A.zoomScroll);
+  }
+  }
+  const sel = $('#mouseMode'); if (sel) sel.value = mouseMode;
+  document.querySelectorAll('.mhelp').forEach(x => { x.style.display = x.dataset.m === mouseMode ? '' : 'none'; });
+}
+var lastPtrBtn = 0;
+(function mouseExtras() {
+  const cv = stage.viewer && stage.viewer.renderer && stage.viewer.renderer.domElement; if (!cv) return;
+  let rd = null, sh = null;
+  cv.addEventListener('pointerdown', e => {
+    lastPtrBtn = e.button;
+    if (e.pointerType === 'mouse' && e.button === 2) rd = {x: e.clientX, y: e.clientY, t: performance.now()};
+    // PyMOL mode: Shift + left drag = box select (adds); a Shift+click without moving stays a range click
+    if (mouseMode === 'pymol' && e.pointerType === 'mouse' && e.button === 0 && e.shiftKey && !boxMode) sh = {x: e.clientX, y: e.clientY, id: e.pointerId, e};
+  }, true);
+  cv.addEventListener('pointermove', e => {
+    if (!sh || e.pointerId !== sh.id) return;
+    if (Math.hypot(e.clientX - sh.x, e.clientY - sh.y) > 5) { const s0 = sh; sh = null; boxStart(s0.e); }
+  }, true);
+  cv.addEventListener('pointerup', e => {
+    sh = null;
+    if (e.button !== 2 || !rd) return;
+    const d = rd; rd = null;
+    if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 5 || performance.now() - d.t > 800) return;
+    openCtxMenu(e.clientX, e.clientY);
+  });
+  cv.addEventListener('contextmenu', e => e.preventDefault());
+})();
+
+/* ---------- the menu ---------- */
+function ctxClose() { const m = $('#ctxMenu'); if (m) m.style.display = 'none'; }
+document.addEventListener('pointerdown', e => { const m = $('#ctxMenu'); if (m && m.style.display === 'block' && !m.contains(e.target) && !(pop && pop.contains(e.target))) ctxClose(); }, true);
+addEventListener('keydown', e => { if (e.key === 'Escape') ctxClose(); });
+let ctxT = null;
+function ctxTargetAt(cx, cy) {
+  const cv = stage.viewer.renderer.domElement, r = cv.getBoundingClientRect();
+  const pp = stage.pickingControls.pick(cx - r.left, r.height - (cy - r.top));
+  let atom = pp && pp.component && pickedAtom(pp);
+  if (atom && pp.component !== comp) {                  // another structure: it becomes the one being edited
+    const i = structs.findIndex(S => S.comp === pp.component);
+    if (i >= 0) { activate(i); atom = pickedAtom(pp); } else atom = null;
+  }
+  const sel = Array.isArray(lastFocus) && lastFocus.length ? lastFocus : null;
+  if (atom) {
+    const f = focusOf(atom);
+    if (sel && sel.some(x => focusKey(x) === focusKey(f))) return {list: sel, sel: true, ch: atom.chainname};
+    return {list: [f], sel: false, ch: atom.chainname};
+  }
+  if (sel) return {list: sel, sel: true, ch: sel[0].chainname};
+  return {list: [], sel: false, ch: ''};
+}
+function openCtxMenu(cx, cy) {
+  if (!comp) return;
+  const T = ctxT = ctxTargetAt(cx, cy);
+  let m = $('#ctxMenu');
+  if (!m) { m = document.createElement('div'); m.id = 'ctxMenu'; document.body.appendChild(m); m.addEventListener('click', ctxAct); }
+  const n = T.list.length, has = n > 0;
+  const head = has ? `${T.sel ? '選択' : 'この残基'}: ${esc(selLabel(T.list, 3))}${n > 1 ? `（${n} 残基）` : ''}` : '何も選んでいません';
+  const S = structs[active], ch = T.ch && chains.find(c => c.name === T.ch);
+  const shown = has && (S.groups || []).some(g => g.on && ctxOverlap(g.res, T.list));
+  const lab = has && ctxLabelOn(T.list);
+  m.innerHTML = `<div class="mh">${head}</div>` + (has ? `
+    <div class="ms">常に表示</div>
+    <div class="mrow"><button data-a="show" data-s="licorice">スティック</button><button data-a="show" data-s="ball+stick">ボール＆スティック</button><button data-a="show" data-s="spacefill">CPK</button><button data-a="show" data-s="surface">表面</button></div>
+    ${shown ? '<button data-a="hide">常に表示をやめる（隠す）</button>' : ''}
+    <button data-a="color">色を変える…</button>
+    <button data-a="label">${lab ? 'ラベルを消す' : 'ラベルを付ける'}</button>
+    <div class="msep"></div>
+    <button data-a="center">ここを中心に</button>
+    <button data-a="zoom">ここにズーム</button>
+    <div class="msep"></div>
+    <button data-a="around">周囲 5 Å も選択に加える</button>
+    ${T.sel ? '<button data-a="save">選択を保存</button><button data-a="clear">選択を解除</button>' : '<button data-a="select">この残基を選択</button>'}` : '') + `
+    ${ch ? `<div class="msep"></div><button data-a="chcolor">Chain ${esc(ch.name)} の色を変える…</button><button data-a="chhide">Chain ${esc(ch.name)} を隠す</button>` : ''}
+    <div class="msep"></div><button data-a="fit">全体表示に戻す</button>`;
+  m.style.display = 'block';
+  const w = m.offsetWidth, h = m.offsetHeight;
+  m.style.left = Math.max(6, Math.min(innerWidth - w - 6, cx)) + 'px';
+  m.style.top = Math.max(6, Math.min(innerHeight - h - 6, cy)) + 'px';
+}
+const ctxOverlap = (a, b) => { const k = new Set(a.map(focusKey)); return b.some(f => k.has(focusKey(f))); };
+function ctxSele(list) { return list.map(focusSele).join(' or '); }
+function ctxLabelOn(list) { const S = structs[active]; return !!(S && S.menuLbl && list.every(f => S.menuLbl.has(focusKey(f)))); }
+function ctxLabelDraw(S) {
+  if (!S || !S.comp) return;
+  const keys = S.menuLbl || new Set(), idx = [];
+  if (keys.size) S.comp.structure.eachResidue(r => {
+    if (!keys.has(`${r.chainname}|${r.resno}|${r.inscode || ''}`)) return;
+    let a = -1; r.eachAtom(x => { if (a < 0 || x.atomname === 'CA' || x.atomname === "C1'") a = x.index; }); if (a >= 0) idx.push(a);
+  }, new NGL.Selection('/0'));
+  setLabelSet('menu', S.comp, idx);
+}
+function ctxAct(e) {
+  const b = e.target.closest('button[data-a]'); if (!b || !ctxT) return;
+  const a = b.dataset.a, T = ctxT, S = structs[active], list = T.list;
+  const STY = {licorice: 'スティック', 'ball+stick': 'ボール＆スティック', spacefill: 'CPK', surface: '表面'};
+  if (a === 'color' || a === 'chcolor') {
+    const ch = chains.find(c => c.name === T.ch);
+    const cur = a === 'chcolor' ? (ch ? ch.color : '#cccccc') : '#ffd54a';
+    return openPicker(b, cur, c => {
+      ctxClose();
+      if (a === 'chcolor') { if (!ch) return; if (comp) comp.structure.__plddt = false; ch.color = c; chainReps(ch); refreshChainColored(); drawSym(); renderSeq(); renderChains(); return status(`Chain ${ch.name} の色を変えました`); }
+      let g = (S.groups || []).find(x => x.res.length === list.length && x.res.every(f => list.some(y => focusKey(y) === focusKey(f))));
+      if (!g) { g = saveGroup(list); g.style = 'licorice'; }
+      g.color = c; g.on = true; drawGroups(S); renderGroups();
+      status(`「${g.name}」をこの色で常に表示しました（画面下の「保存した選択」で変更・解除できます）`);
+    });
+  }
+  ctxClose();
+  if (a === 'show') {
+    const g = saveGroup(list); g.on = true; g.style = b.dataset.s; drawGroups(S); renderGroups();
+    return status(`「${g.name}」を${STY[b.dataset.s]}で常に表示しました（画面下の「保存した選択」で変更・解除できます）`);
+  }
+  if (a === 'hide') { (S.groups || []).forEach(g => { if (g.on && ctxOverlap(g.res, list)) g.on = false; }); drawGroups(S); renderGroups(); return status('常に表示をやめました'); }
+  if (a === 'label') {
+    S.menuLbl = S.menuLbl || new Set();
+    const on = ctxLabelOn(list);
+    list.forEach(f => on ? S.menuLbl.delete(focusKey(f)) : S.menuLbl.add(focusKey(f)));
+    ctxLabelDraw(S); return status(on ? 'ラベルを消しました' : 'ラベルを付けました');
+  }
+  if (a === 'center') {
+    const c = {x: 0, y: 0, z: 0}; list.forEach(f => { c.x += f.x / list.length; c.y += f.y / list.length; c.z += f.z / list.length; });
+    return stage.animationControls.move(new NGL.Vector3(c.x, c.y, c.z), 400);
+  }
+  if (a === 'zoom') return comp.autoView(ctxSele(list), 600);
+  if (a === 'around') {
+    const st = comp.structure, ap = st.getAtomProxy(), out = new Map(list.map(f => [focusKey(f), f]));
+    st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(ctxSele(list)), 5)).forEach(i => {
+      ap.index = i; if (ap.isWater() || ap.element === 'H' || ap.modelIndex !== 0) return;
+      const f = focusOf(ap), k = focusKey(f); if (out.has(k)) { if (ap.atomname === 'CA') out.set(k, f); return; } out.set(k, f);
+    });
+    return applySelection([...out.values()]);
+  }
+  if (a === 'select') return applySelection(list);
+  if (a === 'save') { const g = saveGroup(list); btab = 'grp'; bottomUpdate(); return status(`選択を「${g.name}」として保存しました。画面下の「保存した選択」で名前を変えたり、あとで呼び出したりできます`); }
+  if (a === 'clear') return unfocus();
+  if (a === 'chhide') { const ch = chains.find(c => c.name === T.ch); if (!ch) return; ch.visible = false; chainReps(ch); drawSym(); renderSeq(); renderChains(); return status(`Chain ${ch.name} を隠しました（Chain の表の ☑ で戻せます）`); }
+  if (a === 'fit') return resetView();
+}
+$('#mouseMode').onchange = e => { applyMouseMode(e.target.value); status(mouseMode === 'pymol' ? 'マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）' : 'マウス操作を ShikaMol 標準にしました'); };
+applyMouseMode(mouseMode);
+
+
+/* phones in portrait: the side panels (構造・解析・電子密度・表示・出力) move into the tabbed pane under the molecule,
+   so the screen has two parts (molecule + one tabbed pane) instead of three */
+function curTab() { const b = document.querySelector('#tabs button.on'); return b ? b.dataset.tab : 'struct'; }
+function mobApply() {
+  const on = typeof matchMedia === 'function' && matchMedia('(max-width:760px) and (orientation:portrait)').matches;
+  if (on === mobOn) return;
+  mobOn = on;
+  document.body.classList.toggle('mob', on);
+  const side = $('#side');
+  if (on) { $('#bpane').appendChild(side); btab = 'p-' + curTab(); }
+  else { side.style.display = ''; $('#app').insertBefore(side, $('#sbar')); if (btab.startsWith('p-')) btab = 'seq'; }
+  bpaneMode(on);
+  bottomUpdate();
+  requestAnimationFrame(() => { stage.handleResize(); btabsEdges(true); });
+}
+mobReady = true;
+mobApply();
+try { matchMedia('(max-width:760px) and (orientation:portrait)').addEventListener('change', mobApply); } catch (e) {}
 window.MV = {status, mutAnalyse, mutResIndex, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
   chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), measPick: (c, a) => measPick(c, a), get measures() { return measures; }, pxPerA: () => pxPerA(), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }
