@@ -299,6 +299,10 @@ body.mob #stickyTop{top:-8px;margin:0 -12px 8px;padding:4px 10px 4px}
 body.mob #stickyTop:has(#activeBar[style*="none"]){display:none}
 body.mob #btabs .pb{display:inline-block}
 body.mob #btabs .pb.pl{margin-right:10px}
+body.molonly #app{display:block;height:100vh;height:100dvh;overflow:hidden}
+body.molonly main{height:100vh;height:100dvh}
+body.molonly #side,body.molonly #sbar,body.molonly #seqbar,body.molonly #btabs,body.molonly #bpane{display:none!important}
+body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
 @media(max-width:760px){#sbar{display:none}#app{grid-template-columns:1fr;grid-template-rows:65vh auto;height:auto}main{height:65vh;order:-1}#side{border-right:0}}
 </style>
 </head>
@@ -721,7 +725,7 @@ body.mob #btabs .pb.pl{margin-right:10px}
     <div id="viewport"></div>
     <div id="lblLayer"><svg id="lblLines"></svg></div>
     <div id="boxLayer"><div id="boxRect"></div></div>
-    <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button></div><div id="measPanel"></div></div>
+    <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button><button id="fullBtn" title="分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）">⛶ 全画面</button></div><div id="measPanel"></div></div>
     <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
     <div id="status" class="show">PDB IDを入力して「読込」</div>
     <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
@@ -862,6 +866,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "⛶ 全画面": "⛶ Full screen", "⛶ 全画面を解除": "⛶ Exit full screen", "全画面表示": "Full screen", "全画面表示を終了": "Left full screen", "分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）": "Show only the molecule window, filling the screen (F key; press again or Esc to go back)",
   "分子表面を付ける": "Add molecular surface", "分子表面を消す": "Remove molecular surface",
   "マウス操作": "Mouse", "ShikaMol 標準": "ShikaMol standard", "PyMOL 互換": "PyMOL-like", "PyMOL 互換は 3-Button Viewing と同じ割り当てです": "PyMOL-like follows the 3-Button Viewing bindings", "左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム": "Left drag: rotate   Wheel-press drag: translate   Right drag: zoom", "ホイール: 切り取り面（スラブ）": "Wheel: clipping slab", "＋ホイール: ズーム": "+wheel: zoom", "＋左ドラッグ: 四角の中の残基を選択に追加": "+left drag: add residues in a box to the selection", "ホイールの押し込み（クリック）: その原子を中心に": "Wheel click: centre on the atom", "右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）": "Right click: menu for the selection (or the residue under the pointer): style, colour, label, centre, 5 Å around …", "常に表示": "Always show", "スティック": "Sticks", "ボール＆スティック": "Ball & stick", "CPK": "CPK", "表面": "Surface", "常に表示をやめる（隠す）": "Stop always showing (hide)", "色を変える…": "Change colour…", "ラベルを付ける": "Add labels", "ラベルを消す": "Remove labels", "ここを中心に": "Centre here", "ここにズーム": "Zoom here", "周囲 5 Å も選択に加える": "Add the residues within 5 Å", "選択を保存": "Save selection", "選択を解除": "Clear selection", "この残基を選択": "Select this residue", "全体表示に戻す": "Fit all", "何も選んでいません": "Nothing selected", "常に表示をやめました": "Stopped always showing", "ラベルを消しました": "Labels removed", "ラベルを付けました": "Labels added", "マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）": "Mouse set to PyMOL-like (wheel = clipping slab, Ctrl+wheel = zoom)", "マウス操作を ShikaMol 標準にしました": "Mouse set to ShikaMol standard",
   "解析した Chain のカートゥーンの透明度": "Transparency of the analysed chains’ cartoons",
@@ -7590,6 +7595,30 @@ function mobApply() {
 mobReady = true;
 mobApply();
 try { matchMedia('(max-width:760px) and (orientation:portrait)').addEventListener('change', mobApply); } catch (e) {}
+
+/* full screen: only the molecule window (the side panel and the tabbed pane are hidden); the browser's own full screen is
+   used where it exists (not on iPhone, where the page layout alone fills the screen) */
+var molOnly = false;
+function setMolOnly(on) {
+  if (on === molOnly) return;
+  molOnly = on;
+  document.body.classList.toggle('molonly', on);
+  const d = document, el = d.documentElement;
+  try {
+    if (on && !d.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    if (!on && d.fullscreenElement && d.exitFullscreen) d.exitFullscreen().catch(() => {});
+  } catch (e) {}
+  $('#fullBtn').textContent = on ? '⛶ 全画面を解除' : '⛶ 全画面';
+  requestAnimationFrame(() => { stage.handleResize(); try { layoutOverlay(); layoutBottom(); } catch (e) {} });
+  oplog(on ? '全画面表示' : '全画面表示を終了');
+}
+$('#fullBtn').onclick = () => setMolOnly(!molOnly);
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && molOnly) setMolOnly(false); });
+addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select, [contenteditable]')) return;
+  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); setMolOnly(!molOnly); }
+  else if (e.key === 'Escape' && molOnly && !document.fullscreenElement) setMolOnly(false);
+});
 window.MV = {status, mutAnalyse, mutResIndex, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
   chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), measPick: (c, a) => measPick(c, a), get measures() { return measures; }, pxPerA: () => pxPerA(), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }
