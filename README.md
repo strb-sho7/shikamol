@@ -16,7 +16,7 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 
 1. Open the address above.
 2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
-3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are shown as a list and as dashed lines. Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
+3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" tab). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.
 

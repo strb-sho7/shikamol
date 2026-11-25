@@ -113,7 +113,7 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #asBanner .asBtns{display:flex;gap:6px;flex-shrink:0}
 #asBanner button{padding:6px 12px;font-size:13px}
 #info{position:absolute;left:10px;top:10px;background:#000a;padding:4px 10px;border-radius:6px;font-size:13px;display:none}
-#flist{position:absolute;left:10px;top:44px;width:min(440px,max(46%,calc(100% - 20px)));max-height:46%;overflow:auto;background:#000c;color:#eee;border-radius:6px;font-size:12px;padding:6px 8px;display:none;z-index:4}
+#flist{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#eee;font-size:12px;padding:4px 10px 6px;display:none}
 #flist .fh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
 #flist button{font-size:11px;padding:1px 6px}
 #flist .ft{display:flex;flex-wrap:wrap;gap:4px 10px;margin-bottom:4px}
@@ -126,6 +126,8 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #flist td.d{text-align:right;font-variant-numeric:tabular-nums}
 #flist.min .ft,#flist.min table,#flist.min .fhint{display:none}
 #flist .fhint{opacity:.7;margin-top:4px}
+#flist .fdet>summary{cursor:pointer;opacity:.8;margin-bottom:3px}
+#flist .fsep{width:1px;align-self:stretch;background:#ffffff26;margin:0 2px}
 @keyframes optflash{0%,40%{background:#5aa9ff40}100%{background:transparent}}
 #focusOpts.flash{animation:optflash 1.6s ease-out;border-radius:6px}
 #focusOpts{scroll-margin-top:120px}
@@ -231,7 +233,13 @@ details.sec>summary .sechint{color:var(--mute);font-size:11px;font-weight:400}
 details.sec>summary:hover{background:#ffffff0a;border-radius:8px}
 details.sec .secbody{padding:2px 10px 10px;border-top:1px solid var(--line)}
 details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8px;border-top:1px dashed var(--line)}
-#seq{flex:none;height:120px;overflow:auto;background:#0b0d11;padding:4px 8px 6px;display:none;font:13px/1 ui-monospace,Menlo,Consolas,monospace}
+#seq{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;padding:4px 8px 6px;display:none;font:13px/1 ui-monospace,Menlo,Consolas,monospace}
+#bpane{flex:none;height:120px;display:none;min-height:0}
+#btabs{flex:none;display:none;gap:2px;padding:3px 8px 0;background:#14171d;border-bottom:1px solid #2c313b}
+#btabs button{font-size:12px;padding:3px 12px;border-radius:6px 6px 0 0;border:1px solid #2c313b;border-bottom:0;background:transparent;color:#9aa2b1}
+#btabs button.on{background:#0b0d11;color:#e8eaee;font-weight:700}
+#btabs button:disabled{opacity:.4}
+#btIxN{margin-left:4px;font-weight:400}
 #seq.light{background:#ffffff}
 .sqr{white-space:nowrap;padding:12px 0 3px}
 .sqr.off{opacity:.35}
@@ -682,7 +690,6 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
     <div id="boxLayer"><div id="boxRect"></div></div>
     <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button></div><div id="measPanel"></div></div>
     <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（「構造」タブの「選択の保存と履歴」に入ります）">★ 選択を保存</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
-    <div id="flist"></div>
     <div id="status">PDB IDを入力して「読込」</div>
     <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
  <defs>
@@ -719,8 +726,9 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 </svg></div>
     <div id="drop">ここにドロップ（構造 or マップ）</div>
   </div>
-  <div id="seqbar" title="ドラッグで配列欄の高さを変更（ダブルクリックで元の高さ）"></div>
-  <div id="seq"></div>
+  <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
+  <div id="btabs"><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button></div>
+  <div id="bpane"><div id="seq"></div><div id="flist"></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -796,6 +804,8 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "配列": "Sequence",
+  "種類・範囲で絞り込む": "Filter by type and scope",
   "pLDDT をやめて Chain の色に戻す": "Stop pLDDT colouring (back to chain colours)", "pLDDT（予測の信頼度）の4段階の色で塗る": "Colour by pLDDT (prediction confidence), four bands",
   "全構造：": "All structures:", "この行の操作は、開いているすべての構造に効きます": "This row applies to every open structure",
   "閉じる構造はありません": "Nothing to close", "すべて閉じました": "All closed", "開いている構造とマップをすべて閉じます（確認が出ます）": "Close every open structure and map (asks first)",
@@ -4549,29 +4559,53 @@ function drawFocusShape() {
 }
 function renderFlist() {
   const el = $('#flist');
-  if (!focusItems.length || !$('#focusListOn').checked || !$('#focusIx').checked) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  if (!focusItems.length || !$('#focusListOn').checked || !$('#focusIx').checked) { el.innerHTML = ''; ixHas = 0; ixKey = ''; bottomUpdate(); return; }
+  // a new selection brings the interaction tab forward (not when it was made from the sequence, which stays in view)
+  const key = (lastFocus || []).map(focusKey).join(',');
+  if (key !== ixKey) { ixKey = key; if (performance.now() - seqTouch > 1500) btab = 'ix'; }
+  ixHas = focusItems.length;
   const cnt = {}; focusItems.forEach(it => cnt[it.t] = (cnt[it.t] || 0) + 1);
   const order = Object.keys(IT).filter(t => cnt[t]);
   const rows = focusItems.map((it, i) => ({it, i})).sort((x, y) => order.indexOf(x.it.t) - order.indexOf(y.it.t) || (x.it.d ?? x.it.d1) - (y.it.d ?? y.it.d1));
-  el.classList.toggle('min', flistMin);
+
   const nbb = focusItems.filter(isBBBB).length, nShown = focusItems.filter(itemShown).length;
   el.innerHTML = `<div class="fh"><b>相互作用 ${focusItems.length} 件</b><span>（表示 ${nShown}）</span>
       <label><input type="checkbox" data-k="spot" ${$('#spotOn').checked ? 'checked' : ''}> 周りを薄く</label>
-      <button data-k="copy">コピー</button><button data-k="opts" title="表示形式（スティック・CPK）・太さ・周りを薄くする範囲などは「表示・出力」タブで変えられます">⚙ 表示設定</button><button data-k="min" title="一覧をたたむ／開く">${flistMin ? '▸ 開く' : '▾ たたむ'}</button></div>
-    <div class="ft">${order.map(t => `<label><input type="checkbox" data-t="${t}" ${focusTypeOn[t] ? 'checked' : ''}><span class="sw" style="background:${IT[t].c}"></span>${IT[t].n} ${cnt[t]}</label>`).join('')}</div>
-    <div class="ft"><label title="タンパク質の主鎖原子（N・CA・C・O）どうし。ヘリックスやβシートの水素結合など"><input type="checkbox" data-c="bb" ${focusCat.bb ? 'checked' : ''}>主鎖どうし ${nbb}</label>
+      <button data-k="copy">コピー</button><button data-k="opts" title="表示形式（スティック・CPK）・太さ・周りを薄くする範囲などは「表示・出力」タブで変えられます">⚙ 表示設定</button></div>
+    <details class="fdet"${fOpen() ? ' open' : ''}><summary>種類・範囲で絞り込む</summary><div class="ft">${order.map(t => `<label><input type="checkbox" data-t="${t}" ${focusTypeOn[t] ? 'checked' : ''}><span class="sw" style="background:${IT[t].c}"></span>${IT[t].n} ${cnt[t]}</label>`).join('')}<span class="fsep"></span><label title="タンパク質の主鎖原子（N・CA・C・O）どうし。ヘリックスやβシートの水素結合など"><input type="checkbox" data-c="bb" ${focusCat.bb ? 'checked' : ''}>主鎖どうし ${nbb}</label>
       <label title="側鎖・核酸・リガンド・水・金属が関わるもの（主鎖とDNAリン酸の水素結合なども含む）"><input type="checkbox" data-c="other" ${focusCat.other ? 'checked' : ''}>それ以外 ${focusItems.length - nbb}</label>
-      <button data-k="all">全表示</button><button data-k="none">全非表示</button></div>
-    ${$('#focusSc').checked ? `<div class="ft"><span class="small">範囲</span><label title="スティックで表示している残基（クリックした残基と周囲5Å）どうしの相互作用をすべて表示します"><input type="radio" name="fscope" data-s="all" ${focusScope === 'all' ? 'checked' : ''}>表示中の残基すべて</label>
-      <label title="クリックした残基が関わる相互作用だけを表示します"><input type="radio" name="fscope" data-s="sel" ${focusScope === 'sel' ? 'checked' : ''}>クリックした残基のみ</label></div>` : ''}
+      <button data-k="all">全表示</button><button data-k="none">全非表示</button>
+    ${$('#focusSc').checked ? `<span class="fsep"></span><span class="small">範囲</span><label title="スティックで表示している残基（クリックした残基と周囲5Å）どうしの相互作用をすべて表示します"><input type="radio" name="fscope" data-s="all" ${focusScope === 'all' ? 'checked' : ''}>表示中の残基すべて</label>
+      <label title="クリックした残基が関わる相互作用だけを表示します"><input type="radio" name="fscope" data-s="sel" ${focusScope === 'sel' ? 'checked' : ''}>クリックした残基のみ</label>` : ''}</div></details>
     <table>${rows.map(({it, i}) => `<tr class="ix" data-i="${i}" style="${itemShown(it) ? '' : 'opacity:.35'}">
       <td><span class="sw" style="background:${IT[it.t].c}"></span> ${IT[it.t].n}${it.sub ? '（' + it.sub + '）' : ''}${isBBBB(it) ? ' <span style="opacity:.7">主鎖</span>' : ''}</td>
       <td>${atomLabel(it.a)}</td><td>${it.w ? '⇄ ' + ixPartner(it) + ' ⇄' : '⇄'}</td><td>${atomLabel(it.b)}</td>
       <td class="d">${it.w ? `${it.d1.toFixed(1)}/${it.d2.toFixed(1)}` : it.d.toFixed(2)} Å</td></tr>`).join('')}</table>
     ${optsHintSeen ? '' : '<div class="fhint">ヒント: 表示形式（スティック・CPK）や太さ、周りを薄くする範囲は「⚙ 表示設定」から変えられます。距離の判定条件は「解析」タブです。</div>'}`;
-  el.style.display = 'block';
-  placeFlist();
+  bottomUpdate();
 }
+/* the panel under the molecule window: sequence and interaction list as two tabs, so nothing covers the molecule */
+var btab = 'seq', ixHas = 0, ixKey = '', seqTouch = 0, fOpenSet = null;
+// the filter rows start open on wide windows and folded on phones, where the list itself needs the room
+const fOpen = () => fOpenSet !== null ? fOpenSet : $('#bpane').clientWidth >= 640 || innerWidth >= 640;
+function bottomUpdate() {
+  const hasSeq = !!($('#seqOn').checked && seqData.length), hasIx = ixHas > 0;
+  if (btab === 'ix' && !hasIx) btab = 'seq';
+  if (btab === 'seq' && !hasSeq && hasIx) btab = 'ix';
+  const any = hasSeq || hasIx, pane = $('#bpane'), was = pane.style.display;
+  pane.style.display = $('#seqbar').style.display = any ? 'block' : 'none';
+  $('#btabs').style.display = any ? 'flex' : 'none';
+  $('#seq').style.display = any && btab === 'seq' ? 'block' : 'none';
+  $('#flist').style.display = any && btab === 'ix' ? 'block' : 'none';
+  $('#btabs').querySelectorAll('button').forEach(b => {
+    b.classList.toggle('on', b.dataset.b === btab);
+    b.disabled = b.dataset.b === 'seq' ? !hasSeq : !hasIx;
+  });
+  $('#btIxN').textContent = hasIx ? ` ${ixHas}` : lastFocus && lastFocus.length && $('#focusIx').checked ? ' 0' : '';
+  if ((was === 'block') !== any) stage.handleResize();
+}
+$('#flist').addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('fdet')) fOpenSet = e.target.open; }, true);
+$('#btabs').addEventListener('click', e => { const b = e.target.closest('button[data-b]'); if (!b || b.disabled) return; btab = b.dataset.b; bottomUpdate(); });
 $('#flist').addEventListener('input', e => {
   const t = e.target.dataset.t;
   if (t) { focusTypeOn[t] = e.target.checked; saveFocusPrefs(); drawFocusShape(); renderFlist(); return; }
@@ -4582,7 +4616,6 @@ $('#flist').addEventListener('input', e => {
 });
 $('#flist').addEventListener('click', async e => {
   const k = e.target.dataset.k;
-  if (k === 'min') { flistMin = !flistMin; renderFlist(); return; }
   if (k === 'opts') {
     if (!optsHintSeen) { optsHintSeen = true; try { localStorage.setItem('pdv_opts_hint', '1'); } catch (er) {} renderFlist(); }
     showTab('view');
@@ -4812,11 +4845,9 @@ function focusOn(list, move) {
         if (extra.length) focusReps.push(...focusDraw(extra));
       }
       focusItems = items; drawFocusShape(); renderFlist();
-      const cnt = {}; items.forEach(it => cnt[it.t] = (cnt[it.t] || 0) + 1);
-      const sum = Object.entries(cnt).map(([t, n]) => `${IT[t].n} ${n}`).join('・');
       linkMirror(list, idx, ap);
       const ls = linkSumText();
-      setInfo(infoBase + '　｜ ' + (sum || '特定の相互作用なし') + (ls ? `\n🔗 ${ls}` : ''));
+      setInfo(infoBase + (ls ? `\n🔗 ${ls}` : ''));       // the counts are in the "Interactions" tab under the viewer
     } else {
       linkMirror(list, idx, ap);
       const ls = linkSumText(); if (ls) setInfo(infoBase + `\n🔗 ${ls}`);
@@ -4975,9 +5006,6 @@ function layoutOverlay() {
   if (!narrow && room >= 300) maxW = room;
   else { top = Math.round(vr.bottom - wr.top) + 6; maxW = W - 20; }
   info.style.top = top + 'px'; info.style.maxWidth = maxW + 'px';
-  fl.style.top = (info.style.display === 'none' ? top : info.offsetTop + info.offsetHeight + 6) + 'px';
-  fl.style.width = Math.min(440, maxW) + 'px';
-  fl.style.maxHeight = Math.max(120, (wrap.clientHeight - parseFloat(fl.style.top)) * 0.6) + 'px';
   layoutBottom();
 }
 /* bottom edge of the molecule window: the status line sits between the running deer (left) and the scale bar (right);
@@ -5233,10 +5261,8 @@ function buildSeq() {
 function renderSeq() {
   const el = $('#seq');
   el.className = darkBg() ? '' : 'light';
-  const was = el.style.display;
-  if (!$('#seqOn').checked || !seqData.length) { el.style.display = 'none'; $('#seqbar').style.display = 'none'; if (was === 'block') stage.handleResize(); return; }
-  el.style.display = 'block'; $('#seqbar').style.display = 'block';
-  if (was !== 'block') stage.handleResize();
+  if (!$('#seqOn').checked || !seqData.length) { el.innerHTML = ''; bottomUpdate(); return; }
+  bottomUpdate();
   stash();
   const multi = structs.length > 1;
   el.innerHTML = seqData.map((s, ci) => {
@@ -5281,6 +5307,7 @@ const seqDragMark = () => {
   const lo = Math.min(seqDrag.r0, seqDrag.r1), hi = Math.max(seqDrag.r0, seqDrag.r1);
   document.querySelectorAll(`#seq i[data-c="${seqDrag.c}"]`).forEach(x => { const r = +x.dataset.r; if (r >= lo && r <= hi) x.classList.add('dr'); });
 };
+$('#seq').addEventListener('pointerdown', () => { seqTouch = performance.now(); }, true);
 $('#seq').addEventListener('pointerdown', e => {
   const t = e.target.closest('i[data-c]'); if (!t || e.button !== 0 || !comp) return;
   seqDrag = {c: +t.dataset.c, r0: +t.dataset.r, r1: +t.dataset.r, moved: false, mode: modeOf(e), touch: e.pointerType === 'touch', armed: e.pointerType !== 'touch', x: e.clientX, y: e.clientY};
@@ -5440,7 +5467,7 @@ $('#seq').addEventListener('mouseleave', clearHL);
 }
 /* drag the bar to resize the sequence panel; the molecule window shrinks/grows with it */
 {
-  const bar = $('#seqbar'), panel = $('#seq'), DEF = 120;
+  const bar = $('#seqbar'), panel = $('#bpane'), DEF = 170;
   let h = DEF;
   try { h = +localStorage.getItem('pdv_seqH') || DEF; } catch (e) {}
   const setH = v => {
