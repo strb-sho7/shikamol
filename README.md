@@ -16,7 +16,7 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 
 1. Open the address above.
 2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
-3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" tab). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
+3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
 
 The interface is in Japanese by default; switch to English with the language menu (日本語 / English) at the top of the left panel.
 
@@ -45,7 +45,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour
 - Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
 - Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues
-- Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off
+- Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off (the "Saved selections" tab under the viewer)
 - Box selection: drag a rectangle in the viewer to select the residues inside it
 - Spotlight: fade everything farther than a set distance from the residues of interest
 - Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis
