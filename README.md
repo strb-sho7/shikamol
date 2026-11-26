@@ -16,8 +16,9 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 
 1. Open the address above.
 2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (drag and drop works too).
-3. Click a residue in the viewer (tap on a tablet). The view zooms to it, and interactions within 5 Å are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
-   - Clicking a chain name at the left of the sequence strip selects every residue of that chain and outlines the chain in red (the view does not move, and no sticks, 5 Å surroundings, interactions or labels are drawn; Ctrl/⌘+click adds it to the selection).
+3. Click a residue in the viewer (tap on a tablet). The view zooms to it, the surrounding residues (within 5 Å by default) are shown as sticks, interactions are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
+   - The "Within 5 Å" button at the bottom left of the viewer switches between showing only the selected residues and also showing the surrounding residues as sticks. The range (3–6 Å) is set under "② On click" in the Display & export tab.
+   - Clicking a chain name at the left of the sequence strip selects every residue of that chain (the view does not move; Ctrl/⌘+click adds it to the selection). The display is the same as for selected residues, except that no residue labels are drawn and the interaction list keeps only interactions with other molecules (other chains, ligands, nucleic acids, water).
    - "⛶ Full screen" at the top right of the viewer (or the F key) hides the side panel and the tabbed pane and fills the screen with the molecule window; press it again or Esc to go back.
    - The browser's own right-click menu is turned off over the viewer.
    - Right-click opens a menu for the selection (or the residue under the pointer): always show as sticks etc. or hide, colour, labels, centre/zoom here, add residues within 5 Å, save or clear the selection, the chain's style (cartoon, sticks, CPK …), surface, colour and visibility, fit all. With chains picked from their names, the menu lists the chain items.
@@ -43,13 +44,13 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 ## Features
 
 **Display**
-- Colouring by chain, one colour per structure, or N- to C-terminus (purple → green → yellow)
-- Cartoon, sticks, surface and other representations; adjustable cartoon transparency
+- Colouring by chain, one colour per structure, or N- to C-terminus (purple → green → yellow), or by secondary structure (helix red, β strand sky blue)
+- Cartoon, sticks, surface and other representations; adjustable cartoon transparency; cartoon styles: standard, or clear secondary structure (close to PyMOL's Flat Sheets + Fancy Sheets: helices as ribbons that do not twist at their ends, β strands as flat arrows, loops and turns as thin tubes; outlines supported; the arrows make parallel and antiparallel sheets clear at a glance)
 - Look: material (standard, matte, flat, soft), outlines, depth fade, and one-click "illustration" and "soft colours" presets
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
 - Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour; text background none, auto, white or black
 - Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
-- Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues
+- Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues (chain names stay pinned at the left while scrolling)
 - Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off (the "Saved selections" tab under the viewer)
 - Log: operations, selections and errors since the page was opened, with times (the "Log" tab under the viewer; can be copied)
 - Box selection: drag a rectangle in the viewer to select the residues inside it
@@ -62,9 +63,10 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 
 **Electron density and maps**
 - X-ray structures: 2mFo-DFc / mFo-DFc maps from the PDBe density server, shown in a sphere around the clicked residue
+- When the density server has no map yet (e.g. a newly released entry): the wwPDB map coefficients (published with the validation report) are fetched from RCSB PDB and 2Fo-Fc / Fo-Fc maps are computed in the browser
 - Cryo-EM structures: EMDB maps at the recommended contour level registered with the entry
 - Local map files (`.ccp4` / `.map` / `.mrc`, etc.)
-- 2Fo-Fc / Fo-Fc maps computed in the browser from refinement MTZ files (e.g. Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT), also for unpublished structures without a PDB ID
+- 2Fo-Fc / Fo-Fc maps computed in the browser from refinement MTZ files (e.g. Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT) or from wwPDB map coefficients downloaded from RCSB PDB (`…_2fo-fc_map_coef.cif`, `…_fo-fc_map_coef.cif`); MTZ files also work for unpublished structures without a PDB ID
 - Maps are grouped by structure in collapsible lists
 
 **Analysis**
@@ -103,9 +105,18 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 
 ## Your data
 
-- Files you load from your computer (structures, maps, MTZ, MSAs, etc.) are processed only inside your browser. They are never sent anywhere, so unpublished structures are safe to use.
-- When you load by PDB ID, public data are fetched from RCSB PDB, PDBe and EMDB.
+- Files you load from your computer (structures, maps, MTZ, map coefficients, MSAs, etc.) are processed only inside your browser. They are never sent anywhere, so unpublished structures are safe to use.
+- When you load by PDB ID or UniProt ID, public data are fetched from RCSB PDB, PDBe, EMDB and the AlphaFold Database.
 - Automatically saved work is stored only in your own browser (IndexedDB).
+
+## Notes and limitations
+
+- **Electron density:** the PDBe density server has no maps for structures without deposited structure factors (some older entries). Newly released entries may also be missing until PDBe has processed them. In that case use "computed from RCSB map coefficients" in the "Density" tab. Where that request is blocked, download the 2fo-fc and fo-fc map coefficients (CIF) from "Download Files" on the RCSB PDB entry page and read them with "From MTZ or map coefficients".
+- **Interactions:** judged from atomic coordinates by geometric criteria such as distances only. Hydrogen positions and protonation states are not modelled. Treat the results as a guide; with low-resolution structures they can be over- or under-counted.
+- **Predicted models:** regions of AlphaFold models with low pLDDT (below 70) are not suited to interaction or burial analysis.
+- **Large structures:** very large structures such as ribosomes, and molecular surfaces, can be slow on phones and tablets or stop for lack of memory.
+- **Auto-save:** clearing the browser's history or site data also deletes the auto-saved work, and nothing is kept in private browsing. Save a session (`.json`) for work you want to keep.
+- **External services:** loading by PDB ID or UniProt ID and fetching density rely on RCSB PDB, PDBe, EMDB and the AlphaFold Database; nothing can be loaded from them while they are down.
 
 ## On iPads and tablets
 
@@ -130,6 +141,7 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
 **Data**
 - RCSB PDB (coordinates, entry information, biological assemblies)
 - PDBe density server (electron density for X-ray structures)
+- wwPDB validation map coefficients (fetched from RCSB PDB, when the density server has no map)
 - EMDB (cryo-EM maps and recommended contour levels)
 - AlphaFold Database (predicted models; data under CC BY 4.0 — please cite the paper below when you use them)
   - Varadi M, et al. AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences. *Nucleic Acids Res.* 2024;52:D368–D375. doi:[10.1093/nar/gkad1011](https://doi.org/10.1093/nar/gkad1011)
@@ -139,7 +151,7 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
 - Interaction types and criteria follow PLIP and Mol*.
   - Salentin S, et al. PLIP: fully automated protein–ligand interaction profiler. *Nucleic Acids Res.* 2015;43:W443–W447. doi:[10.1093/nar/gkv315](https://doi.org/10.1093/nar/gkv315)
   - Sehnal D, et al. Mol* Viewer: modern web app for 3D visualization and analysis of large biomolecular structures. *Nucleic Acids Res.* 2021;49:W431–W437. doi:[10.1093/nar/gkab314](https://doi.org/10.1093/nar/gkab314)
-- Disulfide bonds: bonds recorded in the file (mmCIF struct_conn, PDB CONECT) are used; cysteine SG atoms within 2.5 Å without a recorded bond are bonded by distance (reported on screen).
+- Disulfide bonds: bonds recorded in the file (mmCIF struct_conn, PDB CONECT) are used; cysteine SG atoms within 2.35 Å without a recorded bond are bonded by distance (the same limit as PyMOL's distance-based bonding; reported on screen and in the operation log).
 - Superposition: Cα atoms are paired by sequence alignment with BLOSUM62 and affine gaps (opening −10, extension −0.5); below 30% identity, among other cases, a structure-based pairing using the TM-score is used instead. The rotation is the quaternion least-squares solution (Horn's method), refitted up to 5 times after rejecting outliers beyond 2 × RMSD.
   - Henikoff S, Henikoff JG. Amino acid substitution matrices from protein blocks. *Proc. Natl. Acad. Sci. USA* 1992;89:10915–10919. doi:[10.1073/pnas.89.22.10915](https://doi.org/10.1073/pnas.89.22.10915)
   - Gotoh O. An improved algorithm for matching biological sequences. *J. Mol. Biol.* 1982;162:705–708. doi:[10.1016/0022-2836(82)90398-9](https://doi.org/10.1016/0022-2836(82)90398-9)
@@ -155,8 +167,8 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
   - Ittisoponpisan S, Islam SA, Khanna T, Alhuzimi E, David A, Sternberg MJE. Can predicted protein 3D structures provide reliable insights into whether missense variants are disease associated? *J. Mol. Biol.* 2019;431:2197–2212. doi:[10.1016/j.jmb.2019.04.009](https://doi.org/10.1016/j.jmb.2019.04.009)
   - Zamyatnin AA. Protein volume in solution. *Prog. Biophys. Mol. Biol.* 1972;24:107–123. doi:[10.1016/0079-6107(72)90005-3](https://doi.org/10.1016/0079-6107(72)90005-3)
 
-## Author
+## Author and contact
 
 Sho Ito (Nara Institute of Science and Technology)
 
-Please report bugs or send requests through "Issues" in this repository.
+Please send bug reports, requests and questions through "[Issues](https://github.com/strb-sho7/shikamol/issues)" in this repository (a GitHub account is needed). If you cannot use Issues, or for anything you would rather not post publicly, email sho.ito (at) naist.ac.jp (replace (at) with @).

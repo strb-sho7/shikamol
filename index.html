@@ -270,6 +270,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #btabs button:disabled{opacity:.4}
 #btIxN{margin-left:4px;font-weight:400}
 #seq.light{background:#ffffff}
+.sqw{width:max-content;min-width:100%}
 .sqr{white-space:nowrap;padding:12px 0 3px}
 .sqr.off{opacity:.35}
 .sqc{cursor:pointer;display:inline-block;width:3.2em;font-weight:700;font-family:system-ui,sans-serif;font-size:12px}
@@ -282,7 +283,7 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #info button{font-size:11px;padding:1px 6px;margin-left:8px}
 #info{max-width:calc(100% - 20px)}
 #flist,#info{user-select:none;-webkit-user-select:none}
-#addMode.on{background:#5aa9ff;color:#000;border-color:#5aa9ff}
+#addMode.on,#scBtn.on{background:#5aa9ff;color:#000;border-color:#5aa9ff}
 #groups .g{display:flex;align-items:center;gap:6px;margin:3px 0}
 #groups .g input[type=text]{flex:1;min-width:0}
 #groups .g button{font-size:11px;padding:1px 6px}
@@ -290,6 +291,9 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #groups .h{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
 .sqr i.t::before{content:attr(data-n);position:absolute;left:0;top:-11px;font-size:9px;color:#8a92a1}
 .sqr b{display:inline-block;width:1.4ch;color:#555;font-weight:400}
+/* the chain name stays at the left edge while the sequence scrolls sideways (the shadows also hide the residue numbers above) */
+.sqc{position:sticky;left:-8px;z-index:2;margin-left:-8px;padding-left:8px;background:#0b0d11;box-shadow:0 -16px 0 #0b0d11,0 -8px 0 #0b0d11,0 4px 0 #0b0d11}
+#seq.light .sqc{background:#fff;box-shadow:0 -16px 0 #fff,0 -8px 0 #fff,0 4px 0 #fff}
 #btabs .pb{display:none}
 body.mob #app{display:block;height:100vh;height:100dvh;overflow:hidden}
 body.mob main{height:100vh;height:100dvh}
@@ -342,7 +346,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   </div>
   <div class="row" id="globalTools" style="display:none" title="この行の操作は、開いているすべての構造に効きます">
     <span class="small">全構造：</span>
-    <select id="colorBy" style="flex:1;min-width:0"><option value="chain">色: Chainごと</option><option value="struct">色: 構造ごとに単色</option><option value="rainbowcb" title="色覚の多様性に配慮した配色（viridis）">色: N末→C末（紫→緑→黄）</option><option value="plddt" title="AlphaFold などの予測構造の信頼度。B 因子の欄に入っている値で、AlphaFold Database と同じ4段階の色で塗ります（ColabFold などで予測した手元のファイルにも使えます）">色: pLDDT（予測の信頼度）</option></select>
+    <select id="colorBy" style="flex:1;min-width:0"><option value="chain">色: Chainごと</option><option value="struct">色: 構造ごとに単色</option><option value="rainbowcb" title="色覚の多様性に配慮した配色（viridis）">色: N末→C末（紫→緑→黄）</option><option value="ss" title="ヘリックス（αヘリックス・3₁₀ヘリックス）を赤、βストランドを水色、それ以外を薄い灰色で塗ります。二次構造はファイルの記載、なければ NGL が割り当てたものです">色: 二次構造（ヘリックス赤・β水色）</option><option value="plddt" title="AlphaFold などの予測構造の信頼度。B 因子の欄に入っている値で、AlphaFold Database と同じ4段階の色で塗ります（ColabFold などで予測した手元のファイルにも使えます）">色: pLDDT（予測の信頼度）</option></select>
     <button id="closeAll" style="flex:none" title="開いている構造とマップをすべて閉じます（確認が出ます）">すべて閉じる</button>
   </div>
   <div id="structs"></div>
@@ -415,6 +419,39 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div id="measList"></div>
     <div class="row"><button id="measCopy">一覧をコピー</button><button id="measClear">すべて消す</button></div>
   </details>
+  <h2>選択範囲を追加表示</h2>
+  <div class="row">
+    <input type="text" id="seleTxt" placeholder="例 45-60:A ／ ARG and :B ／ 10:C">
+  </div>
+  <div class="row">
+    <select id="seleType"></select>
+    <button class="sw" id="seleColor" data-v="#ff80ff" title="色"></button>
+    <label class="small"><input type="checkbox" id="seleElem" checked> 炭素だけこの色（N・Oは元素色）</label>
+    <button id="addSele">追加</button>
+  </div>
+  <div id="extras"></div>
+  <div class="small">選択式はNGL形式: <kbd>:A</kbd> Chain, <kbd>10-20</kbd> 残基番号, <kbd>LYS</kbd> 残基名, <kbd>.CA</kbd> 原子名, <kbd>and / or / not</kbd></div>
+
+  <h2>対称分子（結晶） <span class="small an"></span></h2>
+  <div class="row">
+    <label><input type="checkbox" id="symOn"> 表示</label>
+    <span class="small">元の分子から</span><input type="number" id="symCut" value="5" step="1" min="2" max="30" style="width:58px"><span class="small">Å以内のChain</span>
+  </div>
+  <div class="row"><span class="small">不透明度</span><input type="range" id="symOp" min="0.1" max="0.9" step="0.05" value="0.35"><span class="lv" id="symOpV" style="width:40px">0.35</span></div>
+  <div class="small" id="symInfo">結晶構造で使えます。色と表示形式は元のChainに合わせ、半透明で表示します。対称分子をクリックすると、解析に加える候補として選べます。</div>
+  <div id="symBuiltNote" style="display:none">
+    <div class="small" id="symBuiltTxt" style="margin:6px 0"></div>
+    <div class="row">
+      <button id="symBack">元の構造に戻す（この構造を削除）</button>
+      <button id="symShowOrig">元の構造に切り替える（この構造は残す）</button>
+    </div>
+  </div>
+  <div id="symPick" style="display:none">
+    <div class="small" style="margin-top:6px">解析に加える対称分子（Chain単位）。分子ウィンドウで対称分子をクリックしても選べます。</div>
+    <div id="symList"></div>
+    <div class="row"><button id="symBuild" disabled>選んだ対称分子を加えた構造を作る</button></div>
+  </div>
+
   <h2>Chain間の相互作用 <span class="small an"></span></h2>
   <div class="row">
     <div class="ifpair"><select id="ifA"></select><span class="small">と</span><select id="ifB"></select></div>
@@ -489,39 +526,6 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     </div>
   </details>
 
-  <h2>対称分子（結晶） <span class="small an"></span></h2>
-  <div class="row">
-    <label><input type="checkbox" id="symOn"> 表示</label>
-    <span class="small">元の分子から</span><input type="number" id="symCut" value="5" step="1" min="2" max="30" style="width:58px"><span class="small">Å以内のChain</span>
-  </div>
-  <div class="row"><span class="small">不透明度</span><input type="range" id="symOp" min="0.1" max="0.9" step="0.05" value="0.35"><span class="lv" id="symOpV" style="width:40px">0.35</span></div>
-  <div class="small" id="symInfo">結晶構造で使えます。色と表示形式は元のChainに合わせ、半透明で表示します。対称分子をクリックすると、解析に加える候補として選べます。</div>
-  <div id="symBuiltNote" style="display:none">
-    <div class="small" id="symBuiltTxt" style="margin:6px 0"></div>
-    <div class="row">
-      <button id="symBack">元の構造に戻す（この構造を削除）</button>
-      <button id="symShowOrig">元の構造に切り替える（この構造は残す）</button>
-    </div>
-  </div>
-  <div id="symPick" style="display:none">
-    <div class="small" style="margin-top:6px">解析に加える対称分子（Chain単位）。分子ウィンドウで対称分子をクリックしても選べます。</div>
-    <div id="symList"></div>
-    <div class="row"><button id="symBuild" disabled>選んだ対称分子を加えた構造を作る</button></div>
-  </div>
-
-  <h2>選択範囲を追加表示</h2>
-  <div class="row">
-    <input type="text" id="seleTxt" placeholder="例 45-60:A ／ ARG and :B ／ 10:C">
-  </div>
-  <div class="row">
-    <select id="seleType"></select>
-    <button class="sw" id="seleColor" data-v="#ff80ff" title="色"></button>
-    <label class="small"><input type="checkbox" id="seleElem" checked> 炭素だけこの色（N・Oは元素色）</label>
-    <button id="addSele">追加</button>
-  </div>
-  <div id="extras"></div>
-  <div class="small">選択式はNGL形式: <kbd>:A</kbd> Chain, <kbd>10-20</kbd> 残基番号, <kbd>LYS</kbd> 残基名, <kbd>.CA</kbd> 原子名, <kbd>and / or / not</kbd></div>
-
   <h2>変異の位置 <span class="small an"></span></h2>
   <div class="small">変異のリストを貼り付けて「表示」を押すと、構造の上に変異の位置を出し、それぞれの位置について構造から分かること（埋もれ具合・二次構造・保存度・相互作用）と注意点を並べます。</div>
   <textarea id="mutTxt" rows="4" spellcheck="false" placeholder="R51A 活性低下&#10;K102E 変化なし&#10;p.Asp150Asn&#10;A:77"></textarea>
@@ -560,10 +564,14 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   </div>
   <div class="small">結晶対称を考慮した密度を、画面中心の周り（または構造全体）だけ取得します。中心を動かすと自動で取り直します。</div>
   <div class="row">
-    <input type="file" id="mtzFile" accept=".mtz" hidden>
-    <button id="mtzBtn">MTZ から計算（2Fo-Fc ＋ Fo-Fc）…</button>
+    <button id="coefBtn">2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）</button>
   </div>
-  <div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。ファイルはどこにも送信されません。</div>
+  <div class="small">公開されたばかりの構造など、PDBe の密度サーバーにまだマップがないときに使います。wwPDB が検証レポートと一緒に公開しているマップ係数を RCSB PDB から取得し、ブラウザの中で密度を計算します。</div>
+  <div class="row">
+    <input type="file" id="mtzFile" accept=".mtz,.cif,.gz" multiple hidden>
+    <button id="mtzBtn">MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…</button>
+  </div>
+  <div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ファイルはどこにも送信されません。</div>
   <div class="row">
     <input type="text" id="emdbId" placeholder="EMDB ID（例 8116）">
     <button id="srvEm">EMマップ（密度サーバー）</button>
@@ -574,8 +582,6 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div class="row">
       <button id="pdbe2fo">2Fo-Fc（PDBe）</button>
       <button id="pdbeDiff">Fo-Fc（PDBe）</button>
-      <button id="rcsb2fo">2Fo-Fc（RCSB）</button>
-      <button id="rcsbDiff">Fo-Fc（RCSB）</button>
     </div>
     <div class="small">ファイルは結晶の一部の範囲しか含まないことがあり、その場合モデルの一部で密度が欠けます。</div>
   <div class="frow"><span class="fl">手元のマップ<small>ファイルの種類</small></span><div class="fc nowrap"><select id="mapKind"><option value="normal">通常マップ（2Fo-Fc / EM）</option><option value="diff">差マップ（Fo-Fc, ±表示）</option></select><input type="file" id="mapFile" accept=".ccp4,.map,.mrc,.dsn6,.omap,.brix,.dx,.mtz,.gz" hidden><button id="mapBtn">開く…</button></div></div>
@@ -606,6 +612,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
       <option value="0">なし</option><option value="1" selected>標準</option><option value="2">強め</option>
     </select></div>
   <div class="frow"><span class="fl">カートゥーン<small>透明度</small></span><div class="fc"><input type="range" id="cartOp" min="0" max="90" step="5" value="0"><span class="lv">0%</span></div></div>
+  <div class="frow"><span class="fl">カートゥーン<small>描き方</small></span><select id="sheetArrow" title="「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします"><option value="0">標準</option><option value="2">二次構造をはっきり</option></select></div>
   <div class="frow"><span class="fl">まとめて設定</span><div class="fc btns"><button id="toonPreset" title="質感をフラット、背景を白、輪郭線を標準、奥のぼかしを強めにします">イラスト風</button><button id="softPreset" title="Chain の色を淡い色にし、質感を「淡い」、背景を白、輪郭線を細めにします">淡い色調</button></div></div>
   <div class="frow"><span class="fl">スケールバー</span><label title="画面の右下に、拡大率に合わせた長さ（Å）の目盛りを出します。論文用の画像にも入ります。正確なのは平行投影のときで、透視投影では画面中心の奥行きでの目安です"><input type="checkbox" id="scaleOn"> 表示する</label></div>
   <div class="frow"><span class="fl">分子の寸法</span><select id="dimTarget" title="寸法（最大径と主軸方向の長さ）を測って分子ウィンドウに表示する対象"><option value="-">表示しない</option></select></div>
@@ -622,12 +629,13 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <details class="sec" data-sec="focus" id="focusOpts" open><summary><b>② クリックしたときの表示</b><span class="sechint">残基の周りのスティック・相互作用・周りを薄くする</span></summary>
   <div class="secbody">
   <div class="row">
-    <label><input type="checkbox" id="focusSc" checked> 選んだ残基の周囲5Åもスティック表示</label>
+    <label><input type="checkbox" id="focusSc" checked> 選んだ残基の周囲もスティック表示</label>
     <label><input type="checkbox" id="focusZoom" checked> 選んだ場所にズーム</label>
   </div>
+  <div class="frow"><span class="fl">周囲の範囲<small>スティック表示</small></span><div class="fc"><input type="range" id="focusR" min="3" max="6" step="0.5" value="5" title="選んだ残基から、どこまでの距離にある残基をスティックで表示するか（原子どうしの距離）"><span class="lv">5.0 Å</span></div></div>
   <div class="frow"><span class="fl">複数の構造<small>2つ以上開いたとき</small></span><select id="multiSel" title="構造を2つ以上開いているときの選択の扱い"><option value="switch">1つの構造だけ選択</option><option value="keep">構造ごとに選択を残す</option><option value="link">同じ番号を連動して表示</option></select></div>
   <div class="small">「構造ごとに選択を残す」：別の構造の残基をクリックしても前の構造の表示が残り、構造ごとに好きな残基を並べて比べられます（番号がずれていても使えます）。「同じ番号を連動して表示」：Chain 名と残基番号が同じ残基を、ほかの構造にも自動で表示します。</div>
-  <div class="small">「周囲5Å」をオフにすると、選んだ残基だけを表示します。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。</div>
+  <div class="small">「周囲」をオフにすると、選んだ残基だけを表示します（分子ウィンドウ左下の「周囲」ボタンでも切り替えられます）。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。</div>
   <div class="frow"><span class="fl">表示形式</span><select id="focusStyle"></select></div>
   <div class="small" style="margin-top:6px">スティックで描く部分</div>
   <div class="frow"><span class="fl">タンパク質</span><select id="stickPart" title="タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます"><option value="all">主鎖＋側鎖</option><option value="side">側鎖のみ</option></select></div>
@@ -726,7 +734,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div id="lblLayer"><svg id="lblLines"></svg></div>
     <div id="boxLayer"><div id="boxRect"></div></div>
     <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button><button id="fullBtn" title="分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）">⛶ 全画面</button></div><div id="measPanel"></div></div>
-    <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
+    <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="scBtn" title="選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「② クリックしたときの表示」と同じ設定）">周囲 5 Å</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
     <div id="status" class="show">PDB IDを入力して「読込」</div>
     <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
  <defs>
@@ -866,6 +874,15 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets: helices cut at their ends, β strands as flat arrows, loops and turns as thin tubes", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細い筒にしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly, loops and turns as thin tubes (strand arrows point to the C-terminus)",
+  "描き方": "style", "標準": "Standard", "βストランドを矢印に": "β strands as arrows", "二次構造をはっきり": "Clear secondary structure", "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細くしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly with thin loops and turns (strand arrows point to the C-terminus)", "カートゥーンを標準の描き方に戻しました": "Cartoon back to the standard style",
+  "βストランド": "β strands", "帯（今までの描き方）": "Ribbons (as before)", "矢印": "Arrows", "矢印にすると、ストランドの向き（平行・逆平行）がひと目で分かります": "With arrows, the direction of each strand (parallel or antiparallel) is clear at a glance", "βストランドを矢印で描いています（矢印の先が C 末側）": "β strands drawn as arrows (pointing to the C-terminus)", "βストランドを帯で描いています": "β strands drawn as ribbons", "選んだ残基の周囲もスティック表示": "Also show the surrounding residues as sticks", "周囲の範囲": "Surroundings", "スティック表示": "shown as sticks", "選んだ残基から、どこまでの距離にある残基をスティックで表示するか（原子どうしの距離）": "How far from the selected residues other residues are shown as sticks (atom–atom distance)", "選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「② クリックしたときの表示」と同じ設定）": "Whether the surrounding residues are also shown as sticks (the same setting as \"② On click\" in the Display & export tab)", "色: 二次構造（ヘリックス赤・β水色）": "Colour: secondary structure (helix red, β sky blue)", "ヘリックス（αヘリックス・3₁₀ヘリックス）を赤、βストランドを水色、それ以外を薄い灰色で塗ります。二次構造はファイルの記載、なければ NGL が割り当てたものです": "Helices (α and 3₁₀) red, β strands sky blue, everything else light grey. Secondary structure from the file, or as assigned by NGL", "二次構造で色分けしています：ヘリックス＝赤、βストランド＝水色、それ以外＝薄い灰色（二次構造はファイルの記載、なければ NGL が割り当てたもの）": "Coloured by secondary structure: helix red, β strand sky blue, others light grey (from the file, or as assigned by NGL)",
+  "精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ファイルはどこにも送信されません。": "Computes density in your browser from a refinement MTZ (Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT, etc.). Works for structures without a PDB ID. wwPDB map coefficients from \"Download Files\" on an RCSB PDB entry page (the 2fo-fc and fo-fc map-coefficient CIFs; both can be chosen at once, .gz is fine) can be read too. The files are not sent anywhere.",
+  "このブラウザは .gz を展開できません。展開してから読み込んでください": "This browser cannot unpack .gz; unpack it first",
+  "空間群が分かりません。先に構造を読み込んでください": "Unknown space group. Open the structure first",
+  "格子定数が分かりません。先に構造を読み込んでください": "Unknown cell. Open the structure first",
+  "マップ係数（_refln.pdbx_FWT / pdbx_PHWT か pdbx_DELFWT / pdbx_DELPHWT）が見つかりません": "No map coefficients found (_refln.pdbx_FWT / pdbx_PHWT or pdbx_DELFWT / pdbx_DELPHWT)",
+  "2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）": "2Fo-Fc + Fo-Fc (computed from RCSB map coefficients)", "公開されたばかりの構造など、PDBe の密度サーバーにまだマップがないときに使います。wwPDB が検証レポートと一緒に公開しているマップ係数を RCSB PDB から取得し、ブラウザの中で密度を計算します。": "For when the PDBe density server has no map yet, e.g. for a newly released entry. Fetches the map coefficients that wwPDB publishes with the validation report from RCSB PDB and computes the density in your browser.", "MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…": "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…", "4 文字の PDB ID の構造で使えます": "Works for structures with a 4-character PDB ID",
   "⛶ 全画面": "⛶ Full screen", "⛶ 全画面を解除": "⛶ Exit full screen", "全画面表示": "Full screen", "全画面表示を終了": "Left full screen", "分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）": "Show only the molecule window, filling the screen (F key; press again or Esc to go back)",
   "分子表面を付ける": "Add molecular surface", "分子表面を消す": "Remove molecular surface",
   "マウス操作": "Mouse", "ShikaMol 標準": "ShikaMol standard", "PyMOL 互換": "PyMOL-like", "PyMOL 互換は 3-Button Viewing と同じ割り当てです": "PyMOL-like follows the 3-Button Viewing bindings", "左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム": "Left drag: rotate   Wheel-press drag: translate   Right drag: zoom", "ホイール: 切り取り面（スラブ）": "Wheel: clipping slab", "＋ホイール: ズーム": "+wheel: zoom", "＋左ドラッグ: 四角の中の残基を選択に追加": "+left drag: add residues in a box to the selection", "ホイールの押し込み（クリック）: その原子を中心に": "Wheel click: centre on the atom", "右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）": "Right click: menu for the selection (or the residue under the pointer): style, colour, label, centre, 5 Å around …", "常に表示": "Always show", "スティック": "Sticks", "ボール＆スティック": "Ball & stick", "CPK": "CPK", "表面": "Surface", "常に表示をやめる（隠す）": "Stop always showing (hide)", "色を変える…": "Change colour…", "ラベルを付ける": "Add labels", "ラベルを消す": "Remove labels", "ここを中心に": "Centre here", "ここにズーム": "Zoom here", "周囲 5 Å も選択に加える": "Add the residues within 5 Å", "選択を保存": "Save selection", "選択を解除": "Clear selection", "この残基を選択": "Select this residue", "全体表示に戻す": "Fit all", "何も選んでいません": "Nothing selected", "常に表示をやめました": "Stopped always showing", "ラベルを消しました": "Labels removed", "ラベルを付けました": "Labels added", "マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）": "Mouse set to PyMOL-like (wheel = clipping slab, Ctrl+wheel = zoom)", "マウス操作を ShikaMol 標準にしました": "Mouse set to ShikaMol standard",
@@ -1009,7 +1026,7 @@ const EXACT = new Map(Object.entries({
   '範囲選択: 右上の「▭ 範囲選択」をオンにしてドラッグ、または ': 'Box select: turn on "▭ Box select" at the top right and drag, or drag with ', '（Mac は ': ' (Mac: ', '）を押しながらドラッグ。四角の中の残基をまとめて選択（': '). Selects the residues inside the box (', ' でオフ）': ' turns it off)', '＋ 追加選択': '+ Add to selection', '追加選択: オフ': 'Add to selection: off',
   'タブレット: 1本指で回転、2本指でズームと移動。配列は文字を少し長押ししてからなぞると範囲選択。複数選ぶときは残基情報の「＋ 追加選択」をオン': 'Tablet: one finger rotates, two fingers zoom and pan. On the sequence, hold a letter briefly, then slide to select a stretch. To pick several residues, turn on "+ Add to selection" in the info box', '★ 選択を保存': '★ Save selection', '選択の保存と履歴': 'Saved selections and history', '表示': 'Show', '＋追加': '+ Add', '★ 保存': '★ Save',
   '選んだ残基の周囲5Åもスティック表示': 'Also show residues within 5 Å as sticks', '選んだ場所にズーム': 'Zoom to the selection',
-  '「周囲5Å」をオフにすると、選んだ残基だけを表示します。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。': 'With "within 5 Å" off, only the selected residues are shown. With "Zoom" off, the view does not move when you select (or when you clear by clicking the background).',
+  '「周囲」をオフにすると、選んだ残基だけを表示します（分子ウィンドウ左下の「周囲」ボタンでも切り替えられます）。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。': 'With "surroundings" off, only the selected residues are shown (also switchable with the "Within" button at the bottom left of the viewer). With "Zoom" off, the view does not move when you select (or when you clear by clicking the background).',
   '残基をクリック、または画面下の配列をドラッグして選び、分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けて残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。保存した選択はセッションにも入ります。': 'Click residues or drag over the sequence, then press "★ Save selection" at the top left of the viewer to keep it under a name. Tick the box on the left to keep those residues on screen in the chosen colour. Saved selections are stored in sessions.',
   'この残基を選択': 'Select these residues', '選択': 'Select',
   '保存した選択はまだありません。残基を選んで、分子ウィンドウ左上の「★ 選択を保存」を押してください。': 'No saved selections yet. Select residues and press "★ Save selection" at the top left of the viewer.',
@@ -1130,6 +1147,17 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^周囲 ([\d.]+) Å$/, (m, r) => `Within ${r} Å`),
+  P(/^周囲 ([\d.]+) Å も選択に加える$/, (m, r) => `Add the residues within ${r} Å`),
+  P(/^([\d.]+) Å$/, (m, r) => `${r} Å`),
+  P(/^マップ係数を読み込み中: (.+) …$/, (m, a) => `Reading map coefficients: ${a} …`),
+  P(/^マップ係数を RCSB PDB から取得中: (.+) …$/, (m, a) => `Fetching map coefficients from RCSB PDB: ${a} …`),
+  P(/^マップ係数を読めませんでした: (.+?)（(.*)）$/, (m, a, e) => `Could not read map coefficients: ${a} (${tr(e)})`),
+  P(/^(.+) のマップ係数を RCSB PDB から取得できませんでした。.*$/, (m, a) => `Could not fetch the map coefficients of ${a} from RCSB PDB. It may not be an X-ray structure, have no structure factors, or the request was blocked (files from "Download Files" on the RCSB entry page can be read with "From MTZ or map coefficients")`),
+  P(/^(.+): 取得できなかったマップ係数: (.+)$/, (m, a, b) => `${a}: map coefficients not fetched: ${b}`),
+  P(/^マップ係数（(.+)）$/, (m, a) => `Map coefficients (${a})`),
+  P(/^HTTP (\d+)（このエントリーの密度がサーバーにありません。公開されたばかりの構造なら「RCSB のマップ係数から計算」を試してください）$/, (m, c) => `HTTP ${c} (the server has no density for this entry; for a newly released entry, try "computed from RCSB map coefficients")`),
+  P(/^空間群「(.+)」の対称操作が分かりません$/, (m, a) => `Unknown symmetry operators for space group "${a}"`),
   P(/^Chain (.+) の表示形式$/, (m, c) => `Chain ${c}: style`),
   P(/^Chain (.+) を表示する$/, (m, c) => `Show chain ${c}`),
   P(/^Chain (.+) を表示しました$/, (m, c) => `Chain ${c} shown`),
@@ -1205,7 +1233,7 @@ const PATTERNS = [
   P(/^ラベル (\d+) 個を重ならないように配置しました。.*$/, (m, n) => `Arranged ${n} labels so they do not overlap. Drag any label to adjust it`),
   P(/^MTZ を読み込み中: (.+) …$/, (m, a) => `Reading MTZ: ${a} …`),
   P(/^(.+): (2Fo-Fc|Fo-Fc) を計算中（(.+) \/ (.+)、空間群 (.+)、対称操作 (\d+) 個）…$/, (m, a, b, c, d, e, f) => `${a}: computing ${b} (${c} / ${d}, space group ${e}, ${f} operators)…`),
-  P(/^MTZ から密度を計算しました: (.+)（格子 (\S+?)(、列は推測: (.+))?）$/, (m, a, b, c, d) => `Computed density from MTZ: ${a} (grid ${b}${d ? ', columns guessed: ' + d : ''})`),
+  P(/^(MTZ |マップ係数)から密度を計算しました: (.+)（格子 (\S+?)(、列は推測: (.+))?）$/, (m, w, a, b, c, d) => `Computed density from ${w === 'MTZ ' ? 'MTZ' : 'map coefficients'}: ${a} (grid ${b}${d ? ', columns guessed: ' + d : ''})`),
   P(/^MTZ を読めませんでした: (.+)（(.+)）$/, (m, a, b) => `Could not read MTZ: ${a} (${b})`),
   P(/^(.+): マップ用の列（.+）が見つかりません。列: (.+)$/, (m, a, b) => `${a}: no map-coefficient columns (2FOFCWT/PH2FOFCWT, FWT/PHWT, …) found. Columns: ${b}`),
   P(/^範囲選択: オン。.*$/, () => 'Box select: on. Drag in the molecule window to select the residues inside the box (press again to turn off)'),
@@ -1228,7 +1256,7 @@ const PATTERNS = [
   P(/^Chain (\S+) の保存度を表示しました（(.+)）$/, (m, a, b) => `Showing conservation of chain ${a} (${b})`),
   P(/^保存度の読み込みに失敗: (.*)$/, (m, e) => `Could not load conservation: ${tr(e)}`),
   P(/^保存度を計算中: (.*)$/, (m, a) => `Computing conservation: ${a}`),
-  P(/^(.+?)（([\d,]+) 原子）を読み込みました。構造は (\d+) 個。ファイルに記録のない S–S 結合を (\d+) 本、距離（2\.5 Å 以内）から追加しました（(.+)）$/, (m, a, n, k, ss, l) => `Loaded ${a} (${n} atoms). ${k} structure(s) open. Added ${ss} S–S bond(s) not recorded in the file, from distances within 2.5 Å (${l.replace(/、/g, ', ').replace(/ ほか$/, ' and more')})`),
+  P(/^(.+?)（([\d,]+) 原子）を読み込みました。構造は (\d+) 個。ファイルに記録のない S–S 結合を (\d+) 本、距離（2\.35 Å 以内）から追加しました（(.+)）$/, (m, a, n, k, ss, l) => `Loaded ${a} (${n} atoms). ${k} structure(s) open. Added ${ss} S–S bond(s) not recorded in the file, from distances within 2.35 Å (${l.replace(/、/g, ', ').replace(/ ほか$/, ' and more')})`),
   P(/^(.+?)（([\d,]+) 原子）を読み込みました。構造は (\d+) 個$/, (m, a, n, k) => `Loaded ${a} (${n} atoms). ${k} structure(s) open`),
   P(/^(.+?) ⇄ (.+?): 接触する残基の組 (\d+)$/, (m, a, b, n) => `${a} ⇄ ${b === 'それ以外' ? 'everything else' : b}: ${n} residue pairs in contact`),
   P(/^(.+?) ⇄ (.+?): 残基の組 (\d+)（関与する残基 (\d+)）$/, (m, a, b, n, r) => `${a} ⇄ ${b.replace(/以外すべて$/, ' – everything else')}: ${n} residue pairs (${r} residues)`),
@@ -1517,7 +1545,7 @@ function addMissingSS(st) {
       b.index = sg[j];
       if (a.modelIndex !== b.modelIndex || a.residueIndex === b.residueIndex) continue;
       const dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z, d2 = dx * dx + dy * dy + dz * dz;
-      if (d2 > 6.25 || a.hasBondTo(b)) continue;
+      if (d2 > 2.35 * 2.35 || a.hasBondTo(b)) continue;   // as PyMOL: 0.35 + 0.2 (disulfide) + S van der Waals radius 1.8
       st.bondStore.addBond(a, b, 1);
       added.push(`${a.chainname}:${a.resname}${a.resno}–${b.chainname}:${b.resname}${b.resno}`);
     }
@@ -1543,7 +1571,7 @@ async function loadStructure(src, o, srcInfo, pid) {
   renderAllPanels(); buildSeq();
   const t = comp.structure.title ? ' — ' + comp.structure.title : '';
   status(`${name}${t}（${comp.structure.atomCount.toLocaleString()} 原子）を読み込みました。構造は ${structs.length} 個` +
-    (ssAdded.length ? `。ファイルに記録のない S–S 結合を ${ssAdded.length} 本、距離（2.5 Å 以内）から追加しました（${ssAdded.slice(0, 4).join('、')}${ssAdded.length > 4 ? ' ほか' : ''}）` : ''));
+    (ssAdded.length ? `。ファイルに記録のない S–S 結合を ${ssAdded.length} 本、距離（2.35 Å 以内）から追加しました（${ssAdded.slice(0, 4).join('、')}${ssAdded.length > 4 ? ' ほか' : ''}）` : ''));
   if (ssAdded.length) log(`${name}: 距離から追加した S–S 結合 ${ssAdded.length} 本: ${ssAdded.join('、')}`);
   if (st.pdbId) fetchEntryInfo(st);
   return st;
@@ -1974,7 +2002,7 @@ function chainReps(ch) {
   ch.reps.forEach(r => comp.removeRepresentation(r)); ch.reps = [];
   bridgesSoon();
   if (!ch.visible) return;
-  repSpecs(ch).forEach(([t, p]) => ch.reps.push(comp.addRepresentation(t, p)));
+  repSpecs(ch).forEach(([t, p]) => ch.reps.push(addSpec(comp, t, p)));
   try { emphChain(ch); } catch (e) {}
   spotRefresh();
 }
@@ -2017,7 +2045,306 @@ function setCartOp(v) {
   lblOccSchedule();
   const sl = $('#cartOp'); if (sl) { sl.value = Math.round((1 - cartOp) * 100); sl.nextElementSibling.textContent = Math.round((1 - cartOp) * 100) + '%'; }
   const all = new Set(chains); structs.forEach(S => (S.chains || []).forEach(ch => all.add(ch)));
-  all.forEach(ch => (ch.reps || []).forEach(r => { const t = r.repr && r.repr.type; if (t === 'cartoon' || t === 'base') r.setParameters(cartOpParams()); }));
+  all.forEach(ch => (ch.reps || []).forEach(r => { const t = r.repr && r.repr.type; if (!r.__pickOnly && (r.__arrow || t === 'cartoon' || t === 'base')) r.setParameters(cartOpParams()); }));
+}
+
+/* ---------- β strands drawn as arrows ----------
+   For each strand (DSSP-like 'e' in NGL, ≥ 3 residues) the ribbon of its last ARW_CUT residues is left out of the cartoon
+   and a flat arrowhead (a thin triangular slab in the plane of the sheet) is drawn in its place, so that the direction
+   of each strand (parallel / antiparallel sheets) can be seen at a glance. */
+// 0: NGL's cartoon as it is; 1: β strands as flat arrows; 2: also thin loops and turns, so helices and strands stand out (PyMOL-like)
+var sheetArrow = (() => { try { const v = +localStorage.getItem('pdv_sheet_arrow'); return v ? 2 : 0; } catch (e) { return 0; } })();
+/* NGL does not export its atom picker; borrow the class from a throw-away cartoon (built synchronously) */
+let atomPickerCls = null;
+function atomPickerClass(c) {
+  if (atomPickerCls || !c || !c.structure) return atomPickerCls;
+  try {
+    const r = c.addRepresentation('spacefill', {sele: '@0'});
+    const pk = r.repr.bufferList.map(b => b.picking).find(x => x && x.type === 'atom');
+    if (!pk) { c.removeRepresentation(r); const r2 = c.addRepresentation('ball+stick', {sele: '@0'}); const p2 = r2.repr.bufferList.map(b => b.picking).find(x => x && x.type === 'atom'); if (p2) atomPickerCls = p2.constructor; c.removeRepresentation(r2); }
+    else { atomPickerCls = pk.constructor; c.removeRepresentation(r); }
+  } catch (e) {}
+  return atomPickerCls;
+}
+function addSpec(c, t, p, extra) {
+  if (t !== '__arrow') return c.addRepresentation(t, {...p, ...(extra || {})});
+  const AP = atomPickerClass(c);
+  const buf = new NGL.MeshBuffer({position: p.position, color: p.color, index: p.index, normal: p.normal,
+    ...(AP && p.primitiveId ? {primitiveId: p.primitiveId, picking: new AP(undefined, c.structure)} : {})}, {});
+  const r = c.addBufferRepresentation(buf, {...cartOpParams(), ...(extra || {})});
+  r.__arrow = true; r.__arrowArgs = {cp: c, ...(p.args || {})};
+  return r;
+}
+/* NGL's selection language cannot negate an atom list ("not @1,2" selects nothing), so the kept atoms are listed instead */
+function arrowKeep(sele, excl) {
+  const ex = new Set(excl), keep = [];
+  comp.structure.eachAtom(a => { if (!ex.has(a.index)) keep.push(a.index); }, new NGL.Selection(sele));
+  return keep.length ? '@' + keep.join(',') : 'none';
+}
+/* split a protein chain into helix residues and "coil" residues for the PyMOL-like style. Strand residues (drawn as arrows)
+   are left out; each coil stretch also takes the residue on either side, so its tube runs into the helix or arrow. */
+function ssParts(n, strandRes, helixRes) {
+  const res = [];
+  comp.structure.eachResidue(r => {
+    const idx = []; r.eachAtom(x => idx.push(x.index));
+    const k = strandRes.has(r.index) ? 'E' : helixRes.has(r.index) ? 'H' : 'C';   // too short for an arrow or a ribbon: coil
+    res.push({ri: r.index, k, idx});
+  }, new NGL.Selection(`:${n} and /0 and protein`));
+  const helix = [], coil = [], inCoil = new Set();
+  res.forEach((r, q) => {
+    if (r.k === 'H') helix.push(...r.idx);
+    const next = res[q + 1] && res[q + 1].ri === r.ri + 1 ? res[q + 1] : null, prev = res[q - 1] && res[q - 1].ri === r.ri - 1 ? res[q - 1] : null;
+    // a coil residue, or the end residue of a helix next to a non-helix residue (the tube starts inside the helix ribbon).
+    // Strand residues are never part of the tube: strandArrows joins the arrows to the tube itself, so no tube runs over them.
+    const isEdge = r.k === 'H' && ((next && next.k !== 'H') || (prev && prev.k !== 'H'));
+    if (r.k === 'C' || isEdge) { if (!inCoil.has(r.ri)) { inCoil.add(r.ri); coil.push(...r.idx); } }
+  });
+  return {helix, coil};
+}
+function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicker copy for the outline (inverted hull)
+  /* PyMOL-like "flat + fancy" sheets: each strand (≥ 2 residues of 'e') is left out of NGL's cartoon and drawn here as a
+     flat slab that follows the strand smoothly (the pleat zig-zag averaged out) and ends in a wider arrowhead pointing to
+     the C-terminus. Short tubes join it to the coil on both sides (same radius as NGL's coil, 0.4 × 0.7 Å). */
+  const st = cp.structure, out = {excl: [], mesh: null, strandRes: new Set(), helixRes: new Set()};
+  const res = [];
+  st.eachResidue(r => {
+    const a = {}, idx = [];
+    r.eachAtom(x => { idx.push(x.index); if (x.atomname === 'CA' || x.atomname === 'C' || x.atomname === 'O') a[x.atomname] = [x.x, x.y, x.z, x.index]; });
+    if (a.CA) res.push({ri: r.index, ss: r.sstruc, a, idx});
+  }, new NGL.Selection(`:${n} and /0 and protein`));
+  let col;
+  if (typeof c === 'string' && c[0] === '#') { const v = hexNum(c); col = () => v; }
+  else { const sc = NGL.ColormakerRegistry.getScheme({scheme: c, structure: st}), ap = st.getAtomProxy(); col = i => { ap.index = i; return sc.atomColor(ap); }; }
+  const rgbOf = v => [((v >> 16) & 255) / 255, ((v >> 8) & 255) / 255, (v & 255) / 255];
+  const add = (u, v, k = 1) => [u[0] + v[0] * k, u[1] + v[1] * k, u[2] + v[2] * k], sub = (u, v) => [u[0] - v[0], u[1] - v[1], u[2] - v[2]];
+  const dot = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2], len = v => Math.hypot(v[0], v[1], v[2]);
+  const nrm = v => { const l = len(v) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+  const cross = (u, v) => [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+  // ID: the atom each vertex belongs to, so a click on an arrow selects its residue like a click on the cartoon
+  const P = [], C = [], N = [], I = [], ID = []; let curAI = 0;
+  const vtx = (p, nv, rgb) => { P.push(p[0], p[1], p[2]); N.push(nv[0], nv[1], nv[2]); C.push(rgb[0], rgb[1], rgb[2]); ID.push(curAI); return P.length / 3 - 1; };
+  // triangles are wound counter-clockwise as seen from their normal: NGL's double-sided shading flips the normal of
+  // back-facing triangles, so a reversed winding would light the face from behind
+  const tri3 = (a, b, cc) => {
+    const g = i => [P[3 * i], P[3 * i + 1], P[3 * i + 2]], A = g(a), e1 = sub(g(b), A), e2 = sub(g(cc), A), nv = [N[3 * a], N[3 * a + 1], N[3 * a + 2]];
+    if (dot(cross(e1, e2), nv) < 0) I.push(a, cc, b); else I.push(a, b, cc);
+  };
+  const quad = (a, b, cc, d) => { tri3(a, b, cc); tri3(a, cc, d); };
+  const ca = r => r.a.CA.slice(0, 3);
+  const linked = (r1, r2) => r1 && r2 && r2.ri === r1.ri + 1 && len(sub(ca(r2), ca(r1))) < 4.5;
+  // a tube between two points (joins the slab to NGL's coil)
+  const ball = (p0, rgb, rad = 0.22 + ex) => {     // rounds the joint between a connector and NGL's tube
+    const S = 10, T = 6, b = P.length / 3;
+    for (let i = 0; i <= T; i++) { const th = Math.PI * i / T; for (let k = 0; k <= S; k++) { const ph = 2 * Math.PI * k / S, nv = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]; vtx(add(p0, nv, rad), nv, rgb); } }
+    for (let i = 0; i < T; i++) for (let k = 0; k < S; k++) { const a0 = b + i * (S + 1) + k; quad(a0, a0 + S + 1, a0 + S + 2, a0 + 1); }
+  };
+  // a round tube swept along a curve (frames carried along the curve, so it does not twist)
+  const sweep = (pts, rgb, rad = 0.22 + ex) => {
+    if (pts.length < 2) return;
+    const S = 10, b = P.length / 3;
+    let t0 = nrm(sub(pts[1], pts[0])), u = Math.abs(t0[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]; u = nrm(cross(t0, u));
+    pts.forEach((p, q) => {
+      const t = nrm(sub(pts[Math.min(pts.length - 1, q + 1)], pts[Math.max(0, q - 1)]));
+      u = nrm(sub(u, t.map(x => x * dot(u, t)))); const v = cross(t, u);
+      for (let k = 0; k <= S; k++) { const a = 2 * Math.PI * k / S, nv = add(add([0, 0, 0], u, Math.cos(a)), v, Math.sin(a)); vtx(add(p, nv, rad), nv, rgb); }
+    });
+    for (let q = 0; q + 1 < pts.length; q++) for (let k = 0; k < S; k++) { const a0 = b + q * (S + 1) + k; quad(a0, a0 + S + 1, a0 + S + 2, a0 + 1); }
+  };
+  // cubic Bézier from p0 (leaving along t0) to p3 (arriving along t3)
+  const bez = (p0, t0, p3, t3, n = 12) => {
+    const L = len(sub(p3, p0)) * 0.4, p1 = add(p0, t0, L), p2 = add(p3, t3, -L), out = [];
+    for (let i = 0; i <= n; i++) { const t = i / n, a = (1 - t) ** 3, b2 = 3 * (1 - t) ** 2 * t, c2 = 3 * (1 - t) * t * t, d = t ** 3; out.push([0, 1, 2].map(j => a * p0[j] + b2 * p1[j] + c2 * p2[j] + d * p3[j])); }
+    return out;
+  };
+  const tube = (p0, p1, rgb, rad = 0.22 + ex) => {
+    const d = nrm(sub(p1, p0)); if (!(len(sub(p1, p0)) > 0.05)) return;
+    let u = Math.abs(d[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]; u = nrm(cross(d, u)); const v = cross(d, u), S = 10, b = P.length / 3;
+    for (let k = 0; k <= S; k++) { const t = 2 * Math.PI * k / S, nv = add(add([0, 0, 0], u, Math.cos(t)), v, Math.sin(t)); vtx(add(p0, nv, rad), nv, rgb); vtx(add(p1, nv, rad), nv, rgb); }
+    for (let k = 0; k < S; k++) { const a0 = b + 2 * k; quad(a0, a0 + 2, a0 + 3, a0 + 1); }
+  };
+  // a flat slab along samples [{p, t (tangent), w (width dir), hw (half width), rgb}], with both ends closed
+  const slab = (sm, ht) => {
+    const ring = s => { const nv = nrm(cross(s.t, s.w)); return {nv, c: [add(add(s.p, s.w, s.hw), nv, ht), add(add(s.p, s.w, -s.hw), nv, ht), add(add(s.p, s.w, -s.hw), nv, -ht), add(add(s.p, s.w, s.hw), nv, -ht)]}; };
+    const R = sm.map(ring);
+    for (let k = 0; k + 1 < sm.length; k++) {
+      const A = R[k], B = R[k + 1], ra = sm[k].rgb, rb = sm[k + 1].rgb;
+      curAI = sm[k].ai;
+      const face = (i0, i1, na, nb) => { const q0 = vtx(A.c[i0], na, ra), q1 = vtx(A.c[i1], na, ra), q2 = vtx(B.c[i1], nb, rb), q3 = vtx(B.c[i0], nb, rb); quad(q0, q1, q2, q3); };
+      face(1, 0, A.nv, B.nv); face(3, 2, A.nv.map(x => -x), B.nv.map(x => -x));
+      // sides: normal = perpendicular to the edge, in the plane of the sheet (correct for the tapering arrowhead too)
+      const sideN = (i0) => { const e = sub(B.c[i0], A.c[i0]); let s2 = nrm(cross(e, A.nv)); if (dot(s2, sub(A.c[i0], sm[k].p)) < 0) s2 = s2.map(x => -x); return s2; };
+      const s0 = sideN(0), s1 = sideN(1);
+      { const q0 = vtx(A.c[0], s0, ra), q1 = vtx(A.c[3], s0, ra), q2 = vtx(B.c[3], s0, rb), q3 = vtx(B.c[0], s0, rb); quad(q0, q1, q2, q3); }
+      { const q0 = vtx(A.c[2], s1, ra), q1 = vtx(A.c[1], s1, ra), q2 = vtx(B.c[1], s1, rb), q3 = vtx(B.c[2], s1, rb); quad(q0, q1, q2, q3); }
+    }
+    const cap = (A, s, sign) => { curAI = s.ai;
+      const nv = s.t.map(x => x * sign), q = A.c.map(p => vtx(p, nv, s.rgb)); quad(q[0], q[1], q[2], q[3]); };
+    cap(R[0], sm[0], -1); cap(R[R.length - 1], sm[sm.length - 1], 1);
+  };
+  const ends = new Map();   // residue index of the first/last residue of each helix or arrow -> where loops join it
+  const BODY = 0.95 + ex, HEAD = 1.75 + ex * 1.6, THICK = 0.22 + ex, SUB = 4;
+  let k = 0;
+  while (k < res.length) {
+    if (res[k].ss !== 'e') { k++; continue; }
+    let e = k;
+    while (linked(res[e], res[e + 1]) && res[e + 1].ss === 'e') e++;
+    const L = e - k + 1;
+    if (L >= 2) {
+      const sr = res.slice(k, e + 1), before = linked(res[k - 1], res[k]) ? res[k - 1] : null, after = linked(res[e], res[e + 1]) ? res[e + 1] : null;
+      sr.forEach(r => { out.excl.push(...r.idx); out.strandRes.add(r.ri); });
+      // smoothed axis: (CA[k-1] + 2 CA[k] + CA[k+1]) / 4 cancels the pleat
+      const all = [before, ...sr, after];
+      const axis = sr.map((r, q) => { const p0 = all[q] || r, p2 = all[q + 2] || r; const A = ca(p0), B = ca(r), Cc = ca(p2); return [(A[0] + 2 * B[0] + Cc[0]) / 4, (A[1] + 2 * B[1] + Cc[1]) / 4, (A[2] + 2 * B[2] + Cc[2]) / 4]; });
+      const dEnd = nrm(sub(axis[L - 1], axis[Math.max(0, L - 2)]));
+      const tip = add(axis[L - 1], dEnd, 1.8 + ex * 1.6);
+      const pts = [...axis, tip];
+      // width direction from the C=O of each residue, signs kept consistent, then smoothed and made perpendicular to the axis
+      let ws = sr.map(r => r.a.C && r.a.O ? nrm(sub(r.a.O.slice(0, 3), r.a.C.slice(0, 3))) : null);
+      for (let q = 0; q < ws.length; q++) if (!ws[q]) ws[q] = ws[q - 1] || [0, 0, 1];
+      for (let q = 1; q < ws.length; q++) if (dot(ws[q], ws[q - 1]) < 0) ws[q] = ws[q].map(x => -x);
+      ws = ws.map((w, q) => { const a = ws[q - 1] || w, b = ws[q + 1] || w; return nrm(add(add(add([0, 0, 0], a), w, 2), b)); });
+      ws.push(ws[ws.length - 1]);
+      const rgbs = sr.map(r => rgbOf(col(r.a.CA[3]))); rgbs.push(rgbs[rgbs.length - 1]);
+      // Catmull–Rom through the axis points, SUB samples per residue
+      const cr = (p0, p1, p2, p3, t) => [0, 1, 2].map(i => 0.5 * ((2 * p1[i]) + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t * t + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t * t * t));
+      const samp = [];
+      for (let q = 0; q + 1 < pts.length; q++) {
+        const p0 = pts[q - 1] || pts[q], p1 = pts[q], p2 = pts[q + 1], p3 = pts[q + 2] || p2;
+        for (let s2 = 0; s2 < SUB; s2++) { const t = s2 / SUB; samp.push({p: q === pts.length - 2 ? add(p1, sub(p2, p1), t) : cr(p0, p1, p2, p3, t), q, t}); }
+      }
+      samp.push({p: pts[pts.length - 1], q: pts.length - 1, t: 0});
+      samp.forEach((s2, q) => {
+        const a = samp[Math.max(0, q - 1)].p, b = samp[Math.min(samp.length - 1, q + 1)].p; s2.t3 = nrm(sub(b, a));
+        const w0 = ws[s2.q], w1 = ws[Math.min(ws.length - 1, s2.q + 1)]; let w = nrm(add(w0.map(x => x * (1 - s2.t)), w1, s2.t));
+        w = nrm(sub(w, s2.t3.map(x => x * dot(w, s2.t3)))); s2.w = w; s2.rgb = rgbs[Math.min(rgbs.length - 1, s2.q)]; s2.ai = sr[Math.min(L - 1, s2.q)].a.CA[3];
+      });
+      // body: from the first axis point to the base of the arrowhead (the last strand residue); head: from there to the tip
+      const baseAt = (L - 1) * SUB;
+      const body = samp.slice(0, baseAt + 1).map(s2 => ({p: s2.p, t: s2.t3, w: s2.w, hw: BODY, rgb: s2.rgb, ai: s2.ai}));
+      // the body starts a little before the first strand residue (as in PyMOL), so the arrow begins where the strand does
+      if (body.length) { const b0 = body[0]; body.unshift({...b0, p: add(b0.p, b0.t, -1.0 - ex)}); }
+      const headS = samp.slice(baseAt), H = headS.length - 1;
+      const head = headS.map((s2, q) => ({p: s2.p, t: headS[0].t3, w: headS[0].w, hw: Math.max(0.02 + ex, HEAD * (1 - q / H)), rgb: headS[0].rgb, ai: s2.ai}));
+      if (body.length >= 2) slab(body, THICK);
+      slab(head, THICK);
+      // join to the thin tube of the loops on either side (the tube itself stops at the neighbouring residue)
+      const crgb = r => rgbOf(col(r.a.CA[3]));
+      // the loop leaves from the very tip of the arrow (and enters the start of the strand) along the strand direction,
+      // and bends smoothly into the direction NGL's loop tube takes at the neighbouring residue
+      // where loops join this arrow: they enter the start of the body and leave from the tip, along the strand
+      ends.set(sr[0].ri, {p: body.length ? body[0].p : axis[0], t: body.length ? body[0].t : dEnd, side: 'start'});
+      ends.set(sr[L - 1].ri, {p: tip, t: dEnd, side: 'end'});
+    }
+    k = e + 1;
+  }
+  // ---- helices: a ribbon on a smooth curve through the Cα atoms. The face of the ribbon points away from the helix axis
+  // (estimated at each residue from its two neighbours), so the ribbon does not twist at the ends the way a ribbon
+  // oriented by the C=O of the end residue does.
+  const isH = r => !!r && (r.ss === 'h' || r.ss === 'g' || r.ss === 'i');
+  const HW = 0.95 + ex, HT = 0.2 + ex, HSUB = 6;
+  k = 0;
+  while (k < res.length) {
+    if (!isH(res[k]) || out.strandRes.has(res[k].ri)) { k++; continue; }
+    let e = k;
+    while (linked(res[e], res[e + 1]) && isH(res[e + 1])) e++;
+    const L = e - k + 1;
+    if (L >= 3) {
+      const hr = res.slice(k, e + 1), before = linked(res[k - 1], res[k]) ? res[k - 1] : null, after = linked(res[e], res[e + 1]) ? res[e + 1] : null;
+      hr.forEach(r => out.helixRes.add(r.ri));
+      const all = [before, ...hr, after], pts = hr.map(ca);
+      let rad = hr.map((r, q) => {
+        const p0 = all[q], p2 = all[q + 2]; if (!p0 || !p2) return null;
+        const B = ca(r), b = add(sub(ca(p0), B), sub(ca(p2), B));
+        return len(b) > 0.1 ? nrm(b).map(x => -x) : null;      // the bisector points to the axis; the face points outward
+      });
+      for (let q = 0; q < rad.length; q++) if (!rad[q]) rad[q] = rad.slice(q + 1).find(Boolean) || rad.slice(0, q).reverse().find(Boolean) || [0, 0, 1];
+      const rgbs = hr.map(r => rgbOf(col(r.a.CA[3])));
+      const cr = (p0, p1, p2, p3, t) => [0, 1, 2].map(i => 0.5 * ((2 * p1[i]) + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t * t + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t * t * t));
+      const samp = [];
+      for (let q = 0; q + 1 < L; q++) {
+        const p0 = q > 0 ? pts[q - 1] : before ? ca(before) : pts[q], p3 = q + 2 < L ? pts[q + 2] : after ? ca(after) : pts[q + 1];
+        for (let s2 = 0; s2 < HSUB; s2++) samp.push({p: cr(p0, pts[q], pts[q + 1], p3, s2 / HSUB), q, t: s2 / HSUB});
+      }
+      samp.push({p: pts[L - 1], q: L - 1, t: 0});
+      const sm = samp.map((s2, q) => {
+        const t3 = nrm(sub(samp[Math.min(samp.length - 1, q + 1)].p, samp[Math.max(0, q - 1)].p));
+        const r0 = rad[s2.q], r1 = rad[Math.min(L - 1, s2.q + 1)];
+        let rd = nrm(add(r0.map(x => x * (1 - s2.t)), r1, s2.t)); rd = nrm(sub(rd, t3.map(x => x * dot(rd, t3))));
+        const near = s2.t < 0.5 ? s2.q : Math.min(L - 1, s2.q + 1);
+        return {p: s2.p, t: t3, w: nrm(cross(t3, rd)), hw: HW, rgb: rgbs[near], ai: hr[near].a.CA[3]};
+      });
+      slab(sm, HT);
+      ends.set(hr[0].ri, {p: sm[0].p, t: sm[0].t, side: 'start'});
+      ends.set(hr[L - 1].ri, {p: sm[sm.length - 1].p, t: sm[sm.length - 1].t, side: 'end'});
+    }
+    k = e + 1;
+  }
+  // ---- loops and turns: a thin round tube on a smooth curve through the Cα atoms, from the end of one helix/arrow to
+  // the start of the next (NGL's cartoon skips stretches shorter than 4 residues, so these are drawn here too)
+  const cls = r => out.strandRes.has(r.ri) ? 'E' : out.helixRes.has(r.ri) ? 'H' : 'C';
+  const crv = (pts, tin, tout) => {          // Catmull–Rom through pts; tin / tout set the direction at the two ends
+    const L2 = pts.length; if (L2 < 2) return pts;
+    const ph0 = tin ? add(pts[0], tin, -len(sub(pts[1], pts[0]))) : add(pts[0], sub(pts[0], pts[1]));
+    const ph1 = tout ? add(pts[L2 - 1], tout, len(sub(pts[L2 - 1], pts[L2 - 2]))) : add(pts[L2 - 1], sub(pts[L2 - 1], pts[L2 - 2]));
+    const ext = [ph0, ...pts, ph1], o = [];
+    const cr = (p0, p1, p2, p3, t) => [0, 1, 2].map(i => 0.5 * ((2 * p1[i]) + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t * t + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t * t * t));
+    for (let q = 1; q + 2 < ext.length; q++) for (let s2 = 0; s2 < 6; s2++) o.push({p: cr(ext[q - 1], ext[q], ext[q + 1], ext[q + 2], s2 / 6), q: q - 1, t: s2 / 6});
+    o.push({p: pts[L2 - 1], q: L2 - 1, t: 0});
+    return o;
+  };
+  // a tube along samples, coloured and picked by the residue each part belongs to
+  const sweepS = (sm, rad = 0.22 + ex) => {
+    if (sm.length < 2) return;
+    const S = 10, b = P.length / 3, ps = sm.map(x => x.p);
+    let u = null;
+    sm.forEach((x, q) => {
+      const t = nrm(sub(ps[Math.min(ps.length - 1, q + 1)], ps[Math.max(0, q - 1)]));
+      if (!u) { u = Math.abs(t[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]; u = nrm(cross(t, u)); }
+      u = nrm(sub(u, t.map(y => y * dot(u, t)))); const v = cross(t, u);
+      curAI = x.ai;
+      for (let k2 = 0; k2 <= S; k2++) { const a = 2 * Math.PI * k2 / S, nv = add(add([0, 0, 0], u, Math.cos(a)), v, Math.sin(a)); vtx(add(x.p, nv, rad), nv, x.rgb); }
+    });
+    for (let q = 0; q + 1 < sm.length; q++) for (let k2 = 0; k2 < S; k2++) { const a0 = b + q * (S + 1) + k2; quad(a0, a0 + S + 1, a0 + S + 2, a0 + 1); }
+  };
+  const emit = (a, b) => {          // loop residues a..b (b = a - 1: none, the two elements touch)
+    const prev = a - 1 >= 0 && linked(res[a - 1], res[a]) && cls(res[a - 1]) !== 'C' ? res[a - 1] : null;
+    const next = b + 1 < res.length && linked(res[b], res[b + 1]) && cls(res[b + 1]) !== 'C' ? res[b + 1] : null;
+    const run = b >= a ? res.slice(a, b + 1) : [];
+    const pe = prev && ends.get(prev.ri), ne = next && ends.get(next.ri);
+    const pts = [], own = [];
+    if (pe) { pts.push(pe.p); own.push(prev); }
+    run.forEach(r => { pts.push(ca(r)); own.push(r); });
+    if (ne) { pts.push(ne.p); own.push(next); }
+    if (pts.length < 2) return;
+    const sm = crv(pts, pe && pe.t, ne && ne.t).map(x => {
+      // colour and picking: the residue nearest along the curve; the joins take the loop's colour, not the element's
+      const qi = x.t < 0.5 ? x.q : Math.min(own.length - 1, x.q + 1);
+      let r = own[qi];
+      if (run.length && cls(r) !== 'C') r = qi === 0 ? run[0] : run[run.length - 1];
+      return {p: x.p, rgb: rgbOf(col(r.a.CA[3])), ai: r.a.CA[3]};
+    });
+    sweepS(sm);
+  };
+  k = 0;
+  while (k < res.length) {
+    if (cls(res[k]) === 'C') {
+      let b = k; while (linked(res[b], res[b + 1]) && cls(res[b + 1]) === 'C') b++;
+      emit(k, b); k = b + 1; continue;
+    }
+    const nx = res[k + 1];
+    if (linked(res[k], nx) && cls(nx) !== 'C' && cls(nx) !== cls(res[k])) emit(k + 1, k);
+    k++;
+  }
+  if (P.length) out.mesh = {position: new Float32Array(P), color: new Float32Array(C), normal: new Float32Array(N), index: new Uint32Array(I), primitiveId: new Float32Array(ID)};
+  return out;
+}
+function setSheetArrow(on) {
+  sheetArrow = on === true || +on ? 2 : 0;    // older sessions: 1 (arrows only) now means the PyMOL-like style
+  try { localStorage.setItem('pdv_sheet_arrow', sheetArrow); } catch (e) {}
+  const sel = $('#sheetArrow'); if (sel) sel.value = String(sheetArrow);
+  const back = active;
+  structs.forEach((S, i) => { if (!S.comp) return; activate(i); chains.forEach(chainReps); try { drawSym(); } catch (e) {} });
+  if (back >= 0 && structs[back]) activate(back);
 }
 function repSpecs(ch) {
   const out = [];
@@ -2026,7 +2353,17 @@ function repSpecs(ch) {
   const c = cs ? CONS_SCHEME : rb ? RB_SCHEME : ch.color;
   const add = (t, p) => out.push([t, p]);
   const el = cs ? {color: CONS_SCHEME} : rb ? {color: RB_EL_SCHEME} : {color: 'element', colorValue: hexNum(ch.color)};
-  const cartoon = () => { add('cartoon', {sele: s, color: c, ...cartOpParams()}); if (ch.nucleic) add('base', {sele: `:${n} and nucleic`, color: c, ...cartOpParams()}); };
+  const cartoon = () => {
+    if (sheetArrow && comp) {
+      /* "clear secondary structure" (PyMOL-like): helices as NGL ribbons cut exactly at their ends, β strands as flat arrows
+         (strandArrows), everything else as a thin round tube that runs into the neighbouring helix or strand */
+      const A = strandArrows(n, c);
+      // loops and turns are part of A.mesh as well
+      if (A.mesh) add('__arrow', {...A.mesh, args: {n, c}});
+      if (ch.nucleic) add('cartoon', {sele: `:${n} and nucleic`, color: c, ...cartOpParams()});
+    } else add('cartoon', {sele: s, color: c, ...cartOpParams()});
+    if (ch.nucleic) add('base', {sele: `:${n} and nucleic`, color: c, ...cartOpParams()});
+  };
   switch (ch.type) {
     case 'cartoon': cartoon(); break;
     case 'cartoon+sc': cartoon(); add('licorice', {sele: `:${n} and protein and sidechainAttached and not hydrogen`, ...el}); break;
@@ -2182,8 +2519,12 @@ const rbColor = a => {
   const s = a.structure;
   if (stFlag(s, '__plddt')) return plddtColor(a.bfactor);
   if (rainbowMode === 'plddt') return stFlag(s, '__exp') ? 0xc8c8c8 : plddtColor(a.bfactor);   // entries opened by PDB ID (experimental) stay grey
+  if (rainbowMode === 'ss') return ssColor(a);
   const t = rbT(a); return t < 0 ? 0xc8c8c8 : rampColor(rainbowMode === 'rainbowcb' ? RAMP_CB : RAMP_RB, t);
 };
+/* secondary structure (from the file, or assigned by NGL): helix red, strand sky blue, the rest light grey */
+const SS_COL = {helix: 0xe8484f, strand: 0x41b6f0, coil: 0xc4c4c4};
+function ssColor(a) { const s = a.sstruc; return s === 'h' || s === 'g' || s === 'i' ? SS_COL.helix : s === 'e' || s === 'b' ? SS_COL.strand : SS_COL.coil; }
 const EL_COL = {N: 0x3050f8, O: 0xff0d0d, S: 0xffff30, P: 0xff8000, SE: 0xffa100, H: 0xffffff};
 const RB_SCHEME = NGL.ColormakerRegistry.addScheme(function () { this.atomColor = rbColor; }, 'nc-rainbow');
 // sticks: carbon in the N→C colour, other elements in their usual colours
@@ -2492,7 +2833,7 @@ $('#surfOp').onchange = () => { stash(); spotRefresh(); };
 /* ---------- colour by structure (one colour per structure) ---------- */
 $('#colorBy').onchange = e => {
   const v = e.target.value;
-  rainbowMode = v === 'rainbow' || v === 'rainbowcb' || v === 'plddt' ? v : '';
+  rainbowMode = v === 'rainbow' || v === 'rainbowcb' || v === 'plddt' || v === 'ss' ? v : '';
   if (!structs.length) return;
   const byStruct = v === 'struct', back = active;
   const pal = PALETTES[$('#palette').value];
@@ -2510,6 +2851,7 @@ $('#colorBy').onchange = e => {
   activate(back);
   renderChains(); renderSeq();
   status(rainbowMode === 'plddt' ? '予測の信頼度（pLDDT）で色分けしています：' + PLDDT_BANDS.map(b => b[2]).join('・') + '。PDB ID で開いた実験構造は灰色です（手元のファイルは B 因子の欄の値で塗ります）'
+    : rainbowMode === 'ss' ? '二次構造で色分けしています：ヘリックス＝赤、βストランド＝水色、それ以外＝薄い灰色（二次構造はファイルの記載、なければ NGL が割り当てたもの）'
     : rainbowMode ? `N末から C末（核酸は 5'から 3'）に向かって、Chainごとに紫→緑→黄で塗っています。クリックした残基のスティックの炭素も同じ色です`
     : byStruct ? '構造ごとに単色で表示しています（Chainの色パネルで個別に変えることもできます）' : 'Chainごとの色に戻しました');
 };
@@ -3076,7 +3418,7 @@ const IFE_KEY = 'pdv_ifc_emph';
 const ifcEmph = (() => { const d = {other: 'show', selfT: 0}; try { Object.assign(d, JSON.parse(localStorage.getItem(IFE_KEY) || '{}')); } catch (e) {}
   if (d.self === 'fade' && !d.selfT) d.selfT = 70; delete d.self; d.selfT = Math.min(90, Math.max(0, +d.selfT || 0)); return d; })();
 const ifcEmphOn = () => ifcEmph.other !== 'show' || ifcEmph.selfT > 0;
-const isCartoonRep = r => { const t = r.repr && r.repr.type; return t === 'cartoon' || t === 'base' || t === 'backbone'; };
+const isCartoonRep = r => { const t = r.repr && r.repr.type; return !r.__pickOnly && (!!r.__arrow || t === 'cartoon' || t === 'base' || t === 'backbone'); };
 function ifcSelfOpacity(ch) {
   const op = 1 - ifcEmph.selfT / 100;
   ch.reps.forEach(r => { if (isCartoonRep(r)) r.setParameters(op < 0.995 ? {opacity: op, depthWrite: true, side: 'front'} : cartOpParams()); });
@@ -3086,7 +3428,7 @@ function emphChain(ch) {
   const T = ifc.chB === '*' ? null : new Set([ifc.chA, ifc.chB]);
   if (!T || T.has(ch.name)) {
     if (ifcEmph.selfT > 0) ifcSelfOpacity(ch);
-  } else if (ifcEmph.other === 'fade') ch.reps.forEach(r => r.setParameters({opacity: 0.15, depthWrite: false, side: 'front'}));
+  } else if (ifcEmph.other === 'fade') ch.reps.forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: 0.15, depthWrite: false, side: 'front'}); });
   else if (ifcEmph.other === 'hide') ch.reps.forEach(r => r.setVisibility(false));
 }
 function ifcEmphRedraw() { if (comp) { chains.forEach(chainReps); applyHet(); drawSym(); } }
@@ -3379,7 +3721,7 @@ function mapGroup(m) {
 }
 function mapGroupNote(list) {
   const m = list[0];
-  if (m.srv) return m.srv.src === 'mtz' ? `MTZ（${m.srv.id}）` : m.srv.src === 'em' ? 'EMDB（密度サーバー）' : 'PDBe 密度サーバー';
+  if (m.srv) return m.srv.src === 'mtz' ? `${/\.cif$/i.test(m.srv.id) ? 'マップ係数' : 'MTZ'}（${m.srv.id}）` : m.srv.src === 'em' ? 'EMDB（密度サーバー）' : 'PDBe 密度サーバー';
   if (m.source && m.source.type === 'url') return /rcsb/.test(m.source.url || '') ? 'RCSB のマップファイル' : 'PDBe のマップファイル';
   return '手元のファイル';
 }
@@ -3580,7 +3922,7 @@ async function srvFetch(srv, force) {
   let txt;
   try {
     const r = await fetch(url, {signal: ctrl.signal});
-    if (!r.ok) throw new Error('HTTP ' + r.status + (r.status === 404 ? '（このエントリーの密度がサーバーにありません）' : ''));
+    if (!r.ok) throw new Error('HTTP ' + r.status + (r.status === 404 ? '（このエントリーの密度がサーバーにありません。公開されたばかりの構造なら「RCSB のマップ係数から計算」を試してください）' : ''));
     txt = await r.text();
   } catch (e) { if (e.name !== 'AbortError') status(`密度の取得に失敗: ${srv.label}（${e.message || e}）`, true); return; }
   if (ctrl !== srv.ctrl) return;
@@ -3727,7 +4069,7 @@ function mtzMap(mtz, fi, pi, opt = {}) {
   const nc = mtz.ncol, D = mtz.data, H = mtz.cols.findIndex(c => c.type === 'H' && /^H$/i.test(c.label)),
         K = mtz.cols.findIndex(c => c.type === 'H' && /^K$/i.test(c.label)), L = mtz.cols.findIndex(c => c.type === 'H' && /^L$/i.test(c.label));
   if (H < 0 || K < 0 || L < 0) throw new Error('MTZ に H・K・L の列がありません');
-  const ops = mtz.symm.map(parseSymm);
+  const ops = mtz.ops || mtz.symm.map(parseSymm);
   const miss = v => Number.isNaN(v) || (!Number.isNaN(mtz.missing) && v === mtz.missing);
   let hm = 0, km = 0, lm = 0;
   for (let r = 0; r < mtz.nref; r++) {
@@ -3827,21 +4169,26 @@ function mtzShow(srv, a, b, c) {
 }
 /* read an MTZ with map coefficients and show 2mFo-DFc and mFo-DFc like density-server maps */
 async function loadMtz(f, restore) {
+  if (/\.cif(\.gz)?$/i.test(f.name)) return loadCoefFiles([f], restore);      // wwPDB map coefficients (session restore)
   const nextFrame = () => new Promise(r => setTimeout(r, 30));
   status(`MTZ を読み込み中: ${f.name} …`); await nextFrame();
   let mtz;
   try { mtz = parseMtz(await f.arrayBuffer()); }
   catch (e) { status(`MTZ を読めませんでした: ${f.name}（${e.message || e}）`, true); return; }
+  return mtzSrv(mtz, f, restore);
+}
+async function mtzSrv(mtz, f, restore, what = 'MTZ ') {
+  const nextFrame = () => new Promise(r => setTimeout(r, 30));
   const pick = mtzPick(mtz);
   if (!pick.normal && !pick.diff) {
     status(`${f.name}: マップ用の列（2FOFCWT/PH2FOFCWT、FWT/PHWT など）が見つかりません。列: ${mtz.cols.map(c => c.label).join(', ')}`, true); return;
   }
-  const group = (restore && restore.group) || (structs[active] && structs[active].name) || f.name.replace(/\.mtz$/i, '');
+  const group = (restore && restore.group) || (structs[active] && structs[active].name) || f.name.replace(/\.(mtz|cif)$/i, '');
   const srv = {src: 'mtz', id: f.name, label: f.name, group, box: (restore && restore.box) || 12, center: null, all: false, ctrl: null, maps: [], mtz: {}, file: f};
   const chans = [['normal', '2Fo-Fc', 'normal'], ['diff', 'Fo-Fc', 'diff']];
   for (const [k, nm, kind] of chans) {
     if (!pick[k]) continue;
-    status(`${f.name}: ${nm} を計算中（${pick[k].f} / ${pick[k].p}、空間群 ${mtz.spg || '?'}、対称操作 ${mtz.symm.length} 個）…`); await nextFrame();
+    status(`${f.name}: ${nm} を計算中（${pick[k].f} / ${pick[k].p}、空間群 ${mtz.spg || '?'}、対称操作 ${(mtz.ops || mtz.symm).length} 個）…`); await nextFrame();
     try { srv.mtz[k] = mtzMap(mtz, pick[k].fi, pick[k].pi); }
     catch (e) { status(`${f.name}: ${nm} の計算に失敗（${e.message || e}）`, true); continue; }
     const set = (restore && restore.sets && restore.sets[k]) || {};
@@ -3851,7 +4198,131 @@ async function loadMtz(f, restore) {
   if (!srv.maps.length) return;
   servers.push(srv); renderMaps(); srvFetch(srv, true);
   const M = srv.mtz.normal || srv.mtz.diff;
-  status(`MTZ から密度を計算しました: ${f.name}（格子 ${M.n.join('×')}${pick.normal && pick.normal.guess ? '、列は推測: ' + pick.normal.f + '/' + pick.normal.p : ''}）`);
+  status(`${what}から密度を計算しました: ${f.name}（格子 ${M.n.join('×')}${pick.normal && pick.normal.guess ? '、列は推測: ' + pick.normal.f + '/' + pick.normal.p : ''}）`);
+}
+/* ---------- wwPDB map coefficients (mmCIF) ----------
+   The wwPDB validation pipeline publishes 2mFo-DFc and mFo-DFc map coefficients for every X-ray entry
+   (<id>_validation_2fo-fc_map_coef.cif with _refln.pdbx_FWT / pdbx_PHWT, and <id>_validation_fo-fc_map_coef.cif with
+   _refln.pdbx_DELFWT / pdbx_DELPHWT). They are turned into the same table as an MTZ and go through mtzMap.
+   Symmetry: the file's own operator list if it has one, otherwise the space group of the loaded structure (or of the file)
+   expanded by NGL. */
+async function readMaybeGz(buf) {
+  const u = new Uint8Array(buf);
+  if (u[0] === 0x1f && u[1] === 0x8b) {
+    if (typeof DecompressionStream !== 'function') throw new Error('このブラウザは .gz を展開できません。展開してから読み込んでください');
+    return await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  }
+  return new TextDecoder().decode(u);
+}
+const isCoefCif = t => /_refln\.pdbx_(DEL)?FWT\b/.test(t);
+function coefPart(b) {
+  const L = b.loops, it = b.items;
+  const kind = L['_refln.pdbx_FWT'] ? 'normal' : L['_refln.pdbx_DELFWT'] ? 'diff' : null;
+  if (!kind) return null;
+  const F = kind === 'normal' ? L['_refln.pdbx_FWT'] : L['_refln.pdbx_DELFWT'], P = kind === 'normal' ? L['_refln.pdbx_PHWT'] : L['_refln.pdbx_DELPHWT'];
+  if (!P) return null;
+  const g = k => parseFloat(it[k]);
+  const cell = ['length_a', 'length_b', 'length_c', 'angle_alpha', 'angle_beta', 'angle_gamma'].map(k => g('_cell.' + k));
+  let spg = it['_symmetry.space_group_name_H-M'] || it['_space_group.name_H-M_alt'] || '';
+  if (spg === '?' || spg === '.') spg = '';
+  return {kind, h: L['_refln.index_h'], k: L['_refln.index_k'], l: L['_refln.index_l'], F, P,
+          cell: cell.every(v => isFinite(v) && v > 0) ? cell : null, spg, symm: L['_space_group_symop.operation_xyz'] || L['_symmetry_equiv.pos_as_xyz'] || []};
+}
+/* NGL's UNITCELL assembly (Cartesian 4x4, column-major) -> fractional {R, t} */
+function opsFromNgl(uc, list) {
+  const C = uc.cartToFrac.elements, Fm = uc.fracToCart.elements;
+  const mul = (a, b) => { const o = new Array(16).fill(0); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) { let x = 0; for (let k = 0; k < 4; k++) x += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = x; } return o; };
+  return list.map(M => { const X = mul(C, mul(M.elements, Fm)); return {R: [0, 1, 2].map(r => [0, 1, 2].map(c => Math.round(X[c * 4 + r]))), t: [0, 1, 2].map(r => X[12 + r])}; });
+}
+async function symOpsFor(spg, cell) {
+  const f = (v, w, d) => v.toFixed(d).padStart(w);
+  const pdb = 'CRYST1' + f(cell[0], 9, 3) + f(cell[1], 9, 3) + f(cell[2], 9, 3) + f(cell[3], 7, 2) + f(cell[4], 7, 2) + f(cell[5], 7, 2) + ' ' + spg.padEnd(11).slice(0, 11) + '   1\n' +
+              'ATOM      1  CA  ALA A   1       0.000   0.000   0.000  1.00  0.00           C\nEND\n';
+  const st = await NGL.autoLoad(new Blob([pdb], {type: 'text/plain'}), {ext: 'pdb'});
+  const asm = st && st.biomolDict && st.biomolDict.UNITCELL;
+  if (!st.unitcell || !asm || !asm.partList.length) throw new Error(`空間群「${spg}」の対称操作が分かりません`);
+  return opsFromNgl(st.unitcell, asm.partList[0].matrixList);
+}
+async function loadCoef(texts, name, restore) {
+  const nextFrame = () => new Promise(r => setTimeout(r, 30));
+  status(`マップ係数を読み込み中: ${name} …`); await nextFrame();
+  try {
+    const parts = [];
+    for (const t of texts) for (const b of parseCif(t)) { if (!b.loops['_refln.index_h']) continue; const p = coefPart(b); if (p) parts.push(p); }
+    if (!parts.length) throw new Error('マップ係数（_refln.pdbx_FWT / pdbx_PHWT か pdbx_DELFWT / pdbx_DELPHWT）が見つかりません');
+    let cell = (parts.find(p => p.cell) || {}).cell, spg = (parts.find(p => p.spg) || {}).spg || '';
+    const symm = (parts.find(p => p.symm.length) || {}).symm;
+    const S = structs[active], st = S && S.comp && S.comp.structure, uc = st && st.unitcell, asm = st && st.biomolDict && st.biomolDict.UNITCELL;
+    const norm = x => (x || '').replace(/\s+/g, '').toUpperCase();
+    if (!cell && uc) cell = [uc.a, uc.b, uc.c, uc.alpha, uc.beta, uc.gamma];
+    if (!cell) throw new Error('格子定数が分かりません。先に構造を読み込んでください');
+    let ops = symm && symm.length ? symm.map(parseSymm) : null;
+    if (!ops && uc && asm && asm.partList.length && (!spg || norm(spg) === norm(uc.spacegroup))) { ops = opsFromNgl(uc, asm.partList[0].matrixList); spg = spg || uc.spacegroup; }
+    if (!ops && spg) ops = await symOpsFor(spg, cell);
+    if (!ops) throw new Error('空間群が分かりません。先に構造を読み込んでください');
+    // one table: H K L, then F/phase for each map that is present
+    const kinds = ['normal', 'diff'].filter(k => parts.some(p => p.kind === k));
+    const cols = [{label: 'H', type: 'H'}, {label: 'K', type: 'H'}, {label: 'L', type: 'H'}];
+    const at = {};
+    kinds.forEach(k => { at[k] = cols.length; cols.push(k === 'normal' ? {label: 'FWT', type: 'F'} : {label: 'DELFWT', type: 'F'}, k === 'normal' ? {label: 'PHWT', type: 'P'} : {label: 'PHDELWT', type: 'P'}); });
+    const nc = cols.length, idx = new Map(), rows = [];
+    for (const p of parts) {
+      const c = at[p.kind];
+      for (let i = 0; i < p.h.length; i++) {
+        const h = +p.h[i], k = +p.k[i], l = +p.l[i], key = h + ',' + k + ',' + l;
+        let r = idx.get(key);
+        if (r == null) { r = rows.length; idx.set(key, r); const row = new Array(nc).fill(NaN); row[0] = h; row[1] = k; row[2] = l; rows.push(row); }
+        rows[r][c] = parseFloat(p.F[i]); rows[r][c + 1] = parseFloat(p.P[i]);
+      }
+    }
+    const data = new Float32Array(rows.length * nc);
+    rows.forEach((row, r) => row.forEach((v, j) => data[r * nc + j] = v));
+    const mtz = {cols, symm: [], ops, cell, ncol: nc, nref: rows.length, missing: NaN, spg, data};
+    const file = new File([texts.join('\n')], name.replace(/\.gz$/i, ''));
+    return mtzSrv(mtz, file, restore, 'マップ係数');
+  } catch (e) { status(`マップ係数を読めませんでした: ${name}（${e.message || e}）`, true); }
+}
+async function loadCoefFiles(files, restore) {
+  try {
+    const texts = await Promise.all(files.map(async f => readMaybeGz(await f.arrayBuffer())));
+    const stem = files[0].name.replace(/\.gz$/i, '').replace(/\.cif$/i, '');
+    const name = files.length === 1 ? stem + '.cif' : stem.replace(/_(2fo-fc|fo-fc)_map_coef$/i, '').replace(/_validation$/i, '') + '_map_coef.cif';
+    return loadCoef(texts, name, restore);
+  } catch (e) { status(`マップ係数を読めませんでした: ${files[0].name}（${e.message || e}）`, true); }
+}
+/* the map coefficients of a released PDB entry, straight from the wwPDB validation archive at RCSB PDB */
+async function loadCoefById() {
+  if (!needId()) return;
+  const id = pdbId.toLowerCase();
+  if (!/^[0-9][0-9a-z]{3}$/.test(id)) return status('4 文字の PDB ID の構造で使えます', true);
+  const base = `https://files.rcsb.org/pub/pdb/validation_reports/${id.slice(1, 3)}/${id}/${id}_validation_`;
+  status(`マップ係数を RCSB PDB から取得中: ${pdbId} …`);
+  const texts = [], miss = [];
+  for (const k of ['2fo-fc', 'fo-fc']) {
+    try {
+      const r = await fetch(`${base}${k}_map_coef.cif.gz`);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      texts.push(await readMaybeGz(await r.arrayBuffer()));
+    } catch (e) { miss.push(`${k}（${e.message || e}）`); }
+  }
+  if (miss.length) log(`${pdbId}: 取得できなかったマップ係数: ${miss.join('、')}`);
+  if (!texts.length) return status(`${pdbId} のマップ係数を RCSB PDB から取得できませんでした。X 線構造でない、構造因子が登録されていない、または通信が止められた可能性があります（RCSB のエントリーのページの「Download Files」から取ったファイルは「MTZ・マップ係数から計算」で読み込めます）`, true);
+  return loadCoef(texts, `${id}_map_coef.cif`);
+}
+/* several files at once: wwPDB map-coefficient CIFs are merged into one 2Fo-Fc + Fo-Fc set; everything else as usual */
+async function routeFiles(files, asMap) {
+  const coef = [], rest = [];
+  for (const f of files) {
+    const {ext} = extOf(f.name);
+    if (ext === 'cif' || ext === 'mmcif') {
+      let head = '';
+      try { head = /\.gz$/i.test(f.name) ? await readMaybeGz(await f.arrayBuffer()) : await f.slice(0, 400000).text(); } catch (e) {}
+      if (isCoefCif(head)) { coef.push(f); continue; }
+    }
+    rest.push(f);
+  }
+  rest.forEach(f => handleFile(f, asMap));
+  if (coef.length) loadCoefFiles(coef);
 }
 function addServer(src, id, label, channels, box = 12) {
   const srv = {src, id, label, box, center: null, all: false, ctrl: null, maps: []};
@@ -3935,11 +4406,10 @@ function applyPendingAbs(m) {
   status(`${m.name}: EMDB の推奨レベル ${m.recAbs}（${m.level.toFixed(2)}σ）で表示しています`);
 }
 $('#mtzBtn').onclick = () => $('#mtzFile').click();
-$('#mtzFile').onchange = e => { const f = e.target.files[0]; if (f) loadMtz(f); e.target.value = ''; };
+$('#mtzFile').onchange = e => { const fs = [...e.target.files]; if (fs.length) routeFiles(fs); e.target.value = ''; };
+$('#coefBtn').onclick = () => loadCoefById();
 $('#pdbe2fo').onclick  = () => needId() && loadMap(`https://www.ebi.ac.uk/pdbe/entry-files/${pdbId.toLowerCase()}.ccp4`, {ext: 'ccp4', name: pdbId + ' 2Fo-Fc'}, `${pdbId} 2Fo-Fc（PDBeファイル）`, 'normal', srcUrl);
 $('#pdbeDiff').onclick = () => needId() && loadMap(`https://www.ebi.ac.uk/pdbe/entry-files/${pdbId.toLowerCase()}_diff.ccp4`, {ext: 'ccp4', name: pdbId + ' Fo-Fc'}, `${pdbId} Fo-Fc（PDBeファイル）`, 'diff', srcUrl);
-$('#rcsb2fo').onclick  = () => needId() && loadMap(`https://edmaps.rcsb.org/maps/${pdbId.toLowerCase()}_2fofc.dsn6`, {ext: 'dsn6', name: pdbId + ' 2Fo-Fc'}, `${pdbId} 2Fo-Fc（RCSBファイル）`, 'normal', srcUrl);
-$('#rcsbDiff').onclick = () => needId() && loadMap(`https://edmaps.rcsb.org/maps/${pdbId.toLowerCase()}_fofc.dsn6`, {ext: 'dsn6', name: pdbId + ' Fo-Fc'}, `${pdbId} Fo-Fc（RCSBファイル）`, 'diff', srcUrl);
 
 /* =====================================================================
    Session save / restore (.json)
@@ -4000,8 +4470,8 @@ async function buildSession() {
         s.maps.push({...base, source: {type: 'file', name: m.source.name, ext: m.source.ext, gz: m.source.gz, data: big ? null : await fileToDataURL(m.source.file)}});
       }
     }
-    s.view = {meas: measToJSON(), scale: scaleOn, orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, cartOp, lbl: {...lblPref}, lblOff: [...lblOff],
-              focusSc: $('#focusSc').checked, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
+    s.view = {meas: measToJSON(), scale: scaleOn, orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, cartOp, sheetArrow, lbl: {...lblPref}, lblOff: [...lblOff],
+              focusSc: $('#focusSc').checked, focusR, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
               focusIx: $('#focusIx').checked, focusScope, focusDist: $('#focusDist').checked, seq: $('#seqOn').checked,
               hb: {...HBSET}, ifCat: {...ifCat}, focusCat: {...focusCat}, stick: {...stickPref},
               spot: {on: $('#spotOn').checked, r: +$('#spotR').value, op: +$('#spotOp').value, mode: $('#spotMode').value},
@@ -4096,19 +4566,22 @@ async function openSessionObj(s, auto) {
   status('セッションを復元中…');
   if (Array.isArray(s.colors)) recent = s.colors.slice(0, 8);
   if (s.palette) $('#palette').value = s.palette;
-  if (s.colorBy) { const cb = /^rainbow/.test(s.colorBy) ? 'rainbowcb' : s.colorBy; if ([...$('#colorBy').options].some(o => o.value === cb)) { $('#colorBy').value = cb; rainbowMode = cb === 'rainbowcb' || cb === 'plddt' ? cb : ''; } }
+  if (s.colorBy) { const cb = /^rainbow/.test(s.colorBy) ? 'rainbowcb' : s.colorBy; if ([...$('#colorBy').options].some(o => o.value === cb)) { $('#colorBy').value = cb; rainbowMode = cb === 'rainbowcb' || cb === 'plddt' || cb === 'ss' ? cb : ''; } }
   const v = s.view || {};
   if (v.bg) { $('#bg').value = v.bg; stage.setParameters({backgroundColor: v.bg}); }
   if (v.cam) { $('#cam').value = v.cam; stage.setParameters({cameraType: v.cam}); }
   if (v.look && LOOKS[v.look]) { $('#look').value = v.look; applyLook(); }
   if (v.outline !== undefined) setOutline(v.outline);
   if (v.cartOp !== undefined) setCartOp(v.cartOp);
+  if (v.sheetArrow !== undefined && (v.sheetArrow ? 2 : 0) !== sheetArrow) setSheetArrow(v.sheetArrow);
   if (v.lbl) { Object.assign(lblPref, v.lbl); lblWriteUI(); lblSavePref(); lblRetext(); lblStyle(); lblFrame(); }
   if (Array.isArray(v.meas)) measFromJSON(v.meas);
   if (typeof v.scale === 'boolean') { scaleOn = v.scale; $('#scaleOn').checked = scaleOn; ovlFrame(); }
   if (Array.isArray(v.lblOff)) { lblOff.clear(); v.lblOff.forEach(([k, o]) => lblOff.set(k, o)); }
   if (v.fog !== undefined) setFog(v.fog);
   if (v.focusSc !== undefined) $('#focusSc').checked = v.focusSc;
+  if (v.focusR >= 3 && v.focusR <= 6) focusR = +v.focusR;
+  try { scSync(); } catch (e) {}
   if (v.focusSurf !== undefined) $('#focusSurf').checked = v.focusSurf;
   if (v.focusZoom !== undefined) $('#focusZoom').checked = v.focusZoom;
   if (v.focusIx !== undefined) $('#focusIx').checked = v.focusIx;
@@ -4293,12 +4766,12 @@ async function handleFile(f, asMap = false) {
     openSession(f);
   } else status('対応していない拡張子です: ' + f.name, true);
 }
-$('#structFile').addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ''; });
-$('#mapFile').addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0], true); e.target.value = ''; });
+$('#structFile').addEventListener('change', e => { if (e.target.files[0]) routeFiles([e.target.files[0]]); e.target.value = ''; });
+$('#mapFile').addEventListener('change', e => { if (e.target.files[0]) routeFiles([e.target.files[0]], true); e.target.value = ''; });
 const main = document.querySelector('main'), drop = $('#drop');
 main.addEventListener('dragover', e => { e.preventDefault(); drop.style.display = 'grid'; });
 main.addEventListener('dragleave', e => { if (e.target === drop) drop.style.display = 'none'; });
-main.addEventListener('drop', e => { e.preventDefault(); drop.style.display = 'none'; [...e.dataTransfer.files].forEach(f => handleFile(f)); });
+main.addEventListener('drop', e => { e.preventDefault(); drop.style.display = 'none'; routeFiles([...e.dataTransfer.files]); });
 
 /* =====================================================================
    Crystal symmetry mates (like PyMOL symexp): whole chains within a cutoff
@@ -4394,7 +4867,7 @@ function drawSym(maxChains = 80) {
       const ch = chains.find(x => x.name === n);
       if (!ch || !ch.visible) continue;
       const o = symOpacity(c.symIdx, n), rs = c.symReps[n] = [];
-      repSpecs(ch).forEach(([t, p]) => rs.push(c.addRepresentation(t, {...p, opacity: o})));
+      repSpecs(ch).forEach(([t, p]) => rs.push(addSpec(c, t, p, {opacity: o})));
       if ($('#showLig').checked) rs.push(c.addRepresentation('ball+stick', {sele: `:${n} and ligand and not hydrogen`, color: 'element', colorValue: hexNum($('#ligColor').dataset.v), opacity: o}));
     }
     sym.comps.push(c);
@@ -4440,7 +4913,7 @@ $('#symOn').onchange = () => updateSym();
 $('#symCut').onchange = () => { if ($('#symOn').checked) updateSym(); };
 $('#symOp').oninput = e => {
   $('#symOpV').textContent = (+e.target.value).toFixed(2);
-  if (sym) sym.comps.forEach(c => Object.entries(c.symReps || {}).forEach(([n, rs]) => rs.forEach(r => r.setParameters({opacity: symOpacity(c.symIdx, n)}))));
+  if (sym) sym.comps.forEach(c => Object.entries(c.symReps || {}).forEach(([n, rs]) => rs.forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: symOpacity(c.symIdx, n)}); })));
 };
 /* ---------- picking symmetry copies and turning them into real chains ---------- */
 /* The copies share the molecule's Structure, so NGL reports a click on a copy as a click on the original.
@@ -4513,7 +4986,7 @@ function toggleSymPick(i, ch) {
   const k = symKey(i, ch);
   if (sym.pick.has(k)) sym.pick.delete(k); else sym.pick.add(k);
   const c = sym.comps.find(x => x.symIdx === i);
-  if (c && c.symReps[ch]) c.symReps[ch].forEach(r => r.setParameters({opacity: symOpacity(i, ch)}));
+  if (c && c.symReps[ch]) c.symReps[ch].forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: symOpacity(i, ch)}); });
   renderSymList();
   const s = sym.list[i];
   status(sym.pick.has(k) ? `対称分子 Chain ${ch}（${s.text || symOpText(s.m)}）を選びました。対称分子パネルの「…加えた構造を作る」で解析できるようになります` : `対称分子 Chain ${ch} の選択を外しました`);
@@ -4680,11 +5153,12 @@ function applySpot(list) {
     (chs || []).forEach(ch => {
       if (!ch.visible) return;
       if (!own) {       // another structure: copy its own representations (repSpecs reads the active structure's settings)
-        ch.reps.forEach(r => { const p = r.getParameters(), t = r.repr.type; spotHide(r); spotGhost(c, t, p, ch.color, null); });
+        ch.reps.forEach(r => { spotHide(r); if (r.__arrow || r.__pickOnly) return; const p = r.getParameters(), t = r.repr.type; spotGhost(c, t, p, ch.color, null); });
         return;
       }
       ch.reps.forEach(spotHide);
       repSpecs(ch).forEach(([t, p]) => {
+        if (t === '__arrow') { if (own && inner) focusReps.push(addSpec(comp, t, p)); return; }
         spotGhost(c, t, p, ch.color, inn);
         if (own && inner && t !== 'surface') focusReps.push(comp.addRepresentation(t, {...p, sele: `(${p.sele}) and (${inner})`}));
       });
@@ -4708,6 +5182,7 @@ const FT_KEY = 'pdv_focus_types';
 const focusTypeOn = (() => { const d = {hb: true, salt: true, pi: true, catpi: true, metal: true, water: true, halogen: true, hyd: true, cont: true};
   try { Object.assign(d, JSON.parse(localStorage.getItem(FT_KEY) || '{}')); } catch (e) {} return d; })();
 let flistMin = true;
+var focusR = (() => { try { const v = +localStorage.getItem('pdv_focus_r'); return v >= 3 && v <= 6 ? v : 5; } catch (e) { return 5; } })();
 let focusScope = (() => { try { return localStorage.getItem('pdv_focus_scope') || 'all'; } catch (e) { return 'all'; } })();
 function setFocusScope(v) { focusScope = v === 'sel' ? 'sel' : 'all'; try { localStorage.setItem('pdv_focus_scope', focusScope); } catch (e) {} const sel = $('#focusScope'); if (sel) sel.value = focusScope; if (lastFocus) focusOn(lastFocus, false); }      // the list starts folded: open it with ▸ 開く when the details are needed
 let optsHintSeen = (() => { try { return localStorage.getItem('pdv_opts_hint') === '1'; } catch (e) { return false; } })();
@@ -4790,7 +5265,7 @@ function bottomUpdate() {
   btabsEdges(true);
   const S = structs[active], ng = S && S.groups ? S.groups.length : 0;
   $('#btGrN').textContent = ng ? ` ${ng}` : '';
-  $('#btIxN').textContent = hasIx ? ` ${ixHas}` : lastFocus && lastFocus.length && !lastFocus.chainSel && $('#focusIx').checked ? ' 0' : '';
+  $('#btIxN').textContent = hasIx ? ` ${ixHas}` : lastFocus && lastFocus.length && $('#focusIx').checked ? ' 0' : '';
   if ((was === 'block') !== any) stage.handleResize();
 }
 $('#flist').addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('fdet')) fOpenSet = e.target.open; }, true);
@@ -4895,7 +5370,9 @@ function focusInteractions(st, ap, list, idx) {
       const ck = o => o.i !== undefined ? 'i' + o.i : `${o.x.toFixed(2)},${o.y.toFixed(2)},${o.z.toFixed(2)}`;
       // scope "all": every interaction among the residues drawn as sticks (the clicked ones and their 5 Å surroundings);
       // scope "sel": only interactions that involve a clicked residue
-      const useAll = focusScope === 'all' && $('#focusSc').checked;
+      // whole chains picked from their names: only interactions with other molecules (other chains, ligands, nucleic acids, water)
+      const cset = list.chainSel ? new Set(list.map(f => f.chainname)) : null;
+      const useAll = !cset && focusScope === 'all' && $('#focusSc').checked;
       let srcRes = list;
       const shownSet = new Set(idx);
       if (useAll) {
@@ -4909,6 +5386,7 @@ function focusInteractions(st, ap, list, idx) {
           ap.index = i;
           if (ap.isWater() || ap.element === 'H' || ap.modelIndex !== f.modelIndex) return;
           if (useAll && !shownSet.has(i)) return;
+          if (cset && cset.has(ap.chainname) && ap.isPolymer()) return;
           const self = ap.chainname === f.chainname && ap.resno === f.resno && (ap.inscode || '') === (f.inscode || '');
           const adjacent = ap.chainname === f.chainname && Math.abs(ap.resno - f.resno) === 1 && ap.isPolymer();
           if (!self && !adjacent) partner.push(i);
@@ -5024,20 +5502,12 @@ function focusOn(list, move) {
   clearFocusDraw();
   seqMark(list);
   if (!list.length) return;
-  // whole chains picked from their names in the sequence strip: only the red outline, no sticks, surroundings or interactions
-  if (list.chainSel) {
-    [...new Set(list.map(f => f.chainname))].forEach(n => {
-      const ch = chains.find(c => c.name === n);
-      if (ch && ch.visible) outlineSpecs(ch, `:${n} and /0`).forEach(([t, prm]) => focusReps.push(comp.addRepresentation(t, prm)));
-    });
-    return;
-  }
   const last = list[list.length - 1];
   move = move && $('#focusZoom').checked;
   try {
     const st = comp.structure, ap = st.getAtomProxy();
-    // surroundings on: every residue within 5 Å; off: just the selected residues
-    const near = st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(list.map(focusSele).join(' or ')), $('#focusSc').checked ? 5 : 0.01));
+    // surroundings on: every residue within focusR Å (3–6, set in ②); off: just the selected residues
+    const near = st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(list.map(focusSele).join(' or ')), $('#focusSc').checked ? focusR : 0.01));
     const idx = [], lab = [], seenRes = new Set(), models = new Set(list.map(f => f.modelIndex));
     near.forEach(i => {
       ap.index = i;
@@ -5074,7 +5544,7 @@ function focusOn(list, move) {
       const ls = linkSumText(); if (ls) setInfo(infoBase + `\n🔗 ${ls}`);
     }
     applySpot(list);
-    setLabelSet('focus', comp, lab);
+    setLabelSet('focus', comp, list.chainSel ? [] : lab);     // whole chains: hundreds of names would only pile up
   } catch (err) { log('周囲表示: ' + (err.message || err)); }
 }
 function unfocus() {
@@ -5495,7 +5965,7 @@ function renderSeq() {
   bottomUpdate();
   stash();
   const multi = structs.length > 1;
-  el.innerHTML = seqData.map((s, ci) => {
+  el.innerHTML = '<div class="sqw">' + seqData.map((s, ci) => {
     const S = structs.find(x => x.sid === s.sid);
     if (!S) return '';
     const ch = S.chains.find(c => c.name === s.ch) || {color: '#ccc', visible: true};
@@ -5512,8 +5982,8 @@ function renderSeq() {
     });
     // long structure names are cut with "…" so the chain name stays visible; the full name is in the tooltip
     const lab = multi ? `<span class="sqn">${esc(S.name)}</span><span class="sqk">:${esc(s.ch)}</span>` : esc(s.ch);
-    return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:${multi ? 7 : 3.2}em" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）">${lab}</span>${html}</div>`;
-  }).join('');
+    return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:calc(${multi ? 7 : 3.2}em + 8px)" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）">${lab}</span>${html}</div>`;
+  }).join('') + '</div>';   // one wrapper as wide as the longest row, so every chain name can stay pinned at the left
   if (lastFocus) seqMark(lastFocus);
 }
 function seqMark(list) {
@@ -5592,7 +6062,7 @@ $('#seq').addEventListener('click', e => {
     if (add && Array.isArray(lastFocus)) { const have = new Set(lastFocus.map(focusKey)); list = lastFocus.concat(picked.filter(f => !have.has(focusKey(f)))); }
     clearHL();
     focusRef = null;
-    list.chainSel = !(add && Array.isArray(lastFocus)) || !!lastFocus.chainSel;   // chains picked from their names: outline only
+    list.chainSel = !(add && Array.isArray(lastFocus)) || !!lastFocus.chainSel;   // chains picked from their names: no labels, only interactions with other molecules
     focusStay = true;
     try { applySelection(list, null); } finally { focusStay = false; }
     return;
@@ -5744,7 +6214,16 @@ $('#seq').addEventListener('mouseleave', clearHL);
   };
   bpaneTall = () => { const mainH = document.querySelector('main').clientHeight || innerHeight; if (h < mainH * 0.4) setH(mainH * 0.45); };
 }
-$('#focusSc').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
+function scSync() {
+  const b = $('#scBtn'); if (!b) return;
+  b.textContent = `周囲 ${focusR} Å`; b.classList.toggle('on', $('#focusSc').checked);
+  const sl = $('#focusR'); if (sl) { sl.value = focusR; sl.nextElementSibling.textContent = focusR.toFixed(1) + ' Å'; }
+}
+$('#focusSc').oninput = () => { scSync(); if (lastFocus) focusOn(lastFocus, false); };
+$('#scBtn').onclick = () => { const c = $('#focusSc'); c.checked = !c.checked; scSync(); if (lastFocus) focusOn(lastFocus, false); try { stash(); } catch (e) {} };
+$('#focusR').oninput = e => { focusR = +e.target.value; try { localStorage.setItem('pdv_focus_r', focusR); } catch (er) {} scSync(); };
+$('#focusR').onchange = () => { if (lastFocus && $('#focusSc').checked) focusOn(lastFocus, false); try { stash(); } catch (e) {} };
+scSync();
 $('#focusSurf').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
 $('#focusScope').value = focusScope;
 $('#focusScope').onchange = e => setFocusScope(e.target.value);
@@ -6098,6 +6577,20 @@ function outlineSync() {
     c.reprList.slice().forEach(r => {
       if (hullSet.has(r)) return;
       const t = r.repr && r.repr.type, K = OUTLINE_K[t];
+      if (r.__arrow && r.__arrowArgs && r.__arrowArgs.n !== undefined) {
+        // ShikaMol's own helices and arrows: a black copy built a little larger in every direction
+        if (!outlineLevel || !c.visible || !r.visible || (r.getParameters().opacity ?? 1) < 0.99) return;
+        want.add(r);
+        const A2 = r.__arrowArgs, ex = [0, 0.07, 0.13, 0.2][outlineLevel], sig = 'arrow' + ex + JSON.stringify(c.matrix.elements);
+        const old = hulls.get(r);
+        if (old && old.sig === sig) return;
+        if (old) { hullSet.delete(old.h); try { c.removeRepresentation(old.h); } catch (e) {} }
+        const M = strandArrows(A2.n, A2.c, ex, A2.cp).mesh; if (!M) return;
+        const buf = new NGL.MeshBuffer({position: M.position, color: new Float32Array(M.color.length).fill(0.067), index: M.index, normal: M.normal}, {});
+        const h = c.addBufferRepresentation(buf, {side: 'back', opacity: 1, roughness: 1, metalness: 0});
+        hullSet.add(h); hulls.set(r, {h, sig});
+        return;
+      }
       if (!K || !outlineLevel || !c.visible || !r.visible) return;
       const p = r.getParameters();
       if ((p.opacity ?? 1) < 0.99) return;
@@ -6136,6 +6629,8 @@ function setFog(level) {
 }
 $('#outline').onchange = e => setOutline(e.target.value);
 $('#cartOp').oninput = e => setCartOp(1 - e.target.value / 100);
+$('#sheetArrow').value = String(sheetArrow);
+$('#sheetArrow').onchange = e => { setSheetArrow(+e.target.value); status(sheetArrow ? 'ヘリックスとβストランドをはっきり描き、ループ・ターンを細い筒にしています（βストランドの矢印の先が C 末側）' : 'カートゥーンを標準の描き方に戻しました'); };
 setCartOp(cartOp);
 $('#fogSel').onchange = e => setFog(e.target.value);
 const SOFT_PAL = ['#f6c27a', '#9fd3f0', '#a9b8f5', '#b5dea4', '#f3aebd', '#d3bdf0', '#f0dd8c', '#9fe0d2'];
@@ -6333,7 +6828,7 @@ async function shareLink() {
   q.set('v', stage.viewerControls.getOrientation().toArray().map(x => +x.toFixed(3)).join(','));
   // always written, so the receiver's own saved preferences do not change the picture
   q.set('look', $('#look').value); q.set('ol', outlineLevel); q.set('fog', $('#fogSel').value);
-  q.set('bg', $('#bg').value); q.set('cop', Math.round((1 - cartOp) * 100));
+  q.set('bg', $('#bg').value); q.set('cop', Math.round((1 - cartOp) * 100)); if (sheetArrow) q.set('arw', String(sheetArrow));
   if (stickPref.part === 'side') q.set('sp', 'side');
   if (stickPref.nuc !== 'all') q.set('sn', stickPref.nuc);
   if (linkOn && ok.length > 1) q.set('lk', '1');
@@ -6370,6 +6865,7 @@ async function openShared(q) {
     if (sty.p && PALETTES[sty.p]) $('#palette').value = sty.p;
     if (/^rainbow/.test(sty.cb || '')) { $('#colorBy').value = 'rainbowcb'; rainbowMode = 'rainbowcb'; }
     if (sty.cb === 'plddt') { $('#colorBy').value = 'plddt'; rainbowMode = 'plddt'; }
+    if (sty.cb === 'ss') { $('#colorBy').value = 'ss'; rainbowMode = 'ss'; }
     (sty.s || []).forEach((t, i) => {
       if (!structs[i] || !t) return;
       if (i !== active) activate(i);
@@ -6400,6 +6896,7 @@ async function openShared(q) {
   if (['auto', 'white', 'black'].includes(q.get('lb'))) { lblPref.bgm = q.get('lb'); lblWriteUI(); lblStyle(); lblFrame(); }
   if (q.get('lc') === 'chain') { lblPref.color = 'chain'; lblWriteUI(); lblStyle(); }   // not saved as the receiver's own preference   // not saved as the receiver's own preference
   if (q.has('cop')) setCartOp(1 - Math.min(100, Math.max(0, +q.get('cop') || 0)) / 100);
+  if ((q.get('arw') === '1' || q.get('arw') === '2') && !sheetArrow) setSheetArrow(2);
   const sel = (q.get('sel') || '').split(',').map(x => x.match(/^(.+):(-?\d+)([A-Za-z]?)$/)).filter(Boolean);
   if (sel.length && comp) {
     const list = [], ap = comp.structure.getAtomProxy();
@@ -7502,7 +7999,7 @@ function openCtxMenu(cx, cy) {
     <button data-a="center">ここを中心に</button>
     <button data-a="zoom">ここにズーム</button>
     <div class="msep"></div>
-    <button data-a="around">周囲 5 Å も選択に加える</button>
+    <button data-a="around">周囲 ${focusR} Å も選択に加える</button>
     ${T.sel ? '<button data-a="save">選択を保存</button><button data-a="clear">選択を解除</button>' : '<button data-a="select">この残基を選択</button>'}` : '') + chainHtml) + `
     <div class="msep"></div><button data-a="fit">全体表示に戻す</button>`;
   m.style.display = 'block';
@@ -7558,7 +8055,7 @@ function ctxAct(e) {
   if (a === 'zoom') return comp.autoView(ctxSele(list), 600);
   if (a === 'around') {
     const st = comp.structure, ap = st.getAtomProxy(), out = new Map(list.map(f => [focusKey(f), f]));
-    st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(ctxSele(list)), 5)).forEach(i => {
+    st.getAtomSetWithinGroup(st.getAtomSetWithinSelection(new NGL.Selection(ctxSele(list)), focusR)).forEach(i => {
       ap.index = i; if (ap.isWater() || ap.element === 'H' || ap.modelIndex !== 0) return;
       const f = focusOf(ap), k = focusKey(f); if (out.has(k)) { if (ap.atomname === 'CA') out.set(k, f); return; } out.set(k, f);
     });
@@ -7619,7 +8116,7 @@ addEventListener('keydown', e => {
   if (e.key === 'f' || e.key === 'F') { e.preventDefault(); setMolOnly(!molOnly); }
   else if (e.key === 'Escape' && molOnly && !document.fullscreenElement) setMolOnly(false);
 });
-window.MV = {status, mutAnalyse, mutResIndex, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
+window.MV = {status, get focusShownIdx() { return focusShownIdx; }, mutAnalyse, mutResIndex, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
   chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), measPick: (c, a) => measPick(c, a), get measures() { return measures; }, pxPerA: () => pxPerA(), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }
 </script>
