@@ -179,3 +179,69 @@ JS-Signals
 ------------------------------------------------------------------------
 The npm package signals 1.0.0 declares the MIT License
 (http://www.opensource.org/licenses/mit-license.php) and ships no separate license file.
+
+------------------------------------------------------------------------
+PeptideBuilder (internal coordinates of side chains, used by "Try a substitution")
+------------------------------------------------------------------------
+MIT License
+Copyright (c) 2020 Tien, Sydykova, Meyer, Wilke
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------------------------------------------------------------------------
+Open-Source PyMOL (backbone-independent rotamer library sc_bb_ind.pkl, converted to JSON
+and embedded in index.html, used by "Try a substitution")
+------------------------------------------------------------------------
+
+ Open-Source PyMOL Copyright Notice
+ ==================================
+
+ The Open-Source PyMOL source code is copyrighted, but you can freely
+ use and copy it as long as you don't change or remove any of the
+ Copyright notices. The Open-Source PyMOL product is made available
+ under the following open-source license terms:
+
+ ----------------------------------------------------------------------
+ Open-Source PyMOL is Copyright (C) Schrodinger, LLC.
+
+ All Rights Reserved
+
+ Permission to use, copy, modify, distribute, and distribute modified
+ versions of this software and its built-in documentation for any
+ purpose and without fee is hereby granted, provided that the above
+ copyright notice appears in all copies and that both the copyright
+ notice and this permission notice appear in supporting documentation,
+ and that the name of Schrodinger, LLC not be used in advertising or
+ publicity pertaining to distribution of the software without specific,
+ written prior permission.
+
+ SCHRODINGER, LLC DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
+ NO EVENT SHALL SCHRODINGER, LLC BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+ OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE
+ USE OR PERFORMANCE OF THIS SOFTWARE.
+ ----------------------------------------------------------------------
+
+ PyMOL Trademark Notice
+ ======================
+
+ PyMOL(TM) is a trademark of Schrodinger, LLC. Derivative
+ software which contains PyMOL source code must be plainly
+ distinguished from any and all PyMOL products distributed by Schrodinger,
+ LLC in all publicity, advertising, and documentation.
+
+ The slogans, "Includes PyMOL(TM).", "Based on PyMOL(TM) technology.",
+ "Contains PyMOL(TM) source code.", and "Built using PyMOL(TM).", may
+ be used in advertising, publicity, and documentation of derivative
+ software provided that the notice, "PyMOL is a trademark of Schrodinger,
+ LLC.", is included in a footnote or at the end of the
+ document.
+
+ All other endorsements employing the PyMOL trademark require specific,
+ written prior permission.

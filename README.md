@@ -17,7 +17,7 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 1. Open the address above.
 2. In the "Structure" tab on the left, type a PDB ID (e.g. `7DA1`; the 12-character form such as `pdb_00007da1` also works) and press "Load". Several IDs separated by spaces or commas (e.g. `7DA1 1D66 3PQR`) are loaded one after another. A UniProt ID (e.g. `P04637`) opens the AlphaFold Database prediction. You can also load a local `.pdb` / `.cif` file (or drag and drop it anywhere on the page; maps, MTZ, map coefficients and session `.json` files work the same way).
 3. Click a residue in the viewer (tap on a tablet). The view zooms to it, the surrounding residues (within 5 Å by default) are shown as sticks, interactions are drawn as dashed lines and listed in the "Interactions" tab under the viewer (next to the "Sequence" and "Saved selections" tabs). Click the background to clear; double-click it (double-tap on a tablet) to fit everything and reset the depth view.
-   - The "Within 5 Å" button at the bottom left of the viewer switches between showing only the selected residues and also showing the surrounding residues as sticks. The range (3–6 Å) is set under "② On click" in the Display & export tab.
+   - The "Within 5 Å" button at the bottom left of the viewer switches between showing only the selected residues and also showing the surrounding residues as sticks. The range (3–6 Å) is set under "③ When you click a residue" in the Display & export tab.
    - Clicking a chain name at the left of the sequence strip selects every residue of that chain (the view does not move; Ctrl/⌘+click adds it to the selection). The display is the same as for selected residues, except that no residue labels are drawn and the interaction list keeps only interactions with other molecules (other chains, ligands, nucleic acids, water).
    - "⛶ Full screen" at the top right of the viewer (or the F key) hides the side panel and the tabbed pane and fills the screen with the molecule window; press it again or Esc to go back.
    - The browser's own right-click menu is turned off over the viewer.
@@ -44,9 +44,11 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 ## Features
 
 **Display**
-- Colouring by chain, one colour per structure, or N- to C-terminus (purple → green → yellow), or by secondary structure (helix red, β strand sky blue)
+- Colouring by chain, one colour per structure, N- to C-terminus (purple → green → yellow), secondary structure (helix red, β strand sky blue), amino-acid type, charge (+ blue, − red, His sky blue, neutral grey; a version that also shows Cys in yellow) or polarity (hydrophobic / hydrophilic); the letters of the sequence strip take the same colours
 - Cartoon, sticks, surface and other representations; adjustable cartoon transparency; cartoon styles: standard, or clear secondary structure (close to PyMOL's Flat Sheets + Fancy Sheets: helices as ribbons that do not twist at their ends, β strands as flat arrows, loops and turns as thin tubes; outlines supported; the arrows make parallel and antiparallel sheets clear at a glance)
-- Look: material (standard, matte, flat, soft), outlines, depth fade, and one-click "illustration" and "soft colours" presets
+- Look: material (standard, matte, flat, soft), outlines, depth fade, stick thickness (overall), stick carbon colour, and one-click "illustration" and "soft colours" presets
+- Stick thickness for a selection only: from the right-click menu in the viewer, or in each row of "Saved selections"
+- Colour of selected residues: "Colour" in the right-click menu paints the sticks only, or the cartoon too (switch with "Paint cartoon too" in "Saved selections")
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
 - Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour; text background none, auto, white or black
 - Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
@@ -55,7 +57,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Log: operations, selections and errors since the page was opened, with times (the "Log" tab under the viewer; can be copied)
 - Box selection: drag a rectangle in the viewer to select the residues inside it
 - Spotlight: fade everything farther than a set distance from the residues of interest
-- Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis
+- Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis; show the unit cell as a box, with the cell parameters (a, b, c, α, β, γ) and space group
 - Biological assemblies: load the assembly coordinates registered at RCSB
 - Load and superpose multiple structures (auto, sequence alignment, structure-based or residue numbers; distant homologues with dissimilar sequences can be superposed by structure)
 - Keep a selection in each structure: clicking a residue in another structure leaves the previous structure's sticks and interactions in place, so any residues can be compared side by side, even when numbering differs
@@ -77,20 +79,25 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
   - Distance criteria can be changed in the "Analysis" tab (default hydrogen-bond limit: 3.5 Å donor–acceptor, +0.6 Å when sulfur is involved)
 - Interface analysis between chains: residue pairs at the interface, buried surface area (BSA), and interface area (results in the "Chain interactions" tab under the viewer)
 - Conservation (ConSurf-style): calculate from a multiple sequence alignment (MSA), or load a ConSurf result file
-- Mutation positions: paste a list of mutations (R51A, p.Arg51Ala, …) to show the positions on the structure
-  - Checks the original residue against the structure and suggests the right numbering offset when they do not match
-  - Lists burial, secondary structure, conservation and interactions for each position, with points the structure raises (a charge brought into a buried site, Pro inside a helix, a broken disulfide or salt bridge, …)
-  - Group names colour the positions; a number on each line (ΔΔG from FoldX and the like, activities) colours them blue–white–red
-  - Input in UniProt numbering is possible (converted with PDBe SIFTS for entries opened by PDB ID; AlphaFold models need no conversion)
-  - The table can be copied, and the list is kept in sessions and share links
+- Mutations (Analysis tab; one input box, results in the "Mutations" tab under the viewer)
+  - **Build on the structure** (similar to PyMOL's Mutagenesis): click a residue or type one line such as "A:R51A", then press the button to replace it with another amino acid, try every side-chain rotamer, and compare clashes, hydrogen bonds, salt bridges and burial
+    - In homo-oligomers, the same residue is replaced in every chain with the same sequence at once, so clashes and new interactions between the copies are judged too; each chain can be shown, hidden or zoomed to
+    - "Show the surroundings" adds the residues, waters and ligands around the new side chains; "Show the original residue" overlays the original side chain with its H-bonds and salt bridges, and the counts are compared (polar partners, salt bridges, carbon–carbon contacts)
+    - The main chain and the surroundings stay fixed; this is not a ΔΔG prediction
+  - **List and examine**: write several mutations, one per line; without building them, each position is evaluated from the original structure and listed (each card can then be built on the structure one by one)
+    - The positions of the list (R51A, p.Arg51Ala, …) are shown on the structure; the original residues are checked against the structure, and the right numbering offset is suggested when they do not match
+    - Burial, secondary structure, conservation and interactions are listed for each position, with points the structure raises (a charge brought into a buried site, Pro inside a helix, a broken disulfide or salt bridge, …)
+    - Group names colour the positions; a number on each line (ΔΔG from FoldX and the like, activities) colours them blue–white–red
+    - Input in UniProt numbering is possible (converted with PDBe SIFTS for entries opened by PDB ID; AlphaFold models need no conversion)
+    - The table can be copied, and the list is kept in sessions and share links; up to 10 earlier inputs are kept and can be switched with one button to compare
 - AlphaFold predictions: open by UniProt ID and colour by prediction confidence (pLDDT) in the four bands of the AlphaFold Database (per structure with the colour button in the "All" row of the chain table, or for every structure from the "All structures" colour menu at the top of the Structure tab)
 
 **Output**
 - Measurements: press "📏 Measure" at the top right of the viewer and tap atoms to measure distances, angles and dihedrals
-  - Values are listed in the viewer; hide or remove them one by one or all at once (hidden ones are left out of exported images)
+  - Values are listed in the "Measurements" tab under the viewer; hide or remove them one by one or all at once (hidden ones are left out of exported images)
   - Copy the list; kept in sessions and exported images
 - Scale bar (Å)
-- Molecular dimensions (maximum diameter and lengths along the principal axes): choose the whole structure or a chain in the Display & export tab ("Off" removes them)
+- Molecular dimensions (maximum diameter and lengths along the principal axes): choose the whole structure or a chain under "Measurements" in the Analysis tab ("Off" removes them)
 - PNG export for papers: set the width (mm / inch / px) and resolution (dpi); 600 dpi and above is supported (labels included)
 - Copy the interaction list (paste into a spreadsheet)
 - Save and open sessions: the display and analysis state is saved as a `.json` file
@@ -166,6 +173,8 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
   - Tien MZ, Meyer AG, Sydykova DK, Spielman SJ, Wilke CO. Maximum allowed solvent accessibilites of residues in proteins. *PLoS ONE* 2013;8:e80635. doi:[10.1371/journal.pone.0080635](https://doi.org/10.1371/journal.pone.0080635)
   - Ittisoponpisan S, Islam SA, Khanna T, Alhuzimi E, David A, Sternberg MJE. Can predicted protein 3D structures provide reliable insights into whether missense variants are disease associated? *J. Mol. Biol.* 2019;431:2197–2212. doi:[10.1016/j.jmb.2019.04.009](https://doi.org/10.1016/j.jmb.2019.04.009)
   - Zamyatnin AA. Protein volume in solution. *Prog. Biophys. Mol. Biol.* 1972;24:107–123. doi:[10.1016/0079-6107(72)90005-3](https://doi.org/10.1016/0079-6107(72)90005-3)
+- Trying a substitution: side chains are built from the internal coordinates (bond lengths and angles) of PeptideBuilder (MIT licence), and every rotamer of the Dunbrack lab's backbone-independent rotamer library distributed with Open-Source PyMOL (`sc_bb_ind.pkl`) is tried. A clash is a van der Waals overlap of 0.4 Å or more (the MolProbity criterion). Licence texts are in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt). ShikaMol is separate software and not a PyMOL product of Schrödinger, LLC.
+  - Tien MZ, Sydykova DK, Meyer AG, Wilke CO. PeptideBuilder: A simple Python library to generate model peptides. *PeerJ* 2013;1:e80. doi:[10.7717/peerj.80](https://doi.org/10.7717/peerj.80)
 
 ## Author and contact
 
