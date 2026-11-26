@@ -2172,7 +2172,8 @@ function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicke
       const face = (i0, i1, na, nb) => { const q0 = vtx(A.c[i0], na, ra), q1 = vtx(A.c[i1], na, ra), q2 = vtx(B.c[i1], nb, rb), q3 = vtx(B.c[i0], nb, rb); quad(q0, q1, q2, q3); };
       face(1, 0, A.nv, B.nv); face(3, 2, A.nv.map(x => -x), B.nv.map(x => -x));
       // sides: normal = perpendicular to the edge, in the plane of the sheet (correct for the tapering arrowhead too)
-      const sideN = (i0) => { const e = sub(B.c[i0], A.c[i0]); let s2 = nrm(cross(e, A.nv)); if (dot(s2, sub(A.c[i0], sm[k].p)) < 0) s2 = s2.map(x => -x); return s2; };
+      const shoulder = len(sub(sm[k + 1].p, sm[k].p)) < 1e-6;      // the step from the body to the wider head faces backwards
+      const sideN = (i0) => { if (shoulder) return sm[k].t.map(x => sm[k + 1].hw > sm[k].hw ? -x : x); const e = sub(B.c[i0], A.c[i0]); let s2 = nrm(cross(e, A.nv)); if (dot(s2, sub(A.c[i0], sm[k].p)) < 0) s2 = s2.map(x => -x); return s2; };
       const s0 = sideN(0), s1 = sideN(1);
       { const q0 = vtx(A.c[0], s0, ra), q1 = vtx(A.c[3], s0, ra), q2 = vtx(B.c[3], s0, rb), q3 = vtx(B.c[0], s0, rb); quad(q0, q1, q2, q3); }
       { const q0 = vtx(A.c[2], s1, ra), q1 = vtx(A.c[1], s1, ra), q2 = vtx(B.c[1], s1, rb), q3 = vtx(B.c[2], s1, rb); quad(q0, q1, q2, q3); }
@@ -2225,8 +2226,9 @@ function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicke
       if (body.length) { const b0 = body[0]; body.unshift({...b0, p: add(b0.p, b0.t, -1.0 - ex)}); }
       const headS = samp.slice(baseAt), H = headS.length - 1;
       const head = headS.map((s2, q) => ({p: s2.p, t: headS[0].t3, w: headS[0].w, hw: Math.max(0.02 + ex, HEAD * (1 - q / H)), rgb: headS[0].rgb, ai: s2.ai}));
-      if (body.length >= 2) slab(body, THICK);
-      slab(head, THICK);
+      // one closed solid: the body, a shoulder where it widens into the head (two rings at the same point), the head —
+      // so the outline runs around the whole arrow instead of around a box and a triangle
+      slab(body.length >= 2 ? [...body, ...head] : head, THICK);
       // join to the thin tube of the loops on either side (the tube itself stops at the neighbouring residue)
       const crgb = r => rgbOf(col(r.a.CA[3]));
       // the loop leaves from the very tip of the arrow (and enters the start of the strand) along the strand direction,
