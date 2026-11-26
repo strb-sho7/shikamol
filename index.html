@@ -260,7 +260,18 @@ details.sec[open]>summary::before{transform:rotate(90deg)}
 details.sec>summary .sechint{color:var(--mute);font-size:11px;font-weight:400}
 details.sec>summary:hover{background:#ffffff0a;border-radius:8px}
 details.sec .secbody{padding:2px 10px 10px;border-top:1px solid var(--line)}
-details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8px;border-top:1px dashed var(--line)}
+details.sec .subh{font-size:12.5px;font-weight:700;color:#c3c9d4;margin:14px 0 6px;padding-top:10px;border-top:2px solid #3e4554}
+details.sec{margin-bottom:12px}
+.secbody>.subh:first-child{border-top:0;margin-top:6px;padding-top:0}
+/* the sliders of the Display & export tab all have the same length */
+.tabpane[data-tab="view"] .frow>.fc{flex-wrap:nowrap}
+.tabpane[data-tab="view"] .frow>.fc>input[type=range]{flex:1 1 auto;width:auto;min-width:60px}
+.tabpane[data-tab="view"] .frow>.fc>.lv{flex:none;width:62px!important}
+/* short choices shown as a row of buttons; the chosen one lights up */
+.seg{display:flex;flex-wrap:wrap;gap:4px;flex:1 1 auto;min-width:0;max-width:280px}
+.seg button{font-size:12px;padding:3px 9px;border-radius:6px;border:1px solid #3a414e;background:#1c1f26;color:#cfd3da;white-space:nowrap}
+.seg button.on{background:#2f6fd6;border-color:#5aa9ff;color:#fff;box-shadow:0 0 0 2px #5aa9ff44}
+.seg button:hover:not(.on){border-color:#5aa9ff88}
 #seq{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;padding:4px 8px 6px;display:none;font:13px/1 ui-monospace,Menlo,Consolas,monospace}
 #bpane{flex:none;height:120px;display:none;min-height:0}
 #upane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
@@ -298,6 +309,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 #btabs button:disabled{opacity:.4}
 #btIxN{margin-left:4px;font-weight:400}
 #seq.light{background:#ffffff}
+/* the sequence strip keeps the colour of the side panel whatever the background of the molecule window */
+#seq,#seq.light{background:var(--panel)}
 .sqw{width:max-content;min-width:100%}
 .sqr{white-space:nowrap;padding:12px 0 3px}
 .sqr.off{opacity:.35}
@@ -321,8 +334,8 @@ details.sec .subh{font-size:12px;font-weight:600;margin:10px 0 2px;padding-top:8
 .sqr i.t::before{content:attr(data-n);position:absolute;left:0;top:-11px;font-size:9px;color:#8a92a1}
 .sqr b{display:inline-block;width:1.4ch;color:#555;font-weight:400}
 /* the chain name stays at the left edge while the sequence scrolls sideways (the shadows also hide the residue numbers above) */
-.sqc{position:sticky;left:-8px;z-index:2;margin-left:-8px;padding-left:8px;background:#0b0d11;box-shadow:0 -16px 0 #0b0d11,0 -8px 0 #0b0d11,0 4px 0 #0b0d11}
-#seq.light .sqc{background:#fff;box-shadow:0 -16px 0 #fff,0 -8px 0 #fff,0 4px 0 #fff}
+.sqc{position:sticky;left:-8px;z-index:2;margin-left:-8px;padding-left:8px;background:var(--panel);box-shadow:0 -16px 0 var(--panel),0 -8px 0 var(--panel),0 4px 0 var(--panel)}
+
 #btabs .pb{display:none}
 body.mob #app{display:block;height:100vh;height:100dvh;overflow:hidden}
 body.mob main{height:100vh;height:100dvh}
@@ -448,6 +461,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div class="small" style="margin-top:4px">測った値は、画面下の「測定」タブに一覧で並びます（1件ずつ隠す・消す、コピー）。</div>
   <div class="frow" style="margin-top:6px"><span class="fl">分子の寸法</span><select id="dimTarget" title="寸法（最大径と主軸方向の長さ）を測って分子ウィンドウに表示する対象"><option value="-">表示しない</option></select></div>
   <div class="small" id="dimInfo"></div>
+  <div class="frow"><span class="fl">スケールバー</span><label title="画面の右下に、拡大率に合わせた長さ（Å）の目盛りを出します。論文用の画像にも入ります。正確なのは平行投影のときで、透視投影では画面中心の奥行きでの目安です"><input type="checkbox" id="scaleOn"> 表示する</label></div>
   </div>
   <h2>選択範囲を追加表示</h2>
   <div class="row">
@@ -629,27 +643,29 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="small" style="margin-bottom:6px">見出しを押すと開閉します。</div>
   <details class="sec" data-sec="look" open><summary><b>① 全体の見た目</b><span class="sechint">背景・質感・輪郭線・回転</span></summary>
   <div class="secbody">
-  <div class="frow"><span class="fl">背景</span><select id="bg"><option value="black">黒</option><option value="white">白</option><option value="#202634">紺グレー</option></select></div>
   <div class="frow"><span class="fl">投影</span><select id="cam"><option value="perspective">透視投影</option><option value="orthographic">平行投影</option></select></div>
-  <div class="frow"><span class="fl">質感</span><select id="look">
+  <div class="frow"><span class="fl">背景</span><div class="fc"><input type="range" id="bgR" min="0" max="100" step="5" value="100" title="左が白、右が黒"><span class="lv" id="bgRV">黒</span></div><input type="hidden" id="bg" value="black"></div>
+  <div class="subh">光と質感</div>
+  <div class="frow"><span class="fl">質感<small>光沢・陰影の初期値</small></span><select id="look">
       <option value="std">標準（少し光沢）</option>
       <option value="matte">マット（光沢なし）</option>
       <option value="flat">フラット（イラスト風）</option>
       <option value="soft">淡い（やわらかい光）</option>
     </select></div>
-  <div class="frow"><span class="fl">輪郭線</span><select id="outline" title="カートゥーン・スティック・塩基などに黒い輪郭線を付けます（半透明の部分には付きません）">
-      <option value="0">なし</option><option value="1">細め</option><option value="2">標準</option><option value="3">太め</option>
-    </select></div>
-  <div class="frow"><span class="fl">奥行きのぼかし</span><select id="fogSel" title="奥にあるものほど背景の色に近づけて、手前を目立たせます">
-      <option value="0">なし</option><option value="1" selected>標準</option><option value="2">強め</option>
-    </select></div>
-  <div class="frow"><span class="fl">スティックの太さ</span><div class="fc"><input type="range" id="stickK" min="0.5" max="2" step="0.1" value="1" title="スティック・ボール＆スティック・リガンドの太さ（クリックした残基、Chain の表示、保存した選択のすべて）"><span class="lv">1.0×</span></div></div>
-  <div class="frow"><span class="fl">スティックの炭素の色<small>クリックした残基など</small></span><select id="stickC" title="クリックした残基・界面の残基のスティックの炭素の色。カートゥーンと同じ色だと見分けにくいときは「Chainの色を濃く」や「灰色」が見やすくなります。N・O・S は元素の色のままです"><option value="chain">Chainの色</option><option value="dark">Chainの色を濃く</option><option value="light">Chainの色を淡く</option><option value="grey">灰色</option><option value="white">白</option></select></div>
-  <div class="frow"><span class="fl">カートゥーン<small>透明度</small></span><div class="fc"><input type="range" id="cartOp" min="0" max="90" step="5" value="0"><span class="lv">0%</span></div></div>
-  <div class="frow"><span class="fl">カートゥーン<small>描き方</small></span><select id="sheetArrow" title="「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします"><option value="0">標準</option><option value="2">二次構造をはっきり</option></select></div>
-  <div class="frow"><span class="fl">まとめて設定</span><div class="fc btns"><button id="toonPreset" title="質感をフラット、背景を白、輪郭線を標準、奥行きのぼかしを強めにします">イラスト風</button><button id="softPreset" title="Chain の色を淡い色にし、質感を「淡い」、背景を白、輪郭線を細めにします">淡い色調</button></div></div>
-  <div class="frow"><span class="fl">スケールバー</span><label title="画面の右下に、拡大率に合わせた長さ（Å）の目盛りを出します。論文用の画像にも入ります。正確なのは平行投影のときで、透視投影では画面中心の奥行きでの目安です"><input type="checkbox" id="scaleOn"> 表示する</label></div>
-  <div class="row">
+  <div class="frow"><span class="fl">陰影<small>光の当たり方</small></span><div class="fc"><input type="range" id="shade" min="0" max="100" step="5" value="100" title="0 にすると光の向きによる明暗がなくなり、絵の具で塗ったような一様な色になります。上げるほど立体的な陰影が付きます（質感を選ぶと、その質感の標準の値になります）"><span class="lv" id="shadeV">100</span></div></div>
+  <div class="frow"><span class="fl">奥行きのぼかし</span><div class="fc"><input type="range" id="fogR" min="0" max="100" step="5" value="75" title="奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし"><span class="lv" id="fogRV">75</span></div></div>
+  <div class="subh">輪郭線</div>
+  <div class="frow"><span class="fl">太さ</span><div class="fc"><input type="range" id="olW" min="0" max="5" step="0.1" value="0" title="描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。0 で輪郭線なし"><span class="lv" id="olWV">なし</span></div></div>
+  <div class="frow"><span class="fl">色</span><div class="fc"><input type="range" id="olGrey" min="0" max="100" step="5" value="0" title="左が黒、右が白"><span class="lv" id="olGreyV">自動</span></div></div>
+  <div class="frow"><span class="fl">線を引く段差</span><div class="fc"><input type="range" id="silJump" min="0.3" max="5" step="0.1" value="1.2" title="手前と奥の距離がこの値より大きい所に線を引きます。小さくすると細かい凹凸にも線が入り、大きくすると外形の線だけになります"><span class="lv" id="silJumpV">1.2 Å</span></div></div>
+  <div class="subh">スティック</div>
+  <div class="frow"><span class="fl">炭素の色<small>クリックした残基など</small></span><select id="stickC" title="クリックした残基・界面の残基のスティックの炭素の色。カートゥーンと同じ色だと見分けにくいときは「Chainの色を濃く」や「灰色」が見やすくなります。N・O・S は元素の色のままです"><option value="chain">Chainの色</option><option value="dark">Chainの色を濃く</option><option value="light">Chainの色を淡く</option><option value="grey">灰色</option><option value="white">白</option></select></div>
+  <div class="frow"><span class="fl">太さ</span><div class="fc"><input type="range" id="stickK" min="0.5" max="2" step="0.1" value="1" title="スティック・ボール＆スティック・リガンドの太さ（クリックした残基、Chain の表示、保存した選択のすべて）"><span class="lv">1.0×</span></div></div>
+  <div class="subh">カートゥーン</div>
+  <div class="frow"><span class="fl">描き方</span><select id="sheetArrow" title="「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします"><option value="0">標準</option><option value="2">二次構造をはっきり</option></select></div>
+  <div class="frow"><span class="fl">透明度</span><div class="fc"><input type="range" id="cartOp" min="0" max="90" step="5" value="0"><span class="lv">0%</span></div></div>
+  <div class="frow" style="display:none"><span class="fl">まとめて設定</span><div class="fc btns"><button id="toonPreset" title="質感をフラット、背景を白、輪郭線を標準、奥行きのぼかしを強めにします">イラスト風</button><button id="softPreset" title="Chain の色を淡い色にし、質感を「淡い」、背景を白、輪郭線を細めにします">淡い色調</button></div></div>
+  <div class="row" style="display:none">
     <label><input type="checkbox" id="seqOn" checked> 配列（1文字）を画面下に表示</label>
   </div>
   <div class="row">
@@ -660,6 +676,10 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   </details>
   <details class="sec" data-sec="label"><summary><b>② ラベル</b><span class="sechint">解析用 / 図用（重ならないように並べる）</span></summary>
   <div class="secbody">
+  <div class="row">
+    <label><input type="checkbox" id="lblBold" checked> 太字</label>
+    <label><input type="checkbox" id="lblHalo" checked> 縁取り</label>
+  </div>
   <div class="frow"><span class="fl">表示</span><select id="lblMode" title="解析用：ラベルを残基の上に固定し、手前の分子に隠れた残基のラベルは薄く表示します。図用：ドラッグや自動配置で文字が重ならないように整えられます">
       <option value="ngl">解析用（残基の上・奥は薄く）</option><option value="fig">図用（動かせる・重ならないように並べる）</option>
     </select></div>
@@ -669,10 +689,8 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="frow"><span class="fl">文字の大きさ</span><select id="lblSize"><option value="11">小</option><option value="14" selected>中</option><option value="18">大</option><option value="24">特大</option></select></div>
   <div class="frow"><span class="fl">文字の色</span><select id="lblColor" title="ラベルの文字色。「Chainの色」はカートゥーンと同じ色（N末→C末の色分けのときはその残基の色）。白背景では淡い色を少し濃くして読みやすくします"><option value="mono">白・黒（背景に合わせる）</option><option value="chain">Chainの色</option></select></div>
   <div class="frow"><span class="fl">文字の背景</span><select id="lblBg" title="ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります"><option value="none">なし</option><option value="auto">自動（画面の背景に合わせた半透明）</option><option value="white">白</option><option value="black">黒</option></select></div>
-  <div class="row">
-    <label><input type="checkbox" id="lblBold" checked> 太字</label>
-    <label><input type="checkbox" id="lblHalo" checked> 縁取り</label>
-    <label class="lblFigOnly"><input type="checkbox" id="lblLine" checked> 引き出し線</label>
+  <div class="row lblFigOnly">
+    <label><input type="checkbox" id="lblLine" checked> 引き出し線</label>
   </div>
   <div class="row">
     <button id="lblAuto" title="図用の表示に切り替えて、重なっているラベルを、元の残基からなるべく離れないように押し広げます">ラベルを自動配置</button>
@@ -682,33 +700,35 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   </details>
   <details class="sec" data-sec="focus" id="focusOpts" open><summary><b>③ クリックしたときの表示</b><span class="sechint">残基の周りのスティック・相互作用・周りを薄くする</span></summary>
   <div class="secbody">
+  <div class="subh">表示する範囲</div>
   <div class="row">
     <label><input type="checkbox" id="focusSc" checked> 選んだ残基の周囲もスティック表示</label>
     <label><input type="checkbox" id="focusZoom" checked> 選んだ場所にズーム</label>
   </div>
   <div class="frow"><span class="fl">周囲の範囲<small>スティック表示</small></span><div class="fc"><input type="range" id="focusR" min="3" max="6" step="0.5" value="5" title="選んだ残基から、どこまでの距離にある残基をスティックで表示するか（原子どうしの距離）"><span class="lv">5.0 Å</span></div></div>
   <div class="small">「周囲」をオフにすると、選んだ残基だけを表示します（分子ウィンドウ左下の「周囲」ボタンでも切り替えられます）。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。</div>
+  <div class="subh">スティック</div>
   <div class="frow"><span class="fl">表示形式</span><select id="focusStyle"></select></div>
-  <div class="small" style="margin-top:6px">スティックで描く部分</div>
-  <div class="frow"><span class="fl">タンパク質</span><select id="stickPart" title="タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます"><option value="all">主鎖＋側鎖</option><option value="side">側鎖のみ</option></select></div>
-  <div class="frow"><span class="fl">核酸</span><select id="stickNuc" title="核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます"><option value="all">全体</option><option value="bb">骨格のみ（リン酸・糖）</option><option value="base">塩基のみ</option></select></div>
+  <div class="frow"><span class="fl">タンパク質<small>描く部分</small></span><select id="stickPart" title="タンパク質の残基をスティックで描くときに、主鎖（N・C・O）も描くかどうか。側鎖のみでも、主鎖が相互作用している残基は主鎖も描きます"><option value="all">主鎖＋側鎖</option><option value="side">側鎖のみ</option></select></div>
+  <div class="frow"><span class="fl">核酸<small>描く部分</small></span><select id="stickNuc" title="核酸をスティックで描くときに、どの部分を描くか。描かない部分でも、相互作用している原子があるヌクレオチドはその部分も描きます"><option value="all">全体</option><option value="bb">骨格のみ（リン酸・糖）</option><option value="base">塩基のみ</option></select></div>
   <div class="row">
     <label title="ChimeraX のように、クリックした残基やリガンドを Chain と同じ淡い色の半透明の表面で包みます"><input type="checkbox" id="focusSurf"> クリックした残基を半透明の表面で包む</label>
   </div>
+  <div class="subh">相互作用</div>
   <div class="row">
     <label><input type="checkbox" id="focusIx" checked> 相互作用も表示</label>
-    <select id="focusScope" title="スティックで表示している残基どうしの相互作用をすべて出すか、クリックした残基が関わるものだけにするか"><option value="all">範囲: 表示中の残基すべて</option><option value="sel">範囲: クリックした残基のみ</option></select>
     <label class="small"><input type="checkbox" id="focusDist" checked> 距離</label>
     <label class="small"><input type="checkbox" id="focusListOn" checked> 一覧を表示</label>
   </div>
-  <div class="frow"><span class="fl">疎水性の描き方<small>Chain間の解析にも共通</small></span><select id="hydStyle" title="疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）"><option value="dots">ドット</option><option value="line">点線</option></select></div>
+  <div class="frow"><span class="fl">範囲</span><select id="focusScope" title="スティックで表示している残基どうしの相互作用をすべて出すか、クリックした残基が関わるものだけにするか"><option value="all">範囲: 表示中の残基すべて</option><option value="sel">範囲: クリックした残基のみ</option></select></div>
+  <div class="frow"><span class="fl">疎水性<small>Chain間の解析にも共通</small></span><select id="hydStyle" title="疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）"><option value="dots">ドット</option><option value="line">点線</option></select></div>
   <div class="subh">周りを薄くして強調する</div>
   <div class="row">
     <label><input type="checkbox" id="spotOn"> 周りを薄くしてクリックした場所を強調</label>
   </div>
-  <div class="row"><span class="small">強調する範囲</span><input type="range" id="spotR" min="4" max="15" step="1" value="8"><span class="lv" id="spotRV" style="width:60px">半径 8 Å</span></div>
-  <div class="row"><span class="small">薄くする方法</span><select id="spotMode"><option value="transp">半透明（手前も透ける）</option><option value="fade">色を背景に近づける（透けない）</option></select></div>
-  <div class="row"><span class="small">外側の濃さ</span><input type="range" id="spotOp" min="0" max="0.8" step="0.05" value="0.25"><span class="lv" id="spotOpV" style="width:40px">0.25</span></div>
+  <div class="frow"><span class="fl">強調する範囲</span><div class="fc"><input type="range" id="spotR" min="4" max="15" step="1" value="8"><span class="lv" id="spotRV" style="width:60px">半径 8 Å</span></div></div>
+  <div class="frow"><span class="fl">薄くする方法</span><select id="spotMode"><option value="transp">半透明（手前も透ける）</option><option value="fade">色を背景に近づける（透けない）</option></select></div>
+  <div class="frow"><span class="fl">外側の濃さ</span><div class="fc"><input type="range" id="spotOp" min="0" max="0.8" step="0.05" value="0.25"><span class="lv" id="spotOpV" style="width:40px">0.25</span></div></div>
   <div class="small">クリックした残基から指定した半径の内側はそのまま、外側を薄くします（濃さ 0 で外側を消します）。表面・リガンド・ほかの構造も外側として薄くなります。「色を背景に近づける」は透けないので、手前にある部分がクリックした場所を隠すことがあります。</div>
   <div class="subh">構造を2つ以上開いたとき</div>
   <div class="frow"><span class="fl">選択の扱い</span><select id="multiSel" title="構造を2つ以上開いているときの選択の扱い"><option value="switch">1つの構造だけ選択</option><option value="keep">構造ごとに選択を残す</option><option value="link">同じ番号を連動して表示</option></select></div>
@@ -911,6 +931,13 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "透視投影": "Perspective", "平行投影": "Orthographic", "標準": "Standard", "マット": "Matte", "フラット": "Flat", "淡い": "Soft", "二次構造をはっきり": "Clear secondary structure", "濃く": "Darker", "淡く": "Lighter", "灰色": "Grey", "白": "White", "黒": "Black", "解析用": "Analysis", "図用": "Figure", "界面のみ": "Interfaces only", "付ける": "Always", "付けない": "Never", "白・黒": "White/black", "Chainの色": "Chain colour", "なし": "None", "自動": "Auto", "主鎖＋側鎖": "Main + side chain", "側鎖のみ": "Side chain only", "全体": "Whole", "骨格のみ": "Backbone only", "塩基のみ": "Base only", "表示中すべて": "All shown", "クリックした残基のみ": "Clicked residue only", "ドット": "Dots", "点線": "Dashed line", "半透明": "See-through", "背景色に近づける": "Toward background", "画面と同じ": "As on screen",
+  '表示する範囲': 'What is shown', '描く部分': 'parts drawn', '範囲': 'Scope', '疎水性': 'Hydrophobic', '強調する範囲': 'Highlighted radius', '薄くする方法': 'How to fade', '外側の濃さ': 'Outside strength',
+  '光沢・陰影の初期値': 'gloss, default shading', '光と質感': 'Light and material', '色': 'Colour', '描き方': 'Style', '炭素の色': 'Carbon colour', 'スティック': 'Sticks', 'カートゥーン': 'Cartoon',
+  '左が白、右が黒': 'Left white, right black', '左端は自動（白い背景では黒、暗い背景では明るい灰色）。その右は黒から白': 'Left end: automatic (black on a white background, light grey on a dark one); then black to white',
+  "陰影": "Shading", "光の当たり方": "lighting", "0 にすると光の向きによる明暗がなくなり、絵の具で塗ったような一様な色になります。上げるほど立体的な陰影が付きます（質感を選ぶと、その質感の標準の値になります）": "At 0 there is no shading from the light direction, so each part is a flat colour, as if painted. Higher values give more three-dimensional shading (choosing a material sets its usual value)", "平ら": "Flat", "太さ": "width", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。0 で輪郭線なし": "Lines of even width are drawn on the finished picture wherever there is a step in depth. 0 = no outline", "チェックを外すと自動（白い背景では黒、暗い背景では明るい灰色）": "Unticked: automatic (black on a white background, light grey on a dark one)", "指定": "Set", "左が黒、右が白": "Left black, right white", "自動": "Auto", "奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし": "Parts further back are blended toward the background so the front stands out. 0 = none",
+  "輪郭線の色": "Outline colour", "「自動」は白い背景では黒、暗い背景では明るい灰色にします": "\"Auto\" uses black on a white background and light grey on a dark one", "自動（背景に合わせる）": "Auto (to suit the background)", "濃い灰色": "Dark grey", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます": "Lines of even width are drawn on the finished picture wherever there is a step in depth",
+  "輪郭線の描き方": "Outline method", "画面上で描く（ChimeraX 風）": "On the picture (ChimeraX-like)", "形をなぞる（従来）": "Around each shape (older)", "線を引く段差": "Depth step for lines", "細かく（0.7 Å）": "Fine (0.7 Å)", "標準（1.2 Å）": "Standard (1.2 Å)", "外形だけ（3 Å）": "Outer shape only (3 Å)", "「画面上で描く」は ChimeraX の silhouettes と同じ考え方で、描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。「形をなぞる」は、形ごとに黒い一回り大きな形を裏に描く従来の方法です": "\"On the picture\" works like ChimeraX silhouettes: lines of even width are drawn on the finished picture wherever there is a step in depth. \"Around each shape\" is the older method that draws a slightly larger black copy behind each shape", "手前と奥の距離がこの値より大きい所に線を引きます。小さくすると細かい凹凸にも線が入り、大きくすると外形の線だけになります": "Lines are drawn where the front and the back differ in depth by more than this. Smaller values outline finer bumps too; larger values leave only the outer shape",
   '測定（距離・角度・二面角・分子の寸法）': 'Measurements (distance, angle, dihedral, dimensions)',
   "置き換える前の元の側鎖を灰色の細いスティックで重ねて表示し、元の側鎖が作っていた水素結合・塩橋を水色の線で表示します": "Overlay the original side chain (before the change) as thin grey sticks, with the H-bonds and salt bridges it made as light-blue rods", "元の残基も表示": "Show the original residue",
   "変異": "Mutations", "1 つだけなら、残基をクリックするか「A:R51A」のように 1 行書いて「構造上で置き換える」を押します（同じ配列の異なる Chain もまとめて置き換え、側鎖のぶつかりや相互作用を調べます）。いくつもあるときは 1 行に 1 つずつ書いて「一覧で調べる」を押すと、全部の位置を構造の上に出して並べます（各カードから 1 つずつ置き換えられます）。結果は画面下の「変異」タブに出ます。": "For a single mutation, click a residue or type one line such as \"A:R51A\" and press \"Build on the structure\" (the other chains with the same sequence are changed too, and clashes and interactions of the side chain are checked). For several, write one per line and press \"List and examine\": all positions are shown on the structure and listed (each card can be built one by one). Results appear in the \"Mutations\" tab under the viewer.", "A:R51A（1 つだけ）\nまたは 1 行に 1 つ：\nR51A 活性低下\nK102E 変化なし\np.Asp150Asn": "A:R51A (just one)\nor one per line:\nR51A reduced\nK102E unchanged\np.Asp150Asn", "入力した 1 つの変異、または選んだ 1 残基を、構造の上で実際に置き換えます": "Build the one typed mutation, or the one selected residue, on the structure", "一覧で調べる": "List and examine", "入力した変異（いくつでも）の位置を構造の上に出し、それぞれの位置を調べて一覧にします": "Show the positions of the typed mutations (any number) on the structure and list what each position shows", "入力・一覧・作った変異をすべて消します": "Clear the input, the list and the built mutation", "一覧の設定（Chain・番号の種類・色分け・番号のずれ）": "List settings (chain, numbering, colouring, offset)", "書き方・判定基準・方法": "Format, criteria and methods", "構造上で置き換える": "Build on the structure", "置き換える残基を 1 つクリックして選ぶか、「A:R51A」のように 1 行だけ書いてから押してください": "Click one residue, or write a single line such as \"A:R51A\", then press the button",
@@ -1208,6 +1235,8 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^灰 (\d+)%$/, (m, n) => `Grey ${n}%`),
+  P(/^このブラウザでは輪郭線を描けません: (.+)$/, (m, e) => `Outlines cannot be drawn in this browser: ${e}`),
   P(/^元の (\w+) と比べると：極性の相手 (\d+) → (\d+)、塩橋 (\d+) → (\d+)、炭素どうしの接触 (\d+) → (\d+)。$/, (m, r, a, b, c, d, e, f) => `Compared with the original ${r}: polar partners ${a} → ${b}, salt bridges ${c} → ${d}, carbon–carbon contacts ${e} → ${f}.`),
   P(/^（元の (\w+)：極性の相手 (\d+) ・ 塩橋 (\d+)）$/, (m, r, a, b) => ` (original ${r}: polar partners ${a} · salt bridges ${b})`),
   P(/^(.+)（入力した 1 行）$/, (m, t) => `${t} (the typed line)`),
@@ -1507,7 +1536,10 @@ let structSrc = null, comp = null, pdbId = '', chains = [], hetReps = [], extras
 const hexNum = h => parseInt(h.slice(1), 16);
 const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));   // file-derived text put into innerHTML
 const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
-const darkBg = () => $('#bg').value !== 'white';
+/* the background is a grey from white to black; older sessions and links store "black", "white" or "#202634" */
+const bgNorm = v => v === 'white' ? '#ffffff' : v === 'black' ? '#000000' : /^#[0-9a-f]{6}$/i.test(v || '') ? v.toLowerCase() : '#000000';
+const bgLum = v => { const n = parseInt(bgNorm(v).slice(1), 16); return 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255); };
+const darkBg = () => bgLum($('#bg').value) < 128;
 const opts = (sel, arr) => sel.innerHTML = arr.map(([v,t]) => `<option value="${v}">${t}</option>`).join('');
 const SELE_TYPES = [...TYPES.filter(t => !['cartoon+sc', 'none'].includes(t[0])), ['surface', '分子表面']];
 opts($('#seleType'), SELE_TYPES);
@@ -2301,7 +2333,8 @@ function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicke
     cap(R[0], sm[0], -1); cap(R[R.length - 1], sm[sm.length - 1], 1);
   };
   const ends = new Map();   // residue index of the first/last residue of each helix or arrow -> where loops join it
-  const BODY = 0.95 + ex, HEAD = 1.75 + ex * 1.6, THICK = 0.22 + ex, SUB = 4;
+  const exT = ex * 0.3;          // ex: extra size (0 now that outlines are drawn on the picture)
+  const BODY = 0.95 + ex, HEAD = 1.75 + ex * 1.6, THICK = 0.22 + exT, SUB = 4;
   let k = 0;
   while (k < res.length) {
     if (res[k].ss !== 'e') { k++; continue; }
@@ -2361,7 +2394,7 @@ function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicke
   // (estimated at each residue from its two neighbours), so the ribbon does not twist at the ends the way a ribbon
   // oriented by the C=O of the end residue does.
   const isH = r => !!r && (r.ss === 'h' || r.ss === 'g' || r.ss === 'i');
-  const HW = 0.95 + ex, HT = 0.2 + ex, HSUB = 6;
+  const HW = 0.95 + ex, HT = 0.2 + exT, HSUB = 6;
   k = 0;
   while (k < res.length) {
     if (!isH(res[k]) || out.strandRes.has(res[k].ri)) { k++; continue; }
@@ -4678,7 +4711,7 @@ async function buildSession() {
         s.maps.push({...base, source: {type: 'file', name: m.source.name, ext: m.source.ext, gz: m.source.gz, data: big ? null : await fileToDataURL(m.source.file)}});
       }
     }
-    s.view = {meas: measToJSON(), scale: scaleOn, orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, outline: outlineLevel, fog: +$('#fogSel').value, cartOp, sheetArrow, stickK, stickC, lbl: {...lblPref}, lblOff: [...lblOff],
+    s.view = {meas: measToJSON(), scale: scaleOn, orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, shade, outline: outlineLevel, fog: +String(fogV), cartOp, sheetArrow, stickK, stickC, lbl: {...lblPref}, lblOff: [...lblOff],
               focusSc: $('#focusSc').checked, focusR, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
               focusIx: $('#focusIx').checked, focusScope, focusDist: $('#focusDist').checked, seq: $('#seqOn').checked,
               hb: {...HBSET}, ifCat: {...ifCat}, focusCat: {...focusCat}, stick: {...stickPref},
@@ -4780,6 +4813,7 @@ async function openSessionObj(s, auto) {
   if (v.bg) { $('#bg').value = v.bg; stage.setParameters({backgroundColor: v.bg}); }
   if (v.cam) { $('#cam').value = v.cam; stage.setParameters({cameraType: v.cam}); }
   if (v.look && LOOKS[v.look]) { $('#look').value = v.look; applyLook(); }
+  if (v.shade !== undefined && v.shade !== null) setShade(v.shade);
   if (v.outline !== undefined) setOutline(v.outline);
   if (v.cartOp !== undefined) setCartOp(v.cartOp);
   if (v.stickK !== undefined && +v.stickK !== stickK) setStickK(v.stickK);
@@ -4798,7 +4832,7 @@ async function openSessionObj(s, auto) {
   if (v.focusIx !== undefined) $('#focusIx').checked = v.focusIx;
   if (v.focusScope) { focusScope = v.focusScope; $('#focusScope').value = focusScope; }
   if (v.focusDist !== undefined) $('#focusDist').checked = v.focusDist;
-  if (v.seq !== undefined) $('#seqOn').checked = v.seq;
+  // the sequence strip is always on (the switch was removed)
   if (v.hb) { Object.assign(HBSET, CRIT_DEFAULT, v.hb); writeCritUI(); }
   if (v.ifCat) Object.assign(ifCat, v.ifCat);
   if (v.focusCat) Object.assign(focusCat, v.focusCat);
@@ -6136,7 +6170,7 @@ function drawGroups(S) {
     else add('licorice', {radiusScale: 0.7 * w});
     // w = this selection's own factor × the thickness for the whole view
   });
-  if (syncResCol(S) && S.comp === comp) { chains.forEach(chainReps); try { outlineSync(); } catch (e) {} }
+  if (syncResCol(S) && S.comp === comp) chains.forEach(chainReps);
 }
 /* residues whose cartoon is painted by a saved selection; true when that changed */
 function syncResCol(S) {
@@ -6229,7 +6263,7 @@ function buildSeq() {
 }
 function renderSeq() {
   const el = $('#seq');
-  el.className = darkBg() ? '' : 'light';
+  el.className = '';          // always dark like the side panel (the letter colours are made for it)
   if (!$('#seqOn').checked || !seqData.length) { el.innerHTML = ''; bottomUpdate(); return; }
   bottomUpdate();
   stash();
@@ -6374,7 +6408,7 @@ function hexLab(h) {
 }
 const dE = (a, b) => { const p = hexLab(a), q = hexLab(b); return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); };
 function contrastColor(base, prefer) {
-  const bg = $('#bg').value === 'white' ? '#ffffff' : $('#bg').value === 'black' ? '#000000' : '#202634';
+  const bg = bgNorm($('#bg').value);
   const score = c => Math.min(dE(c, base), dE(c, bg) * 1.2);
   if (prefer && score(prefer) >= 60) return prefer;          // keep the preferred colour when it is clearly visible
   return HL_CANDIDATES.reduce((best, c) => score(c) > score(best) ? c : best, HL_CANDIDATES[0]);
@@ -6505,7 +6539,10 @@ $('#focusScope').onchange = e => setFocusScope(e.target.value);
 $('#focusIx').oninput = $('#focusDist').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
 
 /* ---------- view / export ---------- */
-$('#bg').onchange = e => { stage.setParameters({backgroundColor: e.target.value}); refreshChainColored(); renderSeq(); };
+$('#bg').onchange = e => { stage.setParameters({backgroundColor: bgNorm(e.target.value)}); bgSliderSync(); refreshChainColored(); renderSeq(); };
+function bgSliderSync() { const v = Math.round((1 - bgLum($('#bg').value) / 255) * 20) * 5; $('#bgR').value = String(v); $('#bgRV').textContent = v === 0 ? '白' : v === 100 ? '黒' : `${v}%`; }
+$('#bgR').oninput = e => { const g = Math.round(255 * (1 - +e.target.value / 100)).toString(16).padStart(2, '0'); $('#bg').value = '#' + g + g + g; $('#bg').dispatchEvent(new Event('change')); };
+bgSliderSync();
 $('#cam').onchange = e => stage.setParameters({cameraType: e.target.value});
 /* material / lighting presets. NGL has no outline (silhouette) rendering, so "flat" = no highlights + mostly ambient light */
 const LOOKS = {
@@ -6515,16 +6552,29 @@ const LOOKS = {
   soft:  {roughness: 1.0,  metalness: 0,   light: 0.55, ambient: 0.75}
 };
 const lookMat = () => { const L = LOOKS[$('#look').value] || LOOKS.std; return {roughness: L.roughness, metalness: L.metalness}; };
-function applyLook() {
+/* shading 0–100: 0 = no directional light at all (each surface a single flat colour, like paint), 100 = the standard
+   light; choosing a material sets its usual value, and the slider can then move it */
+const LOOK_SHADE = {std: 100, matte: 65, flat: 15, soft: 45};
+var shade = (() => { try { const v = localStorage.getItem('pdv_shade'); return v === null ? null : Math.min(100, Math.max(0, +v)); } catch (e) { return null; } })();
+function setShade(v, save = true) {
+  shade = Math.min(100, Math.max(0, +v || 0));
+  const k = shade / 100;
+  // with no directional light, ambient 1.4 shows the colours at about their own brightness
+  stage.setParameters({lightIntensity: 1.2 * k, ambientIntensity: 1.4 - 1.1 * k});
+  $('#shade').value = String(shade); $('#shadeV').textContent = shade ? String(shade) : '平ら';
+  if (save) try { localStorage.setItem('pdv_shade', String(shade)); } catch (e) {}
+}
+$('#shade').oninput = e => setShade(e.target.value);
+function applyLook(keepShade) {
   const L = LOOKS[$('#look').value] || LOOKS.std;
-  stage.setParameters({lightIntensity: L.light, ambientIntensity: L.ambient});
+  setShade(keepShade && shade !== null ? shade : LOOK_SHADE[$('#look').value] ?? 100);
   if (stage.eachRepresentation) stage.eachRepresentation(r => r.setParameters(lookMat()));
 }
 if (stage.signals.componentAdded) stage.signals.componentAdded.add(c => {
   if (c.signals && c.signals.representationAdded) c.signals.representationAdded.add(r => { if ($('#look').value !== 'std') r.setParameters(lookMat()); });
 });
-$('#look').onchange = () => { applyLook(); try { localStorage.setItem('pdv_look', $('#look').value); } catch (e) {} };
-try { const l = localStorage.getItem('pdv_look'); if (l && LOOKS[l]) { $('#look').value = l; applyLook(); } } catch (e) {}
+$('#look').onchange = () => { applyLook(false); try { localStorage.setItem('pdv_look', $('#look').value); } catch (e) {} };
+try { const l = localStorage.getItem('pdv_look'); if (l && LOOKS[l]) $('#look').value = l; applyLook(true); } catch (e) {}
 /* ---------- residue labels as an HTML layer over the viewer ----------
    NGL draws labels inside the 3D scene and cannot move them one by one or keep them from overlapping.
    Here each label is a small HTML element that follows its atom on screen every frame. A label can be dragged
@@ -6832,99 +6882,115 @@ $('#lblLine').onchange = e => { lblPref.line = e.target.checked; lblSavePref(); 
 $('#lblAuto').onclick = lblAutoArrange;
 $('#lblReset').onclick = () => { lblOff.clear(); lblFrame(); status('ラベルの位置を元に戻しました'); };
 $('#bg').addEventListener('change', () => { lblStyle(); lblNglAll(); lblFrame(); });
-/* ---------- outlines (illustration style) ----------
-   NGL has no silhouette rendering. Each opaque representation gets a black copy that is slightly thicker and
-   shows only its back faces ("inverted hull"): it peeks out around the edges of the original as an outline.
-   The copies are kept in step with the originals by outlineSync(), which runs every 0.4 s while outlines are on. */
-const OUTLINE_K = {      // thickness factor per level (none, thin, standard, thick)
-  cartoon: [0, 1.06, 1.12, 1.18], tube: [0, 1.06, 1.12, 1.18], base: [0, 1.6, 2.0, 2.6],
-  licorice: [0, 1.6, 2.0, 2.6], 'ball+stick': [0, 1.3, 1.6, 2.0], spacefill: [0, 1.05, 1.09, 1.14]
-};
-const HULL_KEYS = ['sele', 'aspectRatio', 'radiusType', 'radiusSize', 'radiusScale', 'radialSegments', 'subdiv', 'capped', 'smoothSheet', 'tension',
-  'multipleBond', 'bondScale', 'bondSpacing', 'cylinderOnly', 'sphereDetail', 'quality', 'openEnded', 'linewidth'];
-const hulls = new Map();          // original RepresentationElement -> {h, sig}
-const hullSet = new Set();
-let outlineLevel = 0, outlineTimer = null;
-/* the black copy of ShikaMol's own ribbons is the same mesh built a little larger. Where a ribbon bends sharply (helix
-   ends, the inside of a turn) pushing a face outwards can fold a few triangles over, and a folded triangle then faces
-   the viewer and shows as a thin dark streak across the ribbon. Those triangles are left out: the copy and the ribbon
-   have the same triangles in the same order, so a triangle whose direction turned around against the ribbon's is dropped */
-function hullIndex(M, O) {
-  if (!O || !O.index || O.index.length !== M.index.length || O.position.length !== M.position.length) return M.index;
-  const P = M.position, Q = O.position, I = M.index, out = [];
-  const nrmOf = (A, a, b, c) => { const ux = A[3*b] - A[3*a], uy = A[3*b+1] - A[3*a+1], uz = A[3*b+2] - A[3*a+2], vx = A[3*c] - A[3*a], vy = A[3*c+1] - A[3*a+1], vz = A[3*c+2] - A[3*a+2];
-    return [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx]; };
-  for (let t = 0; t < I.length; t += 3) {
-    const a = I[t], b = I[t + 1], c = I[t + 2], n1 = nrmOf(P, a, b, c), n0 = nrmOf(Q, a, b, c);
-    if (n1[0] * n0[0] + n1[1] * n0[1] + n1[2] * n0[2] < 0) continue;
-    out.push(a, b, c);
+let outlineLevel = 0;
+/* ---------- outlines drawn on the finished picture (the idea of ChimeraX "silhouettes") ----------
+   After NGL has drawn a frame, the scene is drawn once more into a depth buffer, and a black line is painted on every
+   pixel that lies in front of a neighbouring pixel by more than a set distance (in Å). The line width is the same
+   everywhere (pixels), whatever the thickness or bends of the shapes, so helices, sticks and their joints are outlined
+   cleanly. */
+// outline colour: 0 = black … 100 = white
+var olGrey = (() => { try { const v = localStorage.getItem('pdv_ol_grey'); return v === null ? 0 : Math.min(100, Math.max(0, +v)); } catch (e) { return 0; } })();
+var silJump = (() => { try { const v = +localStorage.getItem('pdv_sil_jump'); return v >= 0.3 && v <= 5 ? v : 1.2; } catch (e) { return 1.2; } })();
+let silScale = 1, silBroken = false;
+const sil = {rt: null, mat: null, scene: null, cam: null, w: 0, h: 0};
+function silSetup(V) {
+  if (sil.mat) return true;
+  try {
+    const RT = V.pickingTarget.constructor, Tex = V.pickingTarget.texture.constructor;
+    const Mat = V.compositeMaterial.constructor, Scene = V.compositeScene.constructor, quad = V.compositeScene.children[0];
+    sil.mkRT = (w, h) => {
+      const rt = new RT(w, h, {minFilter: 1003, magFilter: 1003, depthBuffer: true, stencilBuffer: false});
+      rt.texture.generateMipmaps = false;
+      const dt = new Tex();              // a depth texture, built the way three.js builds its DepthTexture
+      dt.isDepthTexture = true; dt.image = {width: w, height: h}; dt.format = 1026; dt.type = 1014;
+      dt.magFilter = dt.minFilter = 1003; dt.flipY = false; dt.generateMipmaps = false; dt.compareFunction = null;
+      rt.depthTexture = dt;
+      return rt;
+    };
+    sil.mat = new Mat({
+      uniforms: {tDepth: {value: null}, uRes: {value: [1, 1]}, uW: {value: 2}, uNear: {value: 1}, uFar: {value: 100}, uOrtho: {value: 0}, uJump: {value: 2}, uColor: {value: [0.07, 0.07, 0.07]}},
+      vertexShader: 'varying vec2 vUv;\nvoid main(){ vUv = position.xy * 0.5 + 0.5; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+      fragmentShader: `uniform sampler2D tDepth; uniform vec2 uRes; uniform float uW, uNear, uFar, uOrtho, uJump; uniform vec3 uColor; varying vec2 vUv;
+float lin(float d){ if (uOrtho > 0.5) return uNear + d * (uFar - uNear); float z = d * 2.0 - 1.0; return 2.0 * uNear * uFar / (uFar + uNear - z * (uFar - uNear)); }
+void main(){
+  vec2 px = 1.0 / uRes; float d0 = texture2D(tDepth, vUv).x;
+  // the line goes on the far side of a step (around the nearer shape), so thin sticks keep their own colour
+  float l0 = d0 >= 1.0 ? 1e9 : lin(d0), e = 0.0;
+  for (int i = 0; i < 16; i++) {
+    float a = 6.2831853 * float(i) / 16.0;
+    vec2 o = vec2(cos(a), sin(a));
+    float dn = texture2D(tDepth, vUv + o * uW * px).x;
+    if (dn < 1.0 && l0 - lin(dn) > uJump) e += 1.0;
   }
-  return new Uint32Array(out);
-}
-function outlineSync() {
-  const want = new Set();
-  stage.compList.forEach(c => {
-    if (!c.reprList || !c.structure) return;
-    c.reprList.slice().forEach(r => {
-      if (hullSet.has(r)) return;
-      const t = r.repr && r.repr.type, K = OUTLINE_K[t];
-      if (r.__arrow && r.__arrowArgs && r.__arrowArgs.n !== undefined) {
-        // ShikaMol's own helices and arrows: a black copy built a little larger in every direction
-        if (!outlineLevel || !c.visible || !r.visible || (r.getParameters().opacity ?? 1) < 0.99) return;
-        want.add(r);
-        const A2 = r.__arrowArgs, ex = [0, 0.07, 0.13, 0.2][outlineLevel], sig = 'arrow' + ex + JSON.stringify(c.matrix.elements);
-        const old = hulls.get(r);
-        if (old && old.sig === sig) return;
-        if (old) { hullSet.delete(old.h); try { c.removeRepresentation(old.h); } catch (e) {} }
-        const M = strandArrows(A2.n, A2.c, ex, A2.cp).mesh; if (!M) return;
-        const idx = hullIndex(M, r.__mesh);
-        const buf = new NGL.MeshBuffer({position: M.position, color: new Float32Array(M.color.length).fill(0.067), index: idx, normal: M.normal}, {});
-        const h = c.addBufferRepresentation(buf, {side: 'back', opacity: 1, roughness: 1, metalness: 0});
-        // the black copy sits a hair further back in depth, so where it nearly touches the ribbon it never shows through
-        try { h.repr.bufferList.forEach(b => [b.material, b.wireframeMaterial].forEach(m => { if (m) { m.polygonOffset = true; m.polygonOffsetFactor = 2; m.polygonOffsetUnits = 2; m.needsUpdate = true; } })); } catch (e) {}
-        hullSet.add(h); hulls.set(r, {h, sig});
-        return;
-      }
-      if (!K || !outlineLevel || !c.visible || !r.visible) return;
-      const p = r.getParameters();
-      if ((p.opacity ?? 1) < 0.99) return;
-      want.add(r);
-      const q = {}; HULL_KEYS.forEach(k => { if (p[k] !== undefined) q[k] = p[k]; });
-      q.radiusScale = (p.radiusScale || 1) * K[outlineLevel];
-      // the small balls of ball & stick (spacefill scaled down): a factor gives almost no rim, so add a fixed thickness
-      // in Å instead, about as thick as the outline of the sticks (radii are van der Waals radii, ~1.7 Å for C)
-      if (t === 'spacefill' && (p.radiusScale || 1) < 0.6) q.radiusScale = (p.radiusScale || 1) + [0, 0.07, 0.12, 0.18][outlineLevel] / 1.7;
-      const sig = t + JSON.stringify(q) + JSON.stringify(c.matrix.elements);
-      const old = hulls.get(r);
-      if (old && old.sig === sig) return;
-      if (old) { hullSet.delete(old.h); try { c.removeRepresentation(old.h); } catch (e) {} }
-      const h = c.addRepresentation(t, {...q, color: '#111111', side: 'back', opacity: 1, disablePicking: true, disableImpostor: true, roughness: 1, metalness: 0});
-      hullSet.add(h); hulls.set(r, {h, sig});
+  if (e < 0.5) discard;
+  gl_FragColor = vec4(uColor, clamp(e / 3.0, 0.35, 1.0));     // softer where only a few directions see the step (smooth ends)
+}`,
+      transparent: true, depthTest: false, depthWrite: false
     });
-  });
-  hulls.forEach((v, r) => {
-    if (want.has(r)) return;
-    hullSet.delete(v.h);
-    try { if (v.h.parent) v.h.parent.removeRepresentation(v.h); } catch (e) {}
-    hulls.delete(r);
-  });
+    sil.scene = new Scene();
+    sil.scene.add(new quad.constructor(quad.geometry, sil.mat));
+    sil.cam = V.compositeCamera;
+    return true;
+  } catch (e) { silFallback('このブラウザでは輪郭線を描けません: ' + (e.message || e)); return false; }
 }
+function silFallback(msg) { silBroken = true; log(msg); }
+function silPass() {
+  if (!outlineLevel || silBroken) return;
+  const V = stage.viewer; if (!V || V.lastRenderedPicking) return;
+  if (!silSetup(V)) return;
+  const R = V.renderer, cv = R.domElement, w = cv.width, h = cv.height;
+  if (!sil.rt || sil.w !== w || sil.h !== h) { if (sil.rt) try { sil.rt.dispose(); } catch (e) {} sil.rt = sil.mkRT(w, h); sil.w = w; sil.h = h; }
+  // shapes made of many small pieces (interaction dashes, contact rods) are left out of the depth picture: outlined, they
+  // would turn into black blobs
+  const hidden = [];
+  stage.compList.forEach(c => { if (c.type === 'shape' && c.visible) c.reprList.forEach(r => (r.repr.bufferList || []).forEach(b => [b.group, b.wireframeGroup].forEach(g => { if (g && g.visible) { g.visible = false; hidden.push(g); } }))); });
+  const bg = V.backgroundGroup.visible, pk = V.pickingGroup.visible, hp = V.helperGroup.visible, mg = V.modelGroup.visible;
+  try {
+    V.backgroundGroup.visible = false; V.pickingGroup.visible = false; V.helperGroup.visible = false; V.modelGroup.visible = true;
+    R.setRenderTarget(sil.rt); R.clear(); R.render(V.scene, V.camera);
+    R.setRenderTarget(null);
+    const cam = V.camera, U = sil.mat.uniforms;
+    U.tDepth.value = sil.rt.depthTexture; U.uRes.value = [w, h];
+    U.uW.value = outlineLevel * (window.devicePixelRatio || 1) * silScale;
+    { const bh = bgHex(), n = parseInt(bh.slice(1), 16), lum = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
+      const g = olGrey / 100; U.uColor.value = [g, g, g]; }
+    U.uNear.value = cam.near; U.uFar.value = cam.far; U.uOrtho.value = cam.isOrthographicCamera ? 1 : 0; U.uJump.value = silJump;
+    R.render(sil.scene, sil.cam);
+  } catch (e) { silFallback('このブラウザでは輪郭線を描けません: ' + (e.message || e)); }
+  finally {
+    hidden.forEach(g => g.visible = true);
+    V.backgroundGroup.visible = bg; V.pickingGroup.visible = pk; V.helperGroup.visible = hp; V.modelGroup.visible = mg;
+    R.setRenderTarget(null);
+  }
+}
+if (stage.viewer && stage.viewer.signals && stage.viewer.signals.rendered) stage.viewer.signals.rendered.add(silPass);
+/* outlineLevel is the line width in CSS pixels (0 = none). The values 1–3 of older sessions, links and settings were
+   steps (thin / standard / thick) and are read as such */
 function setOutline(level) {
-  outlineLevel = +level || 0;
-  $('#outline').value = String(outlineLevel);
-  clearInterval(outlineTimer); outlineTimer = null;
-  outlineSync();
-  if (outlineLevel) outlineTimer = setInterval(outlineSync, 400);
+  const x = +level || 0;
+  outlineLevel = Number.isInteger(x) && x >= 0 && x <= 3 ? [0, 1.3, 2.2, 3.4][x] : Math.min(5, Math.max(0, x));
+  $('#olW').value = String(outlineLevel); $('#olWV').textContent = outlineLevel ? outlineLevel.toFixed(1) + ' px' : 'なし';
+  try { stage.viewer.requestRender(); } catch (e) {}
   try { localStorage.setItem('pdv_outline', outlineLevel); } catch (e) {}
 }
-const FOGS = [[100, 100], [50, 100], [35, 100]];
-function setFog(level) {
-  const f = FOGS[+level] || FOGS[1];
-  $('#fogSel').value = String(FOGS.indexOf(f));
-  stage.setParameters({fogNear: f[0], fogFar: f[1]});
-  try { localStorage.setItem('pdv_fog', $('#fogSel').value); } catch (e) {}
+function olColUI() {
+  $('#olGrey').value = String(olGrey);
+  $('#olGreyV').textContent = olGrey === 0 ? '黒' : olGrey === 100 ? '白' : `灰 ${olGrey}%`;
+  $('#silJump').value = String(silJump); $('#silJumpV').textContent = silJump.toFixed(1) + ' Å';
 }
-$('#outline').onchange = e => setOutline(e.target.value);
+olColUI();
+$('#olW').oninput = e => setOutline(+e.target.value === Math.round(+e.target.value) && +e.target.value <= 3 && +e.target.value > 0 ? +e.target.value + 0.001 : +e.target.value);
+$('#olGrey').oninput = e => { olGrey = Math.max(0, +e.target.value); try { localStorage.setItem('pdv_ol_grey', olGrey); } catch (e2) {} olColUI(); stage.viewer.requestRender(); };
+$('#silJump').oninput = e => { silJump = +e.target.value || 1.2; try { localStorage.setItem('pdv_sil_jump', silJump); } catch (e2) {} olColUI(); stage.viewer.requestRender(); };
+/* depth fade 0–100 (0 = none). Older sessions, links and settings stored a step 0–2 (none / standard / strong) */
+var fogV = 75;
+function setFog(level) {
+  const x = +level;
+  fogV = Number.isInteger(x) && x >= 0 && x <= 2 && String(level).length === 1 ? [0, 75, 100][x] : Math.min(100, Math.max(0, isFinite(x) ? x : 75));
+  $('#fogR').value = String(fogV); $('#fogRV').textContent = fogV ? String(fogV) : 'なし';
+  stage.setParameters({fogNear: 100 - 0.65 * fogV, fogFar: 100});
+  try { localStorage.setItem('pdv_fog', String(fogV)); } catch (e) {}
+}
 $('#cartOp').oninput = e => setCartOp(1 - e.target.value / 100);
 function setStickK(v, redraw = true) {
   stickK = Math.min(2, Math.max(0.5, +v || 1));
@@ -6943,7 +7009,7 @@ $('#stickK').onchange = e => setStickK(e.target.value);
 $('#sheetArrow').value = String(sheetArrow);
 $('#sheetArrow').onchange = e => { setSheetArrow(+e.target.value); status(sheetArrow ? 'ヘリックスとβストランドをはっきり描き、ループ・ターンを細い筒にしています（βストランドの矢印の先が C 末側）' : 'カートゥーンを標準の描き方に戻しました'); };
 setCartOp(cartOp);
-$('#fogSel').onchange = e => setFog(e.target.value);
+$('#fogR').oninput = e => setFog(+e.target.value === Math.round(+e.target.value) && +e.target.value <= 2 ? +e.target.value + 0.01 : +e.target.value);
 const SOFT_PAL = ['#f6c27a', '#9fd3f0', '#a9b8f5', '#b5dea4', '#f3aebd', '#d3bdf0', '#f0dd8c', '#9fe0d2'];
 $('#softPreset').onclick = () => {
   $('#look').value = 'soft'; applyLook(); try { localStorage.setItem('pdv_look', 'soft'); } catch (e) {}
@@ -6975,7 +7041,7 @@ $('#spin').onchange = e => stage.setSpin(e.target.checked);
    or Shift + wheel changes, back to the start; also on a double-click (double-tap) on the background */
 function resetView() {
   stage.setParameters({clipNear: 0, clipFar: 100});
-  setFog($('#fogSel').value);
+  setFog(String(fogV));
   if (structs.filter(S => S.visible !== false).length > 1 || !comp) stage.autoView(600); else comp.autoView(600);
 }
 $('#resetView').onclick = resetView;
@@ -7044,7 +7110,8 @@ async function exportImage() {
     const factor = Math.max(1, Math.round(W / stage.viewer.width));
     status(`画像を作成中: ${W.toLocaleString()} × ${H.toLocaleString()} px …`);
     await new Promise(r => setTimeout(r, 40));
-    const blob = await stage.makeImage({factor, antialias: true, trim: false, transparent: $('#transp').checked});
+    silScale = factor * 2;      // the outline width follows the image size (makeImage renders factor × 2 for antialiasing)
+    let blob; try { blob = await stage.makeImage({factor, antialias: true, trim: false, transparent: $('#transp').checked}); } finally { silScale = 1; stage.viewer.requestRender(); }
     const bmp = await createImageBitmap(blob);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
@@ -7138,7 +7205,7 @@ async function shareLink() {
     q.set('sel', lastFocus.map(f => `${f.chainname}:${f.resno}${f.inscode || ''}`).join(','));
   q.set('v', stage.viewerControls.getOrientation().toArray().map(x => +x.toFixed(3)).join(','));
   // always written, so the receiver's own saved preferences do not change the picture
-  q.set('look', $('#look').value); q.set('ol', outlineLevel); q.set('fog', $('#fogSel').value);
+  q.set('look', $('#look').value); if (shade !== null) q.set('sh', shade); q.set('ol', outlineLevel); q.set('fog', String(fogV));
   q.set('bg', $('#bg').value); q.set('cop', Math.round((1 - cartOp) * 100)); if (stickK !== 1) q.set('sk', stickK); if (sheetArrow) q.set('arw', String(sheetArrow));
   if (stickPref.part === 'side') q.set('sp', 'side');
   if (stickPref.nuc !== 'all') q.set('sn', stickPref.nuc);
@@ -7198,9 +7265,10 @@ async function openShared(q) {
   const act = Math.min(+q.get('act') || 0, structs.length - 1);
   if (act !== active) activate(act);
   const look = q.get('look'); if (look && LOOKS[look]) { $('#look').value = look; applyLook(); }
+  if (q.has('sh')) setShade(+q.get('sh'));
   if (q.has('ol')) setOutline(+q.get('ol') || 0);
-  if (q.has('fog')) { $('#fogSel').value = q.get('fog'); setFog(q.get('fog')); }
-  if (q.has('bg') && [...$('#bg').options].some(o => o.value === q.get('bg'))) { $('#bg').value = q.get('bg'); $('#bg').dispatchEvent(new Event('change')); }
+  if (q.has('fog')) { setFog(q.get('fog')); }
+  if (q.has('bg') && /^(white|black|#[0-9a-fA-F]{6})$/.test(q.get('bg'))) { $('#bg').value = q.get('bg'); $('#bg').dispatchEvent(new Event('change')); }
   if (q.get('sp') === 'side') { stickPref.part = 'side'; writeStickUI(); }
   if (['bb', 'base'].includes(q.get('sn'))) { stickPref.nuc = q.get('sn'); writeStickUI(); }
   if (q.get('lk') === '1') { linkOn = true; linkUI(); }
@@ -7248,7 +7316,7 @@ function undoSnap() {
   stash();
   return {
     active: structs[active] ? structs[active].sid : null,
-    g: {look: $('#look').value, outline: outlineLevel, fog: $('#fogSel').value, cartOp, bg: $('#bg').value},
+    g: {look: $('#look').value, shade, outline: outlineLevel, fog: String(fogV), cartOp, bg: $('#bg').value},
     st: structs.map(st => ({sid: st.sid, vis: st.visible !== false,
       chains: st.chains.map(c => ({name: c.name, color: c.color, type: c.type, surf: !!c.surf, visible: c.visible})),
       het: st.ui ? {lig: st.ui.lig, ion: st.ui.ion, wat: st.ui.wat, ligColor: st.ui.ligColor} : null,
@@ -7308,8 +7376,9 @@ async function undoApply(snap) {
     // global look
     const g = snap.g, cg = cur.g;
     if (g.look !== cg.look) { $('#look').value = g.look; applyLook(); }
+    if (g.shade !== cg.shade && g.shade !== undefined) setShade(g.shade);
     if (g.outline !== cg.outline) setOutline(g.outline);
-    if (g.fog !== cg.fog) { $('#fogSel').value = g.fog; setFog(g.fog); }
+    if (g.fog !== cg.fog) { setFog(g.fog); }
     if (g.cartOp !== cg.cartOp) setCartOp(g.cartOp);
     if (g.bg !== cg.bg) { $('#bg').value = g.bg; $('#bg').dispatchEvent(new Event('change')); }
     // structures
@@ -8541,8 +8610,10 @@ const MM_R = {C: 1.7, N: 1.55, O: 1.52, S: 1.8, SE: 1.9, P: 1.8};
 const MM_POS = {ARG: ['NE', 'NH1', 'NH2'], LYS: ['NZ'], HIS: []}, MM_NEG = {ASP: ['OD1', 'OD2'], GLU: ['OE1', 'OE2']};
 let mm = null;   // {S, to, sites: [{ri, res: {ch, resno, ins, from}, bb, rots: [...], pick, rsa, orig}], cur, comp, shape}
 function mmClear(keepPanel) {
+  const back = mm && mm.hidMut ? mm.S : null;
   if (mm) { [mm.comp, mm.shape].forEach(c => { if (c) try { stage.removeComponent(c); } catch (e) {} }); mmEnvClear(); mmOrigClear(); }
   mm = null;
+  if (back && back.mutRes) { try { mutClearDraw(back); mutDraw(back); } catch (e) {} }
   if (!keepPanel) { const r = $('#mmRes'); if (r) r.innerHTML = ''; }
   try { bottomUpdate(); } catch (e) {}
 }
@@ -8720,7 +8791,11 @@ function mmRun(spec) {
   });
   mmClear(true);
   mutDropFocus();          // as with 「位置を調べる」: the residue clicked before is put away; only the new side chains stand out
-  mm = {S, to, sites, cur: 0, envReps: []};
+  // the thick coloured sticks and labels of 「一覧で調べる」 would cover the original residue: put them away while the
+  // built mutation is shown, and bring them back with 「リセット」
+  const hidMut = !!(S.mutReps && S.mutReps.length);
+  if (hidMut) mutClearDraw(S);
+  mm = {S, to, sites, cur: 0, envReps: [], hidMut};
   mmRender(); mmShow();
   try {
     const sel = sites.map(x => `(${x.res.resno - 4}-${x.res.resno + 4}:${x.res.ch} and /0)`).join(' or ');   // a little of the chain on each side, so the view is not too tight
@@ -8893,6 +8968,46 @@ function setCell(on) {
   cellInfoSync();
 }
 $('#cellOn').onchange = e => { setCell(e.target.checked); status(e.target.checked ? '単位胞を表示しました' : '単位胞を隠しました'); };
+
+/* ---------- short choices as buttons ----------
+   Selects with a few short options are shown as a row of buttons (the chosen one lit), so every choice is visible at
+   once. The select stays (hidden) and keeps the value; the buttons follow it, also when the value is set by a session,
+   a link or undo. */
+const SEG = {
+  cam: {perspective: '透視投影', orthographic: '平行投影'},
+  look: {std: '標準', matte: 'マット', flat: 'フラット', soft: '淡い'},
+  sheetArrow: {0: '標準', 2: '二次構造をはっきり'},
+  stickC: {chain: 'Chainの色', dark: '濃く', light: '淡く', grey: '灰色', white: '白'},
+  lblMode: {ngl: '解析用', fig: '図用'},
+  lblFmt: null, lblChain: {auto: '界面のみ', on: '付ける', off: '付けない'}, lblSize: null,
+  lblColor: {mono: '白・黒', chain: 'Chainの色'}, lblBg: {none: 'なし', auto: '自動', white: '白', black: '黒'},
+  stickPart: {all: '主鎖＋側鎖', side: '側鎖のみ'}, stickNuc: {all: '全体', bb: '骨格のみ', base: '塩基のみ'},
+  focusScope: {all: '表示中すべて', sel: 'クリックした残基のみ'}, hydStyle: null,
+  spotMode: {transp: '半透明', fade: '背景色に近づける'},
+  imgUnit: null, imgAspect: {view: '画面と同じ'}
+};
+const segs = [];
+Object.entries(SEG).forEach(([id, names]) => {
+  const sel = document.getElementById(id); if (!sel) return;
+  const box = document.createElement('div'); box.className = 'seg'; box.dataset.for = id;
+  [...sel.options].forEach(o => {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.v = o.value;
+    b.textContent = (names && names[o.value]) || o.textContent; b.title = o.title || o.textContent;
+    b.onclick = () => { if (sel.value === o.value) return; sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); segSync(); };
+    box.appendChild(b);
+  });
+  if (sel.title) box.title = sel.title;
+  sel.style.display = 'none'; sel.insertAdjacentElement('afterend', box);
+  // follow values set from code (sessions, links, undo) without polling
+  try {
+    const d = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(sel), 'value') || Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+    Object.defineProperty(sel, 'value', {configurable: true, get() { return d.get.call(this); }, set(v) { d.set.call(this, v); segSync(); }});
+  } catch (e) {}
+  segs.push([sel, box]);
+});
+function segSync() { segs.forEach(([sel, box]) => box.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === sel.value))); }
+segSync();
+document.addEventListener('change', e => { if (e.target && e.target.tagName === 'SELECT') segSync(); }, true);
 window.MV = {status, get focusShownIdx() { return focusShownIdx; }, mutAnalyse, mutResIndex, get structs() { return structs; }, get maps() { return maps; }, get chains() { return chains; }, get stage() { return stage; },
   chainReps, drawGroups, symCompAt: (a, pp) => symCompAt(a, pp), selectAtom: (a, m) => selectAtom(a, m || 'set'), measPick: (c, a) => measPick(c, a), get measures() { return measures; }, pxPerA: () => pxPerA(), activate: i => activate(i), fetchEntryInfo, applyPendingAbs, renderImgInfo, exportImage};
 }

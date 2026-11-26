@@ -46,7 +46,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 **Display**
 - Colouring by chain, one colour per structure, N- to C-terminus (purple → green → yellow), secondary structure (helix red, β strand sky blue), amino-acid type, charge (+ blue, − red, His sky blue, neutral grey; a version that also shows Cys in yellow) or polarity (hydrophobic / hydrophilic); the letters of the sequence strip take the same colours
 - Cartoon, sticks, surface and other representations; adjustable cartoon transparency; cartoon styles: standard, or clear secondary structure (close to PyMOL's Flat Sheets + Fancy Sheets: helices as ribbons that do not twist at their ends, β strands as flat arrows, loops and turns as thin tubes; outlines supported; the arrows make parallel and antiparallel sheets clear at a glance)
-- Look: material (standard, matte, flat, soft), outlines, depth fade, stick thickness (overall), stick carbon colour, and one-click "illustration" and "soft colours" presets
+- Look: background (white to black), material (standard, matte, flat, soft), shading strength (0 gives flat, painted colours), outlines (width, colour and the depth step for lines on sliders), depth fade, stick thickness (overall), stick carbon colour
 - Stick thickness for a selection only: from the right-click menu in the viewer, or in each row of "Saved selections"
 - Colour of selected residues: "Colour" in the right-click menu paints the sticks only, or the cartoon too (switch with "Paint cartoon too" in "Saved selections")
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
@@ -96,7 +96,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Measurements: press "📏 Measure" at the top right of the viewer and tap atoms to measure distances, angles and dihedrals
   - Values are listed in the "Measurements" tab under the viewer; hide or remove them one by one or all at once (hidden ones are left out of exported images)
   - Copy the list; kept in sessions and exported images
-- Scale bar (Å)
+- Scale bar (Å) (under "Measurements" in the Analysis tab)
 - Molecular dimensions (maximum diameter and lengths along the principal axes): choose the whole structure or a chain under "Measurements" in the Analysis tab ("Off" removes them)
 - PNG export for papers: set the width (mm / inch / px) and resolution (dpi); 600 dpi and above is supported (labels included)
 - Copy the interaction list (paste into a spreadsheet)
@@ -165,6 +165,7 @@ If index.html is downloaded and opened on its own, without ngl.js in the same fo
   - Horn BKP. Closed-form solution of absolute orientation using unit quaternions. *J. Opt. Soc. Am. A* 1987;4:629–642. doi:[10.1364/JOSAA.4.000629](https://doi.org/10.1364/JOSAA.4.000629)
   - Zhang Y, Skolnick J. Scoring function for automated assessment of protein structure template quality. *Proteins* 2004;57:702–710. doi:[10.1002/prot.20264](https://doi.org/10.1002/prot.20264)
   - Zhang Y, Skolnick J. TM-align: a protein structure alignment algorithm based on the TM-score. *Nucleic Acids Res.* 2005;33:2302–2309. doi:[10.1093/nar/gki524](https://doi.org/10.1093/nar/gki524)
+- Outlines are drawn on the finished picture: a pixel is outlined when a neighbouring pixel is nearer by more than a set depth (1.2 Å by default), the same idea as ChimeraX silhouettes.
 - Interface area uses the same definition as PISA (half of the total buried surface area).
   - Krissinel E, Henrick K. Inference of macromolecular assemblies from crystalline state. *J. Mol. Biol.* 2007;372:774–797. doi:[10.1016/j.jmb.2007.05.022](https://doi.org/10.1016/j.jmb.2007.05.022)
 - Conservation is calculated as Jensen–Shannon divergence and coloured in the same nine grades as ConSurf.
