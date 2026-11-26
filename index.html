@@ -721,7 +721,6 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <label class="small"><input type="checkbox" id="focusListOn" checked> 一覧を表示</label>
   </div>
   <div class="frow"><span class="fl">範囲</span><select id="focusScope" title="スティックで表示している残基どうしの相互作用をすべて出すか、クリックした残基が関わるものだけにするか"><option value="all">範囲: 表示中の残基すべて</option><option value="sel">範囲: クリックした残基のみ</option></select></div>
-  <div class="frow"><span class="fl">疎水性<small>Chain間の解析にも共通</small></span><select id="hydStyle" title="疎水性相互作用（炭素どうしの接触）の描き方。ドットは接している炭素の向かい合う側に細かい点を描きます（LigPlot+ の「まつげ」の立体版）"><option value="dots">ドット</option><option value="line">点線</option></select></div>
   <div class="subh">周りを薄くして強調する</div>
   <div class="row">
     <label><input type="checkbox" id="spotOn"> 周りを薄くしてクリックした場所を強調</label>
@@ -3602,21 +3601,8 @@ function drawIfc() {
   ifc.shape = lineShape(shown.flatMap(visibleItems), $('#ifDist').checked);
   if (!$('#ifShow').checked) setIfcVisible(false);
 }
-/* hydrophobic contacts: 'dots' = fine grey dots on the facing sides of the two carbons (like LigPlot+ "eyelashes", in 3D);
-   'line' = dashed line like the other interactions */
-let hydStyle = (() => { try { return localStorage.getItem('pdv_hyd') === 'line' ? 'line' : 'dots'; } catch (e) { return 'dots'; } })();
-const HYD_PTS = (() => { const N = 260, g = Math.PI * (3 - Math.sqrt(5)), out = [];
-  for (let k = 0; k < N; k++) { const y = 1 - 2 * (k + 0.5) / N, r = Math.sqrt(1 - y * y), t = g * k; out.push([Math.cos(t) * r, y, Math.sin(t) * r]); } return out; })();
-function hydDots(shape, it, col, name) {
-  const R = 1.75;                                  // about the carbon van der Waals radius
-  for (const [a, b] of [[it.a, it.b], [it.b, it.a]]) {
-    const A = [a.x, a.y, a.z], B = [b.x, b.y, b.z], d = Math.hypot(B[0] - A[0], B[1] - A[1], B[2] - A[2]);
-    for (const u of HYD_PTS) {
-      const q = [A[0] + u[0] * R, A[1] + u[1] * R, A[2] + u[2] * R];
-      if (Math.hypot(B[0] - q[0], B[1] - q[1], B[2] - q[2]) < d - 0.55) shape.addSphere(q, col, 0.056, name);   // only the side facing the partner
-    }
-  }
-}
+/* hydrophobic contacts are drawn as dashed lines like the other interactions (dots were dropped: they could be
+   mistaken for clashes) */
 function lineShape(items, showD) {
   if (!items.length) return null;
   const shape = new NGL.Shape('interactions');
@@ -3641,7 +3627,6 @@ function lineShape(items, showD) {
       return;
     }
     const name = `${IT[it.t].n}${it.sub ? '（' + it.sub + '）' : ''} ${it.d.toFixed(2)} Å  ${atomLabel(it.a)} – ${atomLabel(it.b)}`;
-    if (it.t === 'hyd' && hydStyle === 'dots' && it.a.an && it.b.an) { hydDots(shape, it, col, name); return; }
     dash(P, Q, col, name);
     if (!it.a.an) shape.addSphere(P, col, 0.3, '環の重心');
     if (!it.b.an) shape.addSphere(Q, col, 0.3, '環の重心');
@@ -5611,16 +5596,10 @@ function openDisplayOpts() {
 }
 $('#ifOpts').onclick = openDisplayOpts;
 $('#focusListOn').oninput = renderFlist;
-$('#hydStyle').value = hydStyle;
 $('#multiSel').onchange = e => setMulti(e.target.value);
 $('#linkBtn').onclick = () => setMulti(linkOn ? 'switch' : 'link');
 $('#keepBtn').onclick = () => setMulti(keepOn ? 'switch' : 'keep');
 linkUI();
-$('#hydStyle').onchange = e => {
-  hydStyle = e.target.value === 'line' ? 'line' : 'dots';
-  try { localStorage.setItem('pdv_hyd', hydStyle); } catch (er) {}
-  drawFocusShape(); if (ifc) drawIfc();
-};
 $('#spotOn').oninput = () => { if (lastFocus) focusOn(lastFocus, false); };
 $('#spotMode').onchange = () => { if (lastFocus) focusOn(lastFocus, false); };
 const saveStick = () => { try { localStorage.setItem(STICK_KEY, JSON.stringify(stickPref)); } catch (e) {} };
@@ -8982,7 +8961,7 @@ const SEG = {
   lblFmt: null, lblChain: {auto: '界面のみ', on: '付ける', off: '付けない'}, lblSize: null,
   lblColor: {mono: '白・黒', chain: 'Chainの色'}, lblBg: {none: 'なし', auto: '自動', white: '白', black: '黒'},
   stickPart: {all: '主鎖＋側鎖', side: '側鎖のみ'}, stickNuc: {all: '全体', bb: '骨格のみ', base: '塩基のみ'},
-  focusScope: {all: '表示中すべて', sel: 'クリックした残基のみ'}, hydStyle: null,
+  focusScope: {all: '表示中すべて', sel: 'クリックした残基のみ'},
   spotMode: {transp: '半透明', fade: '背景色に近づける'},
   imgUnit: null, imgAspect: {view: '画面と同じ'}
 };

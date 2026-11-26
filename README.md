@@ -74,7 +74,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 **Analysis**
 - Interaction list for the clicked residue: hydrogen bonds, salt bridges, hydrophobic contacts, π-stacking, cation–π, metal coordination, halogen bonds, and water-mediated hydrogen bonds
   - Show or hide each interaction type, and backbone–backbone interactions
-  - Hydrophobic contacts are drawn as fine grey dots on the facing sides of the two carbons (dashed lines are also available)
+  - Hydrophobic contacts are drawn as grey dashed lines, like the other interactions
   - Scope: only interactions of the clicked residue, or all interactions among the residues shown within 5 Å
   - Distance criteria can be changed in the "Analysis" tab (default hydrogen-bond limit: 3.5 Å donor–acceptor, +0.6 Å when sulfur is involved)
 - Interface analysis between chains: residue pairs at the interface, buried surface area (BSA), and interface area (results in the "Chain interactions" tab under the viewer)
