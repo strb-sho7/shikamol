@@ -51,7 +51,8 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Colour of selected residues: "Colour" in the right-click menu paints the sticks only, or the cartoon too (switch with "Paint cartoon too" in "Saved selections")
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
 - Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour; text background none, auto, white or black
-- Surface colouring by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
+- Ligands, ions and water: for each kind (residue name), its name (from the mmCIF file, otherwise from the Chemical Component Dictionary through RCSB PDB), show or hide, colour and style (ball & stick, sticks, CPK, see-through surface, …), and zoom to it
+- Molecular surfaces: molecular, solvent-accessible or van der Waals surface; adjustable detail. Coloured by chain, grey or white, or by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
 - Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues (chain names stay pinned at the left while scrolling)
 - Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off (the "Saved selections" tab under the viewer)
 - Log: operations, selections and errors since the page was opened, with times (the "Log" tab under the viewer; can be copied)

@@ -277,6 +277,13 @@ details.sec{margin-bottom:12px}
 #upane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
 #upane .uph{font-size:12px;font-weight:700;margin:4px 0 4px;color:#cfd3da}
 #upMut{margin-top:6px}
+.hett{margin:2px 0 6px}
+.hetrow{display:grid;grid-template-columns:28px minmax(56px,auto) 30px minmax(0,1fr) 24px;column-gap:6px;row-gap:1px;align-items:center;padding:5px 0;border-bottom:1px solid #22262e}
+.hetrow:last-child{border-bottom:0}
+.hetrow > input[type=checkbox]{justify-self:center}
+.hetrow .cname{white-space:nowrap}
+.hetrow select{font-size:12px;padding:3px 4px;width:100%}
+.hetrow > .desc{grid-row:2;grid-column:2 / -1;font-size:11.5px;color:#b4bcc9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mmt.mms td{padding:2px 8px;cursor:pointer}
 .mmt.mms button{font-size:11px;padding:1px 8px}
 .mcard button.mmgo{font-size:11px;padding:1px 8px}
@@ -421,16 +428,21 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   </div>
   <div id="chains" class="card"><span class="small">構造を読み込むとChainが表示されます</span></div>
 
-  <div class="row">
+  <!-- the old all-at-once switches stay (hidden) for sessions and links; the table below replaces them -->
+  <div class="row" style="display:none">
     <label><input type="checkbox" id="showLig" checked> リガンド</label>
     <button class="sw" id="ligColor" data-v="#ffcc80" title="リガンドの炭素の色"></button>
     <label><input type="checkbox" id="showIon" checked> イオン</label>
     <label><input type="checkbox" id="showWat"> 水</label>
   </div>
+  <div class="small" style="margin-top:6px">リガンド・イオン・水</div>
+  <div id="hetList" class="small"></div>
   <div class="row">
     <span class="small">表面の色</span>
     <select id="surfColor">
       <option value="chain">Chainの色</option>
+      <option value="grey">灰色（外形を見る）</option>
+      <option value="white">白</option>
       <option value="charge">電荷をもつ残基（Lys/Arg 青・Asp/Glu/リン酸 赤）</option>
       <option value="elec">静電ポテンシャル（近似）</option>
       <option value="hydro">疎水性（Kyte–Doolittle）</option>
@@ -438,6 +450,9 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
       <option value="cons">保存度（ConSurf風・解析タブで読み込み）</option>
     </select>
   </div>
+  <input type="hidden" id="surfStyle" value="solid">
+  <div class="frow"><span class="fl">表面の種類</span><select id="surfType" title="分子表面：溶媒（半径 1.4 Å の球）が触れる境界（もっとも一般的）。溶媒露出面：溶媒の球の中心が通る面（一回り大きい）。ファンデルワールス面：原子の球をそのまま重ねた面"><option value="ms">分子表面</option><option value="sas">溶媒露出面</option><option value="vws">ファンデルワールス</option></select></div>
+  <div class="frow"><span class="fl">表面の細かさ</span><div class="fc"><input type="range" id="surfRes" min="1" max="4" step="0.5" value="2" title="大きくするほど細かくなめらかになりますが、計算に時間がかかります（大きな構造では注意）"><span class="lv" id="surfResV">2.0</span></div></div>
   <div id="apbsBox" style="display:none">
     <div class="row">
       <input type="file" id="apbsFile" accept=".dx,.gz" hidden>
@@ -446,7 +461,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     </div>
     <div class="row"><span class="small">色の範囲 ±</span><input type="range" id="apbsRange" min="1" max="20" step="0.5" value="5"><span class="lv" id="apbsV" style="width:76px">5 kT/e</span></div>
   </div>
-  <div class="row"><span class="small">表面の不透明度</span><input type="range" id="surfOp" min="0.1" max="1" step="0.05" value="0.6"><span class="lv" id="surfOpV" style="width:40px">0.60</span></div>
+  <div class="row"><span class="small">表面の不透明度</span><input type="range" id="surfOp" min="0.02" max="1" step="0.02" value="0.6"><span class="lv" id="surfOpV" style="width:40px">0.60</span></div>
   <div class="row" id="elecRow" style="display:none"><span class="small">色の範囲 ±</span><input type="range" id="elecRange" min="10" max="150" step="5" value="50"><span class="lv" id="elecV" style="width:40px">50</span></div>
   <div id="surfLegend" class="small" style="display:none"></div>
   <div class="small">表面は上の表の「表面」列のチェックで、カートゥーンやスティックに重ねて表示されます（「一括」の行は全Chain、各Chainの行はそのChainだけ）。下が透けて見えるよう不透明度で調整してください。表面だけ見たいときは表示形式を「なし（表面だけ）」に。</div>
@@ -930,6 +945,9 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  'リガンド・イオン・水': 'Ligands, ions and water',
+  "この種類を表示する": "Show this kind", "リガンド": "Ligand", "イオン": "Ion", "水": "Water", "炭素の色（N・O などは元素の色）": "Carbon colour (N, O and others keep element colours)", "色（元に戻すときは「元素の色」）": "Colour (use \"element colours\" to go back)", "ボール＆スティック": "Ball & stick", "スティック": "Sticks", "CPK": "CPK", "半透明の表面": "See-through surface", "小さい球": "Small spheres", "ズーム": "Zoom", "この種類の場所にズームします": "Zoom to this kind", "元素の色に戻す": "Back to element colours",
+  "灰色（外形を見る）": "Grey (to see the shape)", "表面の描き方": "Surface style", "塗り": "Filled", "網目": "Mesh", "塗りつぶすか、網目（メッシュ）で描くか": "Filled or as a mesh", "表面の種類": "Surface type", "分子表面": "Molecular", "溶媒露出面": "Solvent-accessible", "ファンデルワールス": "van der Waals", "vdW": "vdW", "表面の細かさ": "Surface detail", "大きくするほど細かくなめらかになりますが、計算に時間がかかります（大きな構造では注意）": "Higher values are finer and smoother but take longer to compute (careful with large structures)", "分子表面：溶媒（半径 1.4 Å の球）が触れる境界（もっとも一般的）。溶媒露出面：溶媒の球の中心が通る面（一回り大きい）。ファンデルワールス面：原子の球をそのまま重ねた面": "Molecular surface: the boundary touched by a solvent sphere of radius 1.4 Å (the usual one). Solvent-accessible: the surface traced by the centre of that sphere (larger). van der Waals: the union of the atom spheres",
   "透視投影": "Perspective", "平行投影": "Orthographic", "標準": "Standard", "マット": "Matte", "フラット": "Flat", "淡い": "Soft", "二次構造をはっきり": "Clear secondary structure", "濃く": "Darker", "淡く": "Lighter", "灰色": "Grey", "白": "White", "黒": "Black", "解析用": "Analysis", "図用": "Figure", "界面のみ": "Interfaces only", "付ける": "Always", "付けない": "Never", "白・黒": "White/black", "Chainの色": "Chain colour", "なし": "None", "自動": "Auto", "主鎖＋側鎖": "Main + side chain", "側鎖のみ": "Side chain only", "全体": "Whole", "骨格のみ": "Backbone only", "塩基のみ": "Base only", "表示中すべて": "All shown", "クリックした残基のみ": "Clicked residue only", "ドット": "Dots", "点線": "Dashed line", "半透明": "See-through", "背景色に近づける": "Toward background", "画面と同じ": "As on screen",
   '表示する範囲': 'What is shown', '描く部分': 'parts drawn', '範囲': 'Scope', '疎水性': 'Hydrophobic', '強調する範囲': 'Highlighted radius', '薄くする方法': 'How to fade', '外側の濃さ': 'Outside strength',
   '光沢・陰影の初期値': 'gloss, default shading', '光と質感': 'Light and material', '色': 'Colour', '描き方': 'Style', '炭素の色': 'Carbon colour', 'スティック': 'Sticks', 'カートゥーン': 'Cartoon',
@@ -1601,17 +1619,17 @@ $('#mapBtn').onclick = () => $('#mapFile').click();
 /* ---------- structures (several can be loaded; one is "active" and edited by the panels) ---------- */
 let structs = [], active = -1, nextSid = 1;
 const SYM_INFO = '結晶構造で使えます。色と表示形式は元のChainに合わせ、半透明で表示します。対称分子をクリックすると、解析に加える候補として選べます。';
-const defaultUI = () => ({surfColor: 'chain', surfOp: 0.6, elec: 50, apbsR: 5, lig: true, ion: true, wat: false, ligColor: '#ffcc80', symOn: false, symCut: 5, symOp: 0.35, symInfo: SYM_INFO,
+const defaultUI = () => ({surfColor: 'chain', surfStyle: 'solid', surfType: 'ms', surfRes: 2, surfOp: 0.6, elec: 50, apbsR: 5, lig: true, ion: true, wat: false, ligColor: '#ffcc80', symOn: false, symCut: 5, symOp: 0.35, symInfo: SYM_INFO,
   ifA: '', ifB: '', ifCut: '4.0', ifLabels: true, ifDist: false, ifShow: true, ifOn: {hb: true, salt: true, pi: true, catpi: true, metal: true, water: true, halogen: true, hyd: true, cont: false}});
 function uiRead() {
-  return {surfColor: $('#surfColor').value, surfOp: +$('#surfOp').value, elec: +$('#elecRange').value, apbsR: +$('#apbsRange').value,
+  return {surfColor: $('#surfColor').value, surfStyle: $('#surfStyle').value, surfType: $('#surfType').value, surfRes: +$('#surfRes').value, surfOp: +$('#surfOp').value, elec: +$('#elecRange').value, apbsR: +$('#apbsRange').value,
     lig: $('#showLig').checked, ion: $('#showIon').checked, wat: $('#showWat').checked, ligColor: $('#ligColor').dataset.v,
     symOn: $('#symOn').checked, symCut: +$('#symCut').value, symOp: +$('#symOp').value, symInfo: $('#symInfo').textContent,
     ifA: $('#ifA').value, ifB: $('#ifB').value, ifCut: $('#ifCut').value, ifLabels: $('#ifLabels').checked, ifDist: $('#ifDist').checked,
     ifShow: $('#ifShow').checked, ifOn: {...ifOn}};
 }
 function uiWrite(u) {
-  $('#surfColor').value = u.surfColor || 'chain'; $('#surfOp').value = u.surfOp ?? 0.6; $('#surfOpV').textContent = (+(u.surfOp ?? 0.6)).toFixed(2);
+  $('#surfColor').value = u.surfColor || 'chain'; $('#surfStyle').value = 'solid'; $('#surfType').value = u.surfType || 'ms'; $('#surfRes').value = u.surfRes || 2; $('#surfResV').textContent = (+(u.surfRes || 2)).toFixed(1); $('#surfOp').value = u.surfOp ?? 0.6; $('#surfOpV').textContent = (+(u.surfOp ?? 0.6)).toFixed(2);
   $('#elecRange').value = u.elec ?? 50; $('#elecV').textContent = u.elec ?? 50;
   $('#apbsRange').value = u.apbsR ?? 5; $('#apbsV').textContent = `${u.apbsR ?? 5} kT/e`; renderSurfLegend();
   $('#showLig').checked = u.lig; $('#showIon').checked = u.ion; $('#showWat').checked = u.wat;
@@ -2530,7 +2548,7 @@ function repSpecs(ch) {
     case 'spacefill': add('spacefill', {sele: s, ...el}); break;
     case 'trace': add('backbone', {sele: s, color: c}); break;
   }
-  if (ch.surf) add('surface', {sele: s, ...((cs && $('#surfColor').value === 'chain') ? {color: CONS_SCHEME} : surfColorParams(ch.color)), opacity: surfOpacity()});
+  if (ch.surf) add('surface', {sele: s, ...((cs && $('#surfColor').value === 'chain') ? {color: CONS_SCHEME} : surfColorParams(ch.color)), opacity: surfOpacity(), ...surfShapeParams()});
   return out;
 }
 
@@ -2987,6 +3005,9 @@ $('#consCopy').onclick = async () => {
   catch (e) { status('コピーに失敗しました', true); }
 };
 const surfOpacity = () => +$('#surfOp').value;
+/* how chain surfaces are drawn: filled or mesh, which surface, and how fine (NGL's scaleFactor; its default is 2) */
+const surfSide = () => surfOpacity() < 0.99 ? {side: 'front', opaqueBack: false} : {side: 'double', opaqueBack: true};
+const surfShapeParams = () => ({wireframe: false, ...surfSide(), surfaceType: $('#surfType').value || 'ms', scaleFactor: +$('#surfRes').value || 2, ...($('#surfType').value === 'sas' || $('#surfType').value === 'ms' ? {probeRadius: 1.4} : {})});
 function surfColorParams(chainCol) {
   switch ($('#surfColor').value) {
     case 'charge': return {color: CHARGE_SCHEME};
@@ -2997,6 +3018,8 @@ function surfColorParams(chainCol) {
       const A = structs[active] && structs[active].apbs, r = +$('#apbsRange').value;
       return A ? {colorScheme: 'volume', colorVolume: A.vol, colorScale: 'rwb', colorDomain: [-r, r]} : {color: '#ffffff'};
     }
+    case 'grey': return {color: '#c8c8c8'};
+    case 'white': return {color: '#f4f4f4'};
     default: return {color: chainCol};
   }
 }
@@ -3053,12 +3076,15 @@ function refreshSurfaces() {
 }
 
 $('#surfColor').onchange = () => { renderSurfLegend(); refreshSurfaces(); stash(); };
+['#surfType'].forEach(q => $(q).addEventListener('change', () => { chains.forEach(ch => { if (ch.surf) chainReps(ch); }); stash(); }));
+$('#surfRes').oninput = e => { $('#surfResV').textContent = (+e.target.value).toFixed(1); };
+$('#surfRes').onchange = () => { chains.forEach(ch => { if (ch.surf) chainReps(ch); }); stash(); };
 let elecT = null;
 $('#elecRange').oninput = e => { $('#elecV').textContent = e.target.value; clearTimeout(elecT); elecT = setTimeout(refreshSurfaces, 250); };
 $('#elecRange').onchange = () => stash();
 $('#surfOp').oninput = e => {
   $('#surfOpV').textContent = (+e.target.value).toFixed(2);
-  chains.forEach(ch => ch.reps.filter(isSurf).forEach(r => r.setParameters({opacity: +e.target.value})));
+  chains.forEach(ch => ch.reps.filter(isSurf).forEach(r => r.setParameters({opacity: +e.target.value, ...surfSide()})));
 };
 $('#surfOp').onchange = () => { stash(); spotRefresh(); };
 
@@ -3093,6 +3119,7 @@ $('#colorBy').onchange = e => {
 };
 
 function renderChains() {
+  try { renderHet(); } catch (e) {}
   stash();
   try { if (lblPref.color === 'chain') lblStyle(); } catch (e) {}   // labels in chain colours follow colour changes
   const box = $('#chains');
@@ -3189,6 +3216,88 @@ $('#palette').addEventListener('change', e => {
 });
 
 /* ---------- ligand / ion / water ---------- */
+/* whether a kind is shown: its own tick; water follows the (hidden) water switch, which its row's tick sets, so that
+   sessions and links that only know "water on/off" still work */
+const hetShown = (g, c) => g.kind === 'wat' ? $('#showWat').checked : c.show !== false;
+/* the kinds of ligands, ions and water in a structure (first model), counted by residue name */
+function hetGroups(S) {
+  if (!S || !S.comp || !S.comp.structure) return [];
+  if (S.__hetG) return S.__hetG;
+  const m = new Map();
+  S.comp.structure.eachResidue(r => {
+    const kind = r.isWater() ? 'wat' : r.isIon() ? 'ion' : 'lig';      // the selection below already keeps only ligands, ions and water
+    const k = r.resname; if (!m.has(k)) {
+      // the name: the entity description of an mmCIF file (e.g. "ZINC ION"), when there is one
+      let name = '';
+      try { const ap = S.comp.structure.getAtomProxy(r.atomOffset), e = ap.entity; if (e && e.description && !e.isPolymer()) name = e.description; } catch (er) {}
+      m.set(k, {rn: k, kind, n: 0, first: r.index, name});
+    }
+    m.get(k).n++;
+  }, new NGL.Selection('/0 and (ligand or ion or water)'));
+  S.__hetG = [...m.values()].sort((a, b) => ({lig: 0, ion: 1, wat: 2}[a.kind] - {lig: 0, ion: 1, wat: 2}[b.kind]) || b.n - a.n || a.rn.localeCompare(b.rn));
+  return S.__hetG;
+}
+const HET_STYLES = {lig: [['ball+stick', 'ボール＆スティック'], ['licorice', 'スティック'], ['spacefill', 'CPK'], ['surface', '半透明の表面']],
+  ion: [['sphere', '小さい球'], ['spacefill', 'CPK']], wat: [['sphere', '小さい球'], ['spacefill', 'CPK']]};
+/* names of chemical components: from the file, a few common ones built in, otherwise the wwPDB Chemical Component
+   Dictionary through the RCSB PDB API (kept in the browser) */
+const CCD_BUILTIN = {HOH: 'WATER', ZN: 'ZINC ION', MG: 'MAGNESIUM ION', CA: 'CALCIUM ION', NA: 'SODIUM ION', K: 'POTASSIUM ION',
+  CL: 'CHLORIDE ION', CD: 'CADMIUM ION', SO4: 'SULFATE ION', PO4: 'PHOSPHATE ION', GOL: 'GLYCEROL', EDO: '1,2-ETHANEDIOL'};
+const ccdNames = (() => { try { return JSON.parse(localStorage.getItem('pdv_ccd_names') || '{}'); } catch (e) { return {}; } })();
+const ccdAsked = new Set();
+function hetName(g) {
+  if (CCD_BUILTIN[g.rn]) return CCD_BUILTIN[g.rn];
+  // a PDB file gives NGL only the residue name (or "water") as the description: use it only when it says more
+  if (g.name && g.name.toUpperCase() !== g.rn.toUpperCase() && !/^water$/i.test(g.name)) return g.name;
+  if (ccdNames[g.rn]) return ccdNames[g.rn];
+  if (!ccdAsked.has(g.rn) && /^[A-Z0-9]{1,5}$/.test(g.rn)) {
+    ccdAsked.add(g.rn);
+    fetch(`https://data.rcsb.org/rest/v1/core/chemcomp/${g.rn}`).then(r => r.ok ? r.json() : null).then(j => {
+      const n = j && j.chem_comp && j.chem_comp.name; if (!n) return;
+      ccdNames[g.rn] = String(n).slice(0, 120);
+      try { localStorage.setItem('pdv_ccd_names', JSON.stringify(ccdNames)); } catch (e) {}
+      renderHet();
+    }).catch(() => {});
+  }
+  return '';
+}
+function renderHet() {
+  const el = $('#hetList'); if (!el) return;
+  const S = structs[active], H = hetGroups(S);
+  if (!H.length) { el.innerHTML = ''; return; }
+  const cfg = (S && S.het) || {};
+  el.innerHTML = `<div class="hett">${H.map(g => {
+    const c = cfg[g.rn] || {}, col = c.color || (g.kind === 'lig' ? $('#ligColor').dataset.v : g.kind === 'wat' ? '#ff5050' : '');
+    const st = c.style || (g.kind === 'lig' ? 'ball+stick' : 'sphere'), nm = hetName(g);
+    return `<div class="hetrow" data-rn="${esc(g.rn)}"><input type="checkbox" data-k="show" ${hetShown(g, c) ? 'checked' : ''} title="この種類を表示する">
+      <span class="cname">${esc(g.rn)} <span class="small">×${g.n}</span></span>
+      <button class="sw" data-k="col" style="background:${col || 'linear-gradient(135deg,#9aa 0 50%,#c8c 50% 100%)'}" title="${g.kind === 'lig' ? '炭素の色（N・O などは元素の色）' : '色（元に戻すときは「元素の色」）'}"></button>
+      <select data-k="style">${HET_STYLES[g.kind].map(([v, t]) => `<option value="${v}"${v === st ? ' selected' : ''}>${t}</option>`).join('')}</select>
+      <button class="x" data-k="zoom" title="この種類の場所にズーム">◎</button>
+      ${nm ? `<span class="desc" title="${esc(nm)}">${esc(nm)}</span>` : ''}</div>`;
+  }).join('')}</div>`;
+}
+function hetSet(rn, patch) {
+  const S = structs[active]; if (!S) return;
+  S.het = S.het || {}; S.het[rn] = {...(S.het[rn] || {}), ...patch};
+  applyHet(); renderHet(); drawSym();
+}
+$('#hetList').addEventListener('change', e => {
+  const tr = e.target.closest('.hetrow[data-rn]'); if (!tr) return;
+  if (e.target.dataset.k === 'show') {
+    const g = hetGroups(structs[active]).find(x => x.rn === tr.dataset.rn);
+    if (g && g.kind === 'wat') { $('#showWat').checked = e.target.checked; applyHet(); drawSym(); stash(); return; }
+    hetSet(tr.dataset.rn, {show: e.target.checked});
+  }
+  if (e.target.dataset.k === 'style') hetSet(tr.dataset.rn, {style: e.target.value});
+});
+$('#hetList').addEventListener('click', e => {
+  const tr = e.target.closest('.hetrow[data-rn]'), k = e.target.dataset.k; if (!tr || !k) return;
+  const S = structs[active], g = hetGroups(S).find(x => x.rn === tr.dataset.rn); if (!g) return;
+  if (k === 'col') openPicker(e.target, (S.het && S.het[g.rn] && S.het[g.rn].color) || (g.kind === 'lig' ? $('#ligColor').dataset.v : '#cccccc'), c => hetSet(g.rn, {color: c}),
+    g.kind === 'lig' ? null : {label: '元素の色に戻す', onClick: () => hetSet(g.rn, {color: null})});
+  if (k === 'zoom') { try { S.comp.autoView(`[${g.rn}] and (ligand or ion or water) and /0`, 600); } catch (er) {} }
+});
 function applyHet() {
   if (!comp) return;
   hetReps.forEach(r => comp.removeRepresentation(r)); hetReps = [];
@@ -3201,9 +3310,24 @@ function applyHet() {
     hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and ${keep}`, ...p}));
     if (mode === 'fade') hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and not ${keep}`, ...p, opacity: 0.15, depthWrite: false}));
   };
-  if ($('#showLig').checked) add('ball+stick', 'ligand and not hydrogen', {color: 'element', colorValue: hexNum($('#ligColor').dataset.v), radiusScale: stickK});
-  if ($('#showIon').checked) add('spacefill', 'ion', {radiusScale: 0.28, color: 'element'});
-  if ($('#showWat').checked) add('spacefill', 'water and not hydrogen', {radiusScale: 0.2, color: '#ff5050'});
+  // each kind of ligand / ion (by residue name) can have its own colour and style (the table under the chains); kinds
+  // without settings use the defaults: ligands ball & stick in the ligand colour, ions as small spheres, water red dots
+  const S = structs[active], H = hetGroups(S), cfg = (S && S.het) || {};
+  const sel = g => `[${g.rn}] and (${g.kind === 'wat' ? 'water' : g.kind === 'ion' ? 'ion' : 'ligand'}) and not hydrogen`;
+  H.forEach(g => {
+    const c = cfg[g.rn] || {};
+    if (!hetShown(g, c)) return;
+    const col = c.color || (g.kind === 'lig' ? $('#ligColor').dataset.v : null);
+    const st = c.style || (g.kind === 'lig' ? 'ball+stick' : 'sphere');
+    const el = col ? {color: 'element', colorValue: hexNum(col)} : {color: 'element'};
+    const uni = col ? {color: col} : (g.kind === 'wat' ? {color: '#ff5050'} : {color: 'element'});
+    const p = g.kind === 'lig' ? el : uni;
+    if (st === 'licorice') add('licorice', sel(g), {...el, radiusScale: stickK});
+    else if (st === 'ball+stick') add('ball+stick', sel(g), {...p, radiusScale: stickK});
+    else if (st === 'spacefill') add('spacefill', sel(g), {...p});
+    else if (st === 'surface') { add('licorice', sel(g), {...el, radiusScale: 0.7 * stickK}); add('surface', sel(g), {color: col || '#c8c8c8', opacity: SURF_OP, surfaceType: 'av', probeRadius: 1.4, side: 'front', depthWrite: false, disablePicking: true}); }
+    else add('spacefill', sel(g), {...p, radiusScale: g.kind === 'wat' ? 0.2 : 0.28});      // 'sphere': ions and water as small spheres
+  });
   spotRefresh();
 }
 ['#showLig','#showIon','#showWat'].forEach(id => $(id).addEventListener('input', () => { applyHet(); drawSym(); }));
@@ -4663,7 +4787,7 @@ async function structToJSON(st) {
     name: st.name, pdbId: st.pdbId, visible: st.visible, structure, xf: st.xf, symBuilt: st.symBuilt || null, symFromName: st.symFromName || null,
     chains: st.chains.map(c => ({name: c.name, color: c.color, type: c.type, surf: !!c.surf, visible: c.visible})),
     het: {lig: u.lig, ion: u.ion, wat: u.wat, ligColor: u.ligColor},
-    surface: {color: u.surfColor, opacity: u.surfOp, elec: u.elec, apbsR: u.apbsR}, prevColors: st.prevColors || null,
+    surface: {color: u.surfColor, style: u.surfStyle, type: u.surfType, res: u.surfRes, opacity: u.surfOp, elec: u.elec, apbsR: u.apbsR}, prevColors: st.prevColors || null,
     apbs: st.apbs ? {name: st.apbs.name, data: st.apbs.file.size <= MAX_EMBED ? await fileToDataURL(st.apbs.file) : null} : null,
     extras: st.extras.map(x => ({s: x.s, t: x.t, col: x.col, elem: x.elem})),
     ifc: st.ifc ? {A: st.ifc.chA, B: st.ifc.chB, cut: st.ifc.cut, on: {...u.ifOn}, labels: u.ifLabels, dist: u.ifDist, show: u.ifShow} : null,
@@ -4672,6 +4796,7 @@ async function structToJSON(st) {
     groups: (st.groups || []).map(g => ({name: g.name, res: g.res, on: !!g.on, color: g.color, style: g.style, w: g.w || 1, ...(g.cart ? {cart: 1} : {})})),
     cons: st.cons || null, plddt: !!(st.comp && st.comp.structure.__plddt),
     mutHist: (st.mutHist || []).slice(0, 10),
+    hetKinds: st.het || null,
     mut: st.mut ? {txt: st.mut.txt, ch: st.mut.ch || '', off: st.mut.off || 0, hide: !!st.mut.hide, num: st.mut.num || 'struct', cb: st.mut.cb || 'group', rev: !!st.mut.rev} : null
   };
 }
@@ -4732,7 +4857,8 @@ async function restoreStruct(j) {
   if (j.name) S.name = j.name;
   if (j.symBuilt) { S.symBuilt = j.symBuilt; S.symFromName = j.symFromName || ''; }
   if (j.surface) {
-    $('#surfColor').value = j.surface.color || 'chain'; $('#surfOp').value = j.surface.opacity ?? 1; $('#surfOpV').textContent = (+$('#surfOp').value).toFixed(2);
+    $('#surfColor').value = j.surface.color || 'chain'; $('#surfStyle').value = 'solid'; $('#surfType').value = ['ms', 'sas', 'vws'].includes(j.surface.type) ? j.surface.type : 'ms';
+    $('#surfRes').value = j.surface.res || 2; $('#surfResV').textContent = (+$('#surfRes').value).toFixed(1); $('#surfOp').value = j.surface.opacity ?? 1; $('#surfOpV').textContent = (+$('#surfOp').value).toFixed(2);
     $('#elecRange').value = j.surface.elec ?? 50; $('#elecV').textContent = $('#elecRange').value;
     $('#apbsRange').value = j.surface.apbsR ?? 5; $('#apbsV').textContent = `${$('#apbsRange').value} kT/e`; renderSurfLegend();
   }
@@ -4746,7 +4872,7 @@ async function restoreStruct(j) {
     chainReps(c);
   });
   if (j.het) {
-    $('#showLig').checked = j.het.lig; $('#showIon').checked = j.het.ion; $('#showWat').checked = j.het.wat;
+    $('#showLig').checked = true; $('#showIon').checked = true; $('#showWat').checked = !!j.het.wat;
     if (j.het.ligColor) { $('#ligColor').dataset.v = j.het.ligColor; $('#ligColor').style.background = j.het.ligColor; }
     applyHet();
   }
@@ -4772,6 +4898,11 @@ async function restoreStruct(j) {
   if (Array.isArray(j.groups)) S.groups = j.groups.filter(g => g && Array.isArray(g.res)).map((g, i) => ({id: 'g' + i, name: String(g.name || ''), res: g.res,
     on: !!g.on, color: /^#[0-9a-f]{6}$/i.test(g.color) ? g.color : GROUP_COLS[i % GROUP_COLS.length], style: parseStyle(g.style).t, w: parseStyle(`x|${g.w}`).w, cart: !!g.cart, reps: []}));
   drawGroups(S);
+  if (j.hetKinds && typeof j.hetKinds === 'object') {      // only known keys and plain colours are taken from a file
+    S.het = {};
+    Object.entries(j.hetKinds).forEach(([rn, c]) => { if (!/^[A-Za-z0-9]{1,5}$/.test(rn) || !c) return;
+      S.het[rn] = {...(c.show === false ? {show: false} : {}), ...(/^#[0-9a-f]{6}$/i.test(c.color || '') ? {color: c.color} : {}), ...(['ball+stick', 'licorice', 'spacefill', 'surface', 'sphere'].includes(c.style) ? {style: c.style} : {})}; });
+  }
   if (Array.isArray(j.mutHist)) S.mutHist = j.mutHist.filter(h => h && typeof h.txt === 'string').slice(0, 10).map(h => ({txt: h.txt, ch: String(h.ch || ''), off: +h.off || 0, num: h.num === 'unp' ? 'unp' : 'struct', cb: h.cb === 'value' ? 'value' : 'group', rev: !!h.rev}));
   if (j.mut && j.mut.txt) { S.mut = {txt: String(j.mut.txt), ch: j.mut.ch || '', off: +j.mut.off || 0, hide: !!j.mut.hide, num: j.mut.num === 'unp' ? 'unp' : 'struct', cb: j.mut.cb === 'value' ? 'value' : 'group', rev: !!j.mut.rev}; try { mutRun(true); } catch (e) { log('変異の表示の復元に失敗: ' + (e.message || e)); } }
   stash();
@@ -8963,7 +9094,7 @@ const SEG = {
   stickPart: {all: '主鎖＋側鎖', side: '側鎖のみ'}, stickNuc: {all: '全体', bb: '骨格のみ', base: '塩基のみ'},
   focusScope: {all: '表示中すべて', sel: 'クリックした残基のみ'},
   spotMode: {transp: '半透明', fade: '背景色に近づける'},
-  imgUnit: null, imgAspect: {view: '画面と同じ'}
+  imgUnit: null, imgAspect: {view: '画面と同じ'}, surfType: {ms: '分子表面', sas: '溶媒露出面', vws: 'vdW'}
 };
 const segs = [];
 Object.entries(SEG).forEach(([id, names]) => {
