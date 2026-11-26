@@ -145,7 +145,7 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 @keyframes optflash{0%,40%{background:#5aa9ff40}100%{background:transparent}}
 #focusOpts.flash{animation:optflash 1.6s ease-out;border-radius:6px}
 #focusOpts{scroll-margin-top:120px}
-#drop{position:absolute;inset:0;border:3px dashed var(--acc);background:#5aa9ff22;display:none;place-items:center;font-size:18px}
+#drop{position:fixed;inset:0;z-index:100;pointer-events:none;border:3px dashed var(--acc);background:#5aa9ff22;display:none;place-items:center;font-size:18px}
 h1{font-size:16px;margin:0 0 10px}
 #stickyTop{position:sticky;top:-12px;z-index:5;margin:0 -14px 10px;padding:6px 10px 0;background:var(--panel);border-bottom:1px solid var(--line)}
 #tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
@@ -342,7 +342,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="row small">
     <input type="file" id="structFile" accept=".pdb,.cif,.mmcif,.ent,.bcif,.gz" hidden>
     <button id="structBtn">手元の構造ファイル…</button>
-    <span>.pdb / .cif（ドラッグ＆ドロップ可）</span>
+    <span>.pdb / .cif（画面のどこにでもドラッグ＆ドロップ可）</span>
   </div>
   <div class="row" id="globalTools" style="display:none" title="この行の操作は、開いているすべての構造に効きます">
     <span class="small">全構造：</span>
@@ -703,7 +703,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <button id="openSes">セッションを開く…</button>
     <input type="file" id="sesFile" accept=".json" hidden>
   </div>
-  <div class="small">構造・Chainの色と表示形式・選択範囲・マップの設定・相互作用解析・視点をまとめて .json に保存します。手元の構造ファイルや40 MB以下のマップファイルは中に埋め込みます。.jsonは画面にドロップしても開けます。</div>
+  <div class="small">構造・Chainの色と表示形式・選択範囲・マップの設定・相互作用解析・視点をまとめて .json に保存します。手元の構造ファイルや40 MB以下のマップファイルは中に埋め込みます。.jsonは画面のどこにドロップしても開けます。</div>
   <div class="row" style="margin-top:10px"><button id="shareBtn">🔗 今の表示をリンクで共有</button></div>
   <input type="text" id="shareUrl" readonly style="display:none;width:100%;margin-top:6px;font-size:12px">
   <div class="small">PDB ID で開いた構造、Chainごとの色と表示形式、リガンド・水の表示、保存した選択、選んでいる残基、視点、見た目、サーバーから読み込んだ電子密度（レベルと色）がリンクに入ります。リンクを開いた人は同じ画面から始められます。手元のファイル（構造・マップ・MTZ）はリンクに入りません（全部渡すときはセッションの .json を送ってください）。</div>
@@ -769,7 +769,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   </g>
  </g>
 </svg></div>
-    <div id="drop">ここにドロップ（構造 or マップ）</div>
+    <div id="drop">ここにドロップ（構造・マップ・MTZ・マップ係数・セッション）</div>
   </div>
   <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
   <div id="btabs"><button data-b="p-struct" class="pb">構造</button><button data-b="p-ana" class="pb">解析</button><button data-b="p-map" class="pb">電子密度</button><button data-b="p-view" class="pb pl">表示・出力</button><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
@@ -874,6 +874,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "ここにドロップ（構造・マップ・MTZ・マップ係数・セッション）": "Drop here (structure, map, MTZ, map coefficients, session)",
   "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets: helices cut at their ends, β strands as flat arrows, loops and turns as thin tubes", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細い筒にしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly, loops and turns as thin tubes (strand arrows point to the C-terminus)",
   "描き方": "style", "標準": "Standard", "βストランドを矢印に": "β strands as arrows", "二次構造をはっきり": "Clear secondary structure", "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細くしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly with thin loops and turns (strand arrows point to the C-terminus)", "カートゥーンを標準の描き方に戻しました": "Cartoon back to the standard style",
   "βストランド": "β strands", "帯（今までの描き方）": "Ribbons (as before)", "矢印": "Arrows", "矢印にすると、ストランドの向き（平行・逆平行）がひと目で分かります": "With arrows, the direction of each strand (parallel or antiparallel) is clear at a glance", "βストランドを矢印で描いています（矢印の先が C 末側）": "β strands drawn as arrows (pointing to the C-terminus)", "βストランドを帯で描いています": "β strands drawn as ribbons", "選んだ残基の周囲もスティック表示": "Also show the surrounding residues as sticks", "周囲の範囲": "Surroundings", "スティック表示": "shown as sticks", "選んだ残基から、どこまでの距離にある残基をスティックで表示するか（原子どうしの距離）": "How far from the selected residues other residues are shown as sticks (atom–atom distance)", "選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「② クリックしたときの表示」と同じ設定）": "Whether the surrounding residues are also shown as sticks (the same setting as \"② On click\" in the Display & export tab)", "色: 二次構造（ヘリックス赤・β水色）": "Colour: secondary structure (helix red, β sky blue)", "ヘリックス（αヘリックス・3₁₀ヘリックス）を赤、βストランドを水色、それ以外を薄い灰色で塗ります。二次構造はファイルの記載、なければ NGL が割り当てたものです": "Helices (α and 3₁₀) red, β strands sky blue, everything else light grey. Secondary structure from the file, or as assigned by NGL", "二次構造で色分けしています：ヘリックス＝赤、βストランド＝水色、それ以外＝薄い灰色（二次構造はファイルの記載、なければ NGL が割り当てたもの）": "Coloured by secondary structure: helix red, β strand sky blue, others light grey (from the file, or as assigned by NGL)",
@@ -942,7 +943,7 @@ const EXACT = new Map(Object.entries({
   '生物学的集合体には対称分子を使えません（非対称単位で読み込んでください）': 'Symmetry copies are not available for a biological assembly (load the asymmetric unit)',
   '対称分子を加えた構造には使えません（元の構造で表示してください）': 'Not available for a structure built with symmetry copies (use the original structure)',
   '手元の構造ファイル…': 'Local structure file…',
-  '.pdb / .cif（ドラッグ＆ドロップ可）': '.pdb / .cif (drag & drop works too)',
+  '.pdb / .cif（画面のどこにでもドラッグ＆ドロップ可）': '.pdb / .cif (or drag & drop anywhere on the page)',
   'クリックした構造が編集対象（下のChain・相互作用・対称分子の設定はその構造に効きます）': 'Click a structure to edit it (the Chain, interaction and symmetry panels below act on it)',
   'すべて閉じる': 'Close all',
   '重ね合わせ（Cα）': 'Superpose (Cα)',
@@ -1053,7 +1054,7 @@ const EXACT = new Map(Object.entries({
   '透過背景': 'Transparent',
   'セッションを保存': 'Save session',
   'セッションを開く…': 'Open session…',
-  '構造・Chainの色と表示形式・選択範囲・マップの設定・相互作用解析・視点をまとめて .json に保存します。手元の構造ファイルや40 MB以下のマップファイルは中に埋め込みます。.jsonは画面にドロップしても開けます。': 'Saves structures, chain colours and styles, selections, map settings, interaction analyses and the view to a .json file. Local structure files and map files up to 40 MB are embedded. Drop a .json on the viewer to open it.',
+  '構造・Chainの色と表示形式・選択範囲・マップの設定・相互作用解析・視点をまとめて .json に保存します。手元の構造ファイルや40 MB以下のマップファイルは中に埋め込みます。.jsonは画面のどこにドロップしても開けます。': 'Saves structures, chain colours and styles, selections, map settings, interaction analyses and the view to a .json file. Local structure files and map files up to 40 MB are embedded. Drop a .json anywhere on the page to open it.',
   '左ドラッグ: 回転　右ドラッグ: 平行移動　ホイール: ズーム': 'Left drag: rotate   Right drag: pan   Wheel: zoom',
   '＋ホイール: 奥行きクリップ（スラブ）': '+ wheel: depth clipping (slab)',
   '原子をクリック: その周囲にズーム': 'Click an atom: zoom to it', '＋クリック: 残基を追加（選択済みなら外す）': '+ click: add the residue (or remove it if already focused)',
@@ -4771,9 +4772,14 @@ async function handleFile(f, asMap = false) {
 $('#structFile').addEventListener('change', e => { if (e.target.files[0]) routeFiles([e.target.files[0]]); e.target.value = ''; });
 $('#mapFile').addEventListener('change', e => { if (e.target.files[0]) routeFiles([e.target.files[0]], true); e.target.value = ''; });
 const main = document.querySelector('main'), drop = $('#drop');
-main.addEventListener('dragover', e => { e.preventDefault(); drop.style.display = 'grid'; });
-main.addEventListener('dragleave', e => { if (e.target === drop) drop.style.display = 'none'; });
-main.addEventListener('drop', e => { e.preventDefault(); drop.style.display = 'none'; routeFiles([...e.dataTransfer.files]); });
+/* files can be dropped anywhere on the page (the side panel too); the browser never opens a dropped file itself,
+   which would leave ShikaMol. Only drags that carry files are caught, so dragging text or labels is unaffected. */
+document.body.appendChild(drop);
+const hasFiles = e => !!(e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files'));
+let dropT = null;
+document.addEventListener('dragover', e => { if (!hasFiles(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; drop.style.display = 'grid'; clearTimeout(dropT); dropT = setTimeout(() => drop.style.display = 'none', 400); });
+document.addEventListener('dragleave', e => { if (!e.relatedTarget) drop.style.display = 'none'; });
+document.addEventListener('drop', e => { if (!hasFiles(e)) return; e.preventDefault(); clearTimeout(dropT); drop.style.display = 'none'; routeFiles([...e.dataTransfer.files]); });
 
 /* =====================================================================
    Crystal symmetry mates (like PyMOL symexp): whole chains within a cutoff
