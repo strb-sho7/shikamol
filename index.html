@@ -189,6 +189,11 @@ input[type=text],select,input[type=number]{background:#0f1115;color:var(--ink);b
 input[type=text]{flex:1}
 button{background:#2b3240;color:var(--ink);border:1px solid #3a4352;border-radius:6px;padding:5px 10px;font-size:13px;cursor:pointer}
 button:hover{background:#364052}
+.dstep{margin:2px 0 8px}
+.dstep .dshort{display:none;font-size:12px;line-height:1.5;margin:2px 0 1px}
+.dstep.on .dshort{display:block}
+.dstep .ddet>summary{cursor:pointer;font-size:11.5px;color:var(--mute);width:max-content}
+.dstep .ddet .small{margin-top:2px}
 button.pri{background:var(--acc);border-color:var(--acc);color:#04121f;font-weight:600}
 button.lblgo{padding:6px 14px;border-radius:16px}
 button.lblgo:hover{background:#7dbcff}
@@ -684,16 +689,16 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="row">
     <button class="pri" id="srvXray">2Fo-Fc ＋ Fo-Fc（PDBe密度サーバー）</button>
   </div>
-  <div class="small">結晶対称を考慮した密度を、画面中心の周り（または構造全体）だけ取得します。中心を動かすと自動で取り直します。</div>
+  <div class="dstep" data-step="0"><div class="dshort">まずはこれを押してください。PDBe の密度サーバーから、画面の中心のまわりの密度を取ってきます。</div><details class="ddet"><summary>詳しく</summary><div class="small">結晶対称を考慮した密度を、画面中心の周り（または構造全体）だけ取得します。中心を動かすと自動で取り直します。</div></details></div>
   <div class="row">
     <button id="coefBtn">2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）</button>
   </div>
-  <div class="small">公開されたばかりの構造など、PDBe の密度サーバーにまだマップがないときに使います。wwPDB が検証レポートと一緒に公開しているマップ係数を RCSB PDB から取得し、ブラウザの中で密度を計算します。</div>
+  <div class="dstep" data-step="1"><div class="dshort">PDBe の密度サーバーにまだない構造（公開されたばかりなど）は、RCSB PDB のマップ係数を取ってきて、ブラウザの中で計算します。</div><details class="ddet"><summary>詳しく</summary><div class="small">公開されたばかりの構造など、PDBe の密度サーバーにまだマップがないときに使います。wwPDB が検証レポートと一緒に公開しているマップ係数を RCSB PDB から取得し、ブラウザの中で密度を計算します。</div></details></div>
   <div class="row">
     <input type="file" id="mtzFile" accept=".mtz,.cif,.gz" multiple hidden>
     <button id="mtzBtn">MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…</button>
   </div>
-  <div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ボタンを使わず、ファイルを画面のどこにでもドラッグ＆ドロップしても読み込めます。ファイルはどこにも送信されません。</div>
+  <div class="dstep" data-step="2"><div class="dshort">手元の MTZ や、RCSB PDB の「Download Files」で取ったマップ係数のファイル（Validation 2fo-fc / fo-fc coefficients）を読み込みます。画面にドラッグ＆ドロップしても読み込めます。</div><details class="ddet"><summary>詳しく</summary><div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ボタンを使わず、ファイルを画面のどこにでもドラッグ＆ドロップしても読み込めます。ファイルはどこにも送信されません。</div></details></div>
   <div class="row">
     <input type="text" id="emdbId" placeholder="EMDB ID（例 8116）">
     <button id="srvEm">EMマップ（密度サーバー）</button>
@@ -1008,6 +1013,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "まずはこれを押してください。PDBe の密度サーバーから、画面の中心のまわりの密度を取ってきます。": "Start here. Fetches the density around the centre of the view from the PDBe density server.", "PDBe の密度サーバーにまだない構造（公開されたばかりなど）は、RCSB PDB のマップ係数を取ってきて、ブラウザの中で計算します。": "For entries the PDBe density server does not have yet (e.g. just released), fetches the map coefficients from RCSB PDB and computes the density in the browser.", "手元の MTZ や、RCSB PDB の「Download Files」で取ったマップ係数のファイル（Validation 2fo-fc / fo-fc coefficients）を読み込みます。画面にドラッグ＆ドロップしても読み込めます。": "Reads your own MTZ, or the map-coefficient files from \"Download Files\" on RCSB PDB (Validation 2fo-fc / fo-fc coefficients). Dropping the files anywhere on the page works too.", "詳しく": "Details",
   "＋ 回転を追加": "+ Add rotation", "その場で回転するだけのシーンを追加します（角度・秒数・向きは行の中で変えられます）": "Adds a scene that just turns the view in place (angle, seconds and direction can be changed in its row)", "🎥 動画": "🎥 Video", "チェックしたシーンを上から順に": "checked scenes, top to bottom", "移動": "Move", "停止": "Hold", "秒": "s", "サイズ": "Size", "画面のまま": "As on screen", "1920×1080（16:9）": "1920×1080 (16:9)", "1280×720（16:9）": "1280×720 (16:9)", "次のシーンへ移るのにかける時間": "Time to move to the next scene", "各シーンで止まっている時間": "Time to stay on each scene", "動画の大きさ。16:9 は分子ウィンドウの中に横長の枠をとって録画します": "Video size. For 16:9 a wide frame is taken inside the viewer", "ラベルも入れる": "Include labels", "図用ラベル・測定値・スケールバーを動画に入れます": "Puts figure labels, measurement values and the scale bar in the video", "▶ 通して再生": "▶ Play through", "録画せずに、動画と同じ流れで再生します": "Plays the same sequence as the video, without recording", "● 動画に書き出す": "● Export video", "チェックしたシーンを順に再生しながら録画し、動画ファイルとして保存します（Esc で中止）": "Plays the checked scenes in order while recording, and saves a video file (Esc to stop)", "■ 止める": "■ Stop", "■ 録画を止める": "■ Stop recording", "動画に使う": "Use in the video", "その場で回転させます": "Turn the view in place", "回す角度": "Angle to turn", "回す向き": "Direction", "回すのにかける時間": "Time for the turn", "横回転": "turn sideways", "縦回転": "turn vertically", "回転": "Rotation", "動画に使うシーンにチェックを入れてください": "Check the scenes to use in the video", "回転だけでは始められません。最初に表示のシーンを1つ入れてください": "A video cannot be only rotations; include at least one view scene", "回転のシーンを追加しました（角度・秒数・向きは行の中で変えられます）": "Added a rotation scene (change its angle, seconds and direction in its row)", "録画を中止しました": "Recording stopped", "再生を止めました": "Playback stopped", "最後まで再生しました": "Played to the end", "このブラウザは動画の録画に対応していません": "This browser cannot record video", "この端末では大きすぎます": "Too large for this device",
   "🎬 シーンを追加": "🎬 Add scene", "今の表示（視点・色・表示形式・選択・ラベル）に名前を付けてシーンとして残します。画面下の「シーン」タブから切り替えられます": "Keeps the current view (camera, colours, styles, selection, labels) as a named scene. Switch between scenes in the \"Scenes\" tab below", "シーン": "Scenes", "保存したシーンの一覧（押すとその表示に移ります）": "Saved scenes (press one to go to it)", "＋ 今の表示を追加": "+ Add current view", "名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）": "Press a name to go to that scene (PgUp/PgDn for the previous/next one)", "このシーンの表示に移ります": "Go to this scene", "名前を変えます": "Rename", "上書き保存": "Overwrite", "このシーンを今の表示で上書きします": "Replace this scene with the current view", "1つ上へ": "Move up", "1つ下へ": "Move down", "このシーンを消します": "Delete this scene", "構造を読み込んでからシーンを追加してください": "Load a structure before adding a scene", "シーンをすべて消しました": "All scenes deleted",
   'リガンド・イオン・水': 'Ligands, ions and water',
@@ -4963,8 +4969,14 @@ async function loadCoefFiles(files, restore) {
    when those cannot be fetched either, reading the files by hand. Nothing when the entry has no X-ray density.
    Kept per PDB ID, so switching structures shows each one's state. */
 var DENS_BTNS = ['#srvXray', '#coefBtn', '#mtzBtn'], densStep = new Map();     // var: renderAllPanels may run before this line
-function densSync() { if (!DENS_BTNS) return; const n = densStep.has(pdbId) ? densStep.get(pdbId) : 0; DENS_BTNS.forEach((q, i) => { const b = $(q); if (b) b.classList.toggle('pri', i === n); }); }
+function densSync() {
+  if (!DENS_BTNS) return;
+  const n = !pdbId && structs.length ? 2 : densStep.has(pdbId) ? densStep.get(pdbId) : 0;     // a structure from a file: only reading map files applies
+  DENS_BTNS.forEach((q, i) => { const b = $(q); if (b) b.classList.toggle('pri', i === n); });
+  document.querySelectorAll('.dstep').forEach(d => d.classList.toggle('on', +d.dataset.step === n));
+}
 function densSet(idRaw, n) { const S = structs.find(x => (x.pdbId || '').toLowerCase() === String(idRaw || '').toLowerCase()); if (S) densStep.set(S.pdbId, n); densSync(); }
+densSync();
 function densKind(idRaw) {
   const S = structs.find(x => (x.pdbId || '').toLowerCase() === String(idRaw || '').toLowerCase()) || {};
   return {nonX: !!(S.method && !/X-RAY/i.test(S.method)), old: !!(S.depDate && +String(S.depDate).slice(0, 4) < 2008)};
