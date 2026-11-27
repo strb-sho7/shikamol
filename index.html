@@ -692,7 +692,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <input type="file" id="mtzFile" accept=".mtz,.cif,.gz" multiple hidden>
     <button id="mtzBtn">MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…</button>
   </div>
-  <div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ファイルはどこにも送信されません。</div>
+  <div class="small">精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ボタンを使わず、ファイルを画面のどこにでもドラッグ＆ドロップしても読み込めます。ファイルはどこにも送信されません。</div>
   <div class="row">
     <input type="text" id="emdbId" placeholder="EMDB ID（例 8116）">
     <button id="srvEm">EMマップ（密度サーバー）</button>
@@ -1046,7 +1046,7 @@ const EXACT = new Map(Object.entries({
   "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets: helices cut at their ends, β strands as flat arrows, loops and turns as thin tubes", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細い筒にしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly, loops and turns as thin tubes (strand arrows point to the C-terminus)",
   "描き方": 'Style', "βストランドを矢印に": "β strands as arrows", "二次構造をはっきり": "Clear secondary structure", "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細くしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly with thin loops and turns (strand arrows point to the C-terminus)", "カートゥーンを標準の描き方に戻しました": "Cartoon back to the standard style",
   "βストランド": "β strands", "帯（今までの描き方）": "Ribbons (as before)", "矢印": "Arrows", "矢印にすると、ストランドの向き（平行・逆平行）がひと目で分かります": "With arrows, the direction of each strand (parallel or antiparallel) is clear at a glance", "βストランドを矢印で描いています（矢印の先が C 末側）": "β strands drawn as arrows (pointing to the C-terminus)", "βストランドを帯で描いています": "β strands drawn as ribbons", "選んだ残基の周囲もスティック表示": "Also show the surrounding residues as sticks", "周囲の範囲": "Surroundings", "スティック表示": "shown as sticks", "選んだ残基から、どこまでの距離にある残基をスティックで表示するか（原子どうしの距離）": "How far from the selected residues other residues are shown as sticks (atom–atom distance)", "選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「③ クリックしたときの表示」と同じ設定）": "Whether the surrounding residues are also shown as sticks (the same setting as \"③ On click\" in the Display & export tab)", "色: 二次構造（ヘリックス赤・β水色）": "Colour: secondary structure (helix red, β sky blue)", "ヘリックス（αヘリックス・3₁₀ヘリックス）を赤、βストランドを水色、それ以外を薄い灰色で塗ります。二次構造はファイルの記載、なければ NGL が割り当てたものです": "Helices (α and 3₁₀) red, β strands sky blue, everything else light grey. Secondary structure from the file, or as assigned by NGL", "二次構造で色分けしています：ヘリックス＝赤、βストランド＝水色、それ以外＝薄い灰色（二次構造はファイルの記載、なければ NGL が割り当てたもの）": "Coloured by secondary structure: helix red, β strand sky blue, others light grey (from the file, or as assigned by NGL)",
-  "精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ファイルはどこにも送信されません。": "Computes density in your browser from a refinement MTZ (Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT, etc.). Works for structures without a PDB ID. wwPDB map coefficients from \"Download Files\" on an RCSB PDB entry page (the 2fo-fc and fo-fc map-coefficient CIFs; both can be chosen at once, .gz is fine) can be read too. The files are not sent anywhere.",
+  "精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ボタンを使わず、ファイルを画面のどこにでもドラッグ＆ドロップしても読み込めます。ファイルはどこにも送信されません。": "Computes density in your browser from a refinement MTZ (Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT, etc.). Works for structures without a PDB ID. wwPDB map coefficients from \"Download Files\" on an RCSB PDB entry page (the 2fo-fc and fo-fc map-coefficient CIFs; both can be chosen at once, .gz is fine) can be read too. Files can also be dragged and dropped anywhere on the page instead of using the button. The files are not sent anywhere.",
   "このブラウザは .gz を展開できません。展開してから読み込んでください": "This browser cannot unpack .gz; unpack it first",
   "空間群が分かりません。先に構造を読み込んでください": "Unknown space group. Open the structure first",
   "格子定数が分かりません。先に構造を読み込んでください": "Unknown cell. Open the structure first",
@@ -1315,7 +1315,7 @@ const EXACT = new Map(Object.entries({
 }));
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
-const coefFilesEn = A => { const a = A.toLowerCase(); return `on the RCSB PDB page of ${A} open "Download Files", download "Validation 2fo-fc coefficients" and "Validation fo-fc coefficients" (${a}_validation_2fo-fc_map_coef.cif.gz and ${a}_validation_fo-fc_map_coef.cif.gz), and choose both at once with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab`; };
+const coefFilesEn = A => { const a = A.toLowerCase(); return `on the RCSB PDB page of ${A} open "Download Files", download "Validation 2fo-fc coefficients" and "Validation fo-fc coefficients" (${a}_validation_2fo-fc_map_coef.cif.gz and ${a}_validation_fo-fc_map_coef.cif.gz), and drag and drop both onto the page (or choose both at once with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab)`; };
 const PATTERNS = [
   P(/^その場で (\d+)° (横回転|縦回転)（(\d+(?:\.\d+)?) 秒）$/, (m, d, a, t) => `${d}° ${a === '縦回転' ? 'vertical' : 'sideways'} turn in place (${t} s)`),
   P(/^(録画中|再生中)… (\d+) \/ (\d+)「(.+)」（Esc で中止）$/, (m, w, a, b, n) => `${w === '録画中' ? 'Recording' : 'Playing'}… ${a} / ${b} "${n}" (Esc to stop)`),
@@ -1371,7 +1371,7 @@ const PATTERNS = [
   P(/^マップ係数を読めませんでした: (.+?)（(.*)）$/, (m, a, e) => `Could not read map coefficients: ${a} (${tr(e)})`),
   P(/^(\S+) は X 線の構造ではない（(.+)）ため、X 線の電子密度はありません(。クライオ電顕のマップは「電子密度」タブの EMDB から表示できます)?$/, (m, a, b, em) => `${a} is not an X-ray structure (${b}), so it has no X-ray electron density${em ? '. Cryo-EM maps can be shown from EMDB in the Density tab' : ''}`),
   P(/^(\S+) は (\d{4}) 年に登録された構造で、電子密度のもとになる構造因子が登録されていないようです.*$/, (m, a, y) => `${a} was deposited in ${y} and seems to have no structure factors (the data the density is computed from; their deposition became mandatory in 2008), so its electron density cannot be shown`),
-  P(/^(\S+) のマップ係数のファイルが RCSB PDB に見つかりませんでした。.*$/, (m, a) => `No map-coefficient files of ${a} were found at RCSB PDB; it may have no structure factors. If "Download Files" on its RCSB PDB page lists "Validation 2fo-fc coefficients", download it and read it with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab`),
+  P(/^(\S+) のマップ係数のファイルが RCSB PDB に見つかりませんでした。.*$/, (m, a) => `No map-coefficient files of ${a} were found at RCSB PDB; it may have no structure factors. If "Download Files" on its RCSB PDB page lists "Validation 2fo-fc coefficients", download it and drag and drop it onto the page (or read it with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab)`),
   P(/^(\S+) の電子密度は PDBe の密度サーバーにありません。(\d{4}) 年に.*$/, (m, a, y) => `The PDBe density server has no density for ${a}. It was deposited in ${y} and may have no structure factors (mandatory since 2008); "2Fo-Fc + Fo-Fc (computed from RCSB map coefficients)" will tell`),
   P(/^(\S+) の電子密度は PDBe の密度サーバーにまだありません。.*$/, (m, a) => `The PDBe density server has no density for ${a} yet. Press "2Fo-Fc + Fo-Fc (computed from RCSB map coefficients)", or ` + coefFilesEn(a)),
   P(/^(\S+) のマップ係数を RCSB PDB から自動で取得できませんでした.*$/, (m, a) => `Could not fetch the map coefficients of ${a} from RCSB PDB automatically (the connection may be blocked). O` + coefFilesEn(a).slice(1)),
@@ -1790,7 +1790,7 @@ function activate(i) {
 function renderAllPanels() {
   renderStructs(); renderChains(); renderExtras(); fillIfSelects(); fillConsChain(); renderCons(); renderEmHint(); renderIfc(); renderSeq(); renderGroups(); renderSymList(); renderMut();
   document.querySelectorAll('.an').forEach(x => x.textContent = structs[active] ? '— ' + structs[active].name : '');
-  linkUI();
+  linkUI(); densSync();
   try { dimPanels(); if (measures.length || measPend.length) measDraw(); } catch (e) {}
 }
 /* Disulfide bonds that the file does not record (no CONECT / struct_conn, e.g. files written by refinement or
@@ -4579,10 +4579,16 @@ async function srvFetch(srv, force) {
   let txt;
   try {
     const r = await fetch(url, {signal: ctrl.signal});
-    if (!r.ok && r.status === 404 && srv.src === 'x-ray') { status(densityHint(srv.id, 'server'), true); return; }
+    if (!r.ok && r.status === 404 && srv.src === 'x-ray') { densSet(srv.id, densKind(srv.id).nonX ? -1 : 1); srvGiveUp(srv); status(densityHint(srv.id, 'server'), true); return; }
     if (!r.ok) throw new Error('HTTP ' + r.status + (r.status === 404 ? '（このエントリーの密度がサーバーにありません）' : ''));
     txt = await r.text();
-  } catch (e) { if (e.name !== 'AbortError') status(`密度の取得に失敗: ${srv.label}（${e.message || e}）`, true); return; }
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+    const first = srvGiveUp(srv);
+    if (first && srv.src === 'x-ray') densSet(srv.id, densKind(srv.id).nonX ? -1 : 1);
+    if (first || !srv.warned) status(`密度の取得に失敗: ${srv.label}（${e.message || e}）`, true); else log(`密度の取得に失敗: ${srv.label}（${e.message || e}）`);
+    srv.warned = true; return;
+  }
   if (ctrl !== srv.ctrl) return;
   try {
     const blocks = parseCif(txt);
@@ -4600,10 +4606,18 @@ async function srvFetch(srv, force) {
       m.reps = []; mapReps(m); applyPendingAbs(m);
       if (old) stage.removeComponent(old);
     }
-    srv.center = c; srv.all = !srv.box;
+    srv.center = c; srv.all = !srv.box; srv.warned = false;
     refreshAbs();
     status(`密度を表示: ${srv.label}（${srv.box ? '中心から半径 ' + srv.box + ' Å' : '構造全体'}）`);
-  } catch (e) { status(`密度データの解釈に失敗: ${e.message || e}`, true); }
+  } catch (e) { const first = srvGiveUp(srv); if (first || !srv.warned) status(`密度データの解釈に失敗: ${e.message || e}`, true); srv.warned = true; }
+}
+/* a server whose density never arrived is taken away again: its empty map rows go, and moving the view no longer
+   asks it again (and again reports the failure). Returns true when it was removed. One that worked before is kept
+   (a passing network failure), and only its first failure is reported. */
+function srvGiveUp(srv) {
+  if (srv.maps.some(m => m.mc)) return false;
+  [...srv.maps].forEach(removeMap); servers = servers.filter(x => x !== srv);
+  renderMaps(); return true;
 }
 /* ---------- MTZ map coefficients -> electron density (all in the browser) ----------
    parseMtz reads the binary MTZ file (header records + reflection table).
@@ -4812,7 +4826,7 @@ function mtzShow(srv, a, b, c) {
       m.reps = []; mapReps(m); applyPendingAbs(m);
       if (old) stage.removeComponent(old);
     }
-    srv.center = c; srv.all = !srv.box;
+    srv.center = c; srv.all = !srv.box; srv.warned = false;
     refreshAbs();
   } catch (e) { status(`MTZ の密度の表示に失敗: ${e.message || e}`, true); }
 }
@@ -4943,14 +4957,24 @@ async function loadCoefFiles(files, restore) {
 /* What to tell when the electron density of a PDB entry cannot be had. Structure factors (the data the density is
    computed from) have had to be deposited with X-ray structures since 2008; many earlier entries have none, and then
    there are no map coefficients either. Newer entries have them, as files beside the validation report. */
+/* which density button is highlighted (blue): the PDBe server first; when it fails, the RCSB map coefficients;
+   when those cannot be fetched either, reading the files by hand. Nothing when the entry has no X-ray density.
+   Kept per PDB ID, so switching structures shows each one's state. */
+var DENS_BTNS = ['#srvXray', '#coefBtn', '#mtzBtn'], densStep = new Map();     // var: renderAllPanels may run before this line
+function densSync() { if (!DENS_BTNS) return; const n = densStep.has(pdbId) ? densStep.get(pdbId) : 0; DENS_BTNS.forEach((q, i) => { const b = $(q); if (b) b.classList.toggle('pri', i === n); }); }
+function densSet(idRaw, n) { const S = structs.find(x => (x.pdbId || '').toLowerCase() === String(idRaw || '').toLowerCase()); if (S) densStep.set(S.pdbId, n); densSync(); }
+function densKind(idRaw) {
+  const S = structs.find(x => (x.pdbId || '').toLowerCase() === String(idRaw || '').toLowerCase()) || {};
+  return {nonX: !!(S.method && !/X-RAY/i.test(S.method)), old: !!(S.depDate && +String(S.depDate).slice(0, 4) < 2008)};
+}
 function densityHint(idRaw, kind) {
   const id = String(idRaw || '').toLowerCase(), ID = id.toUpperCase();
   const S = structs.find(x => (x.pdbId || '').toLowerCase() === id) || {};
   const m = S.method || '', yr = S.depDate ? +String(S.depDate).slice(0, 4) : 0;
-  const files = `RCSB PDB の ${ID} のページの「Download Files」から「Validation 2fo-fc coefficients」と「Validation fo-fc coefficients」（${id}_validation_2fo-fc_map_coef.cif.gz と ${id}_validation_fo-fc_map_coef.cif.gz）をダウンロードし、「電子密度」タブの「MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…」で2つ同時に選んでください`;
+  const files = `RCSB PDB の ${ID} のページの「Download Files」から「Validation 2fo-fc coefficients」と「Validation fo-fc coefficients」（${id}_validation_2fo-fc_map_coef.cif.gz と ${id}_validation_fo-fc_map_coef.cif.gz）をダウンロードし、2つまとめて画面のどこにでもドラッグ＆ドロップしてください（「電子密度」タブの「MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…」で2つ同時に選んでも同じです）`;
   if (m && !/X-RAY/i.test(m)) return `${ID} は X 線の構造ではない（${m}）ため、X 線の電子密度はありません` + (/ELECTRON MICROSCOPY/i.test(m) ? '。クライオ電顕のマップは「電子密度」タブの EMDB から表示できます' : '');
   if (kind === 'none' && yr && yr < 2008) return `${ID} は ${yr} 年に登録された構造で、電子密度のもとになる構造因子が登録されていないようです（構造因子の登録が義務になったのは 2008 年から）。電子密度は表示できません`;
-  if (kind === 'none') return `${ID} のマップ係数のファイルが RCSB PDB に見つかりませんでした。構造因子が登録されていない可能性があります。${ID} のページの「Download Files」に「Validation 2fo-fc coefficients」があれば、それをダウンロードし、「電子密度」タブの「MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…」で読み込んでください`;
+  if (kind === 'none') return `${ID} のマップ係数のファイルが RCSB PDB に見つかりませんでした。構造因子が登録されていない可能性があります。${ID} のページの「Download Files」に「Validation 2fo-fc coefficients」があれば、それをダウンロードして画面のどこにでもドラッグ＆ドロップしてください（「電子密度」タブの「MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…」でも読み込めます）`;
   if (kind === 'server' && yr && yr < 2008) return `${ID} の電子密度は PDBe の密度サーバーにありません。${yr} 年に登録された構造で、構造因子が登録されていない可能性があります（構造因子の登録が義務になったのは 2008 年から）。「2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）」で確かめられます`;
   if (kind === 'server') return `${ID} の電子密度は PDBe の密度サーバーにまだありません。「2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）」を押すか、${files}`;
   return `${ID} のマップ係数を RCSB PDB から自動で取得できませんでした（通信が止められた可能性があります）。${files}`;
@@ -4959,19 +4983,24 @@ async function loadCoefById() {
   if (!needId()) return;
   const id = pdbId.toLowerCase();
   if (!/^[0-9][0-9a-z]{3}$/.test(id)) return status('4 文字の PDB ID の構造で使えます', true);
-  const base = `https://files.rcsb.org/pub/pdb/validation_reports/${id.slice(1, 3)}/${id}/${id}_validation_`;
+  // the address RCSB's "Download Files" links to; the older folder of the validation reports as a fallback
+  const bases = [`https://files.rcsb.org/validation/download/${id}_validation_`, `https://files.rcsb.org/pub/pdb/validation_reports/${id.slice(1, 3)}/${id}/${id}_validation_`];
   status(`マップ係数を RCSB PDB から取得中: ${pdbId} …`);
   const texts = [], miss = [];
   let notFound = 0;
   for (const k of ['2fo-fc', 'fo-fc']) {
-    try {
-      const r = await fetch(`${base}${k}_map_coef.cif.gz`);
-      if (!r.ok) { if (r.status === 404) notFound++; throw new Error('HTTP ' + r.status); }
-      texts.push(await readMaybeGz(await r.arrayBuffer()));
-    } catch (e) { miss.push(`${k}（${e.message || e}）`); }
+    const why = []; let got = false, n404 = 0;
+    for (const base of bases) {
+      try {
+        const r = await fetch(`${base}${k}_map_coef.cif.gz`);
+        if (!r.ok) { if (r.status === 404) n404++; throw new Error('HTTP ' + r.status); }
+        texts.push(await readMaybeGz(await r.arrayBuffer())); got = true; break;
+      } catch (e) { why.push(e.message || String(e)); }
+    }
+    if (!got) { miss.push(`${k}（${why.join(' / ')}）`); if (n404 === bases.length) notFound++; }
   }
   if (miss.length) log(`${pdbId}: 取得できなかったマップ係数: ${miss.join('、')}`);
-  if (!texts.length) return status(densityHint(pdbId, notFound === 2 ? 'none' : 'net'), true);
+  if (!texts.length) { const k = densKind(pdbId); densSet(pdbId, k.nonX || (notFound === 2 && k.old) ? -1 : 2); return status(densityHint(pdbId, notFound === 2 ? 'none' : 'net'), true); }
   return loadCoef(texts, `${id}_map_coef.cif`);
 }
 /* several files at once: wwPDB map-coefficient CIFs are merged into one 2Fo-Fc + Fo-Fc set; everything else as usual */
