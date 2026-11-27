@@ -141,6 +141,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Tap a residue to select it, tap the background to clear, drag with one finger to rotate, and use two fingers to zoom and move.
 - In the viewer, press and hold without moving your finger to open the same menu as a right click. While residues are selected, the "⋯ Menu" button in the info box at the bottom opens it too (the button appears only on touch devices).
 - On the sequence strip, press and hold, then slide to select a range.
+- "⛶ Full screen" hides the side panel and the tabbed pane to enlarge the viewer. The browser's own full screen (which ends on a downward swipe) is not used, so turning the molecule never ends it; the address bar stays. Press "⛶ Exit full screen" to go back.
 - Files saved with names such as `1abc.pdb.txt` load as they are.
 - In Safari, use the Share button → "Add to Home Screen" to start the viewer full-screen from the deer icon, like an app (edge swipes no longer go back).
 
