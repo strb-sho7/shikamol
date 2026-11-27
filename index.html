@@ -6167,6 +6167,17 @@ function focusOn(list, move) {
   if (!list.length) return;
   const last = list[list.length - 1];
   move = move && $('#focusZoom').checked;
+  if (list.chainSel) {
+    // whole chains picked from their names: a lasting outline around each (as while pointing at the name),
+    // no sticks, labels or interactions; a click on the background clears it
+    try {
+      [...new Set(list.map(f => f.chainname))].forEach(n => {
+        const ch = chains.find(x => x.name === n);
+        if (ch && ch.visible) outlineSpecs(ch, `:${n} and /0`).forEach(([t, prm]) => focusReps.push(comp.addRepresentation(t, prm)));
+      });
+    } catch (e) {}
+    return;
+  }
   try {
     const st = comp.structure, ap = st.getAtomProxy();
     // surroundings on: every residue within focusR Å (3–6, set in ③); off: just the selected residues
@@ -6496,6 +6507,7 @@ function infoFor(list, a) {
   return infoFor1(list, a);
 }
 function infoFor1(list, a) {
+  if (list.chainSel) { const ns = [...new Set(list.map(f => f.chainname))]; return LANG === 'en' ? `Chain ${ns.join(', ')} selected (${list.length} residues)` : `Chain ${ns.join('・')} を選択（${list.length} 残基）`; }
   return list.length === 1
     ? (a ? `${a.chainname} ・ ${a.resname} ${a.resno}${a.inscode || ''} ・ ${a.atomname} ・ B = ${a.bfactor.toFixed(1)}${a.occupancy < 1 ? ' ・ occ ' + a.occupancy.toFixed(2) : ''}`
          : `${list[0].chainname} ・ ${list[0].resname || ''} ${list[0].resno}${list[0].inscode || ''}`)
@@ -6647,7 +6659,9 @@ function buildSeq() {
     const st = S.comp.structure;
     S.chains.forEach(ch => {
       const res = [];
-      st.eachResidue(r => res.push({rn: r.resname, rs: r.resno, ic: r.inscode || '', ti: r.traceAtomIndex}), new NGL.Selection(`:${ch.name} and polymer and /0`));
+      const tp = st.getAtomProxy();
+      // a residue without a trace atom (N-terminal ACE) gives -1, or even an atom of another residue: use its own first atom then
+      st.eachResidue(r => { let t = r.traceAtomIndex; if (!(t >= 0)) t = r.atomOffset; else { tp.index = t; if (tp.residueIndex !== r.index) t = r.atomOffset; } res.push({rn: r.resname, rs: r.resno, ic: r.inscode || '', ti: t, ao: r.atomOffset}); }, new NGL.Selection(`:${ch.name} and polymer and /0`));
       seqData.push({sid: S.sid, ch: ch.name, res});
     });
     // ligands and ions (not water) for the row under the sequences
@@ -6777,21 +6791,22 @@ addEventListener('pointerup', () => {
 });
 $('#seq').addEventListener('click', e => {
   if (seqSkipClick) return;
-  // the chain name: select every residue of that chain; the view is not moved
+  // the chain name: select every residue of that chain, outline it and bring it to the centre (no sticks)
   const c = e.target.closest('.sqc[data-c]');
   if (c && comp) {
     const row = seqData[+c.dataset.c]; if (!row) return;
     const i = structs.findIndex(x => x.sid === row.sid); if (i < 0) return;
     const add = i === active && modeOf(e) !== 'set';
     if (i !== active) activate(i);
-    const st = comp.structure, picked = row.res.map(r => focusOf(st.getAtomProxy(r.ti)));
+    const st = comp.structure, picked = row.res.map(r => focusOf(st.getAtomProxy(r.ao !== undefined ? r.ao : r.ti)));
     let list = picked;
     if (add && Array.isArray(lastFocus)) { const have = new Set(lastFocus.map(focusKey)); list = lastFocus.concat(picked.filter(f => !have.has(focusKey(f)))); }
     clearHL();
     focusRef = null;
-    list.chainSel = !(add && Array.isArray(lastFocus)) || !!lastFocus.chainSel;   // chains picked from their names: no labels, only interactions with other molecules
+    list.chainSel = !(add && Array.isArray(lastFocus)) || !!lastFocus.chainSel;   // chains picked from their names: an outline only
     focusStay = true;
     try { applySelection(list, null); } finally { focusStay = false; }
+    try { const names = [...new Set(list.map(f => f.chainname))]; comp.autoView(names.map(n => `:${n}`).join(' or ') + ' and /0', 600); } catch (er) {}
     return;
   }
   const lg = e.target.closest('.lgc[data-l]');
