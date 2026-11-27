@@ -114,7 +114,8 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #status.show{opacity:1;transition:opacity .15s}
 #status.err{color:var(--warn)}
 #infoT{white-space:pre-line}
-#seq .sqlig{position:sticky;left:0;display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;padding:5px 6px 4px;margin-top:3px;border-top:1px solid #2c313b;font-size:11px;max-width:100%;box-sizing:border-box}
+#seq .sqlig{position:sticky;left:0;display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;padding:4px 6px 5px;margin:2px 0 4px;border-top:1px dashed #2c313b;font-size:11px;width:var(--sqvw,100%);max-width:var(--sqvw,100%);box-sizing:border-box}
+#seq .sqlig.per{border-bottom:1px solid #2c313b}
 #seq .lgt{color:var(--mute);margin-right:4px}
 #seq .lgh{color:var(--mute);margin:0 2px 0 8px;font-weight:700}
 #seq .lgc{cursor:pointer;padding:0 5px;border:1px solid #3a414e;border-radius:4px;font-family:ui-monospace,monospace;color:#cfd3da;line-height:1.5}
@@ -1084,7 +1085,7 @@ const EXACT = new Map(Object.entries({
   '配色: パステル': 'Colours: pastel',
   '配色: 全部グレー': 'Colours: all grey',
   '構造を読み込むとChainが表示されます': 'Chains appear here after loading a structure',
-  'リガンド': 'Ligands', '⇄ 相互作用': '⇄ Interactions', 'この種類の場所にズーム': 'Zoom to this kind', '画面下の「相互作用」タブを開いて、選んだ残基の相互作用の一覧を表示します': 'Opens the Interactions tab under the viewer with the list for the selected residues', '0 で止まります。右へ動かすほど速く回ります': '0 stops; further right spins faster',
+  'リガンド': 'Ligands', '⇄ 相互作用': '⇄ Interactions', '相互作用の表示または一覧がオフです（「表示・出力」タブの ③）': 'Interactions or their list are turned off (③ in the Display & export tab)', '選んだ残基には、表示する相互作用がありません': 'No interactions to show for the selected residues', 'この種類の場所にズーム': 'Zoom to this kind', '画面下の「相互作用」タブを開いて、選んだ残基の相互作用の一覧を表示します': 'Opens the Interactions tab under the viewer with the list for the selected residues', '0 で止まります。右へ動かすほど速く回ります': '0 stops; further right spins faster',
   'リガンドの炭素の色': 'Ligand carbon colour',
   'イオン': 'Ions',
   '水': 'Water',
@@ -2413,10 +2414,31 @@ function atomPickerClass(c) {
 function addSpec(c, t, p, extra) {
   if (t !== '__arrow') return c.addRepresentation(t, {...p, ...(extra || {})});
   const AP = atomPickerClass(c);
+  /* depth-only copy, drawn just before the see-through mesh: the see-through mesh cannot write depth itself (one draw
+     call holds every ribbon, so it would hide parts of itself in triangle order), and without depth the outlines and
+     the shading of the "clear secondary structure" style changed as soon as the cartoon became even slightly see-through.
+     The copy writes depth but no colour, so the mesh keeps its look and only its opacity changes */
+  let pre = null;
+  try {
+    const b0 = new NGL.MeshBuffer({position: p.position, color: p.color, index: p.index, normal: p.normal}, {});
+    pre = c.addBufferRepresentation(b0, {opacity: 0.99, depthWrite: true, side: 'front', disablePicking: true, visible: false});
+    pre.__pickOnly = true; pre.__depthPre = true;
+    const noColour = () => { try { [b0.material, b0.wireframeMaterial].forEach(m => { if (m) m.colorWrite = false; }); } catch (e) {} };
+    noColour(); pre.__noColour = noColour;
+  } catch (e) { pre = null; }
   const buf = new NGL.MeshBuffer({position: p.position, color: p.color, index: p.index, normal: p.normal,
     ...(AP && p.primitiveId ? {primitiveId: p.primitiveId, picking: new AP(undefined, c.structure)} : {})}, {});
   const r = c.addBufferRepresentation(buf, {...meshOpParams(cartOp), ...(extra || {})});
   r.__arrow = true; r.__arrowArgs = {cp: c, ...(p.args || {})}; r.__mesh = p;
+  if (pre) {
+    r.__pre = pre;
+    const sync = () => { try { const op = r.getParameters().opacity; pre.__noColour(); pre.setVisibility(!!r.visible && op < 0.995); } catch (e) {} };
+    const sv = r.setVisibility.bind(r), sp = r.setParameters.bind(r);
+    r.setVisibility = (...q) => { const o = sv(...q); sync(); return o; };
+    r.setParameters = (...q) => { const o = sp(...q); sync(); return o; };
+    try { r.signals.disposed.add(() => { try { c.removeRepresentation(pre); } catch (e) {} }); } catch (e) {}
+    sync();
+  }
   return r;
 }
 /* NGL's selection language cannot negate an atom list ("not @1,2" selects nothing), so the kept atoms are listed instead */
@@ -5831,7 +5853,10 @@ function ixBtnSync() {
 document.getElementById('ixOpen').onclick = () => { btab = btab === 'ix' ? 'seq' : 'ix'; bottomUpdate(); ixBtnSync(); };
 function renderFlist() {
   const el = $('#flist');
-  if (!focusItems.length || !$('#focusListOn').checked || !$('#focusIx').checked) { el.innerHTML = ''; ixHas = 0; ixKey = ''; ixBtnSync(); bottomUpdate(); return; }
+  if (!focusItems.length || !$('#focusListOn').checked || !$('#focusIx').checked) {
+    el.innerHTML = lastFocus && lastFocus.length ? `<div class="small" style="padding:6px 8px">${!$('#focusIx').checked || !$('#focusListOn').checked ? '相互作用の表示または一覧がオフです（「表示・出力」タブの ③）' : '選んだ残基には、表示する相互作用がありません'}</div>` : '';
+    ixHas = 0; ixKey = ''; ixBtnSync(); bottomUpdate(); return;
+  }
   // the bottom tab is left as it is (the user opens the interaction tab, or presses the button in the selection info)
   ixKey = (lastFocus || []).map(focusKey).join(',');
   ixHas = focusItems.length;
@@ -5867,9 +5892,10 @@ function bottomUpdate() {
   try { cellInfoSync(); } catch (e) {}
   try { mmTargetSync(); } catch (e) {}
   const hasSeq = !!($('#seqOn').checked && seqData.length), hasIx = ixHas > 0, hasGrp = structs.length > 0, hasIfc = !!ifc;
-  if (btab === 'ix' && !hasIx) btab = 'seq';
-  // the tab shown; btab itself is kept, so the sequence comes back once it is ready
+  // the tab shown; btab itself is kept (the user's choice): the interaction list is redrawn when a display setting
+  // changes, and while it is briefly empty the tab must not jump to the sequence
   let eff = btab;
+  if (eff === 'ix' && !hasIx) eff = lastFocus ? 'ix' : 'seq';
   if (eff === 'grp' && !hasGrp) eff = 'seq';
   if (eff === 'ifc' && !hasIfc) eff = 'seq';
   if (!mobOn && eff.startsWith('p-')) eff = btab = 'seq';
@@ -6359,6 +6385,7 @@ function layoutBottom() {
   } else if (mp && mp.style.bottom) mp.style.bottom = '';
 }
 if (typeof ResizeObserver !== 'undefined') {
+  { const sq = $('#seq'); if (sq) new ResizeObserver(() => { if (sq.clientWidth) sq.style.setProperty('--sqvw', sq.clientWidth + 'px'); }).observe(sq); }
   const ro = new ResizeObserver(() => layoutOverlay()); ['#vwrap', '#vtools', '#info'].forEach(q => { const e = $(q); if (e) ro.observe(e); });
   const rb = new ResizeObserver(() => layoutBottom()); const e = $('#info'); if (e) rb.observe(e);
 }
@@ -6630,17 +6657,19 @@ function buildSeq() {
   renderSeq();
 }
 /* ligands and ions as small buttons under the sequences, grouped by chain (like PyMOL's sequence view); water is left out */
-function ligRowHtml(multi) {
+function ligRowHtml(multi, sid) {
   if (!ligData.length) return '';
   let html = '', last = '';
   ligData.forEach((l, li) => {
+    if (sid !== undefined && l.sid !== sid) return;
     const S = structs.find(x => x.sid === l.sid); if (!S) return;
     const ch = S.chains.find(c => c.name === l.ch), grp = `${l.sid}|${l.ch}`;
-    if (grp !== last) { html += `<span class="lgh">${esc(multi ? S.name + ':' : '')}${esc(l.ch || '-')}</span>`; last = grp; }
+    if (grp !== last) { html += `<span class="lgh">${esc(multi && sid === undefined ? S.name + ':' : '')}${esc(l.ch || '-')}</span>`; last = grp; }
     const g = hetGroups(S).find(x => x.rn === l.rn), nm = g ? hetName(g) : '';
     html += `<span class="lgc${S.visible === false ? ' off' : ''}" data-l="${li}" data-k="${l.sid}|${l.ch}|${l.rs}|${l.ic}" style="border-color:${(ch && ch.color) || '#3a414e'}" title="${esc(`${l.ch}:${l.rn}${l.rs}${l.ic}${nm ? '（' + nm + '）' : ''}${LANG === 'en' ? ' — click to select and zoom; Ctrl/⌘+click adds to the selection' : '（クリックで選択・ズーム。Ctrl／⌘＋クリックで選択に追加）'}`)}">${esc(l.rn)}<small>${l.rs}${esc(l.ic)}</small></span>`;
   });
-  return `<div class="sqlig"><span class="lgt">リガンド</span>${html}</div>`;
+  if (!html) return '';
+  return `<div class="sqlig${sid !== undefined && multi ? ' per' : ''}"><span class="lgt">リガンド</span>${html}</div>`;
 }
 function renderSeq() {
   const el = $('#seq');
@@ -6649,7 +6678,15 @@ function renderSeq() {
   bottomUpdate();
   stash();
   const multi = structs.length > 1;
+  if (el.clientWidth) el.style.setProperty('--sqvw', el.clientWidth + 'px');
   el.innerHTML = '<div class="sqw">' + seqData.map((s, ci) => {
+    const endOfStruct = !seqData[ci + 1] || seqData[ci + 1].sid !== s.sid;
+    return seqRowHtml(s, ci, multi) + (endOfStruct ? ligRowHtml(multi, s.sid) : '');
+  }).join('') + '</div>';   // one wrapper as wide as the longest row, so every chain name can stay pinned at the left
+  if (lastFocus) seqMark(lastFocus);
+}
+function seqRowHtml(s, ci, multi) {
+  return [s].map(s => {
     const S = structs.find(x => x.sid === s.sid);
     if (!S) return '';
     const ch = S.chains.find(c => c.name === s.ch) || {color: '#ccc', visible: true};
@@ -6669,8 +6706,7 @@ function renderSeq() {
     // long structure names are cut with "…" so the chain name stays visible; the full name is in the tooltip
     const lab = multi ? `<span class="sqn">${esc(S.name)}</span><span class="sqk">:${esc(s.ch)}</span>` : esc(s.ch);
     return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:calc(${multi ? 7 : 3.2}em + 8px)${mode && !CD ? ';color:' + ($('#seq').classList.contains('light') ? '#222' : '#e8eaee') : ''}" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）">${lab}</span>${html}</div>`;
-  }).join('') + '</div>' + ligRowHtml(multi);   // one wrapper as wide as the longest row, so every chain name can stay pinned at the left
-  if (lastFocus) seqMark(lastFocus);
+  }).join('');
 }
 function seqMark(list) {
   document.querySelectorAll('#seq i.on, #seq .lgc.on').forEach(x => x.classList.remove('on'));
