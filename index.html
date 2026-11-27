@@ -949,7 +949,7 @@ function status(msg, err) {
   { const s0 = document.getElementById('status'); if (s0) { s0.classList.add('show'); clearTimeout(statusT);
     if (!(!err && /…\s*$/.test(String(msg)))) statusT = setTimeout(() => s0.classList.remove('show'), err ? 8000 : 5000); } }
   const s = $('#status'); s.textContent = msg; s.classList.toggle('err', !!err); if (err) log(msg);
-  const busy = !err && /…\s*$/.test(String(msg)), d = document.getElementById('deerRun');
+  const busy = !err && /…\s*$/.test(String(msg));
   deerByStatus = busy; clearTimeout(deerT); if (busy) deerT = setTimeout(() => { deerByStatus = false; deerSync(); }, 90000);
   deerSync();
   try { layoutBottom(); } catch (e) {}
@@ -966,19 +966,19 @@ let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
   'リガンド・イオン・水': 'Ligands, ions and water',
-  "この種類を表示する": "Show this kind", "リガンド": "Ligand", "イオン": "Ion", "水": "Water", "炭素の色（N・O などは元素の色）": "Carbon colour (N, O and others keep element colours)", "色（元に戻すときは「元素の色」）": "Colour (use \"element colours\" to go back)", "ボール＆スティック": "Ball & stick", "スティック": "Sticks", "CPK": "CPK", "半透明の表面": "See-through surface", "小さい球": "Small spheres", "ズーム": "Zoom", "この種類の場所にズームします": "Zoom to this kind", "元素の色に戻す": "Back to element colours",
-  "灰色（外形を見る）": "Grey (to see the shape)", "表面の描き方": "Surface style", "塗り": "Filled", "網目": "Mesh", "塗りつぶすか、網目（メッシュ）で描くか": "Filled or as a mesh", "表面の種類": "Surface type", "分子表面": "Molecular", "溶媒露出面": "Solvent-accessible", "ファンデルワールス": "van der Waals", "vdW": "vdW", "表面の細かさ": "Surface detail", "大きくするほど細かくなめらかになりますが、計算に時間がかかります（大きな構造では注意）": "Higher values are finer and smoother but take longer to compute (careful with large structures)", "分子表面：溶媒（半径 1.4 Å の球）が触れる境界（もっとも一般的）。溶媒露出面：溶媒の球の中心が通る面（一回り大きい）。ファンデルワールス面：原子の球をそのまま重ねた面": "Molecular surface: the boundary touched by a solvent sphere of radius 1.4 Å (the usual one). Solvent-accessible: the surface traced by the centre of that sphere (larger). van der Waals: the union of the atom spheres",
-  "透視投影": "Perspective", "平行投影": "Orthographic", "標準": "Standard", "マット": "Matte", "フラット": "Flat", "淡い": "Soft", "二次構造をはっきり": "Clear secondary structure", "濃く": "Darker", "淡く": "Lighter", "灰色": "Grey", "白": "White", "黒": "Black", "解析用": "Analysis", "図用": "Figure", "界面のみ": "Interfaces only", "付ける": "Always", "付けない": "Never", "白・黒": "White/black", "Chainの色": "Chain colour", "なし": "None", "自動": "Auto", "主鎖＋側鎖": "Main + side chain", "側鎖のみ": "Side chain only", "全体": "Whole", "骨格のみ": "Backbone only", "塩基のみ": "Base only", "表示中すべて": "All shown", "クリックした残基のみ": "Clicked residue only", "ドット": "Dots", "点線": "Dashed line", "半透明": "See-through", "背景色に近づける": "Toward background", "画面と同じ": "As on screen",
-  '表示する範囲': 'What is shown', '描く部分': 'parts drawn', '範囲': 'Scope', '疎水性': 'Hydrophobic', '強調する範囲': 'Highlighted radius', '薄くする方法': 'How to fade', '外側の濃さ': 'Outside strength',
-  '光沢・陰影の初期値': 'gloss, default shading', '光と質感': 'Light and material', '奥行き': 'Depth', '回転': 'Spin', '止める': 'Off', '色': 'Colour', '描き方': 'Style', '炭素の色': 'Carbon colour', 'スティック': 'Sticks', 'カートゥーン': 'Cartoon',
+  "この種類を表示する": "Show this kind", "炭素の色（N・O などは元素の色）": "Carbon colour (N, O and others keep element colours)", "色（元に戻すときは「元素の色」）": "Colour (use \"element colours\" to go back)", "半透明の表面": "See-through surface", "小さい球": "Small spheres", "この種類の場所にズームします": "Zoom to this kind", "元素の色に戻す": "Back to element colours",
+  "灰色（外形を見る）": "Grey (to see the shape)", "表面の描き方": "Surface style", "塗り": "Filled", "網目": "Mesh", "塗りつぶすか、網目（メッシュ）で描くか": "Filled or as a mesh", "表面の種類": "Surface type", "溶媒露出面": "Solvent-accessible", "ファンデルワールス": "van der Waals", "vdW": "vdW", "表面の細かさ": "Surface detail", "大きくするほど細かくなめらかになりますが、計算に時間がかかります（大きな構造では注意）": "Higher values are finer and smoother but take longer to compute (careful with large structures)", "分子表面：溶媒（半径 1.4 Å の球）が触れる境界（もっとも一般的）。溶媒露出面：溶媒の球の中心が通る面（一回り大きい）。ファンデルワールス面：原子の球をそのまま重ねた面": "Molecular surface: the boundary touched by a solvent sphere of radius 1.4 Å (the usual one). Solvent-accessible: the surface traced by the centre of that sphere (larger). van der Waals: the union of the atom spheres",
+  "マット": "Matte", "フラット": "Flat", "淡い": "Soft", "濃く": "Darker", "淡く": "Lighter", "解析用": "Analysis", "図用": "Figure", "界面のみ": "Interfaces only", "白・黒": "White/black", "骨格のみ": "Backbone only", "表示中すべて": "All shown", "背景色に近づける": "Toward background", 
+  '表示する範囲': 'What is shown', '描く部分': 'parts drawn', '疎水性': 'Hydrophobic', 
+  '光沢・陰影の初期値': 'gloss, default shading', '光と質感': 'Light and material', '奥行き': 'Depth', '止める': 'Off', 
   '左が白、右が黒': 'Left white, right black', '左端は自動（白い背景では黒、暗い背景では明るい灰色）。その右は黒から白': 'Left end: automatic (black on a white background, light grey on a dark one); then black to white',
-  "陰影": "Shading", "光の当たり方": "lighting", "0 にすると光の向きによる明暗がなくなり、絵の具で塗ったような一様な色になります。上げるほど立体的な陰影が付きます（質感を選ぶと、その質感の標準の値になります）": "At 0 there is no shading from the light direction, so each part is a flat colour, as if painted. Higher values give more three-dimensional shading (choosing a material sets its usual value)", "平ら": "Flat", "太さ": "width", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。0 で輪郭線なし": "Lines of even width are drawn on the finished picture wherever there is a step in depth. 0 = no outline", "チェックを外すと自動（白い背景では黒、暗い背景では明るい灰色）": "Unticked: automatic (black on a white background, light grey on a dark one)", "指定": "Set", "左が黒、右が白": "Left black, right white", "自動": "Auto", "奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし": "Parts further back are blended toward the background so the front stands out. 0 = none",
+  "陰影": "Shading", "光の当たり方": "lighting", "0 にすると光の向きによる明暗がなくなり、絵の具で塗ったような一様な色になります。上げるほど立体的な陰影が付きます（質感を選ぶと、その質感の標準の値になります）": "At 0 there is no shading from the light direction, so each part is a flat colour, as if painted. Higher values give more three-dimensional shading (choosing a material sets its usual value)", "平ら": "Flat", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。0 で輪郭線なし": "Lines of even width are drawn on the finished picture wherever there is a step in depth. 0 = no outline", "チェックを外すと自動（白い背景では黒、暗い背景では明るい灰色）": "Unticked: automatic (black on a white background, light grey on a dark one)", "指定": "Set", "左が黒、右が白": "Left black, right white", "自動": "Auto", "奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし": "Parts further back are blended toward the background so the front stands out. 0 = none",
   "輪郭線の色": "Outline colour", "「自動」は白い背景では黒、暗い背景では明るい灰色にします": "\"Auto\" uses black on a white background and light grey on a dark one", "自動（背景に合わせる）": "Auto (to suit the background)", "濃い灰色": "Dark grey", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます": "Lines of even width are drawn on the finished picture wherever there is a step in depth",
   "輪郭線の描き方": "Outline method", "画面上で描く（ChimeraX 風）": "On the picture (ChimeraX-like)", "形をなぞる（従来）": "Around each shape (older)", "線を引く段差": "Depth step for lines", "細かく（0.7 Å）": "Fine (0.7 Å)", "標準（1.2 Å）": "Standard (1.2 Å)", "外形だけ（3 Å）": "Outer shape only (3 Å)", "「画面上で描く」は ChimeraX の silhouettes と同じ考え方で、描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。「形をなぞる」は、形ごとに黒い一回り大きな形を裏に描く従来の方法です": "\"On the picture\" works like ChimeraX silhouettes: lines of even width are drawn on the finished picture wherever there is a step in depth. \"Around each shape\" is the older method that draws a slightly larger black copy behind each shape", "手前と奥の距離がこの値より大きい所に線を引きます。小さくすると細かい凹凸にも線が入り、大きくすると外形の線だけになります": "Lines are drawn where the front and the back differ in depth by more than this. Smaller values outline finer bumps too; larger values leave only the outer shape",
-  '測定（距離・角度・二面角・分子の寸法）': 'Measurements (distance, angle, dihedral, dimensions)',
+  
   "置き換える前の元の側鎖を灰色の細いスティックで重ねて表示し、元の側鎖が作っていた水素結合・塩橋を水色の線で表示します": "Overlay the original side chain (before the change) as thin grey sticks, with the H-bonds and salt bridges it made as light-blue rods", "元の残基も表示": "Show the original residue",
-  "変異": "Mutations", "1 つだけなら、残基をクリックするか「A:R51A」のように 1 行書いて「構造上で置き換える」を押します（同じ配列の異なる Chain もまとめて置き換え、側鎖のぶつかりや相互作用を調べます）。いくつもあるときは 1 行に 1 つずつ書いて「一覧で調べる」を押すと、全部の位置を構造の上に出して並べます（各カードから 1 つずつ置き換えられます）。結果は画面下の「変異」タブに出ます。": "For a single mutation, click a residue or type one line such as \"A:R51A\" and press \"Build on the structure\" (the other chains with the same sequence are changed too, and clashes and interactions of the side chain are checked). For several, write one per line and press \"List and examine\": all positions are shown on the structure and listed (each card can be built one by one). Results appear in the \"Mutations\" tab under the viewer.", "A:R51A（1 つだけ）\nまたは 1 行に 1 つ：\nR51A 活性低下\nK102E 変化なし\np.Asp150Asn": "A:R51A (just one)\nor one per line:\nR51A reduced\nK102E unchanged\np.Asp150Asn", "入力した 1 つの変異、または選んだ 1 残基を、構造の上で実際に置き換えます": "Build the one typed mutation, or the one selected residue, on the structure", "一覧で調べる": "List and examine", "入力した変異（いくつでも）の位置を構造の上に出し、それぞれの位置を調べて一覧にします": "Show the positions of the typed mutations (any number) on the structure and list what each position shows", "入力・一覧・作った変異をすべて消します": "Clear the input, the list and the built mutation", "一覧の設定（Chain・番号の種類・色分け・番号のずれ）": "List settings (chain, numbering, colouring, offset)", "書き方・判定基準・方法": "Format, criteria and methods", "構造上で置き換える": "Build on the structure", "置き換える残基を 1 つクリックして選ぶか、「A:R51A」のように 1 行だけ書いてから押してください": "Click one residue, or write a single line such as \"A:R51A\", then press the button",
-  "作った変異と周りの表示をすべて消して、最初の状態に戻します": "Remove the built mutation and its surroundings and start over", "リセット": "Reset", "作った変異をリセットしました": "Built mutation reset", "この Chain の置き換えた側鎖を表示する／隠す": "Show or hide the new side chain in this chain", "ズーム": "Zoom", "この Chain の置き換えた残基にズームします": "Zoom to the replaced residue in this chain",
+  "1 つだけなら、残基をクリックするか「A:R51A」のように 1 行書いて「構造上で置き換える」を押します（同じ配列の異なる Chain もまとめて置き換え、側鎖のぶつかりや相互作用を調べます）。いくつもあるときは 1 行に 1 つずつ書いて「一覧で調べる」を押すと、全部の位置を構造の上に出して並べます（各カードから 1 つずつ置き換えられます）。結果は画面下の「変異」タブに出ます。": "For a single mutation, click a residue or type one line such as \"A:R51A\" and press \"Build on the structure\" (the other chains with the same sequence are changed too, and clashes and interactions of the side chain are checked). For several, write one per line and press \"List and examine\": all positions are shown on the structure and listed (each card can be built one by one). Results appear in the \"Mutations\" tab under the viewer.", "A:R51A（1 つだけ）\nまたは 1 行に 1 つ：\nR51A 活性低下\nK102E 変化なし\np.Asp150Asn": "A:R51A (just one)\nor one per line:\nR51A reduced\nK102E unchanged\np.Asp150Asn", "入力した 1 つの変異、または選んだ 1 残基を、構造の上で実際に置き換えます": "Build the one typed mutation, or the one selected residue, on the structure", "一覧で調べる": "List and examine", "入力した変異（いくつでも）の位置を構造の上に出し、それぞれの位置を調べて一覧にします": "Show the positions of the typed mutations (any number) on the structure and list what each position shows", "入力・一覧・作った変異をすべて消します": "Clear the input, the list and the built mutation", "一覧の設定（Chain・番号の種類・色分け・番号のずれ）": "List settings (chain, numbering, colouring, offset)", "書き方・判定基準・方法": "Format, criteria and methods", "置き換える残基を 1 つクリックして選ぶか、「A:R51A」のように 1 行だけ書いてから押してください": "Click one residue, or write a single line such as \"A:R51A\", then press the button",
+  "作った変異と周りの表示をすべて消して、最初の状態に戻します": "Remove the built mutation and its surroundings and start over", "作った変異をリセットしました": "Built mutation reset", "この Chain の置き換えた側鎖を表示する／隠す": "Show or hide the new side chain in this chain", "ズーム": "Zoom", "この Chain の置き換えた残基にズームします": "Zoom to the replaced residue in this chain",
   "置き換えた側鎖から「周囲の範囲」（表示・出力タブの ③）以内にある残基・水・リガンドをスティックとラベルで表示します": "Show residues, waters and ligands within the \"Surrounding range\" (Display & export tab, ③) of the new side chains as sticks with labels",
   '（下の入力を使います）': '(the typed residue below is used)',
   "または入力": "or type", "例 A:R51A、R51A": "e.g. A:R51A, R51A", "クリックで選ぶ代わりに、置き換える残基と置き換え先を書けます（「A:R51A」「R51A」「Arg51Ala」）。書いてあるときは、こちらを使います": "Instead of clicking, type the residue and the new amino acid (\"A:R51A\", \"R51A\", \"Arg51Ala\"). When something is typed here, it is used", "同じ配列の異なる Chain もまとめて置き換える": "Also replace it in the other chains with the same sequence", "ホモ多量体などで、同じ配列をもつ Chain の同じ残基もまとめて置き換え、コピーどうしの側鎖のぶつかりや新しい相互作用も見ます": "In homo-oligomers and the like, the same residue is replaced in every chain with the same sequence, and clashes or new interactions between the copies are checked too", "構造上で置き換える": "Build on the structure", "この変異を構造の上で実際に置き換え、側鎖のぶつかりや相互作用を調べます（同じ配列の Chain もまとめて）": "Build this mutation on the structure and check clashes and interactions of the side chain (in all chains with the same sequence)", "置き換え先のアミノ酸が書かれていない変異です（例 R51A）": "This mutation has no new amino acid (e.g. R51A)", "置き換える残基を 1 つクリックして選ぶか、「A:R51A」のように入力してから押してください": "Click one residue, or type e.g. \"A:R51A\", then press the button", "同じ配列の異なる Chain の同じ残基も置き換えています。行を押すと、その Chain のロタマーの表に切り替わります。": "The same residue is replaced in the chains with the same sequence. Click a row to see the rotamer table of that chain.", "ほかの Chain の置き換えた側鎖は、それぞれ表の 1 番目の向きとして判定しています。": "The replaced side chains of the other chains are taken in the first orientation of their tables.", "⚠ ほかの Chain の置き換えた側鎖とぶつかります（コピーどうしが向かい合う位置です）。": "⚠ Clashes with the replaced side chain of another chain (the copies face each other here).", "ほかの Chain の置き換えた側鎖と、新しく水素結合・塩橋を作ります。": "Makes new hydrogen bonds or salt bridges with the replaced side chain of another chain.", "側鎖なし": "no side chain",
@@ -986,21 +986,21 @@ const EXACT = new Map(Object.entries({
   "位置を調べる": "Look up positions", "入力した変異の位置を構造の上に出し、それぞれの位置を調べます（結果は画面下の「変異」タブ）": "Show the entered mutation positions on the structure and examine each (results in the \"Mutations\" tab under the viewer)", "この入力で、もう一度位置を調べます": "Look up the positions again with this input", "履歴から消します": "Remove from the history", "表示中": "Shown",
   "炭素の色": "Carbon colour", "クリックした残基": "clicked residues", "Chainの色を濃く": "Chain colour, darker", "Chainの色を淡く": "Chain colour, lighter", "灰色": "Grey", "クリックした残基のスティックの炭素の色を変えました": "Carbon colour of the clicked residues changed", "クリックした残基・界面の残基のスティックの炭素の色。カートゥーンと同じ色だと見分けにくいときは「Chainの色を濃く」や「灰色」が見やすくなります。N・O・S は元素の色のままです": "Carbon colour of the sticks of clicked residues and interface residues. When the same colour as the cartoon is hard to tell apart, \"darker\" or \"grey\" helps. N, O and S keep their element colours",
   "色: 電荷＋His・Cys": "Colour: charge + His, Cys", "電荷の色分けに加えて、Cys を黄色で塗ります（Zn フィンガー・Fe-S クラスター・ジスルフィド結合を見つけやすくするため）": "The charge colouring plus Cys in yellow (to spot zinc fingers, Fe–S clusters and disulfides)", "電荷と His・Cys で色分けしています：正（Lys・Arg）＝青、負（Asp・Glu）＝赤、His＝水色（環境によって正電荷）、Cys＝黄、それ以外＝灰色。画面下の配列の文字も同じ色です": "Coloured by charge with His and Cys: positive (Lys, Arg) blue, negative (Asp, Glu) red, His sky blue (positive depending on its environment), Cys yellow, the rest grey. The letters of the sequence strip use the same colours",
-  "変異": "Mutations", "「解析」タブの「変異の位置」と「構造上で置き換えてみる」の結果": "Results of \"Mutation positions\" and \"Try a substitution\" in the Analysis tab", "構造上で置き換えた結果": "Substitution on the structure", "位置ごとの一覧は、画面下の「変異」タブに出ます。": "The list of positions appears in the \"Mutations\" tab under the viewer.", "結果（ロタマーごとのぶつかり・水素結合などの表）は、画面下の「変異」タブに出ます。": "The results (a table of clashes, hydrogen bonds etc. for each rotamer) appear in the \"Mutations\" tab under the viewer.",
+  "「解析」タブの「変異の位置」と「構造上で置き換えてみる」の結果": "Results of \"Mutation positions\" and \"Try a substitution\" in the Analysis tab", "構造上で置き換えた結果": "Substitution on the structure", "位置ごとの一覧は、画面下の「変異」タブに出ます。": "The list of positions appears in the \"Mutations\" tab under the viewer.", "結果（ロタマーごとのぶつかり・水素結合などの表）は、画面下の「変異」タブに出ます。": "The results (a table of clashes, hydrogen bonds etc. for each rotamer) appear in the \"Mutations\" tab under the viewer.",
   "色を変える（スティック）…": "Colour (sticks)…", "色を変える（カートゥーンも）…": "Colour (cartoon too)…", "この残基をスティックで常に表示し、その炭素を選んだ色にします": "Always show this residue as sticks with its carbons in the chosen colour", "スティックに加えて、この残基のカートゥーンも選んだ色にします": "Also paint the cartoon of this residue in the chosen colour", "カートゥーンも塗る": "Paint cartoon too", "チェックを入れると、この残基のカートゥーンもこの色で塗ります（常に表示がオンのとき）": "Tick to paint the cartoon of these residues in this colour too (while \"always show\" is on)",
   '② ラベル': '② Labels', '③ クリックしたときの表示': '③ When you click a residue',
   '構造を2つ以上開いたとき': 'With two or more structures open', '選択の扱い': 'Selections',
   '測定': 'Measurements',
-  "測った距離・角度・二面角の一覧": "List of measured distances, angles and dihedrals", "分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます": "Press \"📏 Measure\" at the top right of the viewer and tap atoms; the values are listed here", "測った値は、画面下の「測定」タブに一覧で並びます（1件ずつ隠す・消す、コピー）。": "Measured values are listed in the \"Measurements\" tab under the viewer (hide or remove each, copy).", "すべて消す": "Remove all",
+  "測った距離・角度・二面角の一覧": "List of measured distances, angles and dihedrals", "分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます": "Press \"📏 Measure\" at the top right of the viewer and tap atoms; the values are listed here", "測った値は、画面下の「測定」タブに一覧で並びます（1件ずつ隠す・消す、コピー）。": "Measured values are listed in the \"Measurements\" tab under the viewer (hide or remove each, copy).", 
   '測定（距離・角度・二面角・分子の寸法）': 'Measurements (distance, angle, dihedral, dimensions)',
   "単位胞を表示": "Show the unit cell", "結晶の単位胞を箱で表示します": "Draw the unit cell of the crystal as a box", "この構造には単位胞の情報がありません（結晶構造以外、または CRYST1／_cell の記載なし）": "This structure has no unit cell (not a crystal structure, or no CRYST1 / _cell record)", "単位胞を表示しました": "Unit cell shown", "単位胞を隠しました": "Unit cell hidden",
   "構造上で置き換えてみる": "Try the mutation on the structure", "": "Select one residue by clicking it, choose the new amino acid and press \"Build\": the new side chain is built on the original main chain, every side-chain orientation (rotamer) is tried, and clashes with the surroundings, hydrogen bonds, salt bridges and burial are compared (similar to PyMOL's Mutagenesis).", "置き換える残基": "Residue", "置き換え先": "Mutate to", "作る": "Build", "方法と注意": "Method and caveats", "側鎖は標準的な結合長・結合角（PeptideBuilder の内部座標、Tien et al. 2013）で組み立て、ロタマーは Open-Source PyMOL に含まれる主鎖非依存のロタマーライブラリ（Dunbrack）の全候補を試します。ぶつかりは水素を除いた原子の van der Waals 半径の重なりが 0.4 Å 以上のもの（MolProbity の基準）、極性の相手は N・O どうしが 2.5–3.5 Å、塩橋は電荷をもつ基どうしが 4 Å 以内です。露出度は置き換え後の残基の溶媒露出表面積を Gly-X-Gly の最大値（Tien et al. 2013）で割った値です。主鎖と周りの側鎖は動かさないので、ぶつかって見えても実際には周りが少し動いて収まることがあります。安定性の変化（ΔΔG）の予測ではありません。作った変異は表示だけで、構造ファイルやセッションには入りません。": "The side chain is built with standard bond lengths and angles (internal coordinates from PeptideBuilder, Tien et al. 2013); every rotamer of the backbone-independent rotamer library (Dunbrack) shipped with Open-Source PyMOL is tried. A clash is an overlap of van der Waals radii of at least 0.4 Å between heavy atoms (the MolProbity criterion); polar partners are N/O pairs at 2.5–3.5 Å; salt bridges are charged groups within 4 Å. Exposure is the SASA of the new residue divided by its Gly-X-Gly maximum (Tien et al. 2013). The main chain and the other side chains do not move, so an apparent clash may be relieved by small movements in reality. This is not a prediction of the stability change (ΔΔG). The mutant is only displayed; it is not written to structure files or sessions.", "（残基を 1 つ選んでください）": "(select one residue)", "置き換える残基を 1 つクリックして選んでから押してください": "Click one residue to select it, then press the button", "タンパク質の残基を選んでください": "Select a protein residue", "この残基は主鎖の原子がそろっていないので置き換えられません": "This residue lacks main-chain atoms and cannot be mutated", "ぶつからずに置けるロタマーがあります。": "At least one rotamer fits without clashes.", "⚠ 埋もれた位置に電荷を持ち込み、相手（塩橋・水素結合）がいません。": "⚠ Brings a charge into a buried site with no partner (salt bridge or H-bond).", "⚠ 埋もれた位置の極性基に水素結合の相手がいません。": "⚠ The buried polar group has no hydrogen-bond partner.", "• Pro は主鎖の φ が −60° 付近に限られ、主鎖の N–H も失います。主鎖は動かしていないので、φ が合わない位置では実際には入りにくいことがあります。": "• Pro restricts the main-chain φ to about −60° and removes the main-chain N–H. The main chain is not moved, so where φ does not fit Pro may not be accommodated in reality.", "側鎖の向きの候補はありません（Gly は側鎖なし）。": "No side-chain orientations to try (Gly has no side chain).", "側鎖の向きの候補はありません（Ala は Cβ だけ）。": "No side-chain orientations to try (Ala has only Cβ).", "出現頻度": "Frequency", "ぶつかり": "Clashes", "最大の重なり": "Worst overlap", "極性の相手": "Polar partners", "塩橋": "Salt bridges", "側鎖の角度 χ": "Side-chain χ angles", "行を押すとそのロタマーを表示します。並びは、ぶつかりの少ない順・重なりの小さい順・出現頻度の高い順です。": "Click a row to show that rotamer. Sorted by fewest clashes, then smallest overlap, then highest frequency.", "表示を消す": "Clear", "作った変異の表示を消します": "Remove the built mutant from the view", "作った変異の表示を消しました": "Built mutant removed", "この残基を置き換えてみる…": "Try mutating this residue…",
   "色: アミノ酸の種類": "Colour: amino-acid type", "色: 電荷（＋青・−赤）": "Colour: charge (+ blue, − red)", "色: 極性（疎水性・親水性）": "Colour: polarity (hydrophobic / hydrophilic)", "アミノ酸を性質の種類ごとに塗ります（疎水性・芳香族・正電荷・負電荷・極性・Cys・Gly・Pro）": "Colour amino acids by class (hydrophobic, aromatic, positive, negative, polar, Cys, Gly, Pro)", "正電荷（Lys・Arg）を青、負電荷（Asp・Glu）を赤、His を水色（側鎖の pKa が約 6 で、環境によって正電荷をもつため）、それ以外を灰色で塗ります": "Positive (Lys, Arg) blue, negative (Asp, Glu) red, His sky blue (side-chain pKa about 6, so it can be positive depending on its environment), the rest grey", "非極性（疎水性）を橙、極性（親水性）を青緑で塗ります": "Non-polar (hydrophobic) orange, polar (hydrophilic) teal", "アミノ酸の種類で色分けしています：疎水性（Ala・Val・Leu・Ile・Met）＝青、芳香族（Phe・Trp・Tyr・His）＝水色、正電荷（Lys・Arg）＝赤、負電荷（Asp・Glu）＝紫、極性（Ser・Thr・Asn・Gln）＝緑、Cys＝桃、Gly＝橙、Pro＝黄。画面下の配列の文字も同じ色です": "Coloured by amino-acid type: hydrophobic (Ala, Val, Leu, Ile, Met) blue, aromatic (Phe, Trp, Tyr, His) cyan, positive (Lys, Arg) red, negative (Asp, Glu) purple, polar (Ser, Thr, Asn, Gln) green, Cys pink, Gly orange, Pro yellow. The letters of the sequence strip use the same colours", "電荷で色分けしています：正（Lys・Arg）＝青、負（Asp・Glu）＝赤、His＝水色（環境によって正電荷）、それ以外＝灰色。画面下の配列の文字も同じ色です": "Coloured by charge: positive (Lys, Arg) blue, negative (Asp, Glu) red, His sky blue (positive depending on its environment), the rest grey. The letters of the sequence strip use the same colours", "極性で色分けしています：非極性・疎水性（Ala・Val・Leu・Ile・Met・Phe・Trp・Pro・Gly）＝橙、極性・親水性（それ以外のアミノ酸）＝青緑。画面下の配列の文字も同じ色です": "Coloured by polarity: non-polar/hydrophobic (Ala, Val, Leu, Ile, Met, Phe, Trp, Pro, Gly) orange, polar/hydrophilic (the other amino acids) teal. The letters of the sequence strip use the same colours",
-  "スティックの太さ": "Stick thickness", "スティック・ボール＆スティック・リガンドの太さ（クリックした残基、Chain の表示、保存した選択のすべて）": "Thickness of sticks, ball & stick and ligands (clicked residues, chain styles and saved selections)", "スティック": "Sticks", "ボール＆スティック": "Ball & stick", "細い（×0.6）": "Thin (×0.6)", "やや細い（×0.8）": "Slightly thin (×0.8)", "全体と同じ": "Same as the rest", "やや太い（×1.3）": "Slightly thick (×1.3)", "太い（×1.6）": "Thick (×1.6)", "とても太い（×2）": "Very thick (×2)", "この選択だけのスティックの太さ（「表示・出力」タブの「スティックの太さ」に掛け合わせます）": "Stick thickness for this selection only (multiplied by \"Stick thickness\" in the Display & export tab)", "常に表示するときの表示形式": "Style when always shown", "太さ（この選択だけ）": "Thickness (this selection only)",
+  "スティックの太さ": "Stick thickness", "スティック・ボール＆スティック・リガンドの太さ（クリックした残基、Chain の表示、保存した選択のすべて）": "Thickness of sticks, ball & stick and ligands (clicked residues, chain styles and saved selections)", "細い（×0.6）": "Thin (×0.6)", "やや細い（×0.8）": "Slightly thin (×0.8)", "全体と同じ": "Same as the rest", "やや太い（×1.3）": "Slightly thick (×1.3)", "太い（×1.6）": "Thick (×1.6)", "とても太い（×2）": "Very thick (×2)", "この選択だけのスティックの太さ（「表示・出力」タブの「スティックの太さ」に掛け合わせます）": "Stick thickness for this selection only (multiplied by \"Stick thickness\" in the Display & export tab)", "常に表示するときの表示形式": "Style when always shown", "太さ（この選択だけ）": "Thickness (this selection only)",
   "前回の作業が残っています": "Your previous work is still here", "復元する": "Restore", "破棄する": "Discard", "前回の作業を復元中…": "Restoring your previous work…",
   "ここにドロップ（構造・マップ・MTZ・マップ係数・セッション）": "Drop here (structure, map, MTZ, map coefficients, session)",
   "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です。ヘリックスは端で切り、βストランドは平たい矢印、ループ・ターンは細い筒にします": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets: helices cut at their ends, β strands as flat arrows, loops and turns as thin tubes", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細い筒にしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly, loops and turns as thin tubes (strand arrows point to the C-terminus)",
-  "描き方": "style", "標準": "Standard", "βストランドを矢印に": "β strands as arrows", "二次構造をはっきり": "Clear secondary structure", "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細くしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly with thin loops and turns (strand arrows point to the C-terminus)", "カートゥーンを標準の描き方に戻しました": "Cartoon back to the standard style",
+  "描き方": 'Style', "βストランドを矢印に": "β strands as arrows", "二次構造をはっきり": "Clear secondary structure", "「二次構造をはっきり」は PyMOL の Flat Sheets ＋ Fancy Sheets に近い描き方です": "\"Clear secondary structure\" is close to PyMOL's Flat Sheets + Fancy Sheets", "ヘリックスとβストランドをはっきり描き、ループ・ターンを細くしています（βストランドの矢印の先が C 末側）": "Helices and β strands drawn clearly with thin loops and turns (strand arrows point to the C-terminus)", "カートゥーンを標準の描き方に戻しました": "Cartoon back to the standard style",
   "βストランド": "β strands", "帯（今までの描き方）": "Ribbons (as before)", "矢印": "Arrows", "矢印にすると、ストランドの向き（平行・逆平行）がひと目で分かります": "With arrows, the direction of each strand (parallel or antiparallel) is clear at a glance", "βストランドを矢印で描いています（矢印の先が C 末側）": "β strands drawn as arrows (pointing to the C-terminus)", "βストランドを帯で描いています": "β strands drawn as ribbons", "選んだ残基の周囲もスティック表示": "Also show the surrounding residues as sticks", "周囲の範囲": "Surroundings", "スティック表示": "shown as sticks", "選んだ残基から、どこまでの距離にある残基をスティックで表示するか（原子どうしの距離）": "How far from the selected residues other residues are shown as sticks (atom–atom distance)", "選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「③ クリックしたときの表示」と同じ設定）": "Whether the surrounding residues are also shown as sticks (the same setting as \"③ On click\" in the Display & export tab)", "色: 二次構造（ヘリックス赤・β水色）": "Colour: secondary structure (helix red, β sky blue)", "ヘリックス（αヘリックス・3₁₀ヘリックス）を赤、βストランドを水色、それ以外を薄い灰色で塗ります。二次構造はファイルの記載、なければ NGL が割り当てたものです": "Helices (α and 3₁₀) red, β strands sky blue, everything else light grey. Secondary structure from the file, or as assigned by NGL", "二次構造で色分けしています：ヘリックス＝赤、βストランド＝水色、それ以外＝薄い灰色（二次構造はファイルの記載、なければ NGL が割り当てたもの）": "Coloured by secondary structure: helix red, β strand sky blue, others light grey (from the file, or as assigned by NGL)",
   "精密化の MTZ（Phenix の 2FOFCWT / FOFCWT、Refmac の FWT / DELFWT など）から、ブラウザの中で密度を計算します。PDB ID のない構造でも使えます。RCSB PDB のエントリーのページの「Download Files」から取った wwPDB のマップ係数（2fo-fc と fo-fc の map coefficients の CIF。2つ同時に選べます。.gz のままで可）も読み込めます。ファイルはどこにも送信されません。": "Computes density in your browser from a refinement MTZ (Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT, etc.). Works for structures without a PDB ID. wwPDB map coefficients from \"Download Files\" on an RCSB PDB entry page (the 2fo-fc and fo-fc map-coefficient CIFs; both can be chosen at once, .gz is fine) can be read too. The files are not sent anywhere.",
   "このブラウザは .gz を展開できません。展開してから読み込んでください": "This browser cannot unpack .gz; unpack it first",
@@ -1010,15 +1010,15 @@ const EXACT = new Map(Object.entries({
   "2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）": "2Fo-Fc + Fo-Fc (computed from RCSB map coefficients)", "公開されたばかりの構造など、PDBe の密度サーバーにまだマップがないときに使います。wwPDB が検証レポートと一緒に公開しているマップ係数を RCSB PDB から取得し、ブラウザの中で密度を計算します。": "For when the PDBe density server has no map yet, e.g. for a newly released entry. Fetches the map coefficients that wwPDB publishes with the validation report from RCSB PDB and computes the density in your browser.", "MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…": "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…", "4 文字の PDB ID の構造で使えます": "Works for structures with a 4-character PDB ID",
   "⛶ 全画面": "⛶ Full screen", "⛶ 全画面を解除": "⛶ Exit full screen", "全画面表示": "Full screen", "全画面表示を終了": "Left full screen", "分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）": "Show only the molecule window, filling the screen (F key; press again or Esc to go back)",
   "分子表面を付ける": "Add molecular surface", "分子表面を消す": "Remove molecular surface",
-  "マウス操作": "Mouse", "ShikaMol 標準": "ShikaMol standard", "PyMOL 互換": "PyMOL-like", "PyMOL 互換は 3-Button Viewing と同じ割り当てです": "PyMOL-like follows the 3-Button Viewing bindings", "左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム": "Left drag: rotate   Wheel-press drag: translate   Right drag: zoom", "ホイール: 切り取り面（スラブ）": "Wheel: clipping slab", "＋ホイール: ズーム": "+wheel: zoom", "＋左ドラッグ: 四角の中の残基を選択に追加": "+left drag: add residues in a box to the selection", "ホイールの押し込み（クリック）: その原子を中心に": "Wheel click: centre on the atom", "右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）": "Right click: menu for the selection (or the residue under the pointer): style, colour, label, centre, 5 Å around …", "常に表示": "Always show", "スティック": "Sticks", "ボール＆スティック": "Ball & stick", "CPK": "CPK", "表面": "Surface", "常に表示をやめる（隠す）": "Stop always showing (hide)", "色を変える…": "Change colour…", "ラベルを付ける": "Add labels", "ラベルを消す": "Remove labels", "ここを中心に": "Centre here", "ここにズーム": "Zoom here", "周囲 5 Å も選択に加える": "Add the residues within 5 Å", "選択を保存": "Save selection", "選択を解除": "Clear selection", "この残基を選択": "Select this residue", "全体表示に戻す": "Fit all", "何も選んでいません": "Nothing selected", "常に表示をやめました": "Stopped always showing", "ラベルを消しました": "Labels removed", "ラベルを付けました": "Labels added", "マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）": "Mouse set to PyMOL-like (wheel = clipping slab, Ctrl+wheel = zoom)", "マウス操作を ShikaMol 標準にしました": "Mouse set to ShikaMol standard",
+  "マウス操作": "Mouse", "ShikaMol 標準": "ShikaMol standard", "PyMOL 互換": "PyMOL-like", "PyMOL 互換は 3-Button Viewing と同じ割り当てです": "PyMOL-like follows the 3-Button Viewing bindings", "左ドラッグ: 回転　ホイールを押し込んでドラッグ: 平行移動　右ドラッグ: ズーム": "Left drag: rotate   Wheel-press drag: translate   Right drag: zoom", "ホイール: 切り取り面（スラブ）": "Wheel: clipping slab", "＋ホイール: ズーム": "+wheel: zoom", "＋左ドラッグ: 四角の中の残基を選択に追加": "+left drag: add residues in a box to the selection", "ホイールの押し込み（クリック）: その原子を中心に": "Wheel click: centre on the atom", "右クリック: 選択（または指した残基）のメニュー（表示・色・ラベル・中心・周囲 5 Å など）": "Right click: menu for the selection (or the residue under the pointer): style, colour, label, centre, 5 Å around …", "常に表示": "Always show", "CPK": "CPK", "常に表示をやめる（隠す）": "Stop always showing (hide)", "色を変える…": "Change colour…", "ラベルを付ける": "Add labels", "ラベルを消す": "Remove labels", "ここを中心に": "Centre here", "ここにズーム": "Zoom here", "周囲 5 Å も選択に加える": "Add the residues within 5 Å", "選択を保存": "Save selection", "全体表示に戻す": "Fit all", "何も選んでいません": "Nothing selected", "常に表示をやめました": "Stopped always showing", "ラベルを消しました": "Labels removed", "ラベルを付けました": "Labels added", "マウス操作を PyMOL 互換にしました（ホイールは切り取り面、Ctrl＋ホイールでズーム）": "Mouse set to PyMOL-like (wheel = clipping slab, Ctrl+wheel = zoom)", "マウス操作を ShikaMol 標準にしました": "Mouse set to ShikaMol standard",
   "解析した Chain のカートゥーンの透明度": "Transparency of the analysed chains’ cartoons",
-  "文字の背景": "Text background", "自動（画面の背景に合わせた半透明）": "Auto (see-through, like the screen background)", "白": "White", "黒": "Black", "なし": "None", "ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります": "A box behind the label text, for both analysis and figure labels and in exported images. With white the text turns black, with black it turns white",
-  "強調:": "Emphasis:", "ほかのChain": "Other chains", "そのまま": "As is", "薄くする": "Fade", "隠す": "Hide", "解析した Chain のカートゥーン": "Cartoon of the analysed chains", "半透明": "See-through", "「それ以外すべて」と解析したときは、ほかの Chain はありません": "With \"everything else\" there are no other chains",
-  "⚙ 表示設定": "⚙ Display settings", "表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）": "Style (sticks, CPK), thickness, side chain only and so on are set in the display settings of the Display & export tab (shared with clicked residues)", "残基名": "Residue names", "距離": "Distances",
-  "Chain間の相互作用": "Chain interactions", "「解析」タブで実行した Chain 間の相互作用の解析結果": "Results of the chain–chain interaction analysis run in the Analysis tab", "結果は画面下の「Chain間の相互作用」タブに出ます。": "Results appear in the \"Chain interactions\" tab under the viewer.",
+  "文字の背景": "Text background", "自動（画面の背景に合わせた半透明）": "Auto (see-through, like the screen background)", "ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります": "A box behind the label text, for both analysis and figure labels and in exported images. With white the text turns black, with black it turns white",
+  "強調:": "Emphasis:", "ほかのChain": "Other chains", "そのまま": "As is", "薄くする": "Fade", "解析した Chain のカートゥーン": "Cartoon of the analysed chains", "半透明": "See-through", "「それ以外すべて」と解析したときは、ほかの Chain はありません": "With \"everything else\" there are no other chains",
+  "表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）": "Style (sticks, CPK), thickness, side chain only and so on are set in the display settings of the Display & export tab (shared with clicked residues)", 
+  "「解析」タブで実行した Chain 間の相互作用の解析結果": "Results of the chain–chain interaction analysis run in the Analysis tab", "結果は画面下の「Chain間の相互作用」タブに出ます。": "Results appear in the \"Chain interactions\" tab under the viewer.",
   "Å（Chain間のみ）": "Å (chain–chain only)", "Chain 間の解析で、重原子どうしがこの距離以内なら「その他の接触」とします": "In the chain–chain analysis, heavy atoms within this distance count as \"Other contact\"",
-  "3D表示に付ける:": "Show in 3D:", "水を介した水素結合": "Water bridge", "水素結合と同じ上限": "same limit as H-bonds", "重原子間": "heavy atoms", "Å（Chain間の解析だけ）": "Å (chain–chain analysis only)", "左の ☑ は Chain 間の解析で表示する種類、右の数字は見つかった数です。": "☑ on the left: types shown in the chain–chain analysis; the number on the right: how many were found.", "Chain間の解析で表示する": "Show in the chain–chain analysis", "全表示": "Show all", "全非表示": "Hide all",
-  "操作の記録": "Log", "これまでの操作とその結果の記録（新しいものが下）": "Record of operations and their results (newest at the bottom)", "このページを開いてからの操作の記録です（新しいものが下）": "Operations since this page was opened (newest at the bottom)", "操作の記録をコピーしました": "Log copied", "選択を解除": "Selection cleared",
+  "3D表示に付ける:": "Show in 3D:", "水を介した水素結合": "Water bridge", "水素結合と同じ上限": "same limit as H-bonds", "重原子間": "heavy atoms", "Å（Chain間の解析だけ）": "Å (chain–chain analysis only)", "左の ☑ は Chain 間の解析で表示する種類、右の数字は見つかった数です。": "☑ on the left: types shown in the chain–chain analysis; the number on the right: how many were found.", "Chain間の解析で表示する": "Show in the chain–chain analysis", 
+  "操作の記録": "Log", "これまでの操作とその結果の記録（新しいものが下）": "Record of operations and their results (newest at the bottom)", "このページを開いてからの操作の記録です（新しいものが下）": "Operations since this page was opened (newest at the bottom)", "操作の記録をコピーしました": "Log copied", "選択を解除": 'Clear selection',
   "保存した選択": "Saved selections", "保存した選択と最近の選択の履歴": "Saved selections and recent history", "残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。": "Select residues and press \"★ Save selection\" at the top left of the viewer to keep them here under a name. Tick the box on the left to keep them always shown in their colour. They are kept in sessions too.",
   "配列": "Sequence",
   "種類・範囲で絞り込む": "Filter by type and scope",
@@ -1090,7 +1090,7 @@ const EXACT = new Map(Object.entries({
   'イオン': 'Ions',
   '水': 'Water',
   'Chain間の相互作用': 'Interactions between chains',
-  '解析': 'Analyse',
+  
   '接触とみなす距離': 'Contact distance',
   '残基名': 'Residue labels',
   '距離': 'Distances',
@@ -1106,7 +1106,7 @@ const EXACT = new Map(Object.entries({
   'その他の接触: 上のどれにも当たらないが、重原子間が設定距離以内の残基の組。': 'Other contact: residue pairs with heavy atoms within the contact distance but none of the above.',
   '幾何学的な目安なので、論文に使うときはPISA・PLIP・LigPlot+などでも確認してください。': 'These are geometric estimates; check with PISA, PLIP or LigPlot+ before using them in a paper.',
   '対称分子（結晶）': 'Symmetry mates (crystal)',
-  '表示': 'Show',
+  
   '元の分子から': 'Chains within',
   'Å以内のChain': 'Å of the model',
   '不透明度': 'Opacity',
@@ -1153,11 +1153,11 @@ const EXACT = new Map(Object.entries({
   '選んだ残基の周囲5Åもスティック表示': 'Also show residues within 5 Å as sticks', '選んだ場所にズーム': 'Zoom to the selection',
   '「周囲」をオフにすると、選んだ残基だけを表示します（分子ウィンドウ左下の「周囲」ボタンでも切り替えられます）。「ズーム」をオフにすると、選んでも視点は動きません（背景クリックで解除しても視点はそのままです）。': 'With "surroundings" off, only the selected residues are shown (also switchable with the "Within" button at the bottom left of the viewer). With "Zoom" off, the view does not move when you select (or when you clear by clicking the background).',
   '残基をクリック、または画面下の配列をドラッグして選び、分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けて残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。保存した選択はセッションにも入ります。': 'Click residues or drag over the sequence, then press "★ Save selection" at the top left of the viewer to keep it under a name. Tick the box on the left to keep those residues on screen in the chosen colour. Saved selections are stored in sessions.',
-  'この残基を選択': 'Select these residues', '選択': 'Select',
+  'この残基を選択': 'Select this residue', '選択': 'Select',
   '保存した選択はまだありません。残基を選んで、分子ウィンドウ左上の「★ 選択を保存」を押してください。': 'No saved selections yet. Select residues and press "★ Save selection" at the top left of the viewer.',
   '画面下の配列をドラッグ: その範囲をまとめて選択（': 'Drag over the sequence: select that stretch (', 'を押しながらだと追加）': ' + drag adds)', '水素結合あり': 'with H-bond', '塩橋と重なる水素結合は「塩橋（水素結合あり）」の1行にまとめる': 'List H-bonds between charged groups once, as "Salt bridge (with H-bond)"', 'メッシュの線': 'Mesh lines', '細い': 'Thin', '太い': 'Thick', '⚙ 表示設定': '⚙ Display settings',
-  'ヒント: 表示形式（スティック・CPK）や太さ、周りを薄くする範囲は「⚙ 表示設定」から変えられます。距離の判定条件は「解析」タブです。': 'Tip: style (sticks, CPK), thickness and the fade radius are under "⚙ Display settings"; distance criteria are in the Analysis tab.', 'クリックした残基と周囲5Åを表示してズーム': 'Show the clicked residue and its 5 Å surroundings, and zoom', '表示形式': 'Style', '太さ': 'Thickness',
-  'スティック': 'Sticks', 'ボール＆スティック': 'Ball & stick', 'CPK（空間充填）': 'CPK (space-filling)', '標準': 'Standard', '太め（1.5倍）': 'Thicker (1.5×)',
+  'ヒント: 表示形式（スティック・CPK）や太さ、周りを薄くする範囲は「⚙ 表示設定」から変えられます。距離の判定条件は「解析」タブです。': 'Tip: style (sticks, CPK), thickness and the fade radius are under "⚙ Display settings"; distance criteria are in the Analysis tab.', 'クリックした残基と周囲5Åを表示してズーム': 'Show the clicked residue and its 5 Å surroundings, and zoom', '太さ': 'Thickness',
+  'ボール＆スティック': 'Ball & stick', 'CPK（空間充填）': 'CPK (space-filling)', '標準': 'Standard', '太め（1.5倍）': 'Thicker (1.5×)',
   'スティック（標準）': 'Sticks (standard)', 'スティック（太め）': 'Sticks (thick)', 'ボール＆スティック（標準）': 'Ball & stick (standard)', 'ボール＆スティック（太め）': 'Ball & stick (thick)', '水素結合の上限（供与体–受容体）': 'H-bond limit (donor–acceptor)', 'S が関わるときは +0.6 Å': '+0.6 Å when S is involved',
   '3.2 Å（厳しめ）': '3.2 Å (strict)', '3.35 Å（LIGPLOT・NUCPLOT）': '3.35 Å (LIGPLOT, NUCPLOT)', '3.5 Å（Mol*・WHAT IF）': '3.5 Å (Mol*, WHAT IF)', '3.9 Å（HBPLUS の既定）': '3.9 Å (HBPLUS default)', '4.1 Å（PLIP）': '4.1 Å (PLIP)',
   '判定条件': 'Criteria', '（クリックしたときの相互作用と Chain 間の解析に共通）': ' (used for clicked residues and chain interfaces)', '初期値に戻す': 'Reset to defaults',
@@ -1190,7 +1190,7 @@ const EXACT = new Map(Object.entries({
   'ここにドロップ（構造 or マップ）': 'Drop here (structure or map)',
   'ドラッグで配列欄の高さを変更（ダブルクリックで元の高さ）': 'Drag to resize the sequence panel (double-click to reset)',
   'カートゥーン': 'Cartoon', 'カートゥーン＋側鎖': 'Cartoon + side chains', 'スティック': 'Sticks', 'ライン': 'Lines',
-  '分子表面': 'Surface', '球（CPK）': 'Spheres (CPK)', 'トレース（Cα）': 'Trace (Cα)',
+  '分子表面': 'Molecular surface', '球（CPK）': 'Spheres (CPK)', 'トレース（Cα）': 'Trace (Cα)',
   '表示/非表示': 'Show/hide', '色を選ぶ': 'Pick colour', 'このChainにズーム': 'Zoom to this chain', 'この構造にズーム': 'Zoom to this structure', '閉じる': 'Close',
   'レベル': 'Level', '表示範囲': 'Range', 'メッシュ': 'Mesh', '半透明面': 'Transparent surface', '構造全体': 'whole model', 'マップ全体': 'whole map',
   '全タンパク質Chain': 'All protein chains', 'それ以外すべて（リガンド含む）': 'Everything else (incl. ligands)', '（構造なし）': '(no structure)',
@@ -1232,7 +1232,7 @@ const EXACT = new Map(Object.entries({
   'Chainごとの色に戻しました': 'Back to colours by chain',
   '※動かした構造は電子密度マップとは位置が合わなくなります。': 'Note: moved structures no longer match the electron-density maps.',
   'を基準に一括重ね合わせ:': '= reference. Batch superposition:',
-  '表面': 'Surface', '表面を重ねて表示': 'Overlay a surface', '全Chainに表示': 'Show on all chains', 'すべて消す': 'Hide all',
+  '表面': 'Surface', '表面を重ねて表示': 'Overlay a surface', '全Chainに表示': 'Show on all chains', 'すべて消す': 'Remove all',
   'なし（表面だけ）': 'None (surface only)',
   '質感: 標準（少し光沢）': 'Look: standard (slight gloss)', '質感: マット（光沢なし）': 'Look: matte (no gloss)',
   '質感: フラット（イラスト風）': 'Look: flat (illustration-like)', '質感: 光沢あり': 'Look: glossy',
@@ -1679,7 +1679,6 @@ function uiWrite(u) {
   if (u.ifA) $('#ifA').value = u.ifA;
   if (u.ifB) $('#ifB').value = u.ifB;
 }
-const KEYS = ['comp', 'chains', 'hetReps', 'extras', 'ifc', 'sym', 'lastFocus', 'focusReps', 'focusShape', 'structSrc', 'pdbId'];
 function stash() {
   const st = structs[active]; if (!st) return;
   Object.assign(st, {comp, chains, hetReps, extras, ifc, sym, lastFocus, focusReps, focusShape, structSrc, pdbId, ui: uiRead()});
@@ -1828,6 +1827,14 @@ function ligandGaps(st, defs) {
 function applyCcdBonds(st, lists) {
   const bs = st.bondStore, ap = st.getAtomProxy(), bp = st.getAtomProxy();
   const plans = [];              // [atom index set of the residue, [[i, j, order] ...]]
+  // bonds inside each residue, collected in one pass (looking through every bond for every ligand copy froze large
+  // cryo-EM structures with hundreds of ligands)
+  const ri = st.atomStore.residueIndex, inRes = new Map();
+  for (let k = 0; k < bs.count; k++) {
+    const i = bs.atomIndex1[k], j = bs.atomIndex2[k], r0 = ri[i];
+    if (r0 !== ri[j]) continue;
+    let L = inRes.get(r0); if (!L) inRes.set(r0, L = []); L.push(i + ':' + j);
+  }
   st.eachResidue(r => {
     const tpl = lists[r.resname]; if (!tpl || r.isPolymer() || r.isWater()) return;
     const names = new Set(); for (const [n1, n2] of tpl) { names.add(n1); names.add(n2); }
@@ -1843,8 +1850,7 @@ function applyCcdBonds(st, lists) {
     for (const [n1, n2, o] of tpl) { const i = byName.get(n1), j = byName.get(n2); if (i !== undefined && j !== undefined) want.push([Math.min(i, j), Math.max(i, j), o]); }
     if (!want.length) return;
     // compare with the bonds NGL made inside this residue
-    const have = new Set();
-    for (let k = 0; k < bs.count; k++) { const i = bs.atomIndex1[k], j = bs.atomIndex2[k]; if (idx.has(i) && idx.has(j)) have.add(i + ':' + j); }
+    const have = new Set((inRes.get(r.index) || []).filter(k => { const [i, j] = k.split(':'); return idx.has(+i) && idx.has(+j); }));
     const wantS = new Set(want.map(([i, j]) => i + ':' + j));
     if (have.size === wantS.size && [...have].every(k => wantS.has(k))) return;
     plans.push([idx, want, r.resname]);
@@ -1883,7 +1889,7 @@ async function fixLigandBonds(S) {
     S.hetNote = {};
     Object.entries(gaps).forEach(([rn, g]) => { if (g.some) S.hetNote[rn] = {...(S.hetNote[rn] || {}), gap: g}; });
     Object.entries(fixed.byName || {}).forEach(([rn, n]) => { S.hetNote[rn] = {...(S.hetNote[rn] || {}), fixed: n}; });
-    if (fixed.count) { S.comp.rebuildRepresentations(); try { if (structs[active] === S) applyHet(); } catch (e) {} }
+    if (fixed.count) { S.comp.rebuildRepresentations(); try { if (structs[active] === S) { applyHet(); drawSym(); } } catch (e) {} }
     try { if (structs[active] === S) renderHet(); } catch (e) {}
     if (fixed.count) oplog(`${S.name}: リガンド ${fixed.count} 個の結合を化合物辞書（wwPDB CCD）の定義に合わせて描き直しました（座標から距離で決めた結合が辞書と違っていたため）`);
     Object.entries(gaps).forEach(([rn, g]) => { if (g.some) oplog(`${S.name}: ${rn} は化合物辞書の ${g.tpl} 原子のうち ${g.missing.length ? g.missing.join('・') + ' ' : ''}${g.max} 原子の座標がファイルにありません（${g.some}/${g.n} 個）。ない原子は描いていません`); });
@@ -1967,7 +1973,6 @@ function setStructVisible(i, on) {
 }
 let stOpen = false;  // is the colour/style panel open under the active structure? (only the ▸/▾ button opens it)
 const entryLinks = id => {
-  const lo = id.toLowerCase();
   return `<a class="lnk" href="https://www.rcsb.org/structure/${id}" target="_blank" rel="noopener" title="RCSB PDBのエントリーページを開く">RCSB ↗</a>`;
 };
 const afLinks = acc => `<a class="lnk" href="https://alphafold.ebi.ac.uk/entry/${acc}" target="_blank" rel="noopener" title="AlphaFold Database のエントリーページを開く">AFDB ↗</a> <a class="lnk" href="https://www.uniprot.org/uniprotkb/${acc}" target="_blank" rel="noopener" title="UniProt のエントリーページを開く">UniProt ↗</a>`;
@@ -2449,32 +2454,6 @@ function addSpec(c, t, p, extra) {
   }
   return r;
 }
-/* NGL's selection language cannot negate an atom list ("not @1,2" selects nothing), so the kept atoms are listed instead */
-function arrowKeep(sele, excl) {
-  const ex = new Set(excl), keep = [];
-  comp.structure.eachAtom(a => { if (!ex.has(a.index)) keep.push(a.index); }, new NGL.Selection(sele));
-  return keep.length ? '@' + keep.join(',') : 'none';
-}
-/* split a protein chain into helix residues and "coil" residues for the PyMOL-like style. Strand residues (drawn as arrows)
-   are left out; each coil stretch also takes the residue on either side, so its tube runs into the helix or arrow. */
-function ssParts(n, strandRes, helixRes) {
-  const res = [];
-  comp.structure.eachResidue(r => {
-    const idx = []; r.eachAtom(x => idx.push(x.index));
-    const k = strandRes.has(r.index) ? 'E' : helixRes.has(r.index) ? 'H' : 'C';   // too short for an arrow or a ribbon: coil
-    res.push({ri: r.index, k, idx});
-  }, new NGL.Selection(`:${n} and /0 and protein`));
-  const helix = [], coil = [], inCoil = new Set();
-  res.forEach((r, q) => {
-    if (r.k === 'H') helix.push(...r.idx);
-    const next = res[q + 1] && res[q + 1].ri === r.ri + 1 ? res[q + 1] : null, prev = res[q - 1] && res[q - 1].ri === r.ri - 1 ? res[q - 1] : null;
-    // a coil residue, or the end residue of a helix next to a non-helix residue (the tube starts inside the helix ribbon).
-    // Strand residues are never part of the tube: strandArrows joins the arrows to the tube itself, so no tube runs over them.
-    const isEdge = r.k === 'H' && ((next && next.k !== 'H') || (prev && prev.k !== 'H'));
-    if (r.k === 'C' || isEdge) { if (!inCoil.has(r.ri)) { inCoil.add(r.ri); coil.push(...r.idx); } }
-  });
-  return {helix, coil};
-}
 function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicker copy for the outline (inverted hull)
   /* PyMOL-like "flat + fancy" sheets: each strand (≥ 2 residues of 'e') is left out of NGL's cartoon and drawn here as a
      flat slab that follows the strand smoothly (the pleat zig-zag averaged out) and ends in a wider arrowhead pointing to
@@ -2507,35 +2486,6 @@ function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicke
   const ca = r => r.a.CA.slice(0, 3);
   const linked = (r1, r2) => r1 && r2 && r2.ri === r1.ri + 1 && len(sub(ca(r2), ca(r1))) < 4.5;
   // a tube between two points (joins the slab to NGL's coil)
-  const ball = (p0, rgb, rad = 0.22 + ex) => {     // rounds the joint between a connector and NGL's tube
-    const S = 10, T = 6, b = P.length / 3;
-    for (let i = 0; i <= T; i++) { const th = Math.PI * i / T; for (let k = 0; k <= S; k++) { const ph = 2 * Math.PI * k / S, nv = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]; vtx(add(p0, nv, rad), nv, rgb); } }
-    for (let i = 0; i < T; i++) for (let k = 0; k < S; k++) { const a0 = b + i * (S + 1) + k; quad(a0, a0 + S + 1, a0 + S + 2, a0 + 1); }
-  };
-  // a round tube swept along a curve (frames carried along the curve, so it does not twist)
-  const sweep = (pts, rgb, rad = 0.22 + ex) => {
-    if (pts.length < 2) return;
-    const S = 10, b = P.length / 3;
-    let t0 = nrm(sub(pts[1], pts[0])), u = Math.abs(t0[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]; u = nrm(cross(t0, u));
-    pts.forEach((p, q) => {
-      const t = nrm(sub(pts[Math.min(pts.length - 1, q + 1)], pts[Math.max(0, q - 1)]));
-      u = nrm(sub(u, t.map(x => x * dot(u, t)))); const v = cross(t, u);
-      for (let k = 0; k <= S; k++) { const a = 2 * Math.PI * k / S, nv = add(add([0, 0, 0], u, Math.cos(a)), v, Math.sin(a)); vtx(add(p, nv, rad), nv, rgb); }
-    });
-    for (let q = 0; q + 1 < pts.length; q++) for (let k = 0; k < S; k++) { const a0 = b + q * (S + 1) + k; quad(a0, a0 + S + 1, a0 + S + 2, a0 + 1); }
-  };
-  // cubic Bézier from p0 (leaving along t0) to p3 (arriving along t3)
-  const bez = (p0, t0, p3, t3, n = 12) => {
-    const L = len(sub(p3, p0)) * 0.4, p1 = add(p0, t0, L), p2 = add(p3, t3, -L), out = [];
-    for (let i = 0; i <= n; i++) { const t = i / n, a = (1 - t) ** 3, b2 = 3 * (1 - t) ** 2 * t, c2 = 3 * (1 - t) * t * t, d = t ** 3; out.push([0, 1, 2].map(j => a * p0[j] + b2 * p1[j] + c2 * p2[j] + d * p3[j])); }
-    return out;
-  };
-  const tube = (p0, p1, rgb, rad = 0.22 + ex) => {
-    const d = nrm(sub(p1, p0)); if (!(len(sub(p1, p0)) > 0.05)) return;
-    let u = Math.abs(d[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]; u = nrm(cross(d, u)); const v = cross(d, u), S = 10, b = P.length / 3;
-    for (let k = 0; k <= S; k++) { const t = 2 * Math.PI * k / S, nv = add(add([0, 0, 0], u, Math.cos(t)), v, Math.sin(t)); vtx(add(p0, nv, rad), nv, rgb); vtx(add(p1, nv, rad), nv, rgb); }
-    for (let k = 0; k < S; k++) { const a0 = b + 2 * k; quad(a0, a0 + 2, a0 + 3, a0 + 1); }
-  };
   // a flat slab along samples [{p, t (tangent), w (width dir), hw (half width), rgb}], with both ends closed
   const slab = (sm, ht) => {
     const ring = s => { const nv = nrm(cross(s.t, s.w)); return {nv, c: [add(add(s.p, s.w, s.hw), nv, ht), add(add(s.p, s.w, -s.hw), nv, ht), add(add(s.p, s.w, -s.hw), nv, -ht), add(add(s.p, s.w, s.hw), nv, -ht)]}; };
@@ -2605,7 +2555,6 @@ function strandArrows(n, c, ex = 0, cp = comp) {   // ex > 0: a uniformly thicke
       // so the outline runs around the whole arrow instead of around a box and a triangle
       slab(body.length >= 2 ? [...body, ...head] : head, THICK);
       // join to the thin tube of the loops on either side (the tube itself stops at the neighbouring residue)
-      const crgb = r => rgbOf(col(r.a.CA[3]));
       // the loop leaves from the very tip of the arrow (and enters the start of the strand) along the strand direction,
       // and bends smoothly into the direction NGL's loop tube takes at the neighbouring residue
       // where loops join this arrow: they enter the start of the body and leave from the tip, along the strand
@@ -3255,7 +3204,7 @@ function renderSurfLegend() {
 /* APBS potential map (.dx) for the active structure: kept per structure, used to colour its surfaces */
 async function loadApbs(file) {
   if (!comp) return status('先に構造を読み込んでください', true);
-  const {ext, gz} = extOf(file.name);
+  const {gz} = extOf(file.name);
   status(`APBSのマップを読み込み中: ${file.name} …`);
   let vol;
   try { vol = await NGL.autoLoad(file, {ext: 'dx', compressed: gz ? 'gz' : false, name: file.name}); }
@@ -3543,21 +3492,14 @@ function ligandLinks(S) {
   S.__links = {bc: bs.count, list};
   return list;
 }
-function applyHet() {
-  if (!comp) return;
-  hetReps.forEach(r => comp.removeRepresentation(r)); hetReps = [];
-  bridgesSoon();
-  // during a chain–chain analysis with "other chains: fade / hide", ligands, ions and waters of the other chains follow suit
-  let keep = null, mode = '';
-  try { if (ifc && ifc.chB !== '*' && ifcEmph.other !== 'show' && $('#ifShow').checked) { keep = `(:${ifc.chA} or :${ifc.chB})`; mode = ifcEmph.other; } } catch (e) {}
-  const add = (type, sele, p) => {
-    if (!keep) return hetReps.push(comp.addRepresentation(type, {sele, ...p}));
-    hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and ${keep}`, ...p}));
-    if (mode === 'fade') hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and not ${keep}`, ...p, opacity: 0.15, depthWrite: false}));
-  };
+/* what to draw for the ligands, ions and water of a structure: [type, selection, parameters]; used for the structure
+   itself and for its symmetry mates, so both look the same */
+function hetSpecs(S) {
+  if (!S || !S.comp) return [];
   // each kind of ligand / ion (by residue name) can have its own colour and style (the table under the chains); kinds
   // without settings use the defaults: ligands ball & stick in the ligand colour, ions as small spheres, water red dots
-  const S = structs[active], H = hetGroups(S), cfg = (S && S.het) || {};
+  const H = hetGroups(S), cfg = (S && S.het) || {}, out = [], add = (t, sele, p) => out.push([t, sele, p]);
+  const chs = S === structs[active] ? chains : (S.chains || []);
   const sel = g => `[${g.rn}] and (${g.kind === 'wat' ? 'water' : g.kind === 'ion' ? 'ion' : 'ligand or ion'}) and not hydrogen`;
   H.forEach(g => {
     const c = cfg[g.rn] || {};
@@ -3586,10 +3528,25 @@ function applyHet() {
     if (ends.length) add('licorice', '@' + [...new Set(ends)].join(','), {color: 'element', colorValue: hexNum($('#ligColor').dataset.v), radiusScale: 0.55 * stickK});
     // the linked protein / nucleic-acid residues: their side chain as sticks in the chain colour, so the link has something to hold on to
     res.forEach(r => {
-      const ch = chains.find(c => c.name === r.chain); if (ch && !ch.visible) return;
+      const ch = chs.find(c => c.name === r.chain); if (ch && !ch.visible) return;
       add('licorice', `(${r.resno}${r.ins ? '^' + r.ins : ''}:${r.chain} and /0) and (sidechainAttached or _P) and not hydrogen`, {color: 'element', colorValue: hexNum((ch && ch.color) || '#cccccc'), radiusScale: 0.55 * stickK});
     });
   } catch (e) {}
+  return out;
+}
+function applyHet() {
+  if (!comp) return;
+  hetReps.forEach(r => comp.removeRepresentation(r)); hetReps = [];
+  bridgesSoon();
+  // during a chain–chain analysis with "other chains: fade / hide", ligands, ions and waters of the other chains follow suit
+  let keep = null, mode = '';
+  try { if (ifc && ifc.chB !== '*' && ifcEmph.other !== 'show' && $('#ifShow').checked) { keep = `(:${ifc.chA} or :${ifc.chB})`; mode = ifcEmph.other; } } catch (e) {}
+  const add = (type, sele, p) => {
+    if (!keep) return hetReps.push(comp.addRepresentation(type, {sele, ...p}));
+    hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and ${keep}`, ...p}));
+    if (mode === 'fade') hetReps.push(comp.addRepresentation(type, {sele: `(${sele}) and not ${keep}`, ...p, opacity: 0.15, depthWrite: false}));
+  };
+  hetSpecs(structs[active]).forEach(([t, sele, p]) => add(t, sele, p));
   spotRefresh();
 }
 ['#showLig','#showIon','#showWat'].forEach(id => $(id).addEventListener('input', () => { applyHet(); drawSym(); }));
@@ -3638,15 +3595,11 @@ const ifOn = {hb: true, salt: true, pi: true, catpi: true, metal: true, water: t
 let ifc = null;
 
 const NUC3 = {DA:'A',DT:'T',DG:'G',DC:'C',DU:'U',DI:'G',A:'A',T:'T',G:'G',C:'C',U:'U',I:'G'};
-const HYD_AA = new Set(['ALA','VAL','LEU','ILE','MET','PHE','TRP','PRO','TYR','CYS']);
 const SC_ROLE = {ARG:{NE:'D',NH1:'D',NH2:'D'}, LYS:{NZ:'D'}, TRP:{NE1:'D'}, ASN:{ND2:'D',OD1:'A'}, GLN:{NE2:'D',OE1:'A'},
   HIS:{ND1:'DA',NE2:'DA'}, ASP:{OD1:'A',OD2:'A'}, GLU:{OE1:'A',OE2:'A'}, SER:{OG:'DA'}, THR:{OG1:'DA'}, TYR:{OH:'DA'}, CYS:{SG:'DA'}, MET:{SD:'A'}};
 const NUC_BB = {OP1:'A',OP2:'A',O1P:'A',O2P:'A',OP3:'A',"O3'":'A',"O5'":'A',"O4'":'A',"O2'":'DA'};
 const BASE_ROLE = {A:{N6:'D',N1:'A',N3:'A',N7:'A',N9:''}, G:{N1:'D',N2:'D',O6:'A',N3:'A',N7:'A',N9:''},
   C:{N4:'D',O2:'A',N3:'A',N1:''}, T:{N3:'D',O2:'A',O4:'A',N1:''}, U:{N3:'D',O2:'A',O4:'A',N1:''}};
-const POS = {LYS:['NZ'], ARG:['NE','NH1','NH2']};
-const NEG = {ASP:['OD1','OD2'], GLU:['OE1','OE2']};
-const PHOS = new Set(['OP1','OP2','O1P','O2P']);
 const RING6 = ['N1','C2','N3','C4','C5','C6'];
 const RINGS = {PHE:[['CG','CD1','CD2','CE1','CE2','CZ']], TYR:[['CG','CD1','CD2','CE1','CE2','CZ']],
   TRP:[['CD2','CE2','CE3','CZ2','CZ3','CH2'],['CG','CD1','NE1','CE2','CD2']], HIS:[['CG','ND1','CD2','CE1','NE2']],
@@ -4726,15 +4679,6 @@ function mtzMap(mtz, fi, pi, opt = {}) {
   const mean = s / tot, rms = Math.sqrt(Math.max(0, s2 / tot - mean * mean));
   return {grid, n, cell: mtz.cell, mean, rms, min: mn, max: mx, hkl: [hm, km, lm]};
 }
-/* trilinear sample at fractional coordinates (for tests) */
-function sampleFrac(M, f) {
-  const [na, nb, nc] = M.n, g = M.grid, w = (v, n) => ((v % n) + n) % n;
-  const x = f[0] * na, y = f[1] * nb, z = f[2] * nc, x0 = Math.floor(x), y0 = Math.floor(y), z0 = Math.floor(z), dx = x - x0, dy = y - y0, dz = z - z0;
-  let v = 0;
-  for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) for (let c = 0; c < 2; c++)
-    v += (a ? dx : 1 - dx) * (b ? dy : 1 - dy) * (c ? dz : 1 - dz) * g[w(x0 + a, na) + na * (w(y0 + b, nb) + nb * w(z0 + c, nc))];
-  return v;
-}
 
 /* density for a cube (a, b in Cartesian Å) cut out of a unit-cell grid, wrapping around the cell edges */
 function cellBoxVolume(M, a, b, name) {
@@ -5391,7 +5335,7 @@ async function handleFile(f, asMap = false) {
 }
 $('#structFile').addEventListener('change', e => { if (e.target.files[0]) routeFiles([e.target.files[0]]); e.target.value = ''; });
 $('#mapFile').addEventListener('change', e => { if (e.target.files[0]) routeFiles([e.target.files[0]], true); e.target.value = ''; });
-const main = document.querySelector('main'), drop = $('#drop');
+const drop = $('#drop');
 /* files can be dropped anywhere on the page (the side panel too); the browser never opens a dropped file itself,
    which would leave ShikaMol. Only drags that carry files are caught, so dragging text or labels is unaffected. */
 document.body.appendChild(drop);
@@ -5480,7 +5424,6 @@ function drawSym(maxChains = 80) {
   if (!sym || !comp) return;
   clearSymComps();
   if (!$('#symOn').checked) return;
-  const op = +$('#symOp').value;
   const cen = comp.structure.center;
   const dist = s => { const e = s.m.elements; return Math.hypot(e[12] + (e[0]-1)*cen.x + e[4]*cen.y + e[8]*cen.z, e[13] + e[1]*cen.x + (e[5]-1)*cen.y + e[9]*cen.z, e[14] + e[2]*cen.x + e[6]*cen.y + (e[10]-1)*cen.z); };
   let budget = maxChains;
@@ -5496,7 +5439,7 @@ function drawSym(maxChains = 80) {
       if (!ch || !ch.visible) continue;
       const o = symOpacity(c.symIdx, n), rs = c.symReps[n] = [];
       repSpecs(ch).forEach(([t, p]) => rs.push(addSpec(c, t, p, {opacity: o})));
-      if ($('#showLig').checked) rs.push(c.addRepresentation('ball+stick', {sele: `:${n} and ligand and not hydrogen`, color: 'element', colorValue: hexNum($('#ligColor').dataset.v), opacity: o}));
+      hetSpecs(structs[active]).forEach(([t, sele, p]) => { const r = c.addRepresentation(t, {...p, sele: `(${sele}) and :${n}`, opacity: (p.opacity ?? 1) * o}); r.__baseOp = p.opacity ?? 1; rs.push(r); });
     }
     sym.comps.push(c);
   }
@@ -5541,7 +5484,7 @@ $('#symOn').onchange = () => updateSym();
 $('#symCut').onchange = () => { if ($('#symOn').checked) updateSym(); };
 $('#symOp').oninput = e => {
   $('#symOpV').textContent = (+e.target.value).toFixed(2);
-  if (sym) sym.comps.forEach(c => Object.entries(c.symReps || {}).forEach(([n, rs]) => rs.forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: symOpacity(c.symIdx, n)}); })));
+  if (sym) sym.comps.forEach(c => Object.entries(c.symReps || {}).forEach(([n, rs]) => rs.forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: (r.__baseOp ?? 1) * symOpacity(c.symIdx, n)}); })));
 };
 /* ---------- picking symmetry copies and turning them into real chains ---------- */
 /* The copies share the molecule's Structure, so NGL reports a click on a copy as a click on the original.
@@ -5614,7 +5557,7 @@ function toggleSymPick(i, ch) {
   const k = symKey(i, ch);
   if (sym.pick.has(k)) sym.pick.delete(k); else sym.pick.add(k);
   const c = sym.comps.find(x => x.symIdx === i);
-  if (c && c.symReps[ch]) c.symReps[ch].forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: symOpacity(i, ch)}); });
+  if (c && c.symReps[ch]) c.symReps[ch].forEach(r => { if (!r.__pickOnly) r.setParameters({opacity: (r.__baseOp ?? 1) * symOpacity(i, ch)}); });
   renderSymList();
   const s = sym.list[i];
   status(sym.pick.has(k) ? `対称分子 Chain ${ch}（${s.text || symOpText(s.m)}）を選びました。対称分子パネルの「…加えた構造を作る」で解析できるようになります` : `対称分子 Chain ${ch} の選択を外しました`);
@@ -5830,7 +5773,6 @@ let focusItems = [];
 const FT_KEY = 'pdv_focus_types';
 const focusTypeOn = (() => { const d = {hb: true, salt: true, pi: true, catpi: true, metal: true, water: true, halogen: true, hyd: true, cont: true};
   try { Object.assign(d, JSON.parse(localStorage.getItem(FT_KEY) || '{}')); } catch (e) {} return d; })();
-let flistMin = true;
 var focusR = (() => { try { const v = +localStorage.getItem('pdv_focus_r'); return v >= 3 && v <= 6 ? v : 5; } catch (e) { return 5; } })();
 let focusScope = (() => { try { return localStorage.getItem('pdv_focus_scope') || 'all'; } catch (e) { return 'all'; } })();
 function setFocusScope(v) { focusScope = v === 'sel' ? 'sel' : 'all'; try { localStorage.setItem('pdv_focus_scope', focusScope); } catch (e) {} const sel = $('#focusScope'); if (sel) sel.value = focusScope; if (lastFocus) focusOn(lastFocus, false); }      // the list starts folded: open it with ▸ 開く when the details are needed
@@ -6154,7 +6096,6 @@ function setMulti(m) {
     : m === 'keep' ? 'ほかの構造の残基をクリックしても、前の構造の選択（スティックと相互作用）を残します。背景をクリックすると全部消えます'
     : '構造ごとの選択を残さない表示に戻しました（いつも1つの構造だけ）');
 }
-const setLink = on => setMulti(on ? 'link' : 'switch');
 /* clear the kept selections of the structures other than the active one */
 function clearOtherFocus() {
   structs.forEach((S, j) => {
@@ -6366,7 +6307,7 @@ function placeFlist() { layoutOverlay(); }
    top of the molecule window: when the window is wide, the left ones end before the toolbar; when it is narrow,
    they move below the toolbar, and the measurement list goes to the bottom right so the toolbar stays small. */
 function layoutOverlay() {
-  const wrap = $('#vwrap'), vt = $('#vtools'), info = $('#info'), fl = $('#flist'), mp = $('#measPanel');
+  const wrap = $('#vwrap'), vt = $('#vtools'), mp = $('#measPanel');
   if (!wrap || !vt) return;
   const W = wrap.clientWidth;
   const narrow = W < 640;
@@ -6462,7 +6403,7 @@ function boxSelect(x0, y0, x1, y1, add) {
   const M = V.modelGroup.matrixWorld.clone().multiply(comp.matrix), v = new (cam.position.constructor)();
   const vis = new Set(chains.filter(c => c.visible && (c.type !== 'none' || c.surf)).map(c => c.name));
   const het = {lig: $('#showLig').checked, ion: $('#showIon').checked};
-  const picked = new Map(), st = comp.structure, rp = st.getResidueProxy();
+  const picked = new Map(), st = comp.structure;
   const model = Array.isArray(lastFocus) && lastFocus.length ? lastFocus[0].modelIndex : 0;
   const inBox = a => {
     v.set(a.x, a.y, a.z).applyMatrix4(M).project(cam);
@@ -6681,16 +6622,20 @@ function buildSeq() {
 /* ligands and ions as small buttons under the sequences, grouped by chain (like PyMOL's sequence view); water is left out */
 function ligRowHtml(multi, sid) {
   if (!ligData.length) return '';
-  let html = '', last = '';
+  let html = '', last = '', shown = 0, extra = 0;
+  const MAXL = 250;                // large cryo-EM structures can carry thousands of ions: keep the row usable
   ligData.forEach((l, li) => {
     if (sid !== undefined && l.sid !== sid) return;
     const S = structs.find(x => x.sid === l.sid); if (!S) return;
+    if (shown >= MAXL) { extra++; return; }
+    shown++;
     const ch = S.chains.find(c => c.name === l.ch), grp = `${l.sid}|${l.ch}`;
     if (grp !== last) { html += `<span class="lgh">${esc(multi && sid === undefined ? S.name + ':' : '')}${esc(l.ch || '-')}</span>`; last = grp; }
     const g = hetGroups(S).find(x => x.rn === l.rn), nm = g ? hetName(g) : '';
     html += `<span class="lgc${S.visible === false ? ' off' : ''}" data-l="${li}" data-k="${l.sid}|${l.ch}|${l.rs}|${l.ic}" style="border-color:${(ch && ch.color) || '#3a414e'}" title="${esc(`${l.ch}:${l.rn}${l.rs}${l.ic}${nm ? '（' + nm + '）' : ''}${LANG === 'en' ? ' — click to select and zoom; Ctrl/⌘+click adds to the selection' : '（クリックで選択・ズーム。Ctrl／⌘＋クリックで選択に追加）'}`)}">${esc(l.rn)}<small>${l.rs}${esc(l.ic)}</small></span>`;
   });
   if (!html) return '';
+  if (extra) html += `<span class="lgt">${LANG === 'en' ? `… and ${extra} more (use the ligand table in the Structure tab)` : `…ほか ${extra} 個（「構造」タブの「リガンド・イオン・水」の表で種類ごとに操作できます）`}</span>`;
   return `<div class="sqlig${sid !== undefined && multi ? ' per' : ''}"><span class="lgt">リガンド</span>${html}</div>`;
 }
 function renderSeq() {
@@ -7018,7 +6963,6 @@ function setShade(v, save = true) {
 }
 $('#shade').oninput = e => setShade(e.target.value);
 function applyLook(keepShade) {
-  const L = LOOKS[$('#look').value] || LOOKS.std;
   setShade(keepShade && shade !== null ? shade : LOOK_SHADE[$('#look').value] ?? 100);
   if (stage.eachRepresentation) stage.eachRepresentation(r => r.setParameters(lookMat()));
 }
@@ -7074,17 +7018,8 @@ function setLabelSet(src, c, atomIdx) {
    "figure" mode: the HTML labels above, which can be dragged and arranged */
 const lblFig = () => lblPref.mode === 'fig';
 function lblNglClear(S) { (S.reps || []).forEach(r => { try { S.comp.removeRepresentation(r); } catch (e) {} }); S.reps = []; }
-function lblNgl(S) {
-  lblNglClear(S);
-  return;     // NGL's bitmap-font labels look jagged when enlarged; the HTML layer is used for both modes now
-  if (lblFig() || !S.items.length) return;
-  const {fg, bg} = lblColors(), ifc = S.src === 'ifc';
-  const r = S.comp.addRepresentation('label', {sele: '@' + S.items.map(it => it.i).join(','), labelType: 'text', labelText: Object.fromEntries(S.items.map(it => [it.i, it.text])),   // keyed by atom index
-    color: fg, zOffset: 2, attachment: 'middle-center', radiusScale: (+lblPref.size || 14) / 14, fontWeight: lblPref.bold ? 'bold' : 'normal',
-    ...(ifc ? {showBackground: true, backgroundColor: bg, backgroundOpacity: 0.55} : {})});
-  r.setVisibility(S.on);
-  S.reps = [r];
-}
+// NGL's bitmap-font labels look jagged when enlarged: the HTML label layer is used for both modes, so only old NGL labels are cleared
+function lblNgl(S) { lblNglClear(S); }
 function lblNglAll() { lblSets.forEach(lblNgl); }
 function labelSetVisible(src, c, on) { const S = c && lblSets.get(`${src}|${c.lblId}`); if (S) { S.on = on; (S.reps || []).forEach(r => r.setVisibility(on)); lblFrame(); } }
 function lblRetext() { lblSets.forEach(S => S.src !== 'mut' && S.items.forEach(it => { const ap = {resname: it.resname, resno: it.resno, inscode: it.ic, chainname: it.chain}; it.text = lblText(ap, S.src); it.el.textContent = it.text; })); lblNglAll(); }
@@ -7145,7 +7080,7 @@ function lblAnchor(S, it, W, H) {
 function lblShown(S) { return S.on && S.comp.visible && stage.compList.includes(S.comp); }
 function lblFrame() {
   const svg = $('#lblLines'); if (!svg) return;
-  const fig = lblFig(), lines = [], {fg, bg} = lblColors(), box = lblBox();
+  const fig = lblFig(), lines = [], {fg} = lblColors(), box = lblBox();
   lblSets.forEach(S => {
     const show = lblShown(S);
     S.items.forEach(it => {
@@ -7404,8 +7339,7 @@ function silPass() {
     const cam = V.camera, U = sil.mat.uniforms;
     U.tDepth.value = sil.rt.depthTexture; U.uRes.value = [w, h];
     U.uW.value = outlineLevel * (window.devicePixelRatio || 1) * silScale;
-    { const bh = bgHex(), n = parseInt(bh.slice(1), 16), lum = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
-      const g = olGrey / 100; U.uColor.value = [g, g, g]; }
+    { const g = olGrey / 100; U.uColor.value = [g, g, g]; }
     U.uNear.value = cam.near; U.uFar.value = cam.far; U.uOrtho.value = cam.isOrthographicCamera ? 1 : 0; U.uJump.value = silJump;
     R.render(sil.scene, sil.cam);
   } catch (e) { silFallback('このブラウザでは輪郭線を描けません: ' + (e.message || e)); }
@@ -7931,7 +7865,7 @@ async function asDo(mode, fn) {
     tx.oncomplete = () => { db.close(); res(r && r.result); }; tx.onerror = () => { db.close(); rej(tx.error); };
   });
 }
-let asLast = '', asBusy = false, asPrev = null, asHad = false;
+let asLast = '', asBusy = false, asHad = false;
 async function autoSave(force) {
   if (asBusy || window.__noAutosave) return;
   asBusy = true;
@@ -7967,7 +7901,6 @@ function asBanner(s) {
     const a = e.target.dataset && e.target.dataset.a; if (!a) return;
     b.remove();
     if (a === 'ok') { status('前回の作業を復元中…'); await openSessionObj(s, true); }
-    asPrev = null;
   };
   document.body.appendChild(b);
 }
@@ -7975,7 +7908,7 @@ function asBanner(s) {
   if (window.__noAutosave) return;
   try {
     const s = await asDo('readonly', st => st.get('cur'));
-    if (s && Array.isArray(s.structs) && s.structs.length) { asPrev = s; asBanner(s); }
+    if (s && Array.isArray(s.structs) && s.structs.length) { asBanner(s); }
   } catch (e) {}
 })();
 
@@ -8101,12 +8034,6 @@ function renderMeasList() {
   const pn = $('#measPanel'); if (!pn) return;
   // the list lives only in the "測定" tab under the viewer, so nothing covers the molecule
   pn.style.display = 'none'; layoutOverlay(); return;
-  pn.style.display = 'block';
-  pn.innerHTML = `<div class="mh"><b>📏 測定 ${measures.length} 件</b>` +
-    (measures.length ? `<button data-k="all" title="${nShow ? 'すべての測定を隠す（一覧には残ります）' : 'すべての測定を表示する'}">${nShow ? 'すべて隠す' : 'すべて表示'}</button><button data-k="clear" title="すべての測定を消す">消去</button>` : '') +
-    `<button data-k="fold" title="${measPanelOpen ? '一覧をたたむ' : '一覧を開く'}">${measPanelOpen ? '▾' : '▸'}</button></div>` +
-    (measPanelOpen ? (measures.length ? measures.map(m => measRow(m, true)).join('') : `<div class="small">原子を${+$('#measKind').value || 2}個、順にタップしてください</div>`) : '');
-  layoutOverlay();
 }
 function measAct(e) {
   const k = e.target.dataset.k; if (!k) return;

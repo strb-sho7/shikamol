@@ -55,6 +55,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Ligand bonds follow the wwPDB Chemical Component Dictionary rather than interatomic distances, so ligands with distorted coordinates (e.g. the hemes of 4HHB) are drawn whole (fetched from RCSB PDB and kept in the browser).
 - Ligand notes: atoms with no coordinates in the file (e.g. the PO4 of 4HHB, P only) and bonds redrawn from the dictionary are noted in the table and in the selection info.
 - Covalent links of ligands (sugar–sugar and sugar–Asn in glycans, retinal–Lys, palmitate–Cys, covalent inhibitors) are drawn, with the side chain of the linked residue as sticks.
+- Ligands, ions and water of symmetry mates follow the same table settings (shown, colour, style) as the structure itself.
 - Ligands and ions (not water) are listed as buttons under the sequences, grouped by chain (with several structures, each structure's ligands follow its own sequences); click to select and zoom, Ctrl/⌘+click to add to the selection.
 - Selecting a residue no longer switches the bottom tab; open the interaction list with the "⇄ Interactions" button (with the count) in the selection info, or with the Interactions tab.
 - Molecular surfaces: molecular, solvent-accessible or van der Waals surface; adjustable detail. Coloured by chain, grey or white, or by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
