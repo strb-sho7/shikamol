@@ -110,6 +110,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Copy the interaction list (paste into a spreadsheet)
 - Save and open sessions: the display and analysis state is saved as a `.json` file
 - Share links: the current view (structures, colours, representations, selection, viewpoint, look) in a single link
+- Scenes: "🎬 Add scene" at the top right of the viewer keeps the current view (viewpoint, colours, representations, selection, labels, look, map display) under a name; press a name in the "Scenes" tab below to go back to it (PgUp/PgDn for the previous/next scene). Scenes can be renamed, overwritten, reordered and deleted there. They are saved in the session .json and the autosave (not in share links)
 
 **Convenience**
 - Undo and redo ("↶" and "↷" at the top right of the viewer, or Ctrl/⌘+Z and Ctrl/⌘+Shift+Z)

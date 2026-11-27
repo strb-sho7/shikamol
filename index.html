@@ -153,8 +153,10 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #flist .ft{display:flex;flex-wrap:wrap;gap:4px 10px;margin-bottom:4px}
 #flist .ft label{display:inline-flex;align-items:center;gap:3px;cursor:pointer;white-space:nowrap}
 #flist .sw{display:inline-block;width:10px;height:10px;border-radius:2px}
-#flist table{border-collapse:collapse;width:100%}
-#flist td{padding:1px 4px;white-space:nowrap;border-top:1px solid #ffffff1a}
+#flist table{border-collapse:collapse;width:auto}
+#flist td{padding:1px 10px 1px 3px;white-space:nowrap;border-top:1px solid #ffffff1a}
+#flist{container-type:inline-size}
+@container (max-width:560px){#flist table{font-size:11px}#flist td{padding:1px 4px 1px 1px}}
 #flist tr.ix{cursor:pointer}
 #flist tr.ix:hover td{background:#ffffff1f}
 #flist td.d{text-align:right;font-variant-numeric:tabular-nums}
@@ -315,6 +317,22 @@ details.sec{margin-bottom:12px}
 #mutHist .mh.on .t{color:#ffd54a}
 #mutHist details{margin-bottom:6px}
 #upMut.sep{border-top:1px dashed #2c313b;padding-top:6px}
+#spane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
+#spane .oph{display:flex;gap:6px;align-items:center;margin:-4px 0 4px;position:sticky;top:-4px;background:#0b0d11;padding:5px 0 3px;z-index:1}
+#spane .oph button{font-size:11px;padding:1px 8px;white-space:nowrap;flex:none}
+#spane .oph .small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.scn{display:flex;align-items:center;gap:6px;padding:3px 4px;border-top:1px solid #ffffff10;border-radius:5px}
+.scn.cur{background:#5aa9ff1f}
+.scn .no{flex:none;width:1.6em;text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+.scn .go{flex:0 1 auto;min-width:0;text-align:left;background:transparent;border:0;color:#e8eaee;font-size:13px;font-weight:600;padding:2px 4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scn .go:hover{text-decoration:underline}
+.scn input{flex:0 1 14em;min-width:6em;font-size:13px}
+.scn .sum{flex:1 1 auto;min-width:0;color:var(--mute);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scn .act{flex:none;display:flex;gap:3px}
+.scn .act button,.scn .del{font-size:11px;padding:1px 6px}
+.scn .ren{flex:none;background:transparent;border:0;color:var(--mute);font-size:13px;padding:0 3px;cursor:pointer}
+.scn .ren:hover{color:#e8eaee}
+.scn .del{flex:none;margin-left:auto}
 #mpane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
 #mpane .oph{display:flex;gap:6px;align-items:center;margin:-4px 0 4px;position:sticky;top:-4px;background:#0b0d11;padding:5px 0 3px;z-index:1}
 #mpane .oph button{font-size:11px;padding:1px 8px;white-space:nowrap;flex:none}
@@ -827,7 +845,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div id="viewport"></div>
     <div id="lblLayer"><svg id="lblLines"></svg></div>
     <div id="boxLayer"><div id="boxRect"></div></div>
-    <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button><button id="fullBtn" title="分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）">⛶ 全画面</button></div><div id="measPanel"></div></div>
+    <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button><button id="fullBtn" title="分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）">⛶ 全画面</button></div><div class="vrow"><button id="sceneBtn" title="今の表示（視点・色・表示形式・選択・ラベル）に名前を付けてシーンとして残します。画面下の「シーン」タブから切り替えられます">🎬 シーンを追加</button></div><div id="measPanel"></div></div>
     <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="scBtn" title="選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「③ クリックしたときの表示」と同じ設定）">周囲 5 Å</button><button id="ixOpen" style="display:none" title="画面下の「相互作用」タブを開いて、選んだ残基の相互作用の一覧を表示します"><span>⇄ 相互作用</span> <span id="ixOpenN"></span></button><button id="ctxBtn" title="右クリックと同じメニューを開きます（タブレットでは分子ウィンドウの長押しでも開けます）">⋯ メニュー</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
     <div id="status" class="show">PDB IDを入力して「読込」</div>
     <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
@@ -866,12 +884,12 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div id="drop">ここにドロップ（構造・マップ・MTZ・マップ係数・セッション）</div>
   </div>
   <div id="seqbar" title="ドラッグで下の欄の高さを変更（ダブルクリックで元の高さ）"></div>
-  <div id="btabs"><button data-b="p-struct" class="pb">構造</button><button data-b="p-ana" class="pb">解析</button><button data-b="p-map" class="pb">電子密度</button><button data-b="p-view" class="pb pl">表示・出力</button><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="mut" title="「解析」タブの「変異の位置」と「構造上で置き換えてみる」の結果">変異</button><button data-b="meas" title="測った距離・角度・二面角の一覧">測定<span id="btMeN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
+  <div id="btabs"><button data-b="p-struct" class="pb">構造</button><button data-b="p-ana" class="pb">解析</button><button data-b="p-map" class="pb">電子密度</button><button data-b="p-view" class="pb pl">表示・出力</button><button data-b="seq">配列</button><button data-b="ix">相互作用<span id="btIxN"></span></button><button data-b="ifc" title="「解析」タブで実行した Chain 間の相互作用の解析結果">Chain間の相互作用</button><button data-b="grp" title="保存した選択と最近の選択の履歴">保存した選択<span id="btGrN"></span></button><button data-b="scn" title="保存したシーンの一覧（押すとその表示に移ります）">シーン<span id="btScN"></span></button><button data-b="mut" title="「解析」タブの「変異の位置」と「構造上で置き換えてみる」の結果">変異</button><button data-b="meas" title="測った距離・角度・二面角の一覧">測定<span id="btMeN"></span></button><button data-b="log" title="これまでの操作とその結果の記録（新しいものが下）">操作の記録</button></div>
   <div id="bpane"><div id="seq"></div><div id="flist"></div><div id="ipane"><div class="row" id="ifTools" style="display:none">    <label><input type="checkbox" id="ifShow" checked> 3D表示</label><label class="small"><input type="checkbox" id="ifLabels" checked> 残基名</label><label class="small"><input type="checkbox" id="ifDist"> 距離</label><button id="ifOpts" title="表示形式（スティック・CPK）・太さ・側鎖のみなどは「表示・出力」タブの表示設定で変えます（クリックしたときの表示と共通）">⚙ 表示設定</button>        <button id="ifCopy">表をコピー（TSV）</button>    <button id="ifClear">リセット</button>  </div><div class="row small" id="ifEmph" style="display:none"><span>強調:</span><label>ほかのChain <select data-emph="other"><option value="show">そのまま</option><option value="fade">薄くする</option><option value="hide">隠す</option></select></label><label class="ifsl">解析した Chain のカートゥーンの透明度 <input type="range" data-emph="selfT" min="0" max="90" step="5" value="0"><span class="lv" id="ifSelfV">0%</span></label></div><div id="ifList"></div></div><div id="gpane"><div class="small" id="gdesc">残基を選んで分子ウィンドウ左上の「★ 選択を保存」を押すと、名前を付けてここに残せます。左のチェックを入れると、その残基を選んだ色で常に表示します。セッションにも入ります。</div><div id="groups"></div></div><div id="upane"><div id="upMm" style="display:none"><div class="uph">構造上で置き換えた結果</div><div id="mmRes"></div></div><div id="upMut" style="display:none"><div class="uph">変異の位置</div><div id="mutHist"></div><div class="row" id="mutTools" style="display:none">
     <label><input type="checkbox" id="mutShow" checked> 3D表示</label>
     <button id="mutSelAll" title="変異の位置をまとめて選択し、それぞれの相互作用を分子ウィンドウに出します">まとめて選択</button>
     <button id="mutCopy">表をコピー（TSV）</button>
-  </div><div id="mutList"></div></div></div><div id="mpane"><div class="oph"><button id="measCopy">一覧をコピー</button><button id="measAll">すべて隠す</button><button id="measClear">すべて消す</button><span class="small">分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます</span></div><div id="measList"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
+  </div><div id="mutList"></div></div></div><div id="spane"><div class="oph"><button id="scnAdd">＋ 今の表示を追加</button><button id="scnClear">すべて消す</button><span class="small">名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）</span></div><div id="scnList"></div></div><div id="mpane"><div class="oph"><button id="measCopy">一覧をコピー</button><button id="measAll">すべて隠す</button><button id="measClear">すべて消す</button><span class="small">分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます</span></div><div id="measList"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -979,6 +997,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "🎬 シーンを追加": "🎬 Add scene", "今の表示（視点・色・表示形式・選択・ラベル）に名前を付けてシーンとして残します。画面下の「シーン」タブから切り替えられます": "Keeps the current view (camera, colours, styles, selection, labels) as a named scene. Switch between scenes in the \"Scenes\" tab below", "シーン": "Scenes", "保存したシーンの一覧（押すとその表示に移ります）": "Saved scenes (press one to go to it)", "＋ 今の表示を追加": "+ Add current view", "名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）": "Press a name to go to that scene (PgUp/PgDn for the previous/next one)", "このシーンの表示に移ります": "Go to this scene", "名前を変えます": "Rename", "上書き保存": "Overwrite", "このシーンを今の表示で上書きします": "Replace this scene with the current view", "1つ上へ": "Move up", "1つ下へ": "Move down", "このシーンを消します": "Delete this scene", "構造を読み込んでからシーンを追加してください": "Load a structure before adding a scene", "シーンをすべて消しました": "All scenes deleted",
   'リガンド・イオン・水': 'Ligands, ions and water',
   "この種類を表示する": "Show this kind", "炭素の色（N・O などは元素の色）": "Carbon colour (N, O and others keep element colours)", "色（元に戻すときは「元素の色」）": "Colour (use \"element colours\" to go back)", "半透明の表面": "See-through surface", "小さい球": "Small spheres", "この種類の場所にズームします": "Zoom to this kind", "元素の色に戻す": "Back to element colours",
   "灰色（外形を見る）": "Grey (to see the shape)", "表面の描き方": "Surface style", "塗り": "Filled", "網目": "Mesh", "塗りつぶすか、網目（メッシュ）で描くか": "Filled or as a mesh", "表面の種類": "Surface type", "溶媒露出面": "Solvent-accessible", "ファンデルワールス": "van der Waals", "vdW": "vdW", "表面の細かさ": "Surface detail", "大きくするほど細かくなめらかになりますが、計算に時間がかかります（大きな構造では注意）": "Higher values are finer and smoother but take longer to compute (careful with large structures)", "分子表面：溶媒（半径 1.4 Å の球）が触れる境界（もっとも一般的）。溶媒露出面：溶媒の球の中心が通る面（一回り大きい）。ファンデルワールス面：原子の球をそのまま重ねた面": "Molecular surface: the boundary touched by a solvent sphere of radius 1.4 Å (the usual one). Solvent-accessible: the surface traced by the centre of that sphere (larger). van der Waals: the union of the atom spheres",
@@ -1008,7 +1027,7 @@ const EXACT = new Map(Object.entries({
   "測った距離・角度・二面角の一覧": "List of measured distances, angles and dihedrals", "分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます": "Press \"📏 Measure\" at the top right of the viewer and tap atoms; the values are listed here", "測った値は、画面下の「測定」タブに一覧で並びます（1件ずつ隠す・消す、コピー）。": "Measured values are listed in the \"Measurements\" tab under the viewer (hide or remove each, copy).", 
   '測定（距離・角度・二面角・分子の寸法）': 'Measurements (distance, angle, dihedral, dimensions)',
   "単位胞を表示": "Show the unit cell", "結晶の単位胞を箱で表示します": "Draw the unit cell of the crystal as a box", "この構造には単位胞の情報がありません（結晶構造以外、または CRYST1／_cell の記載なし）": "This structure has no unit cell (not a crystal structure, or no CRYST1 / _cell record)", "単位胞を表示しました": "Unit cell shown", "単位胞を隠しました": "Unit cell hidden",
-  "構造上で置き換えてみる": "Try the mutation on the structure", "": "Select one residue by clicking it, choose the new amino acid and press \"Build\": the new side chain is built on the original main chain, every side-chain orientation (rotamer) is tried, and clashes with the surroundings, hydrogen bonds, salt bridges and burial are compared (similar to PyMOL's Mutagenesis).", "置き換える残基": "Residue", "置き換え先": "Mutate to", "作る": "Build", "方法と注意": "Method and caveats", "側鎖は標準的な結合長・結合角（PeptideBuilder の内部座標、Tien et al. 2013）で組み立て、ロタマーは Open-Source PyMOL に含まれる主鎖非依存のロタマーライブラリ（Dunbrack）の全候補を試します。ぶつかりは水素を除いた原子の van der Waals 半径の重なりが 0.4 Å 以上のもの（MolProbity の基準）、極性の相手は N・O どうしが 2.5–3.5 Å、塩橋は電荷をもつ基どうしが 4 Å 以内です。露出度は置き換え後の残基の溶媒露出表面積を Gly-X-Gly の最大値（Tien et al. 2013）で割った値です。主鎖と周りの側鎖は動かさないので、ぶつかって見えても実際には周りが少し動いて収まることがあります。安定性の変化（ΔΔG）の予測ではありません。作った変異は表示だけで、構造ファイルやセッションには入りません。": "The side chain is built with standard bond lengths and angles (internal coordinates from PeptideBuilder, Tien et al. 2013); every rotamer of the backbone-independent rotamer library (Dunbrack) shipped with Open-Source PyMOL is tried. A clash is an overlap of van der Waals radii of at least 0.4 Å between heavy atoms (the MolProbity criterion); polar partners are N/O pairs at 2.5–3.5 Å; salt bridges are charged groups within 4 Å. Exposure is the SASA of the new residue divided by its Gly-X-Gly maximum (Tien et al. 2013). The main chain and the other side chains do not move, so an apparent clash may be relieved by small movements in reality. This is not a prediction of the stability change (ΔΔG). The mutant is only displayed; it is not written to structure files or sessions.", "（残基を 1 つ選んでください）": "(select one residue)", "置き換える残基を 1 つクリックして選んでから押してください": "Click one residue to select it, then press the button", "タンパク質の残基を選んでください": "Select a protein residue", "この残基は主鎖の原子がそろっていないので置き換えられません": "This residue lacks main-chain atoms and cannot be mutated", "ぶつからずに置けるロタマーがあります。": "At least one rotamer fits without clashes.", "⚠ 埋もれた位置に電荷を持ち込み、相手（塩橋・水素結合）がいません。": "⚠ Brings a charge into a buried site with no partner (salt bridge or H-bond).", "⚠ 埋もれた位置の極性基に水素結合の相手がいません。": "⚠ The buried polar group has no hydrogen-bond partner.", "• Pro は主鎖の φ が −60° 付近に限られ、主鎖の N–H も失います。主鎖は動かしていないので、φ が合わない位置では実際には入りにくいことがあります。": "• Pro restricts the main-chain φ to about −60° and removes the main-chain N–H. The main chain is not moved, so where φ does not fit Pro may not be accommodated in reality.", "側鎖の向きの候補はありません（Gly は側鎖なし）。": "No side-chain orientations to try (Gly has no side chain).", "側鎖の向きの候補はありません（Ala は Cβ だけ）。": "No side-chain orientations to try (Ala has only Cβ).", "出現頻度": "Frequency", "ぶつかり": "Clashes", "最大の重なり": "Worst overlap", "極性の相手": "Polar partners", "塩橋": "Salt bridges", "側鎖の角度 χ": "Side-chain χ angles", "行を押すとそのロタマーを表示します。並びは、ぶつかりの少ない順・重なりの小さい順・出現頻度の高い順です。": "Click a row to show that rotamer. Sorted by fewest clashes, then smallest overlap, then highest frequency.", "表示を消す": "Clear", "作った変異の表示を消します": "Remove the built mutant from the view", "作った変異の表示を消しました": "Built mutant removed", "この残基を置き換えてみる…": "Try mutating this residue…",
+  "構造上で置き換えてみる": "Try the mutation on the structure", "": "Select one residue by clicking it, choose the new amino acid and press \"Build\": the new side chain is built on the original main chain, every side-chain orientation (rotamer) is tried, and clashes with the surroundings, hydrogen bonds, salt bridges and burial are compared (similar to PyMOL's Mutagenesis).", "置き換える残基": "Residue", "置き換え先": "Mutate to", "作る": "Build", "方法と注意": "Method and caveats", "側鎖は標準的な結合長・結合角（PeptideBuilder の内部座標、Tien et al. 2013）で組み立て、ロタマーは Open-Source PyMOL に含まれる主鎖非依存のロタマーライブラリ（Dunbrack）の全候補を試します。ぶつかりは水素を除いた原子の van der Waals 半径の重なりが 0.4 Å 以上のもの（MolProbity の基準）、極性の相手は N・O どうしが 2.5–3.5 Å、塩橋は電荷をもつ基どうしが 4 Å 以内です。露出度は置き換え後の残基の溶媒露出表面積を Gly-X-Gly の最大値（Tien et al. 2013）で割った値です。主鎖と周りの側鎖は動かさないので、ぶつかって見えても実際には周りが少し動いて収まることがあります。安定性の変化（ΔΔG）の予測ではありません。作った変異は表示だけで、構造ファイルやセッションには入りません。": "The side chain is built with standard bond lengths and angles (internal coordinates from PeptideBuilder, Tien et al. 2013); every rotamer of the backbone-independent rotamer library (Dunbrack) shipped with Open-Source PyMOL is tried. A clash is an overlap of van der Waals radii of at least 0.4 Å between heavy atoms (the MolProbity criterion); polar partners are N/O pairs at 2.5–3.5 Å; salt bridges are charged groups within 4 Å. Exposure is the SASA of the new residue divided by its Gly-X-Gly maximum (Tien et al. 2013). The main chain and the other side chains do not move, so an apparent clash may be relieved by small movements in reality. This is not a prediction of the stability change (ΔΔG). The mutant is only displayed; it is not written to structure files or sessions.", "（残基を 1 つ選んでください）": "(select one residue)", "置き換える残基を 1 つクリックして選んでから押してください": "Click one residue to select it, then press the button", "タンパク質の残基を選んでください": "Select a protein residue", "この残基は主鎖の原子がそろっていないので置き換えられません": "This residue lacks main-chain atoms and cannot be mutated", "ぶつからずに置けるロタマーがあります。": "At least one rotamer fits without clashes.", "⚠ 埋もれた位置に電荷を持ち込み、相手（塩橋・水素結合）がいません。": "⚠ Brings a charge into a buried site with no partner (salt bridge or H-bond).", "⚠ 埋もれた位置の極性基に水素結合の相手がいません。": "⚠ The buried polar group has no hydrogen-bond partner.", "• Pro は主鎖の φ が −60° 付近に限られ、主鎖の N–H も失います。主鎖は動かしていないので、φ が合わない位置では実際には入りにくいことがあります。": "• Pro restricts the main-chain φ to about −60° and removes the main-chain N–H. The main chain is not moved, so where φ does not fit Pro may not be accommodated in reality.", "側鎖の向きの候補はありません（Gly は側鎖なし）。": "No side-chain orientations to try (Gly has no side chain).", "側鎖の向きの候補はありません（Ala は Cβ だけ）。": "No side-chain orientations to try (Ala has only Cβ).", "出現頻度": "Frequency", "ぶつかり": "Clashes", "最大の重なり": "Worst overlap", "極性の相手": "Polar partners", "塩橋": "Salt bridge", "側鎖の角度 χ": "Side-chain χ angles", "行を押すとそのロタマーを表示します。並びは、ぶつかりの少ない順・重なりの小さい順・出現頻度の高い順です。": "Click a row to show that rotamer. Sorted by fewest clashes, then smallest overlap, then highest frequency.", "表示を消す": "Clear", "作った変異の表示を消します": "Remove the built mutant from the view", "作った変異の表示を消しました": "Built mutant removed", "この残基を置き換えてみる…": "Try mutating this residue…",
   "色: アミノ酸の種類": "Colour: amino-acid type", "色: 電荷（＋青・−赤）": "Colour: charge (+ blue, − red)", "色: 極性（疎水性・親水性）": "Colour: polarity (hydrophobic / hydrophilic)", "アミノ酸を性質の種類ごとに塗ります（疎水性・芳香族・正電荷・負電荷・極性・Cys・Gly・Pro）": "Colour amino acids by class (hydrophobic, aromatic, positive, negative, polar, Cys, Gly, Pro)", "正電荷（Lys・Arg）を青、負電荷（Asp・Glu）を赤、His を水色（側鎖の pKa が約 6 で、環境によって正電荷をもつため）、それ以外を灰色で塗ります": "Positive (Lys, Arg) blue, negative (Asp, Glu) red, His sky blue (side-chain pKa about 6, so it can be positive depending on its environment), the rest grey", "非極性（疎水性）を橙、極性（親水性）を青緑で塗ります": "Non-polar (hydrophobic) orange, polar (hydrophilic) teal", "アミノ酸の種類で色分けしています：疎水性（Ala・Val・Leu・Ile・Met）＝青、芳香族（Phe・Trp・Tyr・His）＝水色、正電荷（Lys・Arg）＝赤、負電荷（Asp・Glu）＝紫、極性（Ser・Thr・Asn・Gln）＝緑、Cys＝桃、Gly＝橙、Pro＝黄。画面下の配列の文字も同じ色です": "Coloured by amino-acid type: hydrophobic (Ala, Val, Leu, Ile, Met) blue, aromatic (Phe, Trp, Tyr, His) cyan, positive (Lys, Arg) red, negative (Asp, Glu) purple, polar (Ser, Thr, Asn, Gln) green, Cys pink, Gly orange, Pro yellow. The letters of the sequence strip use the same colours", "電荷で色分けしています：正（Lys・Arg）＝青、負（Asp・Glu）＝赤、His＝水色（環境によって正電荷）、それ以外＝灰色。画面下の配列の文字も同じ色です": "Coloured by charge: positive (Lys, Arg) blue, negative (Asp, Glu) red, His sky blue (positive depending on its environment), the rest grey. The letters of the sequence strip use the same colours", "極性で色分けしています：非極性・疎水性（Ala・Val・Leu・Ile・Met・Phe・Trp・Pro・Gly）＝橙、極性・親水性（それ以外のアミノ酸）＝青緑。画面下の配列の文字も同じ色です": "Coloured by polarity: non-polar/hydrophobic (Ala, Val, Leu, Ile, Met, Phe, Trp, Pro, Gly) orange, polar/hydrophilic (the other amino acids) teal. The letters of the sequence strip use the same colours",
   "スティックの太さ": "Stick thickness", "スティック・ボール＆スティック・リガンドの太さ（クリックした残基、Chain の表示、保存した選択のすべて）": "Thickness of sticks, ball & stick and ligands (clicked residues, chain styles and saved selections)", "細い（×0.6）": "Thin (×0.6)", "やや細い（×0.8）": "Slightly thin (×0.8)", "全体と同じ": "Same as the rest", "やや太い（×1.3）": "Slightly thick (×1.3)", "太い（×1.6）": "Thick (×1.6)", "とても太い（×2）": "Very thick (×2)", "この選択だけのスティックの太さ（「表示・出力」タブの「スティックの太さ」に掛け合わせます）": "Stick thickness for this selection only (multiplied by \"Stick thickness\" in the Display & export tab)", "常に表示するときの表示形式": "Style when always shown", "太さ（この選択だけ）": "Thickness (this selection only)",
   "前回の作業が残っています": "Your previous work is still here", "復元する": "Restore", "破棄する": "Discard", "前回の作業を復元中…": "Restoring your previous work…",
@@ -1286,6 +1305,14 @@ const EXACT = new Map(Object.entries({
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const PATTERNS = [
+  P(/^塩橋（水素結合 (\d+)本）$/, (m, n) => `Salt bridge (${n} H-bonds)`),
+  P(/^塩橋（水素結合あり）$/, () => 'Salt bridge (with H-bond)'),
+  P(/^シーン (\d+)$/, (m, n) => `Scene ${n}`),
+  P(/^「シーン (\d+)」を追加しました（画面下の「シーン」タブで名前の変更・切り替えができます）$/, (m, n) => `Added "Scene ${n}" (rename it or switch scenes in the "Scenes" tab below)`),
+  P(/^シーン「(.+)」を表示しました$/, (m, n) => `Showing scene "${n}"`),
+  P(/^シーン「(.+)」を今の表示で上書きしました$/, (m, n) => `Scene "${n}" replaced with the current view`),
+  P(/^シーン「(.+)」を消しました$/, (m, n) => `Deleted scene "${n}"`),
+  P(/^シーン (\d+) 個をすべて消しますか？$/, (m, n) => `Delete all ${n} scenes?`),
   P(/^灰 (\d+)%$/, (m, n) => `Grey ${n}%`),
   P(/^このブラウザでは輪郭線を描けません: (.+)$/, (m, e) => `Outlines cannot be drawn in this browser: ${e}`),
   P(/^元の (\w+) と比べると：極性の相手 (\d+) → (\d+)、塩橋 (\d+) → (\d+)、炭素どうしの接触 (\d+) → (\d+)。$/, (m, r, a, b, c, d, e, f) => `Compared with the original ${r}: polar partners ${a} → ${b}, salt bridges ${c} → ${d}, carbon–carbon contacts ${e} → ${f}.`),
@@ -5048,6 +5075,7 @@ async function buildSession() {
               spot: {on: $('#spotOn').checked, r: +$('#spotR').value, op: +$('#spotOp').value, mode: $('#spotMode').value},
               focusList: $('#focusListOn').checked, focusTypes: {...focusTypeOn}};
     s.colors = recent;
+    if (nScenes()) s.scenes = scenesToJSON();
     return {s, skipped};
 }
 async function saveSession() {
@@ -5215,6 +5243,7 @@ async function openSessionObj(s, auto) {
   if (S && S._focus) { lastFocus = Array.isArray(S._focus) ? S._focus : [S._focus]; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
   if (v.spin) setSpinSpeed(v.spinSpeed || 3);
   if (v.orientation) stage.viewerControls.orient(v.orientation);
+  scenesFromJSON(s.scenes);
   status(auto ? `前回の作業を復元しました（構造 ${structs.length} 個、${new Date(s.saved).toLocaleString()} の状態）`
               : `セッションを復元しました（構造 ${structs.length} 個、保存日時 ${new Date(s.saved).toLocaleString()}）`);
 }
@@ -5868,7 +5897,9 @@ function bottomUpdate() {
   const nMe = nMeas(), hasMm = mmNow(), hasMutR = !!(structs[active] && structs[active].mutRes), hasMut = hasMm || hasMutR;
   if (eff === 'mut' && !hasMut) eff = hasSeq ? 'seq' : hasGrp || !mobOn ? 'grp' : 'p-' + curTab();
   if (eff === 'meas' && !nMe) eff = hasSeq ? 'seq' : hasGrp || !mobOn ? 'grp' : 'p-' + curTab();
-  const any = mobOn || hasSeq || hasIx || hasGrp || btab === 'log' || nMe > 0 || hasMut, pane = $('#bpane'), was = pane.style.display;
+  const nSc = nScenes();
+  if (eff === 'scn' && !nSc) eff = hasSeq ? 'seq' : hasGrp || !mobOn ? 'grp' : 'p-' + curTab();
+  const any = mobOn || hasSeq || hasIx || hasGrp || btab === 'log' || nMe > 0 || nSc > 0 || hasMut, pane = $('#bpane'), was = pane.style.display;
   pane.style.display = $('#seqbar').style.display = any ? 'block' : 'none';
   $('#btabs').style.display = any ? 'flex' : 'none';
   $('#seq').style.display = any && eff === 'seq' ? 'block' : 'none';
@@ -5879,6 +5910,9 @@ function bottomUpdate() {
   $('#ifWhere').style.display = hasIfc ? '' : 'none';
   $('#opane').style.display = any && eff === 'log' ? 'block' : 'none';
   $('#mpane').style.display = any && eff === 'meas' ? 'block' : 'none';
+  $('#spane').style.display = any && eff === 'scn' ? 'block' : 'none';
+  $('#btabs button[data-b=scn]').style.display = nSc ? '' : 'none';
+  $('#btScN').textContent = nSc ? ` ${nSc}` : '';
   $('#upane').style.display = any && eff === 'mut' ? 'block' : 'none';
   $('#upMm').style.display = hasMm ? 'block' : 'none'; $('#upMut').style.display = hasMutR ? 'block' : 'none'; $('#upMut').classList.toggle('sep', hasMm);
   $('#btabs button[data-b=mut]').style.display = hasMut ? '' : 'none';
@@ -7858,6 +7892,131 @@ function redo() {
 }
 $('#undoBtn').onclick = undo;
 $('#redoBtn').onclick = redo;
+
+/* =====================================================================
+   Scenes (like PyMOL's scenes): named snapshots of the view to come back to, e.g. for a talk or a class.
+   A scene keeps the display state recorded for undo (colours, styles, ligands, saved selections,
+   the current selection, visibility, look, maps) plus the camera and the menu labels.
+   Going to a scene is one undoable step. Scenes are saved in the session .json and the autosave;
+   there structures are kept by their order and maps by name, since the ids change on reopening.
+   ===================================================================== */
+var scenes = [], sceneCur = -1, sceneEdit = -1;
+const tr2 = t => LANG === 'en' ? tr(t) : t;
+function nScenes() { return scenes ? scenes.length : 0; }
+function sceneLbl() { const o = {}; structs.forEach(st => { if (st.menuLbl && st.menuLbl.size) o[st.sid] = [...st.menuLbl]; }); return o; }
+function sceneSum(sc) {
+  const names = sc.snap.st.map(t => (structs.find(x => x.sid === t.sid) || {}).name).filter(Boolean);
+  const a = sc.snap.st.find(t => t.sid === sc.snap.active), f = a && a.focus;
+  return names.join('、') + (f && f.length ? `　選択: ${selLabel(f, 2)}` : '');
+}
+function sceneTake(sc) {
+  clearTimeout(undoT);
+  sc.snap = undoSnap(); sc.orient = stage.viewerControls.getOrientation().toArray(); sc.lbl = sceneLbl();
+  return sc;
+}
+function sceneAdd() {
+  if (!structs.length) return status('構造を読み込んでからシーンを追加してください', true);
+  let n = 1; while (scenes.some(x => x.name === `シーン ${n}`)) n++;
+  scenes.push(sceneTake({name: `シーン ${n}`}));
+  sceneCur = scenes.length - 1; btab = 'scn';
+  renderScenes(); bottomUpdate();
+  status(`「シーン ${n}」を追加しました（画面下の「シーン」タブで名前の変更・切り替えができます）`);
+}
+async function sceneGo(i) {
+  const sc = scenes[i]; if (!sc) return;
+  clearTimeout(undoT); undoRecord();
+  const before = undoCur;
+  await undoApply(sc.snap);
+  if (before && undoCur) { const [a, b] = undoSig(before, undoCur); if (a !== b) { undoStack.push(before); if (undoStack.length > 60) undoStack.shift(); redoStack.length = 0; undoUI(); } }
+  structs.forEach(st => {
+    const k = sc.lbl && sc.lbl[st.sid];
+    if (!(st.menuLbl && st.menuLbl.size) && !k) return;
+    st.menuLbl = new Set(k || []); ctxLabelDraw(st);
+  });
+  try { stage.animationControls.clear(); } catch (e) {}
+  if (sc.orient && sc.orient.length === 16) stage.animationControls.orient(sc.orient, 700);
+  sceneCur = i; renderScenes();
+  status(`シーン「${sc.name}」を表示しました`);
+}
+function sceneStep(d) {
+  if (!scenes.length) return;
+  sceneGo(sceneCur < 0 ? (d > 0 ? 0 : scenes.length - 1) : (sceneCur + d + scenes.length) % scenes.length);
+}
+function renderScenes() {
+  const box = $('#scnList'); if (!box) return;
+  if (sceneCur >= scenes.length) sceneCur = scenes.length - 1;
+  box.innerHTML = scenes.map((sc, i) => `<div class="scn${i === sceneCur ? ' cur' : ''}" data-i="${i}"><span class="no">${i + 1}</span>`
+    + `<span class="act"><button data-k="up" title="1つ上へ"${i ? '' : ' disabled'}>↑</button><button data-k="dn" title="1つ下へ"${i < scenes.length - 1 ? '' : ' disabled'}>↓</button>`
+    + `<button data-k="upd" title="このシーンを今の表示で上書きします">上書き保存</button></span>`
+    + (i === sceneEdit ? `<input type="text" value="${esc(sc.name)}" maxlength="60" data-k="name">` : `<button class="go" data-k="go" title="このシーンの表示に移ります">${esc(sc.name)}</button><button class="ren" data-k="ren" title="名前を変えます">✎</button>`)
+    + `<span class="sum">${esc(sceneSum(sc))}</span>`
+    + `<button class="del" data-k="del" title="このシーンを消します">×</button></div>`).join('');
+  const inp = box.querySelector('input[data-k=name]'); if (inp) { inp.focus(); inp.select(); }
+  const bt = $('#btScN'); if (bt) bt.textContent = scenes.length ? ` ${scenes.length}` : '';
+}
+function sceneRename(inp, keep) {
+  const i = +inp.closest('.scn').dataset.i, v = inp.value.trim();
+  sceneEdit = -1;
+  if (keep && v && scenes[i]) scenes[i].name = v;
+  renderScenes();
+}
+$('#sceneBtn').onclick = sceneAdd;
+$('#scnAdd').onclick = sceneAdd;
+$('#scnClear').onclick = () => {
+  if (!scenes.length || !confirm(tr2(`シーン ${scenes.length} 個をすべて消しますか？`))) return;
+  scenes = []; sceneCur = sceneEdit = -1; renderScenes(); bottomUpdate(); status('シーンをすべて消しました');
+};
+$('#scnList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-k]'); if (!b) return;
+  const i = +b.closest('.scn').dataset.i, k = b.dataset.k, sc = scenes[i]; if (!sc) return;
+  if (k === 'go') return sceneGo(i);
+  if (k === 'ren') { sceneEdit = i; return renderScenes(); }
+  if (k === 'upd') { sceneTake(sc); sceneCur = i; renderScenes(); return status(`シーン「${sc.name}」を今の表示で上書きしました`); }
+  if (k === 'up' || k === 'dn') {
+    const j = k === 'up' ? i - 1 : i + 1; if (j < 0 || j >= scenes.length) return;
+    [scenes[i], scenes[j]] = [scenes[j], scenes[i]];
+    if (sceneCur === i) sceneCur = j; else if (sceneCur === j) sceneCur = i;
+    return renderScenes();
+  }
+  if (k === 'del') {
+    scenes.splice(i, 1); if (sceneCur === i) sceneCur = -1; else if (sceneCur > i) sceneCur--;
+    renderScenes(); bottomUpdate(); return status(`シーン「${sc.name}」を消しました`);
+  }
+});
+$('#scnList').addEventListener('keydown', e => {
+  if (e.target.dataset.k !== 'name') return;
+  if (e.key === 'Enter') { e.preventDefault(); sceneRename(e.target, true); }
+  else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); sceneRename(e.target, false); }
+});
+$('#scnList').addEventListener('focusout', e => { if (e.target.dataset && e.target.dataset.k === 'name' && sceneEdit >= 0) sceneRename(e.target, true); });
+addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || !scenes.length || e.target.closest('input, textarea, select, [contenteditable]')) return;
+  if (e.key === 'PageDown') { e.preventDefault(); sceneStep(1); }
+  else if (e.key === 'PageUp') { e.preventDefault(); sceneStep(-1); }
+});
+/* for the session file: structures by their order, maps by name and kind */
+const mapKey = m => `${m.name}|${m.kind}`;
+function scenesToJSON() {
+  const idx = sid => structs.findIndex(x => x.sid === sid);
+  return scenes.map(sc => ({name: sc.name, orient: sc.orient,
+    lbl: Object.entries(sc.lbl || {}).map(([sid, k]) => [idx(+sid || sid), k]).filter(([i]) => i >= 0),
+    snap: {...sc.snap, active: idx(sc.snap.active),
+      st: sc.snap.st.map(t => ({...t, sid: idx(t.sid)})).filter(t => t.sid >= 0),
+      maps: sc.snap.maps.filter(t => maps.includes(t.m)).map(t => ({...t, m: mapKey(t.m)}))}}));
+}
+function scenesFromJSON(arr) {
+  scenes = []; sceneCur = sceneEdit = -1;
+  if (Array.isArray(arr)) for (const j of arr) {
+    if (!j || !j.snap || !Array.isArray(j.snap.st)) continue;
+    const sid = i => structs[i] ? structs[i].sid : null;
+    const snap = {...j.snap, active: sid(j.snap.active), g: j.snap.g || {},
+      st: j.snap.st.map(t => ({...t, sid: sid(t.sid)})).filter(t => t.sid !== null),
+      maps: (j.snap.maps || []).map(t => ({...t, m: maps.find(m => mapKey(m) === t.m)})).filter(t => t.m)};
+    const lbl = {}; (j.lbl || []).forEach(([i, k]) => { const s = sid(i); if (s !== null && Array.isArray(k)) lbl[s] = k; });
+    scenes.push({name: String(j.name || `シーン ${scenes.length + 1}`).slice(0, 60), orient: Array.isArray(j.orient) ? j.orient : null, lbl, snap});
+  }
+  renderScenes(); bottomUpdate();
+}
 document.addEventListener('keydown', e => {
   if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z') return;
   const el = e.target; if (el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && /^(text|search|number|)$/.test(el.type)))) return;
