@@ -6394,14 +6394,22 @@ stage.signals.clicked.add(pp => {
     n++; cancel();
     if (n > 1) return;                                     // two fingers: zoom / pan
     const x = e.clientX, y = e.clientY;
-    lp = {id: e.pointerId, x, y, timer: setTimeout(() => {
-      lp = null;
+    lp = {id: e.pointerId, x, y, t: e.timeStamp, timer: setTimeout(() => {
+      fired = {id: lp.id, t: lp.t}; lp = null;
       try { if (navigator.vibrate) navigator.vibrate(15); } catch (er) {}
       openCtxMenu(x, y);
     }, HOLD)};
   });
   cv.addEventListener('pointermove', e => { if (lp && e.pointerId === lp.id && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) > SLOP) cancel(); });
-  const up = e => { if (e.pointerType === 'mouse') return; n = Math.max(0, n - 1); if (lp && e.pointerId === lp.id) cancel(); };
+  // when the page was busy, the timer may run before a short tap's lift is handled: the lift's own time stamp then
+  // shows that it was a tap, and the menu that opened is closed again
+  let fired = null;
+  const up = e => {
+    if (e.pointerType === 'mouse') return;
+    n = Math.max(0, n - 1);
+    if (lp && e.pointerId === lp.id) cancel();
+    if (fired && e.pointerId === fired.id) { if (e.timeStamp - fired.t < HOLD) ctxClose(); fired = null; }
+  };
   cv.addEventListener('pointerup', up);
   cv.addEventListener('pointercancel', up);
 })();
@@ -6415,19 +6423,22 @@ stage.signals.clicked.add(pp => {
   cv.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse') return;
     if (down.size) multi = true; else multi = false;
-    down.set(e.pointerId, {x: e.clientX, y: e.clientY, t: performance.now()});
+    down.set(e.pointerId, {x: e.clientX, y: e.clientY, t: e.timeStamp});
   });
   const end = e => {
     const d = down.get(e.pointerId);
     down.delete(e.pointerId);
     if (!d || e.type === 'pointercancel' || multi) return;
-    if (performance.now() - d.t > 400 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
+    // timed by when the finger touched and left the glass (the events' own time stamps), not by when the page got to
+    // handle them: with a molecular surface the page can be busy for most of a second after the touch, and a short tap
+    // was then taken for a long press and ignored
+    if (e.timeStamp - d.t > 400 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
     const r = cv.getBoundingClientRect();
     const pp = stage.pickingControls.pick(e.clientX - r.left, r.height - (e.clientY - r.top));
     if (pp) pp.tapPos = {x: e.clientX - r.left, y: r.height - (e.clientY - r.top)};   // where the finger was (NGL's own mouse position may lag on touch)
     stage.signals.clicked.dispatch(pp);
     // a second tap on the background within 0.35 s: back to the whole view
-    const now = performance.now();
+    const now = e.timeStamp;
     if (!pp && lastBgTap && now - lastBgTap.t < 350 && Math.hypot(e.clientX - lastBgTap.x, e.clientY - lastBgTap.y) < 30) { lastBgTap = null; resetView(); }
     else lastBgTap = pp ? null : {t: now, x: e.clientX, y: e.clientY};
   };
@@ -9543,8 +9554,11 @@ function setMolOnly(on) {
   molOnly = on;
   document.body.classList.toggle('molonly', on);
   const d = document, el = d.documentElement;
+  // touch-first devices (iPad etc.): only ShikaMol's own layout, not the browser's full screen, because iPadOS ends
+  // the browser's full screen on a downward swipe, which a finger turning the molecule makes all the time
+  const touchFirst = (() => { try { return matchMedia('(hover: none)').matches; } catch (e) { return false; } })();
   try {
-    if (on && !d.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    if (on && !touchFirst && !d.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(() => {});
     if (!on && d.fullscreenElement && d.exitFullscreen) d.exitFullscreen().catch(() => {});
   } catch (e) {}
   $('#fullBtn').textContent = on ? '⛶ 全画面を解除' : '⛶ 全画面';
