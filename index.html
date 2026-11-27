@@ -192,6 +192,8 @@ button:hover{background:#364052}
 .dstep{margin:2px 0 8px}
 .dstep .dshort{display:none;font-size:12px;line-height:1.5;margin:2px 0 1px}
 .dstep.on .dshort{display:block}
+.dshort1{font-size:12px;line-height:1.5;margin:2px 0 1px}
+.ddet>summary{cursor:pointer;font-size:11.5px;color:var(--mute);width:max-content}
 .dstep .ddet>summary{cursor:pointer;font-size:11.5px;color:var(--mute);width:max-content}
 .dstep .ddet .small{margin-top:2px}
 button.pri{background:var(--acc);border-color:var(--acc);color:#04121f;font-weight:600}
@@ -228,6 +230,7 @@ input[type=range]{flex:1}
 label{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
 .small{font-size:12px;color:var(--mute)}
 .idHelp{font-size:12px;color:var(--mute);margin:2px 0 6px;line-height:1.5}
+.idHelp>summary{cursor:pointer;width:max-content}
 .idHelp ul{margin:1px 0 0;padding-left:1.3em}
 .idHelp b{color:var(--ink);font-weight:600}
 .idHelp code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;background:#ffffff12;padding:0 3px;border-radius:3px}
@@ -446,14 +449,14 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     </select>
     <button class="pri" id="loadPdb">読込</button>
   </div>
-  <div class="idHelp">
-    <div>入力できるもの</div>
+  <details class="idHelp" id="idHelp" open>
+    <summary>入力できるもの</summary>
     <ul>
       <li><b>PDB ID</b> <span>例</span> <code>7DA1</code> / <code>pdb_00007da1</code></li>
       <li><b>UniProt ID</b> <span>例</span> <code>P04637</code> <span>→ AlphaFold の予測構造</span></li>
       <li><b>複数の ID</b> <span>スペースかカンマで区切る</span> <code>7DA1 1D66</code></li>
     </ul>
-  </div>
+  </details>
   <div class="row small">
     <input type="file" id="structFile" accept=".pdb,.cif,.mmcif,.ent,.bcif,.gz" hidden>
     <button id="structBtn">手元の構造ファイル…</button>
@@ -538,8 +541,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
 
   <div class="tabpane" data-tab="ana">
   <div id="measBox"><h2>測定（距離・角度・二面角・分子の寸法） <span class="small" id="measCount"></span></h2>
-    <div class="small">分子ウィンドウ右上の「📏 測定」を押してから、原子を順にタップします。原子をはっきり選ぶには、スティック表示の部分をタップしてください（カートゥーンをタップすると Cα になります）。</div>
-    <div class="small" style="margin-top:4px">測った値は、画面下の「測定」タブに一覧で並びます（1件ずつ隠す・消す、コピー）。</div>
+    <div class="dshort1">右上の「📏 測定」を押して原子を順にタップします。結果は画面下の「測定」タブに並びます。</div><details class="ddet"><summary>詳しく</summary><div class="small">測るもの（距離＝2原子・角度＝3原子・二面角＝4原子）は、測定中に「📏 測定」の左に出る欄で選びます。原子をはっきり選ぶには、スティック表示の部分をタップしてください（カートゥーンをタップすると Cα になります）。「測定」タブでは、1件ずつ隠す・消す、一覧のコピーができます。</div></details>
   <div class="frow" style="margin-top:6px"><span class="fl">分子の寸法</span><select id="dimTarget" title="寸法（最大径と主軸方向の長さ）を測って分子ウィンドウに表示する対象"><option value="-">表示しない</option></select></div>
   <div class="small" id="dimInfo"></div>
   <div class="frow"><span class="fl">スケールバー</span><label title="画面の右下に、拡大率に合わせた長さ（Å）の目盛りを出します。論文用の画像にも入ります。正確なのは平行投影のときで、透視投影では画面中心の奥行きでの目安です"><input type="checkbox" id="scaleOn"> 表示する</label></div>
@@ -1013,6 +1015,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "右上の「📏 測定」を押して原子を順にタップします。結果は画面下の「測定」タブに並びます。": "Press \"📏 Measure\" at the top right and tap atoms in turn. The values are listed in the \"Measurements\" tab below.", "測るもの（距離＝2原子・角度＝3原子・二面角＝4原子）は、測定中に「📏 測定」の左に出る欄で選びます。原子をはっきり選ぶには、スティック表示の部分をタップしてください（カートゥーンをタップすると Cα になります）。「測定」タブでは、1件ずつ隠す・消す、一覧のコピーができます。": "Choose what to measure (distance = 2 atoms, angle = 3, dihedral = 4) in the box that appears left of \"📏 Measure\" while measuring. To pick atoms precisely, tap the sticks (tapping the cartoon picks the Cα). In the \"Measurements\" tab each value can be hidden or deleted, and the list copied.",
   "まずはこれを押してください。PDBe の密度サーバーから、画面の中心のまわりの密度を取ってきます。": "Start here. Fetches the density around the centre of the view from the PDBe density server.", "PDBe の密度サーバーにまだない構造（公開されたばかりなど）は、RCSB PDB のマップ係数を取ってきて、ブラウザの中で計算します。": "For entries the PDBe density server does not have yet (e.g. just released), fetches the map coefficients from RCSB PDB and computes the density in the browser.", "手元の MTZ や、RCSB PDB の「Download Files」で取ったマップ係数のファイル（Validation 2fo-fc / fo-fc coefficients）を読み込みます。画面にドラッグ＆ドロップしても読み込めます。": "Reads your own MTZ, or the map-coefficient files from \"Download Files\" on RCSB PDB (Validation 2fo-fc / fo-fc coefficients). Dropping the files anywhere on the page works too.", "詳しく": "Details",
   "＋ 回転を追加": "+ Add rotation", "その場で回転するだけのシーンを追加します（角度・秒数・向きは行の中で変えられます）": "Adds a scene that just turns the view in place (angle, seconds and direction can be changed in its row)", "🎥 動画": "🎥 Video", "チェックしたシーンを上から順に": "checked scenes, top to bottom", "移動": "Move", "停止": "Hold", "秒": "s", "サイズ": "Size", "画面のまま": "As on screen", "1920×1080（16:9）": "1920×1080 (16:9)", "1280×720（16:9）": "1280×720 (16:9)", "次のシーンへ移るのにかける時間": "Time to move to the next scene", "各シーンで止まっている時間": "Time to stay on each scene", "動画の大きさ。16:9 は分子ウィンドウの中に横長の枠をとって録画します": "Video size. For 16:9 a wide frame is taken inside the viewer", "ラベルも入れる": "Include labels", "図用ラベル・測定値・スケールバーを動画に入れます": "Puts figure labels, measurement values and the scale bar in the video", "▶ 通して再生": "▶ Play through", "録画せずに、動画と同じ流れで再生します": "Plays the same sequence as the video, without recording", "● 動画に書き出す": "● Export video", "チェックしたシーンを順に再生しながら録画し、動画ファイルとして保存します（Esc で中止）": "Plays the checked scenes in order while recording, and saves a video file (Esc to stop)", "■ 止める": "■ Stop", "■ 録画を止める": "■ Stop recording", "動画に使う": "Use in the video", "その場で回転させます": "Turn the view in place", "回す角度": "Angle to turn", "回す向き": "Direction", "回すのにかける時間": "Time for the turn", "横回転": "turn sideways", "縦回転": "turn vertically", "回転": "Rotation", "動画に使うシーンにチェックを入れてください": "Check the scenes to use in the video", "回転だけでは始められません。最初に表示のシーンを1つ入れてください": "A video cannot be only rotations; include at least one view scene", "回転のシーンを追加しました（角度・秒数・向きは行の中で変えられます）": "Added a rotation scene (change its angle, seconds and direction in its row)", "録画を中止しました": "Recording stopped", "再生を止めました": "Playback stopped", "最後まで再生しました": "Played to the end", "このブラウザは動画の録画に対応していません": "This browser cannot record video", "この端末では大きすぎます": "Too large for this device",
   "🎬 シーンを追加": "🎬 Add scene", "今の表示（視点・色・表示形式・選択・ラベル）に名前を付けてシーンとして残します。画面下の「シーン」タブから切り替えられます": "Keeps the current view (camera, colours, styles, selection, labels) as a named scene. Switch between scenes in the \"Scenes\" tab below", "シーン": "Scenes", "保存したシーンの一覧（押すとその表示に移ります）": "Saved scenes (press one to go to it)", "＋ 今の表示を追加": "+ Add current view", "名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）": "Press a name to go to that scene (PgUp/PgDn for the previous/next one)", "このシーンの表示に移ります": "Go to this scene", "名前を変えます": "Rename", "上書き保存": "Overwrite", "このシーンを今の表示で上書きします": "Replace this scene with the current view", "1つ上へ": "Move up", "1つ下へ": "Move down", "このシーンを消します": "Delete this scene", "構造を読み込んでからシーンを追加してください": "Load a structure before adding a scene", "シーンをすべて消しました": "All scenes deleted",
@@ -2072,7 +2075,17 @@ const entryLinks = id => {
   return `<a class="lnk" href="https://www.rcsb.org/structure/${id}" target="_blank" rel="noopener" title="RCSB PDBのエントリーページを開く">RCSB ↗</a>`;
 };
 const afLinks = acc => `<a class="lnk" href="https://alphafold.ebi.ac.uk/entry/${acc}" target="_blank" rel="noopener" title="AlphaFold Database のエントリーページを開く">AFDB ↗</a> <a class="lnk" href="https://www.uniprot.org/uniprotkb/${acc}" target="_blank" rel="noopener" title="UniProt のエントリーページを開く">UniProt ↗</a>`;
+/* the input examples under the PDB ID box: open while nothing is loaded, folded once a structure is shown
+   (only when the number of structures goes from 0 to more or back, so a box the user opened stays open) */
+var idHelpHad = 0;     // var: renderStructs may run before this line
+function idHelpSync() {
+  const d = $('#idHelp'); if (!d) return;
+  const has = structs.length > 0 ? 1 : 0;
+  if (has !== idHelpHad) d.open = !has;
+  idHelpHad = has;
+}
 function renderStructs() {
+  try { idHelpSync(); } catch (e) {}
   stash();
   const panel = $('#chainPanel');
   $('#chainHolder').appendChild(panel);          // park the panel before the list is rebuilt
