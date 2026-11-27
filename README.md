@@ -110,6 +110,8 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Copy the interaction list (paste into a spreadsheet)
 - Save and open sessions: the display and analysis state is saved as a `.json` file
 - Share links: the current view (structures, colours, representations, selection, viewpoint, look) in a single link
+- Scenes: "🎬 Add scene" at the top right of the viewer keeps the current view (viewpoint, colours, representations, selection, labels, look, map display) under a name; press a name in the "Scenes" tab below to go back to it (PgUp/PgDn for the previous/next scene). Scenes can be renamed, overwritten, reordered and deleted there. They are saved in the session .json and the autosave (not in share links)
+- Scene videos: "+ Add rotation" in the "Scenes" tab adds a scene that just turns the view in place (90–720°, seconds, sideways or vertical). Tick the scenes to use, set the move and hold times and the size (1920×1080, 1280×720 or as on screen), and press "● Export video": the scenes are played from top to bottom while being recorded and saved (MP4, or WebM where the browser cannot record MP4). Figure labels, measurement values and the scale bar can be included. "▶ Play through" shows the sequence without recording; Esc stops it
 
 **Convenience**
 - Undo and redo ("↶" and "↷" at the top right of the viewer, or Ctrl/⌘+Z and Ctrl/⌘+Shift+Z)
