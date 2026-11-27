@@ -50,7 +50,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Stick thickness for a selection only: from the right-click menu in the viewer, or in each row of "Saved selections"
 - Colour of selected residues: "Colour" in the right-click menu paints the sticks only, or the cartoon too (switch with "Paint cartoon too" in "Saved selections")
 - Sticks for clicked residues: proteins as "main + side chain" or "side chain only"; nucleic acids as "whole", "backbone only" or "base only" (atoms taking part in interactions are always shown)
-- Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); text in white/black or in the chain colour; text background none, auto, white or black
+- Residue labels: analysis mode (fixed on the residues) and figure mode (draggable, auto-arranged so they do not overlap); hidden while the view moves to a scene or zooms to a clicked residue, and shown once it has stopped (not while turning by hand or auto-spinning); text in white/black or in the chain colour; text background none, auto, white or black
 - Ligands, ions and water: for each kind (residue name), its name (from the mmCIF file, otherwise from the Chemical Component Dictionary through RCSB PDB), show or hide, colour and style (ball & stick, sticks, CPK, see-through surface, …), and zoom to it. Only single atoms (Zn²⁺, Mg²⁺, Cl⁻ …) count as ions; SO4, PO4, acetate and other polyatomic ions are drawn as ligands with their bonds. Balls in ball & stick scale with each element's van der Waals radius
 - Ligand bonds follow the wwPDB Chemical Component Dictionary rather than interatomic distances, so ligands with distorted coordinates (e.g. the hemes of 4HHB) are drawn whole (fetched from RCSB PDB and kept in the browser).
 - Ligand notes: atoms with no coordinates in the file (e.g. the PO4 of 4HHB, P only) and bonds redrawn from the dictionary are noted in the table and in the selection info.
@@ -58,7 +58,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Ligands, ions and water of symmetry mates follow the same table settings (shown, colour, style) as the structure itself.
 - Ligands and ions (not water) are listed as buttons under the sequences, grouped by chain (with several structures, each structure's ligands follow its own sequences); click to select and zoom, Ctrl/⌘+click to add to the selection.
 - Selecting a residue no longer switches the bottom tab; open the interaction list with the "⇄ Interactions" button (with the count) in the selection info, or with the Interactions tab.
-- Molecular surfaces: molecular, solvent-accessible or van der Waals surface; adjustable detail. Coloured by chain, grey or white, or by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
+- Molecular surfaces: molecular, solvent-accessible or van der Waals surface; adjustable detail. See-through surfaces show only their nearest layer, so their shading does not change with the viewing angle (as in PyMOL and ChimeraX). Coloured by chain, grey or white, or by hydrophobicity, conservation, or APBS electrostatic potential (load a `.dx` file)
 - Sequence strip: the sequence is shown at the bottom of the screen; click or drag to select residues (chain names stay pinned at the left while scrolling)
 - Saved selections: keep selected residues under a name, with their own colour and representation, and toggle them on and off (the "Saved selections" tab under the viewer)
 - Log: operations, selections and errors since the page was opened, with times (the "Log" tab under the viewer; can be copied)
@@ -74,9 +74,10 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 **Electron density and maps**
 - X-ray structures: 2mFo-DFc / mFo-DFc maps from the PDBe density server, shown in a sphere around the clicked residue
 - When the density server has no map yet (e.g. a newly released entry): the wwPDB map coefficients (published with the validation report) are fetched from RCSB PDB and 2Fo-Fc / Fo-Fc maps are computed in the browser
+- In the "Density" tab the button to press next is highlighted, with a short note under it (PDBe density server → if that fails, the RCSB map coefficients → if those fail too, reading the files); "Details" opens the full description. Old entries without structure factors (some deposited before 2008) and non-X-ray entries are told apart
 - Cryo-EM structures: EMDB maps at the recommended contour level registered with the entry
 - Local map files (`.ccp4` / `.map` / `.mrc`, etc.)
-- 2Fo-Fc / Fo-Fc maps computed in the browser from refinement MTZ files (e.g. Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT) or from wwPDB map coefficients downloaded from RCSB PDB (`…_2fo-fc_map_coef.cif`, `…_fo-fc_map_coef.cif`); MTZ files also work for unpublished structures without a PDB ID
+- 2Fo-Fc / Fo-Fc maps computed in the browser from refinement MTZ files (e.g. Phenix 2FOFCWT / FOFCWT, Refmac FWT / DELFWT) or from wwPDB map coefficients downloaded from RCSB PDB (`…_2fo-fc_map_coef.cif`, `…_fo-fc_map_coef.cif`); MTZ files also work for unpublished structures without a PDB ID. Files can also be dragged and dropped anywhere on the page
 - Maps are grouped by structure in collapsible lists
 
 **Analysis**
@@ -110,8 +111,8 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Copy the interaction list (paste into a spreadsheet)
 - Save and open sessions: the display and analysis state is saved as a `.json` file
 - Share links: the current view (structures, colours, representations, selection, viewpoint, look) in a single link
-- Scenes: "🎬 Add scene" at the top right of the viewer keeps the current view (viewpoint, colours, representations, selection, labels, look, map display) under a name; press a name in the "Scenes" tab below to go back to it (PgUp/PgDn for the previous/next scene). Scenes can be renamed, overwritten, reordered and deleted there. They are saved in the session .json and the autosave (not in share links)
-- Scene videos: "+ Add rotation" in the "Scenes" tab adds a scene that just turns the view in place (90–720°, seconds, sideways or vertical). Tick the scenes to use, set the move and hold times and the size (1920×1080, 1280×720 or as on screen), and press "● Export video": the scenes are played from top to bottom while being recorded and saved (MP4, or WebM where the browser cannot record MP4). Figure labels, measurement values and the scale bar can be included. "▶ Play through" shows the sequence without recording; Esc stops it
+- Scenes: "🎬 Add scene" at the top right of the viewer keeps the current view (viewpoint, colours, representations, selection, labels, look, map display) under a name; press a name in the "Scenes" tab below to go back to it (PgUp/PgDn for the previous/next scene). Scenes can be renamed, overwritten (after a confirmation), reordered and deleted there; scenes without a selection say "no selection". They are saved in the session .json and the autosave (not in share links)
+- Scene videos: "+ Add rotation" in the "Scenes" tab adds a scene that just turns the view in place (90–720°, seconds, sideways or vertical). Tick the scenes to use, set the move and hold times and the size (1920×1080, 1280×720 or as on screen), and press "● Export video": the scenes are played from top to bottom while being recorded and saved (MP4, or WebM where the browser cannot record MP4). Scenes whose surfaces take time to build are waited for before the view moves on. Figure labels, measurement values and the scale bar can be included. "▶ Play through" shows the sequence without recording; Esc stops it
 
 **Convenience**
 - Undo and redo ("↶" and "↷" at the top right of the viewer, or Ctrl/⌘+Z and Ctrl/⌘+Shift+Z)
@@ -128,7 +129,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 
 ## Notes and limitations
 
-- **Electron density:** the PDBe density server has no maps for structures without deposited structure factors (some older entries). Newly released entries may also be missing until PDBe has processed them. In that case use "computed from RCSB map coefficients" in the "Density" tab. Where that request is blocked, download the 2fo-fc and fo-fc map coefficients (CIF) from "Download Files" on the RCSB PDB entry page and read them with "From MTZ or map coefficients".
+- **Electron density:** the PDBe density server has no maps for structures without deposited structure factors (some older entries). Newly released entries may also be missing until PDBe has processed them. In that case use "computed from RCSB map coefficients" in the "Density" tab. If that fails too, download "Validation 2fo-fc coefficients" and "Validation fo-fc coefficients" (e.g. `<ID>_validation_2fo-fc_map_coef.cif.gz`) from "Download Files" on the RCSB PDB entry page and drag and drop both onto the page (or choose them with "From MTZ or map coefficients"). Depositing structure factors became mandatory in 2008; for some earlier entries no density can be computed.
 - **Interactions:** judged from atomic coordinates by geometric criteria such as distances only. Hydrogen positions and protonation states are not modelled. Treat the results as a guide; with low-resolution structures they can be over- or under-counted.
 - **Predicted models:** regions of AlphaFold models with low pLDDT (below 70) are not suited to interaction or burial analysis.
 - **Large structures:** very large structures such as ribosomes, and molecular surfaces, can be slow on phones and tablets or stop for lack of memory.
