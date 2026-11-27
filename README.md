@@ -66,6 +66,7 @@ In the "Display & export" tab, open "⑤ Save & share" and press "🔗 Share thi
 - Symmetry mates: show symmetry copies in crystal structures, and add selected copies as chains for analysis; show the unit cell as a box, with the cell parameters (a, b, c, α, β, γ) and space group
 - Biological assemblies: load the assembly coordinates registered at RCSB
 - Load and superpose multiple structures (auto, sequence alignment, structure-based or residue numbers; distant homologues with dissimilar sequences can be superposed by structure)
+  - Unless you pick one, the reference is the topmost shown (☑) structure other than the one being moved; a reference you pick stays the same when the edited structure changes (e.g. while colouring every structure).
 - Keep a selection in each structure: clicking a residue in another structure leaves the previous structure's sticks and interactions in place, so any residues can be compared side by side, even when numbering differs
 - Linked display: the residues with the same chain name and number as the selection are shown as sticks in the other structures too, with interactions calculated for each (for comparing apo and holo forms, mutants, etc.)
 

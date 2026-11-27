@@ -1469,7 +1469,7 @@ const PATTERNS = [
 ];
 const FRAGS = Object.entries({
   "表面（露出 ": "surface (exposed ", "保存度 データ不足": "conservation: insufficient data", "保存度 ": "conservation ", "相互作用: ": "Interactions: ", "（主鎖）": " (main chain)", "（核酸）": " (nucleic acid)", "（リガンド・イオン）": " (ligand/ion)", "埋もれている": "buried", "一部露出": "partly exposed", "（露出 ": " (exposed ", "、Chain 単独では ": ", chain alone ", "αヘリックス": "α-helix", "3₁₀ヘリックス": "3₁₀-helix", "πヘリックス": "π-helix", "βストランド": "β-strand", "βブリッジ": "β-bridge", "ループ": "loop", "；": "; ", " ・ ": " · ",
-  '（重ね合わせ済み）': ' (superposed)', '（PDBeファイル）': ' (PDBe file)', '（RCSBファイル）': ' (RCSB file)',
+  '（重ね合わせ済み）': ' (superposed)', '（非表示）': ' (hidden)', '（PDBeファイル）': ' (PDBe file)', '（RCSBファイル）': ' (RCSB file)',
   '水を介した水素結合': 'Water bridge', 'ハロゲン結合': 'Halogen bond', '金属配位': 'Metal coordination', 'πスタッキング': 'π-stacking', 'カチオン-π': 'Cation–π', 'その他の接触': 'Other contact', '水素結合': 'H-bond', '塩橋': 'Salt bridge',
   '疎水性': 'Hydrophobic', '環の重心': 'ring centroid', '平行': 'parallel', 'T字': 'T-shaped', '接触': 'contact', '最短': 'closest',
   '半径': 'radius', '密度': 'density', '構造全体': 'whole model', 'マップ全体': 'whole map', '周囲表示': 'Neighbourhood',
@@ -2204,15 +2204,23 @@ function renderSup() {
   if (structs.length < 2 || active < 0) { box.style.display = 'none'; return; }
   box.style.display = 'block';
   $('#supMov').textContent = structs[active].name;
-  const refSel = $('#supRef'), prev = refSel.value;
-  opts(refSel, structs.map((st, i) => [String(i), st.name]).filter(([i]) => +i !== active));
-  if ([...refSel.options].some(o => o.value === prev)) refSel.value = prev;
+  /* the reference is kept by structure id, so it no longer jumps to the top structure when another structure becomes
+     the edited one for a moment (e.g. colouring every structure); without a choice of the user's, the reference is the
+     topmost structure that is shown (☑) and is not the one being moved */
+  const refSel = $('#supRef'), mov = structs[active];
+  opts(refSel, structs.filter(st => st !== mov).map(st => [String(st.sid), st.name + (st.visible === false ? '（非表示）' : '')]));
+  const ok = sid => sid != null && structs.some(st => st.sid === sid && st !== mov);
+  const auto = (structs.find(st => st !== mov && st.visible !== false) || structs.find(st => st !== mov) || {}).sid;
+  const pick = ok(supRefSid) ? supRefSid : auto;
+  if (pick != null) refSel.value = String(pick);
   const chOpts = cs => [['*', '全タンパク質Chain'], ...cs.map(c => [c.name, 'Chain ' + c.name])];
   const mv = $('#supMovCh').value; opts($('#supMovCh'), chOpts(chains)); if ([...$('#supMovCh').options].some(o => o.value === mv)) $('#supMovCh').value = mv;
-  const ref = structs[+refSel.value];
+  const ref = structs.find(st => st.sid === +refSel.value);
   const rv = $('#supRefCh').value; opts($('#supRefCh'), chOpts(ref ? ref.chains : [])); if ([...$('#supRefCh').options].some(o => o.value === rv)) $('#supRefCh').value = rv;
 }
-$('#supRef').onchange = renderSup;
+let supRefSid = null;          // the reference the user picked (structure id); null: automatic
+$('#supRef').onchange = () => { supRefSid = +$('#supRef').value; renderSup(); };
+const supRefIdx = () => structs.findIndex(st => st.sid === +$('#supRef').value);
 function positionsOf(st) { const arr = new Float32Array(st.atomCount * 3); let i = 0; st.eachAtom(a => { arr[i++] = a.x; arr[i++] = a.y; arr[i++] = a.z; }); return arr; }
 function setPositions(st, arr) { st.updatePosition(arr); }
 function afterMove(msg) {
@@ -2273,7 +2281,7 @@ const SUP_NAME = {seq: '配列アライメント', struct: '構造ベース', nu
 const mapWarn = () => maps.length ? '　※動かした構造は電子密度マップとは位置が合わなくなります。' : '';
 $('#supRun').onclick = () => {
   if (structs.length < 2) return;
-  const refIdx = +$('#supRef').value, ref = structs[refIdx]; if (!ref) return;
+  const refIdx = supRefIdx(), ref = structs[refIdx]; if (!ref) return;
   const r = superposeActive(refIdx, $('#supMode').value, $('#supMovCh').value, $('#supRefCh').value);
   if (typeof r === 'string') return status(r, true);
   afterMove(`${SUP_NAME[r.method]}で対応付け。RMSD ${r.rmsd.toFixed(3)} Å（${r.n} / ${r.nAll} Cα、外れ値除外後）。` +
@@ -2283,7 +2291,7 @@ $('#supRun').onclick = () => {
 };
 $('#supAll').onclick = () => {
   if (structs.length < 2) return;
-  const refIdx = +$('#supRef').value, ref = structs[refIdx]; if (!ref) return;
+  const refIdx = supRefIdx(), ref = structs[refIdx]; if (!ref) return;
   const mode = $('#supMode').value, chR = $('#supRefCh').value, chMsel = $('#supMovCh').value;
   const rows = [];
   for (let i = 0; i < structs.length; i++) {
