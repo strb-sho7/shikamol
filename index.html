@@ -1309,6 +1309,9 @@ const PATTERNS = [
   P(/^塩橋（水素結合あり）$/, () => 'Salt bridge (with H-bond)'),
   P(/^シーン (\d+)$/, (m, n) => `Scene ${n}`),
   P(/^「シーン (\d+)」を追加しました（画面下の「シーン」タブで名前の変更・切り替えができます）$/, (m, n) => `Added "Scene ${n}" (rename it or switch scenes in the "Scenes" tab below)`),
+  P(/^シーン「(.+)」を今の表示で上書きしますか？$/, (m, n) => `Replace scene "${n}" with the current view?`),
+  P(/^(.+)　選択なし$/, (m, n) => `${n}  no selection`),
+  P(/^(.+)　選択: (.+)$/, (m, n, x) => `${n}  selection: ${x}`),
   P(/^シーン「(.+)」を表示しました$/, (m, n) => `Showing scene "${n}"`),
   P(/^シーン「(.+)」を今の表示で上書きしました$/, (m, n) => `Scene "${n}" replaced with the current view`),
   P(/^シーン「(.+)」を消しました$/, (m, n) => `Deleted scene "${n}"`),
@@ -7907,7 +7910,7 @@ function sceneLbl() { const o = {}; structs.forEach(st => { if (st.menuLbl && st
 function sceneSum(sc) {
   const names = sc.snap.st.map(t => (structs.find(x => x.sid === t.sid) || {}).name).filter(Boolean);
   const a = sc.snap.st.find(t => t.sid === sc.snap.active), f = a && a.focus;
-  return names.join('、') + (f && f.length ? `　選択: ${selLabel(f, 2)}` : '');
+  return names.join('、') + (f && f.length ? `　選択: ${selLabel(f, 2)}` : '　選択なし');
 }
 function sceneTake(sc) {
   clearTimeout(undoT);
@@ -7926,7 +7929,18 @@ async function sceneGo(i) {
   const sc = scenes[i]; if (!sc) return;
   clearTimeout(undoT); undoRecord();
   const before = undoCur;
-  await undoApply(sc.snap);
+  // a copy of the selections, so that later changes to the live selection do not change the scene
+  await undoApply({...sc.snap, st: sc.snap.st.map(t => ({...t, focus: t.focus ? clone(t.focus) : null}))});
+  // the scene's selection is always drawn again (undoApply only redraws when it differs from the current one,
+  // so a selection whose sticks and interactions had been cleared would otherwise stay undrawn)
+  const ai = structs.findIndex(x => x.sid === sc.snap.active), t = sc.snap.st.find(x => x.sid === sc.snap.active);
+  if (ai >= 0 && t) {
+    if (ai !== active) activate(ai);
+    if (t.focus && t.focus.length) { lastFocus = clone(t.focus); lastFocus.chainSel = t.fch; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
+    else { clearFocusDraw(); seqMark(null); lastFocus = null; focusRef = null; $('#info').style.display = 'none'; }
+    stash(); renderFlist(); bottomUpdate();
+    undoCur = undoSnap();
+  }
   if (before && undoCur) { const [a, b] = undoSig(before, undoCur); if (a !== b) { undoStack.push(before); if (undoStack.length > 60) undoStack.shift(); redoStack.length = 0; undoUI(); } }
   structs.forEach(st => {
     const k = sc.lbl && sc.lbl[st.sid];
@@ -7971,7 +7985,7 @@ $('#scnList').addEventListener('click', e => {
   const i = +b.closest('.scn').dataset.i, k = b.dataset.k, sc = scenes[i]; if (!sc) return;
   if (k === 'go') return sceneGo(i);
   if (k === 'ren') { sceneEdit = i; return renderScenes(); }
-  if (k === 'upd') { sceneTake(sc); sceneCur = i; renderScenes(); return status(`シーン「${sc.name}」を今の表示で上書きしました`); }
+  if (k === 'upd') { if (!confirm(tr2(`シーン「${sc.name}」を今の表示で上書きしますか？`))) return; sceneTake(sc); sceneCur = i; renderScenes(); return status(`シーン「${sc.name}」を今の表示で上書きしました`); }
   if (k === 'up' || k === 'dn') {
     const j = k === 'up' ? i - 1 : i + 1; if (j < 0 || j >= scenes.length) return;
     [scenes[i], scenes[j]] = [scenes[j], scenes[i]];
