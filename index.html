@@ -354,7 +354,11 @@ details.sec{margin-bottom:12px}
 .scn .spinset{display:flex;gap:4px;align-items:center;flex:none;font-size:11.5px;color:var(--mute)}
 .scn .spinset select,.scn .spinset input{font-size:11.5px}
 .scn .spinset input{width:3.6em}
-.scn{display:flex;align-items:center;gap:6px;padding:3px 4px;border-top:1px solid #ffffff10;border-radius:5px}
+.scn{display:grid;grid-template-columns:1.6em 16px 9.8em 11em 16em minmax(0,1fr) auto;align-items:center;gap:6px;padding:3px 4px;border-top:1px solid #ffffff10;border-radius:5px}
+.scn .nm{display:flex;align-items:center;min-width:0}
+.scn .tm{justify-self:start;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#spane{container-type:inline-size}
+@container (max-width:680px){.scn{grid-template-columns:1.6em 16px auto minmax(0,1fr) auto;grid-template-areas:'no use act nm del' '. . tm tm tm' '. . sum sum sum';row-gap:2px}.scn .no{grid-area:no}.scn .use{grid-area:use}.scn .act{grid-area:act}.scn .nm{grid-area:nm}.scn .del{grid-area:del}.scn .tm{grid-area:tm}.scn .sum,.scn .spinset{grid-area:sum}.scnT{margin-left:2.4em}}
 .scn.cur{background:#5aa9ff1f}
 .scn .no{flex:none;width:1.6em;text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
 .scn .go{flex:0 1 auto;min-width:0;text-align:left;background:transparent;border:0;color:#e8eaee;font-size:13px;font-weight:600;padding:2px 4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -365,7 +369,7 @@ details.sec{margin-bottom:12px}
 .scn .act button,.scn .del{font-size:11px;padding:1px 6px}
 .scn .ren{flex:none;background:transparent;border:0;color:var(--mute);font-size:13px;padding:0 3px;cursor:pointer}
 .scn .ren:hover{color:#e8eaee}
-.scn .del{flex:none;margin-left:auto}
+.scn .del{flex:none;margin-left:auto;justify-self:end}
 #mpane{height:100%;box-sizing:border-box;overflow:auto;background:#0b0d11;color:#e8eaee;font-size:13px;padding:4px 10px 6px;display:none}
 #mpane .oph{display:flex;gap:6px;align-items:center;margin:-4px 0 4px;position:sticky;top:-4px;background:#0b0d11;padding:5px 0 3px;z-index:1}
 #mpane .oph button{font-size:11px;padding:1px 8px;white-space:nowrap;flex:none}
@@ -8192,12 +8196,12 @@ function renderScenes() {
     + `<input type="checkbox" class="use" data-k="use"${sc.use !== false ? ' checked' : ''} title="動画に使う">`
     + `<span class="act"><button data-k="up" title="1つ上へ"${i ? '' : ' disabled'}>↑</button><button data-k="dn" title="1つ下へ"${i < scenes.length - 1 ? '' : ' disabled'}>↓</button>`
     + (sc.spin ? '' : `<button data-k="upd" title="このシーンを今の表示で上書きします">上書き保存</button>`) + `</span>`
-    + (i === sceneEdit ? `<input type="text" value="${esc(sc.name)}" maxlength="60" data-k="name">` : `<button class="go" data-k="go" title="${sc.spin ? 'その場で回転させます' : 'このシーンの表示に移ります'}">${sc.spin ? '🔄 ' : ''}${esc(sc.name)}</button><button class="ren" data-k="ren" title="名前を変えます">✎</button>`)
+    + `<span class="nm">` + (i === sceneEdit ? `<input type="text" value="${esc(sc.name)}" maxlength="60" data-k="name">` : `<button class="go" data-k="go" title="${sc.spin ? 'その場で回転させます' : 'このシーンの表示に移ります'}">${sc.spin ? '🔄 ' : ''}${esc(sc.name)}</button><button class="ren" data-k="ren" title="名前を変えます">✎</button>`) + `</span>`
+    + `<button class="tm${i === sceneTime ? ' open' : ''}" data-k="tm" title="動画でこのシーンに移る時間と止まる時間（押すと変更できます）">⏱ ${sceneTimeLabel(i)}</button>`
     + (sc.spin ? `<span class="spinset"><select data-k="deg" title="回す角度">${opt([90, 180, 360, 720], sc.spin.deg, v => v + '°')}</select>`
       + `<select data-k="axis" title="回す向き">${opt(['y', 'x'], sc.spin.axis, v => SPIN_AX[v])}</select>`
       + `<input type="number" data-k="sec" value="${sc.spin.sec}" min="1" max="60" step="1" title="回すのにかける時間"> 秒</span>`
       : `<span class="sum">${esc(sceneSum(sc))}</span>`)
-    + `<button class="tm${i === sceneTime ? ' open' : ''}" data-k="tm" title="動画でこのシーンに移る時間と止まる時間（押すと変更できます）">⏱ ${sceneTimeLabel(i)}</button>`
     + `<button class="del" data-k="del" title="このシーンを消します">×</button></div>` + (i === sceneTime ? sceneTimeEditor(i) : '')).join('');
   const tot = $('#vidTotal'); if (tot) tot.textContent = vidList().length ? `合計 約 ${+vidTotal().toFixed(1)} 秒` : '';
   const inp = box.querySelector('input[data-k=name]'); if (inp) { inp.focus(); inp.select(); }
