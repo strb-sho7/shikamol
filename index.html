@@ -343,6 +343,14 @@ details.sec{margin-bottom:12px}
 #vidBar .small{white-space:nowrap}
 #vidBar button.rec{background:#e5484d;border-color:#e5484d;color:#fff}
 .scn .use{flex:none;margin:0}
+.scn .tm{flex:none;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--mute);font-size:11.5px;padding:1px 6px;cursor:pointer;white-space:nowrap}
+.scn .tm:hover,.scn .tm.open{border-color:#ffffff30}
+.scn .tm b{font-weight:400}
+.scn .tm b.own{color:#ffd54a;font-weight:700}
+.scn .tm .seq{color:#e8eaee}
+.scnT{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 4px 3.4em;padding:4px 8px;border:1px solid #ffffff1a;border-radius:6px;font-size:12px}
+.scnT input[type=number]{width:4.2em;font-size:12px}
+.scnT button{font-size:11px;padding:1px 8px}
 .scn .spinset{display:flex;gap:4px;align-items:center;flex:none;font-size:11.5px;color:var(--mute)}
 .scn .spinset select,.scn .spinset input{font-size:11.5px}
 .scn .spinset input{width:3.6em}
@@ -913,7 +921,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <label><input type="checkbox" id="mutShow" checked> 3D表示</label>
     <button id="mutSelAll" title="変異の位置をまとめて選択し、それぞれの相互作用を分子ウィンドウに出します">まとめて選択</button>
     <button id="mutCopy">表をコピー（TSV）</button>
-  </div><div id="mutList"></div></div></div><div id="spane"><div class="oph"><button id="scnAdd">＋ 今の表示を追加</button><button id="scnSpin" title="その場で回転するだけのシーンを追加します（角度・秒数・向きは行の中で変えられます）">＋ 回転を追加</button><button id="scnClear">すべて消す</button><span class="small">名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）</span></div><div id="vidBar"><b>🎥 動画</b><span class="small">チェックしたシーンを上から順に</span><label title="次のシーンへ移るのにかける時間">移動 <input type="number" id="vidMove" value="2" min="0.2" max="20" step="0.5"> 秒</label><label title="各シーンで止まっている時間">停止 <input type="number" id="vidHold" value="1.5" min="0" max="30" step="0.5"> 秒</label><label title="動画の大きさ。16:9 は分子ウィンドウの中に横長の枠をとって録画します">サイズ <select id="vidSize"><option value="1920x1080">1920×1080（16:9）</option><option value="1280x720">1280×720（16:9）</option><option value="view">画面のまま</option></select></label><label title="図用ラベル・測定値・スケールバーを動画に入れます"><input type="checkbox" id="vidLbl" checked> ラベルも入れる</label><button id="vidPlay" title="録画せずに、動画と同じ流れで再生します">▶ 通して再生</button><button id="vidRec" class="pri" title="チェックしたシーンを順に再生しながら録画し、動画ファイルとして保存します（Esc で中止）">● 動画に書き出す</button></div><div id="scnList"></div></div><div id="mpane"><div class="oph"><button id="measCopy">一覧をコピー</button><button id="measAll">すべて隠す</button><button id="measClear">すべて消す</button><span class="small">分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます</span></div><div id="measList"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
+  </div><div id="mutList"></div></div></div><div id="spane"><div class="oph"><button id="scnAdd">＋ 今の表示を追加</button><button id="scnSpin" title="その場で回転するだけのシーンを追加します（角度・秒数・向きは行の中で変えられます）">＋ 回転を追加</button><button id="scnClear">すべて消す</button><span class="small">名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）</span></div><div id="vidBar"><b>🎥 動画</b><span class="small">チェックしたシーンを上から順に</span><label title="次のシーンへ移るのにかける時間">移動 <input type="number" id="vidMove" value="2" min="0.2" max="20" step="0.5"> 秒</label><label title="各シーンで止まっている時間">停止 <input type="number" id="vidHold" value="1.5" min="0" max="30" step="0.5"> 秒</label><label title="動画の大きさ。16:9 は分子ウィンドウの中に横長の枠をとって録画します">サイズ <select id="vidSize"><option value="1920x1080">1920×1080（16:9）</option><option value="1280x720">1280×720（16:9）</option><option value="view">画面のまま</option></select></label><label title="図用ラベル・測定値・スケールバーを動画に入れます"><input type="checkbox" id="vidLbl" checked> ラベルも入れる</label><span class="small" id="vidTotal" title="移動・停止・回転の時間の合計（表面などの計算を待つと少し長くなります）"></span><button id="vidPlay" title="録画せずに、動画と同じ流れで再生します">▶ 通して再生</button><button id="vidRec" class="pri" title="チェックしたシーンを順に再生しながら録画し、動画ファイルとして保存します（Esc で中止）">● 動画に書き出す</button></div><div id="scnList"></div></div><div id="mpane"><div class="oph"><button id="measCopy">一覧をコピー</button><button id="measAll">すべて隠す</button><button id="measClear">すべて消す</button><span class="small">分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます</span></div><div id="measList"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -1021,6 +1029,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "動画に使わない": "Not in the video", "開始": "Start", "停止": "Hold", "移動": "Move", "移動は行の「回すのにかける時間」": "Its move is the turn time in the row", "最初のシーンには移動はありません": "The first scene has no move", "前のシーンからこのシーンへ移るのにかける時間": "Time to move from the previous scene into this one", "このシーンで止まっている時間": "Time to stay on this scene", "空欄なら全体の設定": "Empty: the overall setting", "全体の設定に戻す": "Back to the overall setting", "動画でこのシーンに移る時間と止まる時間（押すと変更できます）": "Time to move into this scene and to stay on it in the video (press to change)", "移動・停止・回転の時間の合計（表面などの計算を待つと少し長くなります）": "Sum of the move, hold and turn times (a little longer when surfaces have to be built)",
   "矢印の向きに、真ん中の角度だけ分子を回します（真ん中を押すと 30°・45°・90°・180° を切り替え）": "Turns the molecule by the angle in the middle, in the direction of the arrow (press the middle to switch between 30°, 45°, 90° and 180°)", "上へ回す": "Turn up", "左へ回す": "Turn left", "右へ回す": "Turn right", "下へ回す": "Turn down", "回す角度（押すたびに 30° → 45° → 90° → 180°）": "Angle to turn (each press: 30° → 45° → 90° → 180°)",
   "右上の「📏 測定」を押して原子を順にタップします。結果は画面下の「測定」タブに並びます。": "Press \"📏 Measure\" at the top right and tap atoms in turn. The values are listed in the \"Measurements\" tab below.", "測るもの（距離＝2原子・角度＝3原子・二面角＝4原子）は、測定中に「📏 測定」の左に出る欄で選びます。原子をはっきり選ぶには、スティック表示の部分をタップしてください（カートゥーンをタップすると Cα になります）。「測定」タブでは、1件ずつ隠す・消す、一覧のコピーができます。": "Choose what to measure (distance = 2 atoms, angle = 3, dihedral = 4) in the box that appears left of \"📏 Measure\" while measuring. To pick atoms precisely, tap the sticks (tapping the cartoon picks the Cα). In the \"Measurements\" tab each value can be hidden or deleted, and the list copied.",
   "まずはこれを押してください。PDBe の密度サーバーから、画面の中心のまわりの密度を取ってきます。": "Start here. Fetches the density around the centre of the view from the PDBe density server.", "PDBe の密度サーバーにまだない構造（公開されたばかりなど）は、RCSB PDB のマップ係数を取ってきて、ブラウザの中で計算します。": "For entries the PDBe density server does not have yet (e.g. just released), fetches the map coefficients from RCSB PDB and computes the density in the browser.", "手元の MTZ や、RCSB PDB の「Download Files」で取ったマップ係数のファイル（Validation 2fo-fc / fo-fc coefficients）を読み込みます。画面にドラッグ＆ドロップしても読み込めます。": "Reads your own MTZ, or the map-coefficient files from \"Download Files\" on RCSB PDB (Validation 2fo-fc / fo-fc coefficients). Dropping the files anywhere on the page works too.", "詳しく": "Details",
@@ -1334,6 +1343,8 @@ const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
 const coefFilesEn = A => { const a = A.toLowerCase(); return `on the RCSB PDB page of ${A} open "Download Files", download "Validation 2fo-fc coefficients" and "Validation fo-fc coefficients" (${a}_validation_2fo-fc_map_coef.cif.gz and ${a}_validation_fo-fc_map_coef.cif.gz), and drag and drop both onto the page (or choose both at once with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab)`; };
 const PATTERNS = [
+  P(/^([\d.]+)秒$/, (m, n) => `${n} s`),
+  P(/^合計 約 ([\d.]+) 秒$/, (m, n) => `Total about ${n} s`),
   P(/^その場で (\d+)° (横回転|縦回転)（(\d+(?:\.\d+)?) 秒）$/, (m, d, a, t) => `${d}° ${a === '縦回転' ? 'vertical' : 'sideways'} turn in place (${t} s)`),
   P(/^(録画中|再生中)… 表面などの計算を待っています$/, (m, w) => `${w === '録画中' ? 'Recording' : 'Playing'}… waiting for surfaces and other displays`),
   P(/^(録画中|再生中)… (\d+) \/ (\d+)「(.+)」（Esc で中止）$/, (m, w, a, b, n) => `${w === '録画中' ? 'Recording' : 'Playing'}… ${a} / ${b} "${n}" (Esc to stop)`),
@@ -8146,6 +8157,33 @@ function sceneStep(d) {
   if (!scenes.length) return;
   sceneGo(sceneCur < 0 ? (d > 0 ? 0 : scenes.length - 1) : (sceneCur + d + scenes.length) % scenes.length);
 }
+/* video timing: every scene may override the overall "move" (time to come INTO it from the previous scene in the video)
+   and "hold" (time to stay on it); empty = the overall setting. Rotation scenes move by their own seconds. */
+var sceneTime = -1;
+const vidDef = () => ({move: Math.min(20, Math.max(0.2, +$('#vidMove').value || 2)), hold: Math.min(30, Math.max(0, +$('#vidHold').value || 0))});
+const sceneMove = sc => sc.tMove != null ? sc.tMove : vidDef().move;
+const sceneHold = sc => sc.tHold != null ? sc.tHold : vidDef().hold;
+const vidList = () => scenes.map((s, i) => i).filter(i => scenes[i].use !== false);
+function vidTotal() {
+  return vidList().reduce((t, i, n) => { const sc = scenes[i]; return t + (sc.spin ? +sc.spin.sec || 0 : n ? sceneMove(sc) : 0) + sceneHold(sc); }, 0);
+}
+const secTxt = v => `${+(+v).toFixed(1)}秒`;
+function sceneTimeLabel(i) {
+  const sc = scenes[i]; if (sc.use === false) return '<span>動画に使わない</span>';
+  const L = vidList(), n = L.indexOf(i), prev = n > 0 ? L[n - 1] + 1 : 0;
+  const hold = `<span>停止</span> <b${sc.tHold != null ? ' class="own"' : ''}>${secTxt(sceneHold(sc))}</b>`;
+  if (sc.spin) return `<span class="seq">${prev ? prev + '→' + (i + 1) : i + 1}</span> <span>回転</span> <b>${secTxt(sc.spin.sec)}</b> ${hold}`;
+  if (!prev) return `<span class="seq">${i + 1}</span> <span>開始</span> ${hold}`;
+  return `<span class="seq">${prev}→${i + 1}</span> <span>移動</span> <b${sc.tMove != null ? ' class="own"' : ''}>${secTxt(sceneMove(sc))}</b> ${hold}`;
+}
+function sceneTimeEditor(i) {
+  const sc = scenes[i], d = vidDef(), L = vidList(), first = L.indexOf(i) === 0;
+  const mv = sc.spin ? '<span class="small">移動は行の「回すのにかける時間」</span>'
+    : first ? '<span class="small">最初のシーンには移動はありません</span>'
+    : `<label title="前のシーンからこのシーンへ移るのにかける時間">移動 <input type="number" data-k="tmove" min="0.2" max="20" step="0.5" value="${sc.tMove ?? ''}" placeholder="${d.move}"> 秒</label>`;
+  return `<div class="scnT" data-i="${i}">${mv}<label title="このシーンで止まっている時間">停止 <input type="number" data-k="thold" min="0" max="30" step="0.5" value="${sc.tHold ?? ''}" placeholder="${d.hold}"> 秒</label>`
+    + `<span class="small">空欄なら全体の設定</span><button data-k="treset">全体の設定に戻す</button></div>`;
+}
 function renderScenes() {
   const box = $('#scnList'); if (!box) return;
   if (sceneCur >= scenes.length) sceneCur = scenes.length - 1;
@@ -8159,7 +8197,9 @@ function renderScenes() {
       + `<select data-k="axis" title="回す向き">${opt(['y', 'x'], sc.spin.axis, v => SPIN_AX[v])}</select>`
       + `<input type="number" data-k="sec" value="${sc.spin.sec}" min="1" max="60" step="1" title="回すのにかける時間"> 秒</span>`
       : `<span class="sum">${esc(sceneSum(sc))}</span>`)
-    + `<button class="del" data-k="del" title="このシーンを消します">×</button></div>`).join('');
+    + `<button class="tm${i === sceneTime ? ' open' : ''}" data-k="tm" title="動画でこのシーンに移る時間と止まる時間（押すと変更できます）">⏱ ${sceneTimeLabel(i)}</button>`
+    + `<button class="del" data-k="del" title="このシーンを消します">×</button></div>` + (i === sceneTime ? sceneTimeEditor(i) : '')).join('');
+  const tot = $('#vidTotal'); if (tot) tot.textContent = vidList().length ? `合計 約 ${+vidTotal().toFixed(1)} 秒` : '';
   const inp = box.querySelector('input[data-k=name]'); if (inp) { inp.focus(); inp.select(); }
   const bt = $('#btScN'); if (bt) bt.textContent = scenes.length ? ` ${scenes.length}` : '';
 }
@@ -8198,20 +8238,29 @@ $('#turnPad').addEventListener('click', e => { const b = e.target.closest('butto
 $('#scnAdd').onclick = sceneAdd;
 $('#scnSpin').onclick = spinAdd;
 $('#scnList').addEventListener('change', e => {
-  const k = e.target.dataset.k, row = e.target.closest('.scn'); if (!row || !k) return;
+  const k = e.target.dataset.k, row = e.target.closest('.scn, .scnT'); if (!row || !k) return;
   const sc = scenes[+row.dataset.i]; if (!sc) return;
+  if (k === 'tmove' || k === 'thold') {
+    const v = e.target.value.trim(), lim = k === 'tmove' ? [0.2, 20] : [0, 30];
+    sc[k === 'tmove' ? 'tMove' : 'tHold'] = v === '' || !isFinite(+v) ? null : Math.min(lim[1], Math.max(lim[0], +v));
+    return renderScenes();
+  }
   if (k === 'use') sc.use = e.target.checked;
   else if (sc.spin && k === 'deg') sc.spin.deg = +e.target.value;
   else if (sc.spin && k === 'axis') sc.spin.axis = e.target.value === 'x' ? 'x' : 'y';
   else if (sc.spin && k === 'sec') sc.spin.sec = Math.min(60, Math.max(1, +e.target.value || 8));
+  renderScenes();
 });
+['#vidMove', '#vidHold'].forEach(q => $(q).addEventListener('input', () => renderScenes()));
 $('#scnClear').onclick = () => {
   if (!scenes.length || !confirm(tr2(`シーン ${scenes.length} 個をすべて消しますか？`))) return;
   scenes = []; sceneCur = sceneEdit = -1; renderScenes(); bottomUpdate(); status('シーンをすべて消しました');
 };
 $('#scnList').addEventListener('click', e => {
   const b = e.target.closest('button[data-k]'); if (!b) return;
-  const i = +b.closest('.scn').dataset.i, k = b.dataset.k, sc = scenes[i]; if (!sc) return;
+  const i = +b.closest('.scn, .scnT').dataset.i, k = b.dataset.k, sc = scenes[i]; if (!sc) return;
+  if (k === 'tm') { sceneTime = sceneTime === i ? -1 : i; return renderScenes(); }
+  if (k === 'treset') { sc.tMove = sc.tHold = null; return renderScenes(); }
   if (k === 'go') return sceneGo(i);
   if (k === 'ren') { sceneEdit = i; return renderScenes(); }
   if (k === 'upd') { if (!confirm(tr2(`シーン「${sc.name}」を今の表示で上書きしますか？`))) return; sceneTake(sc); sceneCur = i; renderScenes(); return status(`シーン「${sc.name}」を今の表示で上書きしました`); }
@@ -8340,10 +8389,11 @@ async function vidRun(record) {
     for (let n = 0; n < list.length && !vid.abort; n++) {
       const i = list[n], sc = scenes[i];
       status(`${record ? '録画中' : '再生中'}… ${n + 1} / ${list.length}「${sc.name}」（Esc で中止）`);
+      const Ti = sceneMove(sc) * 1000, Hi = sceneHold(sc) * 1000;
       if (sc.spin) await sceneGo(i, {quiet: true});
       else if (n === 0) { if (!record) await sceneGo(i, {dur: 0, quiet: true, wait: vidBuilt}); }   // when recording, set before the start
-      else { await sceneGo(i, {dur: T, quiet: true, wait: vidBuilt}); await vidWait(T + 60); }
-      await vidWait(HOLD);
+      else { await sceneGo(i, {dur: Ti, quiet: true, wait: vidBuilt}); await vidWait(Ti + 60); }
+      await vidWait(Hi);
     }
     if (rec) {
       const stopped = new Promise(r => { rec.onstop = r; });
@@ -8372,18 +8422,21 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && vid.on) { vid.abort
 const mapKey = m => `${m.name}|${m.kind}`;
 function scenesToJSON() {
   const idx = sid => structs.findIndex(x => x.sid === sid);
-  return scenes.map(sc => sc.spin ? {name: sc.name, spin: {...sc.spin}, ...(sc.use === false ? {use: false} : {})} : ({name: sc.name, orient: sc.orient, ...(sc.use === false ? {use: false} : {}),
+  const tm = sc => ({...(sc.tMove != null ? {tMove: sc.tMove} : {}), ...(sc.tHold != null ? {tHold: sc.tHold} : {})});
+  return scenes.map(sc => sc.spin ? {name: sc.name, spin: {...sc.spin}, ...(sc.use === false ? {use: false} : {}), ...tm(sc)} : ({name: sc.name, orient: sc.orient, ...(sc.use === false ? {use: false} : {}), ...tm(sc),
     lbl: Object.entries(sc.lbl || {}).map(([sid, k]) => [idx(+sid || sid), k]).filter(([i]) => i >= 0),
     snap: {...sc.snap, active: idx(sc.snap.active),
       st: sc.snap.st.map(t => ({...t, sid: idx(t.sid)})).filter(t => t.sid >= 0),
       maps: sc.snap.maps.filter(t => maps.includes(t.m)).map(t => ({...t, m: mapKey(t.m)}))}}));
 }
 function scenesFromJSON(arr) {
-  scenes = []; sceneCur = sceneEdit = -1;
+  scenes = []; sceneCur = sceneEdit = sceneTime = -1;
+  const tmOf = j => ({...(isFinite(+j.tMove) && j.tMove !== null && j.tMove !== undefined ? {tMove: Math.min(20, Math.max(0.2, +j.tMove))} : {}),
+    ...(isFinite(+j.tHold) && j.tHold !== null && j.tHold !== undefined ? {tHold: Math.min(30, Math.max(0, +j.tHold))} : {})});
   if (Array.isArray(arr)) for (const j of arr) {
     if (j && j.spin && typeof j.spin === 'object') {
       const sp = j.spin;
-      scenes.push({name: String(j.name || '回転').slice(0, 60), ...(j.use === false ? {use: false} : {}),
+      scenes.push({name: String(j.name || '回転').slice(0, 60), ...(j.use === false ? {use: false} : {}), ...tmOf(j),
         spin: {deg: [90, 180, 360, 720].includes(+sp.deg) ? +sp.deg : 360, sec: Math.min(60, Math.max(1, +sp.sec || 8)), axis: sp.axis === 'x' ? 'x' : 'y'}});
       continue;
     }
@@ -8393,7 +8446,7 @@ function scenesFromJSON(arr) {
       st: j.snap.st.map(t => ({...t, sid: sid(t.sid)})).filter(t => t.sid !== null),
       maps: (j.snap.maps || []).map(t => ({...t, m: maps.find(m => mapKey(m) === t.m)})).filter(t => t.m)};
     const lbl = {}; (j.lbl || []).forEach(([i, k]) => { const s = sid(i); if (s !== null && Array.isArray(k)) lbl[s] = k; });
-    scenes.push({name: String(j.name || `シーン ${scenes.length + 1}`).slice(0, 60), ...(j.use === false ? {use: false} : {}), orient: Array.isArray(j.orient) ? j.orient : null, lbl, snap});
+    scenes.push({name: String(j.name || `シーン ${scenes.length + 1}`).slice(0, 60), ...(j.use === false ? {use: false} : {}), ...tmOf(j), orient: Array.isArray(j.orient) ? j.orient : null, lbl, snap});
   }
   renderScenes(); bottomUpdate();
 }
