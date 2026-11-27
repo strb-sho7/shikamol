@@ -114,6 +114,15 @@ main{position:relative;display:flex;flex-direction:column;min-height:0}
 #status.show{opacity:1;transition:opacity .15s}
 #status.err{color:var(--warn)}
 #infoT{white-space:pre-line}
+#seq .sqlig{position:sticky;left:0;display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;padding:5px 6px 4px;margin-top:3px;border-top:1px solid #2c313b;font-size:11px;max-width:100%;box-sizing:border-box}
+#seq .lgt{color:var(--mute);margin-right:4px}
+#seq .lgh{color:var(--mute);margin:0 2px 0 8px;font-weight:700}
+#seq .lgc{cursor:pointer;padding:0 5px;border:1px solid #3a414e;border-radius:4px;font-family:ui-monospace,monospace;color:#cfd3da;line-height:1.5}
+#seq .lgc:hover{background:#ffffff14}
+#seq .lgc.on{background:#2f6fd6;color:#fff}
+#seq .lgc.off{opacity:.4}
+#seq .lgc small{font-size:10px;opacity:.75;margin-left:2px}
+#hoverTip{position:fixed;display:none;z-index:9999;pointer-events:none;background:rgba(16,19,24,.9);color:#e8eaee;border:1px solid #3a414e;border-radius:6px;padding:3px 8px;font-size:12px;white-space:nowrap;box-shadow:0 2px 8px #0006}
 #linkBtn.on,#keepBtn.on{background:#2f5d8a;color:#fff;border-color:#4a86c2}
 .frow{display:flex;align-items:center;gap:8px;margin:5px 0}
 #critBox .frow>.fl{flex-basis:10.5em;display:block}#critBox .frow>.fl small{display:block;padding-left:34px}#critBox .frow>.fl>.dot{margin:0 5px 0 4px;vertical-align:-1px}
@@ -177,6 +186,10 @@ input[type=text]{flex:1}
 button{background:#2b3240;color:var(--ink);border:1px solid #3a4352;border-radius:6px;padding:5px 10px;font-size:13px;cursor:pointer}
 button:hover{background:#364052}
 button.pri{background:var(--acc);border-color:var(--acc);color:#04121f;font-weight:600}
+button.lblgo{padding:6px 14px;border-radius:16px}
+button.lblgo:hover{background:#7dbcff}
+button.lblsub{background:transparent;border-style:dashed;color:var(--mute)}
+button.lblsub:hover{background:#ffffff10;color:var(--ink)}
 button.x{padding:2px 7px;background:transparent;border-color:transparent;color:var(--mute)}
 button.x:hover{color:var(--warn)}
 .st{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:5px 8px;border:1px solid var(--line);border-radius:8px;margin:5px 0;background:#0f1115;cursor:pointer}
@@ -283,6 +296,9 @@ details.sec{margin-bottom:12px}
 .hetrow > input[type=checkbox]{justify-self:center}
 .hetrow .cname{white-space:nowrap}
 .hetrow select{font-size:12px;padding:3px 4px;width:100%}
+.hetrow > .hetwarn,.hetrow > .hetinfo{grid-column:2 / -1;font-size:11px;line-height:1.3;white-space:normal}
+.hetrow > .hetwarn{color:#ffb454}
+.hetrow > .hetinfo{color:#8fb8e8}
 .hetrow > .desc{grid-row:2;grid-column:2 / -1;font-size:11.5px;color:#b4bcc9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mmt.mms td{padding:2px 8px;cursor:pointer}
 .mmt.mms button{font-size:11px;padding:1px 8px}
@@ -329,6 +345,7 @@ details.sec{margin-bottom:12px}
 .sqr i.dr{background:#ffe14d;color:#000!important}
 #seq{user-select:none;-webkit-user-select:none}
 #info button{font-size:11px;padding:1px 6px;margin-left:8px}
+#info button#ixOpen.on{background:#2f6fd6;border-color:#5aa9ff;color:#fff}
 #info{max-width:calc(100% - 20px)}
 #flist,#info{user-select:none;-webkit-user-select:none}
 #addMode.on,#scBtn.on{background:#5aa9ff;color:#000;border-color:#5aa9ff}
@@ -658,6 +675,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="small" style="margin-bottom:6px">見出しを押すと開閉します。</div>
   <details class="sec" data-sec="look" open><summary><b>① 全体の見た目</b><span class="sechint">背景・質感・輪郭線・回転</span></summary>
   <div class="secbody">
+  <div class="frow"><span class="fl">回転</span><div class="fc"><input type="range" id="spinV" min="0" max="10" step="1" value="0" title="0 で止まります。右へ動かすほど速く回ります"><span class="lv" id="spinVV">止める</span></div><input type="checkbox" id="spin" hidden></div>
   <div class="frow"><span class="fl">投影</span><select id="cam"><option value="perspective">透視投影</option><option value="orthographic">平行投影</option></select></div>
   <div class="frow"><span class="fl">背景</span><div class="fc"><input type="range" id="bgR" min="0" max="100" step="5" value="100" title="左が白、右が黒"><span class="lv" id="bgRV">黒</span></div><input type="hidden" id="bg" value="black"></div>
   <div class="subh">光と質感</div>
@@ -668,7 +686,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
       <option value="soft">淡い（やわらかい光）</option>
     </select></div>
   <div class="frow"><span class="fl">陰影<small>光の当たり方</small></span><div class="fc"><input type="range" id="shade" min="0" max="100" step="5" value="100" title="0 にすると光の向きによる明暗がなくなり、絵の具で塗ったような一様な色になります。上げるほど立体的な陰影が付きます（質感を選ぶと、その質感の標準の値になります）"><span class="lv" id="shadeV">100</span></div></div>
-  <div class="frow"><span class="fl">奥行きのぼかし</span><div class="fc"><input type="range" id="fogR" min="0" max="100" step="5" value="75" title="奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし"><span class="lv" id="fogRV">75</span></div></div>
+  <div class="frow"><span class="fl">奥行き</span><div class="fc"><input type="range" id="fogR" min="0" max="100" step="5" value="75" title="奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし"><span class="lv" id="fogRV">75</span></div></div>
   <div class="subh">輪郭線</div>
   <div class="frow"><span class="fl">太さ</span><div class="fc"><input type="range" id="olW" min="0" max="5" step="0.1" value="0" title="描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。0 で輪郭線なし"><span class="lv" id="olWV">なし</span></div></div>
   <div class="frow"><span class="fl">色</span><div class="fc"><input type="range" id="olGrey" min="0" max="100" step="5" value="0" title="左が黒、右が白"><span class="lv" id="olGreyV">自動</span></div></div>
@@ -683,10 +701,6 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="row" style="display:none">
     <label><input type="checkbox" id="seqOn" checked> 配列（1文字）を画面下に表示</label>
   </div>
-  <div class="row">
-    <label><input type="checkbox" id="spin"> 回転</label>
-    <button id="resetView">全体表示</button>
-  </div>
   </div>
   </details>
   <details class="sec" data-sec="label"><summary><b>② ラベル</b><span class="sechint">解析用 / 図用（重ならないように並べる）</span></summary>
@@ -694,6 +708,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="row">
     <label><input type="checkbox" id="lblBold" checked> 太字</label>
     <label><input type="checkbox" id="lblHalo" checked> 縁取り</label>
+    <label class="lblFigOnly"><input type="checkbox" id="lblLine" checked> 引き出し線</label>
   </div>
   <div class="frow"><span class="fl">表示</span><select id="lblMode" title="解析用：ラベルを残基の上に固定し、手前の分子に隠れた残基のラベルは薄く表示します。図用：ドラッグや自動配置で文字が重ならないように整えられます">
       <option value="ngl">解析用（残基の上・奥は薄く）</option><option value="fig">図用（動かせる・重ならないように並べる）</option>
@@ -704,12 +719,9 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
   <div class="frow"><span class="fl">文字の大きさ</span><select id="lblSize"><option value="11">小</option><option value="14" selected>中</option><option value="18">大</option><option value="24">特大</option></select></div>
   <div class="frow"><span class="fl">文字の色</span><select id="lblColor" title="ラベルの文字色。「Chainの色」はカートゥーンと同じ色（N末→C末の色分けのときはその残基の色）。白背景では淡い色を少し濃くして読みやすくします"><option value="mono">白・黒（背景に合わせる）</option><option value="chain">Chainの色</option></select></div>
   <div class="frow"><span class="fl">文字の背景</span><select id="lblBg" title="ラベルの文字の後ろに付ける背景。解析用・図用のどちらにも、書き出す画像にも効きます。白なら文字は黒、黒なら文字は白になります"><option value="none">なし</option><option value="auto">自動（画面の背景に合わせた半透明）</option><option value="white">白</option><option value="black">黒</option></select></div>
-  <div class="row lblFigOnly">
-    <label><input type="checkbox" id="lblLine" checked> 引き出し線</label>
-  </div>
   <div class="row">
-    <button id="lblAuto" title="図用の表示に切り替えて、重なっているラベルを、元の残基からなるべく離れないように押し広げます">ラベルを自動配置</button>
-    <button id="lblReset" class="lblFigOnly" title="動かしたラベルをすべて元の位置（残基の上）に戻します">位置をリセット</button>
+    <button id="lblAuto" class="pri lblgo" title="図用の表示に切り替えて、重なっているラベルを、元の残基からなるべく離れないように押し広げます">✦ ラベルを自動配置</button>
+    <button id="lblReset" class="lblFigOnly lblsub" title="動かしたラベルをすべて元の位置（残基の上）に戻します">位置をリセット</button>
   </div>
   </div>
   </details>
@@ -801,7 +813,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <div id="lblLayer"><svg id="lblLines"></svg></div>
     <div id="boxLayer"><div id="boxRect"></div></div>
     <div id="vtools"><div class="vrow"><button id="undoBtn" disabled title="1つ前の表示に戻す（Ctrl／⌘＋Z）">↶ 戻す</button><button id="redoBtn" disabled title="戻した操作をやり直す（Ctrl／⌘＋Shift＋Z）">↷</button><button id="boxBtn" title="オンの間は、分子ウィンドウ上でドラッグした四角の中の残基をまとめて選択します（Alt／Option を押しながらドラッグでも同じ）。Ctrl／⌘／Shift を押しながら、または「＋ 追加選択」がオンのときは選択に追加します">▭ 範囲選択</button></div><div class="vrow"><select id="measKind" style="display:none" title="測るもの"><option value="2">距離（2原子）</option><option value="3">角度（3原子）</option><option value="4">二面角（4原子）</option></select><button id="measBtn" title="オンの間は、タップ（クリック）した原子どうしの距離・角度・二面角を測ります（Esc でオフ）">📏 測定</button><button id="fullBtn" title="分子ウィンドウだけを画面いっぱいに表示します（F キー。もう一度押すか Esc で戻る）">⛶ 全画面</button></div><div id="measPanel"></div></div>
-    <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="scBtn" title="選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「③ クリックしたときの表示」と同じ設定）">周囲 5 Å</button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
+    <div id="info"><span id="infoT"></span><button id="selSave" title="いまの選択に名前を付けて保存します（画面下の「保存した選択」に入ります）">★ 選択を保存</button><button id="scBtn" title="選んだ残基の周囲もスティック表示するかどうか（「表示・出力」タブの「③ クリックしたときの表示」と同じ設定）">周囲 5 Å</button><button id="ixOpen" style="display:none" title="画面下の「相互作用」タブを開いて、選んだ残基の相互作用の一覧を表示します"><span>⇄ 相互作用</span> <span id="ixOpenN"></span></button><button id="addMode" title="オンの間は、タップ（クリック）した残基を選択に追加します。キーボードの Ctrl／⌘ と同じ働きです。タブレット向け">＋ 追加選択</button><button id="keepBtn" style="display:none" title="ほかの構造の残基をクリックしても、この構造の選択（スティックと相互作用）を残します">📌 残す</button><button id="linkBtn" style="display:none" title="ほかの構造でも、同じ Chain 名・残基番号の残基をスティック表示します（相互作用も構造ごとに計算）">🔗 連動</button></div>
     <div id="status" class="show">PDB IDを入力して「読込」</div>
     <div id="deerRun" title="処理中"><svg viewBox="0 -4 60 44">
  <defs>
@@ -903,7 +915,13 @@ function deerLoop(ts) {
 function deerStart() { if (!deerRaf && typeof requestAnimationFrame !== 'undefined') deerRaf = requestAnimationFrame(deerLoop); }
 
 /* a message ending in "…" means work is in progress: the running deer is shown until the next message (or 90 s at most) */
-let deerT = 0;
+let deerT = 0, deerByStatus = false, deerByNgl = false;
+function deerSync() {
+  const d = document.getElementById('deerRun'); if (!d) return;
+  const on = deerByStatus || deerByNgl, was = d.classList.contains('on');
+  d.classList.toggle('on', on); if (on) deerStart();
+  if (on !== was) { try { layoutBottom(); } catch (e) {} }
+}
 /* the operation record (like PyMOL's log): every message shown at the bottom of the molecule window, selections, and errors;
    messages of work in progress ("…") are left out, their result follows */
 const OPLOG = [];
@@ -931,7 +949,8 @@ function status(msg, err) {
     if (!(!err && /…\s*$/.test(String(msg)))) statusT = setTimeout(() => s0.classList.remove('show'), err ? 8000 : 5000); } }
   const s = $('#status'); s.textContent = msg; s.classList.toggle('err', !!err); if (err) log(msg);
   const busy = !err && /…\s*$/.test(String(msg)), d = document.getElementById('deerRun');
-  if (d) { d.classList.toggle('on', busy); clearTimeout(deerT); if (busy) { deerStart(); deerT = setTimeout(() => { d.classList.remove('on'); try { layoutBottom(); } catch (e) {} }, 90000); } }
+  deerByStatus = busy; clearTimeout(deerT); if (busy) deerT = setTimeout(() => { deerByStatus = false; deerSync(); }, 90000);
+  deerSync();
   try { layoutBottom(); } catch (e) {}
 }
 
@@ -950,7 +969,7 @@ const EXACT = new Map(Object.entries({
   "灰色（外形を見る）": "Grey (to see the shape)", "表面の描き方": "Surface style", "塗り": "Filled", "網目": "Mesh", "塗りつぶすか、網目（メッシュ）で描くか": "Filled or as a mesh", "表面の種類": "Surface type", "分子表面": "Molecular", "溶媒露出面": "Solvent-accessible", "ファンデルワールス": "van der Waals", "vdW": "vdW", "表面の細かさ": "Surface detail", "大きくするほど細かくなめらかになりますが、計算に時間がかかります（大きな構造では注意）": "Higher values are finer and smoother but take longer to compute (careful with large structures)", "分子表面：溶媒（半径 1.4 Å の球）が触れる境界（もっとも一般的）。溶媒露出面：溶媒の球の中心が通る面（一回り大きい）。ファンデルワールス面：原子の球をそのまま重ねた面": "Molecular surface: the boundary touched by a solvent sphere of radius 1.4 Å (the usual one). Solvent-accessible: the surface traced by the centre of that sphere (larger). van der Waals: the union of the atom spheres",
   "透視投影": "Perspective", "平行投影": "Orthographic", "標準": "Standard", "マット": "Matte", "フラット": "Flat", "淡い": "Soft", "二次構造をはっきり": "Clear secondary structure", "濃く": "Darker", "淡く": "Lighter", "灰色": "Grey", "白": "White", "黒": "Black", "解析用": "Analysis", "図用": "Figure", "界面のみ": "Interfaces only", "付ける": "Always", "付けない": "Never", "白・黒": "White/black", "Chainの色": "Chain colour", "なし": "None", "自動": "Auto", "主鎖＋側鎖": "Main + side chain", "側鎖のみ": "Side chain only", "全体": "Whole", "骨格のみ": "Backbone only", "塩基のみ": "Base only", "表示中すべて": "All shown", "クリックした残基のみ": "Clicked residue only", "ドット": "Dots", "点線": "Dashed line", "半透明": "See-through", "背景色に近づける": "Toward background", "画面と同じ": "As on screen",
   '表示する範囲': 'What is shown', '描く部分': 'parts drawn', '範囲': 'Scope', '疎水性': 'Hydrophobic', '強調する範囲': 'Highlighted radius', '薄くする方法': 'How to fade', '外側の濃さ': 'Outside strength',
-  '光沢・陰影の初期値': 'gloss, default shading', '光と質感': 'Light and material', '色': 'Colour', '描き方': 'Style', '炭素の色': 'Carbon colour', 'スティック': 'Sticks', 'カートゥーン': 'Cartoon',
+  '光沢・陰影の初期値': 'gloss, default shading', '光と質感': 'Light and material', '奥行き': 'Depth', '回転': 'Spin', '止める': 'Off', '色': 'Colour', '描き方': 'Style', '炭素の色': 'Carbon colour', 'スティック': 'Sticks', 'カートゥーン': 'Cartoon',
   '左が白、右が黒': 'Left white, right black', '左端は自動（白い背景では黒、暗い背景では明るい灰色）。その右は黒から白': 'Left end: automatic (black on a white background, light grey on a dark one); then black to white',
   "陰影": "Shading", "光の当たり方": "lighting", "0 にすると光の向きによる明暗がなくなり、絵の具で塗ったような一様な色になります。上げるほど立体的な陰影が付きます（質感を選ぶと、その質感の標準の値になります）": "At 0 there is no shading from the light direction, so each part is a flat colour, as if painted. Higher values give more three-dimensional shading (choosing a material sets its usual value)", "平ら": "Flat", "太さ": "width", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます。0 で輪郭線なし": "Lines of even width are drawn on the finished picture wherever there is a step in depth. 0 = no outline", "チェックを外すと自動（白い背景では黒、暗い背景では明るい灰色）": "Unticked: automatic (black on a white background, light grey on a dark one)", "指定": "Set", "左が黒、右が白": "Left black, right white", "自動": "Auto", "奥にあるものほど背景の色に近づけて、手前を目立たせます。0 でぼかしなし": "Parts further back are blended toward the background so the front stands out. 0 = none",
   "輪郭線の色": "Outline colour", "「自動」は白い背景では黒、暗い背景では明るい灰色にします": "\"Auto\" uses black on a white background and light grey on a dark one", "自動（背景に合わせる）": "Auto (to suit the background)", "濃い灰色": "Dark grey", "描き終えた絵の上で、手前と奥の段差がある所に同じ太さの線を引きます": "Lines of even width are drawn on the finished picture wherever there is a step in depth",
@@ -1029,7 +1048,7 @@ const EXACT = new Map(Object.entries({
   '図用の表示に切り替えて、重なっているラベルを、元の残基からなるべく離れないように押し広げます': 'Switches to figure labels and spreads overlapping labels apart while keeping them near their residues', '残基ラベル': 'Residue labels', '表記: Arg51': 'Style: Arg51', '表記: R51': 'Style: R51', '表記: ARG51': 'Style: ARG51',
   'Chain名: 界面解析のときだけ': 'Chain: interface analysis only', 'Chain名: 付ける': 'Chain: always', 'Chain名: 付けない': 'Chain: never',
   '文字: 小': 'Text: small', '文字: 中': 'Text: medium', '文字: 大': 'Text: large', '文字: 特大': 'Text: extra large', '太字': 'Bold', '縁取り': 'Halo', '引き出し線': 'Leader lines',
-  'ラベルを自動配置': 'Arrange labels', '位置をリセット': 'Reset positions', 'ラベルの位置を元に戻しました': 'Label positions reset', '配置するラベルがありません': 'No labels to arrange',
+  'ラベルを自動配置': 'Arrange labels', '✦ ラベルを自動配置': '✦ Arrange labels', '位置をリセット': 'Reset positions', 'ラベルの位置を元に戻しました': 'Label positions reset', '配置するラベルがありません': 'No labels to arrange',
   'ラベルはドラッグ（タブレットでは指でなぞる）で動かせます。動かした位置は書き出す画像とセッションにも入ります。': 'Drag a label (slide with a finger on tablets) to move it. Moved positions are kept in exported images and sessions.',
   '重なっているラベルを、元の残基からなるべく離れないように押し広げます': 'Spreads overlapping labels apart while keeping them near their residues',
   '動かしたラベルをすべて元の位置（残基の上）に戻します': 'Moves all labels back onto their residues', '輪郭線: なし': 'Outline: none', '輪郭線: 細め': 'Outline: thin', '輪郭線: 標準': 'Outline: standard', '輪郭線: 太め': 'Outline: thick',
@@ -1065,7 +1084,7 @@ const EXACT = new Map(Object.entries({
   '配色: パステル': 'Colours: pastel',
   '配色: 全部グレー': 'Colours: all grey',
   '構造を読み込むとChainが表示されます': 'Chains appear here after loading a structure',
-  'リガンド': 'Ligands',
+  'リガンド': 'Ligands', '⇄ 相互作用': '⇄ Interactions', 'この種類の場所にズーム': 'Zoom to this kind', '画面下の「相互作用」タブを開いて、選んだ残基の相互作用の一覧を表示します': 'Opens the Interactions tab under the viewer with the list for the selected residues', '0 で止まります。右へ動かすほど速く回ります': '0 stops; further right spins faster',
   'リガンドの炭素の色': 'Ligand carbon colour',
   'イオン': 'Ions',
   '水': 'Water',
@@ -1277,6 +1296,8 @@ const PATTERNS = [
   P(/^([\d.]+)×$/, (m, v) => `${v}×`),
   P(/^×([\d.]+)$/, (m, v) => `×${v}`),
   P(/^「(.+)」の太さを(.+)にしました（画面下の「保存した選択」で変更・解除できます）$/, (m, n, w) => `"${n}" thickness set to ${w === '全体と同じ' ? 'the same as the rest' : w} (change or remove it in the "Saved selections" tab)`),
+  P(/^(.+): リガンド (\d+) 個の結合を化合物辞書（wwPDB CCD）の定義に合わせて描き直しました（座標から距離で決めた結合が辞書と違っていたため）$/, (m, n, k) => `${n}: bonds of ${k} ligand${k > 1 ? 's' : ''} redrawn from the wwPDB Chemical Component Dictionary (the bonds found from distances differed from the dictionary)`),
+  P(/^(.+): (\S+) は化合物辞書の (\d+) 原子のうち (?:(\S+) )?(\d+) 原子の座標がファイルにありません（(\d+)\/(\d+) 個）。ない原子は描いていません$/, (m, n, rn, t, list, k, a, b) => `${n}: ${rn} — ${k} of the ${t} dictionary atoms${list ? ' (' + list.split('・').join(', ') + ')' : ''} have no coordinates in the file (${a}/${b} copies); they are not drawn`),
   P(/^(.+): 金属の配位 (\d+) 本は共有結合として描かず、相互作用（配位）の点線で示します$/, (m, n, k) => `${n}: ${k} metal coordination bonds are not drawn as covalent bonds; they are shown as dashed coordination lines`),
   P(/^前回の作業を復元しました（構造 (\d+) 個、(.+) の状態）$/, (m, n, d) => `Previous work restored (${n} structure${n === '1' ? '' : 's'}, as of ${d})`),
   P(/^([^（）]+?)(?: ほか (\d+) 個)?（([^（）]+) の状態）$/, (m, n, k, d) => `${n.replace(/、/g, ', ')}${k ? ` and ${k} more` : ''} (as of ${d})`),
@@ -1530,6 +1551,21 @@ if (LANG === 'en') setLang('en');
 
 // field of view 20° (NGL's default is 40°): the same as PyMOL, so close-ups of rings and side chains are not stretched by perspective
 const stage = new NGL.Stage('viewport', {backgroundColor: 'black', tooltip: true, cameraFov: 20});
+/* NGL counts the work still running (surfaces are built in a background worker): the deer runs while that takes over 0.4 s.
+   NGL's overall count can stay above zero when a representation is removed mid-build, so the representations that
+   still exist are asked one by one; and the deer stops after 60 s whatever happens */
+{ let t = 0, t0 = 0;
+  const pending = () => { let n = 0; try { stage.compList.forEach(c => c.reprList.forEach(r => { if (r.repr && r.repr.tasks && r.repr.tasks.count > 0) n++; })); } catch (e) {} return n; };
+  const check = () => {
+    clearTimeout(t);
+    const busy = pending() > 0;
+    if (busy && !t0) t0 = Date.now();
+    if (!busy) t0 = 0;
+    const on = busy && Date.now() - t0 > 400 && Date.now() - t0 < 60000;
+    if (on !== deerByNgl) { deerByNgl = on; deerSync(); }
+    if (busy && Date.now() - t0 < 60000) t = setTimeout(check, on ? 300 : 420);
+  };
+  try { stage.tasks.signals.countChanged.add(() => { clearTimeout(t); t = setTimeout(check, 0); }); } catch (e) {} }
 addEventListener('resize', () => stage.handleResize());
 
 const PALETTES = {
@@ -1548,7 +1584,7 @@ if (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'Mac
 const MAP_EXT = {ccp4:'ccp4', map:'ccp4', mrc:'mrc', dsn6:'dsn6', omap:'dsn6', brix:'brix', dx:'dx', cube:'cube'};
 const SRV = 'https://www.ebi.ac.uk/pdbe/densities';
 
-let focusShape = null, seqData = [];
+let focusShape = null, seqData = [], ligData = [];
 let structSrc = null, comp = null, pdbId = '', chains = [], hetReps = [], extras = [], maps = [], servers = [], focusReps = [], lastFocus = null;
 const hexNum = h => parseInt(h.slice(1), 16);
 const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));   // file-derived text put into innerHTML
@@ -1712,6 +1748,146 @@ function dropMetalBonds(st) {
   if (removed) { bs.count = w; st.finalizeBonds(); }
   return removed;
 }
+/* ligand bonds from the wwPDB Chemical Component Dictionary: NGL joins the atoms of a ligand by their distances, so a
+   ligand modelled with distorted geometry (old entries such as 4HHB, whose heme propionates are 0.9–2.3 Å apart) loses
+   bonds or gains wrong ones. The bond list of each ligand (non-polymer, 2 or more atoms) is fetched once from RCSB PDB
+   (files.rcsb.org/ligands/download/XXX.cif), kept in the browser, and replaces the bonds inside each copy of that ligand */
+const CCD_DEF_KEY = 'pdv_ccd_def';
+const ccdDefs = (() => { try { return JSON.parse(localStorage.getItem(CCD_DEF_KEY) || '{}'); } catch (e) { return {}; } })();
+function cifTokens(line) {
+  const out = []; let i = 0;
+  while (i < line.length) {
+    const ch = line[i];
+    if (ch === ' ' || ch === '\t') { i++; continue; }
+    if (ch === "'" || ch === '"') { let j = i + 1; while (j < line.length && !(line[j] === ch && (j + 1 === line.length || /\s/.test(line[j + 1])))) j++; out.push(line.slice(i + 1, j)); i = j + 1; continue; }
+    let j = i; while (j < line.length && !/\s/.test(line[j])) j++; out.push(line.slice(i, j)); i = j;
+  }
+  return out;
+}
+/* rows of one category of a CIF text, as objects; handles both loop_ and single-row (key value) forms */
+function cifRows(txt, cat) {
+  const L = txt.split(/\r?\n/), pre = '_' + cat + '.', rows = [];
+  for (let i = 0; i < L.length; i++) {
+    const t0 = L[i].trim();
+    if (t0 === 'loop_' && (L[i + 1] || '').trim().startsWith(pre)) {
+      const cols = []; let j = i + 1;
+      while (j < L.length && L[j].trim().startsWith(pre)) cols.push(L[j++].trim().slice(pre.length));
+      let buf = [];
+      for (; j < L.length; j++) {
+        const t = L[j].trim(); if (!t || t === '#' || t === 'loop_' || t[0] === '_') break;
+        buf = buf.concat(cifTokens(t));
+        while (buf.length >= cols.length) { const r = buf.splice(0, cols.length), o = {}; cols.forEach((c, k) => o[c] = r[k]); rows.push(o); }
+      }
+      return rows;
+    }
+    if (t0.startsWith(pre)) {        // a single row written as key value lines
+      const o = {}; let j = i;
+      while (j < L.length && L[j].trim().startsWith(pre)) { const tk = cifTokens(L[j].trim()); o[tk[0].slice(pre.length)] = tk[1]; j++; }
+      return [o];
+    }
+  }
+  return rows;
+}
+function parseCcd(txt) {
+  const b = cifRows(txt, 'chem_comp_bond').map(o => [o.atom_id_1, o.atom_id_2, ({SING: 1, DOUB: 2, TRIP: 3, AROM: 1})[String(o.value_order).toUpperCase()] || 1]);
+  const a = cifRows(txt, 'chem_comp_atom').map(o => [o.atom_id, String(o.type_symbol || '').toUpperCase(), String(o.pdbx_leaving_atom_flag || 'N').toUpperCase() === 'Y' ? 1 : 0]);
+  return {b, a};
+}
+async function ccdDef(rn) {
+  if (ccdDefs[rn]) return ccdDefs[rn];
+  if (!/^[A-Z0-9]{1,5}$/i.test(rn)) return null;
+  try {
+    const r = await fetch(`https://files.rcsb.org/ligands/download/${encodeURIComponent(rn.toUpperCase())}.cif`);
+    if (!r.ok) return null;
+    const d = parseCcd(await r.text()); if (!d.a.length) return null;
+    ccdDefs[rn] = d;
+    try { localStorage.setItem(CCD_DEF_KEY, JSON.stringify(ccdDefs)); } catch (e) {}
+    return d;
+  } catch (e) { return null; }
+}
+/* heavy atoms of the dictionary that a copy of the ligand lacks in the file (leaving atoms, which go when the ligand is
+   bonded to something, are not counted); per kind: {missing: [names missing in every copy], some: copies lacking any, n: copies} */
+function ligandGaps(st, defs) {
+  const out = {};
+  st.eachResidue(r => {
+    const d = defs[r.resname]; if (!d || r.isPolymer() || r.isWater()) return;
+    const tplHeavy = d.a.filter(([, el, lv]) => el !== 'H' && el !== 'D' && !lv).map(([n]) => n), all = new Set(d.a.map(([n]) => n));
+    const have = new Set(); let foreign = false;
+    r.eachAtom(a => { if (a.element === 'H' || a.element === 'D') return; have.add(a.atomname); if (!all.has(a.atomname)) foreign = true; });
+    if (foreign) return;                             // atom names not from the dictionary: cannot tell
+    const miss = tplHeavy.filter(n => !have.has(n));
+    const o = out[r.resname] || (out[r.resname] = {missing: null, some: 0, n: 0, tpl: tplHeavy.length});
+    o.n++; if (miss.length) o.some++;
+    o.missing = o.missing === null ? miss : o.missing.filter(n => miss.includes(n));
+    o.max = Math.max(o.max || 0, miss.length);
+  });
+  return out;
+}
+/* replace the bonds inside each copy of the given ligands by the dictionary ones; returns the number of copies changed */
+function applyCcdBonds(st, lists) {
+  const bs = st.bondStore, ap = st.getAtomProxy(), bp = st.getAtomProxy();
+  const plans = [];              // [atom index set of the residue, [[i, j, order] ...]]
+  st.eachResidue(r => {
+    const tpl = lists[r.resname]; if (!tpl || r.isPolymer() || r.isWater()) return;
+    const names = new Set(); for (const [n1, n2] of tpl) { names.add(n1); names.add(n2); }
+    const byName = new Map(), idx = new Set(); let dup = false, unknownHeavy = false;
+    r.eachAtom(a => {
+      if (byName.has(a.atomname)) dup = true;
+      if (!names.has(a.atomname)) { if (a.element !== 'H' && a.element !== 'D') unknownHeavy = true; return; }   // e.g. hydrogens named by another program keep NGL's bonds
+      byName.set(a.atomname, a.index); idx.add(a.index);
+    });
+    // alternative conformations under one name, or atom names that do not follow the dictionary (docking, custom ligands): leave as it is
+    if (dup || unknownHeavy || idx.size < 2) return;
+    const want = [];
+    for (const [n1, n2, o] of tpl) { const i = byName.get(n1), j = byName.get(n2); if (i !== undefined && j !== undefined) want.push([Math.min(i, j), Math.max(i, j), o]); }
+    if (!want.length) return;
+    // compare with the bonds NGL made inside this residue
+    const have = new Set();
+    for (let k = 0; k < bs.count; k++) { const i = bs.atomIndex1[k], j = bs.atomIndex2[k]; if (idx.has(i) && idx.has(j)) have.add(i + ':' + j); }
+    const wantS = new Set(want.map(([i, j]) => i + ':' + j));
+    if (have.size === wantS.size && [...have].every(k => wantS.has(k))) return;
+    plans.push([idx, want, r.resname]);
+  });
+  if (!plans.length) return {count: 0, byName: {}};
+  const inAny = new Map(); plans.forEach(([idx], p) => idx.forEach(i => inAny.set(i, p)));
+  const i1 = bs.atomIndex1, i2 = bs.atomIndex2, bo = bs.bondOrder; let w = 0;
+  for (let k = 0; k < bs.count; k++) {
+    const p = inAny.get(i1[k]);
+    if (p !== undefined && inAny.get(i2[k]) === p) continue;           // a bond inside a ligand being replaced
+    if (w !== k) { i1[w] = i1[k]; i2[w] = i2[k]; if (bo) bo[w] = bo[k]; }
+    w++;
+  }
+  bs.count = w;
+  plans.forEach(([, want]) => want.forEach(([i, j, o]) => { ap.index = i; bp.index = j; bs.addBond(ap, bp, o); }));
+  st.finalizeBonds();
+  const byName = {}; plans.forEach(([, , rn]) => byName[rn] = (byName[rn] || 0) + 1);
+  return {count: plans.length, byName};
+}
+async function fixLigandBonds(S) {
+  try {
+    const st = S.comp.structure, names = new Set();
+    // every ligand and ion kind except single atoms named after their element (ZN, MG, CL ...)
+    st.eachResidue(r => {
+      if (r.atomCount === 1) { let el = ''; r.eachAtom(a => el = (a.element || '').toUpperCase()); if (el === r.resname.toUpperCase()) return; }
+      names.add(r.resname);
+    }, new NGL.Selection('/0 and (ligand or ion) and not water'));
+    if (!names.size) return;
+    const defs = {};
+    await Promise.all([...names].map(async rn => { const d = await ccdDef(rn); if (d) defs[rn] = d; }));
+    if (!structs.includes(S) || S.comp.structure !== st || !Object.keys(defs).length) return;
+    const lists = {}; Object.entries(defs).forEach(([rn, d]) => { if (d.b.length) lists[rn] = d.b; });
+    const before = {}; st.eachResidue(r => { before[r.index] = r.resname; });
+    const fixed = applyCcdBonds(st, lists);
+    const gaps = ligandGaps(st, defs);
+    S.hetNote = {};
+    Object.entries(gaps).forEach(([rn, g]) => { if (g.some) S.hetNote[rn] = {...(S.hetNote[rn] || {}), gap: g}; });
+    Object.entries(fixed.byName || {}).forEach(([rn, n]) => { S.hetNote[rn] = {...(S.hetNote[rn] || {}), fixed: n}; });
+    if (fixed.count) { S.comp.rebuildRepresentations(); try { if (structs[active] === S) applyHet(); } catch (e) {} }
+    try { if (structs[active] === S) renderHet(); } catch (e) {}
+    if (fixed.count) oplog(`${S.name}: リガンド ${fixed.count} 個の結合を化合物辞書（wwPDB CCD）の定義に合わせて描き直しました（座標から距離で決めた結合が辞書と違っていたため）`);
+    Object.entries(gaps).forEach(([rn, g]) => { if (g.some) oplog(`${S.name}: ${rn} は化合物辞書の ${g.tpl} 原子のうち ${g.missing.length ? g.missing.join('・') + ' ' : ''}${g.max} 原子の座標がファイルにありません（${g.some}/${g.n} 個）。ない原子は描いていません`); });
+  } catch (e) { log('ligand bonds: ' + (e.message || e)); }
+}
 async function loadStructure(src, o, srcInfo, pid) {
   status('構造を読み込み中…');
   let c;
@@ -1736,6 +1912,7 @@ async function loadStructure(src, o, srcInfo, pid) {
   if (ssAdded.length) log(`${name}: 距離から追加した S–S 結合 ${ssAdded.length} 本: ${ssAdded.join('、')}`);
   if (mDrop) oplog(`${name}: 金属の配位 ${mDrop} 本は共有結合として描かず、相互作用（配位）の点線で示します`);
   if (st.pdbId) fetchEntryInfo(st);
+  fixLigandBonds(st);
   return st;
 }
 function disposeStructDrawings(st) {
@@ -1772,7 +1949,7 @@ function clearAll() {
   servers.forEach(s => s.ctrl && s.ctrl.abort());
   symJob++;
   stage.removeAllComponents();
-  structs = []; active = -1; maps = []; servers = []; seqData = [];
+  structs = []; active = -1; maps = []; servers = []; seqData = []; ligData = [];
   loadGlobals(emptyState()); uiWrite(defaultUI());
   renderAllPanels(); renderMaps(); buildSeq();
 }
@@ -3225,7 +3402,9 @@ function hetGroups(S) {
   if (S.__hetG) return S.__hetG;
   const m = new Map();
   S.comp.structure.eachResidue(r => {
-    const kind = r.isWater() ? 'wat' : r.isIon() ? 'ion' : 'lig';      // the selection below already keeps only ligands, ions and water
+    // NGL's ion list also has polyatomic ions (SO4, PO4, ACT, NO3 ...): only single-atom ones (H not counted) are ions here
+    let heavy = 0; try { r.eachAtom(a => { if (a.element !== 'H' && a.element !== 'D') heavy++; }); } catch (e) { heavy = 1; }
+    const kind = r.isWater() ? 'wat' : (r.isIon() && heavy <= 1) ? 'ion' : 'lig';      // the selection below already keeps only ligands, ions and water
     const k = r.resname; if (!m.has(k)) {
       // the name: the entity description of an mmCIF file (e.g. "ZINC ION"), when there is one
       let name = '';
@@ -3261,6 +3440,24 @@ function hetName(g) {
   }
   return '';
 }
+/* a short note under a ligand: atoms the file lacks, or bonds taken from the dictionary */
+function hetNoteHtml(S, g) {
+  const n = S && S.hetNote && S.hetNote[g.rn]; if (!n) return '';
+  const en = LANG === 'en', out = [];
+  if (n.gap) {
+    const G = n.gap, list = G.missing.length ? G.missing.join(', ') : '';
+    const all = G.some === G.n;
+    out.push(`<span class="hetwarn" title="${esc(en
+      ? `The Chemical Component Dictionary lists ${G.tpl} heavy atoms for ${g.rn}; ${all ? 'every copy' : `${G.some} of ${G.n} copies`} in this file lack${all ? 's' : ''} coordinates for ${list || 'some of them'} (up to ${G.max}). Atoms without coordinates are not drawn.`
+      : `化合物辞書では ${g.rn} は ${G.tpl} 原子（水素を除く）。このファイルでは ${all ? 'すべて' : `${G.n} 個中 ${G.some} 個`}で ${list || '一部の原子'} の座標がありません（最大 ${G.max} 原子）。座標のない原子は描いていません`)}">⚠ ${en
+      ? `${list ? list + ' ' : ''}not in the file (${G.max} atom${G.max > 1 ? 's' : ''} not drawn${all ? '' : `, ${G.some}/${G.n} copies`})`
+      : `${list ? list + ' の' : ''}座標がファイルになく描いていません（${G.max} 原子${all ? '' : `・${G.n} 個中 ${G.some} 個`}）`}</span>`);
+  }
+  if (n.fixed) out.push(`<span class="hetinfo" title="${esc(en
+      ? 'The coordinates of this ligand give bonds that differ from the Chemical Component Dictionary (distorted geometry, as in old entries), so its bonds follow the dictionary'
+      : '座標から距離で決めた結合が化合物辞書と違っていたため（古いエントリーなどで座標がゆがんでいる）、結合は辞書の定義で描いています')}">ⓘ ${en ? 'bonds drawn from the dictionary (distorted coordinates)' : '座標がゆがんでいるため、結合は化合物辞書の定義で描画'}</span>`);
+  return out.join('');
+}
 function renderHet() {
   const el = $('#hetList'); if (!el) return;
   const S = structs[active], H = hetGroups(S);
@@ -3268,13 +3465,13 @@ function renderHet() {
   const cfg = (S && S.het) || {};
   el.innerHTML = `<div class="hett">${H.map(g => {
     const c = cfg[g.rn] || {}, col = c.color || (g.kind === 'lig' ? $('#ligColor').dataset.v : g.kind === 'wat' ? '#ff5050' : '');
-    const st = c.style || (g.kind === 'lig' ? 'ball+stick' : 'sphere'), nm = hetName(g);
+    const st = HET_STYLES[g.kind].some(([v]) => v === c.style) ? c.style : (g.kind === 'lig' ? 'ball+stick' : 'sphere'), nm = hetName(g);
     return `<div class="hetrow" data-rn="${esc(g.rn)}"><input type="checkbox" data-k="show" ${hetShown(g, c) ? 'checked' : ''} title="この種類を表示する">
       <span class="cname">${esc(g.rn)} <span class="small">×${g.n}</span></span>
       <button class="sw" data-k="col" style="background:${col || 'linear-gradient(135deg,#9aa 0 50%,#c8c 50% 100%)'}" title="${g.kind === 'lig' ? '炭素の色（N・O などは元素の色）' : '色（元に戻すときは「元素の色」）'}"></button>
       <select data-k="style">${HET_STYLES[g.kind].map(([v, t]) => `<option value="${v}"${v === st ? ' selected' : ''}>${t}</option>`).join('')}</select>
       <button class="x" data-k="zoom" title="この種類の場所にズーム">◎</button>
-      ${nm ? `<span class="desc" title="${esc(nm)}">${esc(nm)}</span>` : ''}</div>`;
+      ${nm ? `<span class="desc" title="${esc(nm)}">${esc(nm)}</span>` : ''}${hetNoteHtml(S, g)}</div>`;
   }).join('')}</div>`;
 }
 function hetSet(rn, patch) {
@@ -3298,6 +3495,24 @@ $('#hetList').addEventListener('click', e => {
     g.kind === 'lig' ? null : {label: '元素の色に戻す', onClick: () => hetSet(g.rn, {color: null})});
   if (k === 'zoom') { try { S.comp.autoView(`[${g.rn}] and (ligand or ion or water) and /0`, 600); } catch (er) {} }
 });
+/* bonds that join a ligand to another residue (other ligand, or polymer); cached per structure */
+function ligandLinks(S) {
+  if (!S || !S.comp) return [];
+  const st = S.comp.structure;
+  if (S.__links && S.__links.bc === st.bondStore.count) return S.__links.list;
+  const bs = st.bondStore, a = st.getAtomProxy(), b = st.getAtomProxy(), list = [];
+  for (let k = 0; k < bs.count; k++) {
+    a.index = bs.atomIndex1[k]; b.index = bs.atomIndex2[k];
+    if (a.residueIndex === b.residueIndex || a.modelIndex !== 0) continue;
+    const la = !a.isPolymer() && !a.isWater(), lb = !b.isPolymer() && !b.isWater();
+    if (!la && !lb) continue;
+    const pa = la ? null : a, pb = lb ? null : b, P = pa || pb;
+    list.push({i: a.index, j: b.index, ligs: [la ? a.resname : null, lb ? b.resname : null].filter(Boolean),
+      poly: P ? {key: P.chainname + ':' + P.resno + (P.inscode || ''), chain: P.chainname, resno: P.resno, ins: P.inscode || ''} : null});
+  }
+  S.__links = {bc: bs.count, list};
+  return list;
+}
 function applyHet() {
   if (!comp) return;
   hetReps.forEach(r => comp.removeRepresentation(r)); hetReps = [];
@@ -3313,21 +3528,38 @@ function applyHet() {
   // each kind of ligand / ion (by residue name) can have its own colour and style (the table under the chains); kinds
   // without settings use the defaults: ligands ball & stick in the ligand colour, ions as small spheres, water red dots
   const S = structs[active], H = hetGroups(S), cfg = (S && S.het) || {};
-  const sel = g => `[${g.rn}] and (${g.kind === 'wat' ? 'water' : g.kind === 'ion' ? 'ion' : 'ligand'}) and not hydrogen`;
+  const sel = g => `[${g.rn}] and (${g.kind === 'wat' ? 'water' : g.kind === 'ion' ? 'ion' : 'ligand or ion'}) and not hydrogen`;
   H.forEach(g => {
     const c = cfg[g.rn] || {};
     if (!hetShown(g, c)) return;
     const col = c.color || (g.kind === 'lig' ? $('#ligColor').dataset.v : null);
-    const st = c.style || (g.kind === 'lig' ? 'ball+stick' : 'sphere');
+    const st = HET_STYLES[g.kind].some(([v]) => v === c.style) ? c.style : (g.kind === 'lig' ? 'ball+stick' : 'sphere');
     const el = col ? {color: 'element', colorValue: hexNum(col)} : {color: 'element'};
     const uni = col ? {color: col} : (g.kind === 'wat' ? {color: '#ff5050'} : {color: 'element'});
     const p = g.kind === 'lig' ? el : uni;
     if (st === 'licorice') add('licorice', sel(g), {...el, radiusScale: stickK});
-    else if (st === 'ball+stick') add('ball+stick', sel(g), {...p, radiusScale: stickK});
+    else if (st === 'ball+stick') { add('licorice', sel(g), {...p, radiusScale: 0.55 * stickK}); add('spacefill', sel(g), {...p, radiusType: 'vdw', radiusScale: 0.19 * (1 + (stickK - 1) / 2)}); }
     else if (st === 'spacefill') add('spacefill', sel(g), {...p});
     else if (st === 'surface') { add('licorice', sel(g), {...el, radiusScale: 0.7 * stickK}); add('surface', sel(g), {color: col || '#c8c8c8', opacity: SURF_OP, surfaceType: 'av', probeRadius: 1.4, side: 'front', depthWrite: false, disablePicking: true}); }
     else add('spacefill', sel(g), {...p, radiusScale: g.kind === 'wat' ? 0.2 : 0.28});      // 'sphere': ions and water as small spheres
   });
+  // covalent links: each kind above is its own drawing, so a bond between two kinds (NAG–BMA in a glycan) or to the
+  // protein (NAG–Asn, retinal–Lys, palmitate–Cys, a covalent inhibitor) belonged to neither and was not drawn
+  try {
+    const L = ligandLinks(S), shown = new Set(H.filter(g => hetShown(g, cfg[g.rn] || {})).map(g => g.rn));
+    const ends = [], res = new Map();
+    L.forEach(k => {
+      if (!k.ligs.every(rn => shown.has(rn))) return;
+      ends.push(k.i, k.j);
+      if (k.poly) res.set(k.poly.key, k.poly);
+    });
+    if (ends.length) add('licorice', '@' + [...new Set(ends)].join(','), {color: 'element', colorValue: hexNum($('#ligColor').dataset.v), radiusScale: 0.55 * stickK});
+    // the linked protein / nucleic-acid residues: their side chain as sticks in the chain colour, so the link has something to hold on to
+    res.forEach(r => {
+      const ch = chains.find(c => c.name === r.chain); if (ch && !ch.visible) return;
+      add('licorice', `(${r.resno}${r.ins ? '^' + r.ins : ''}:${r.chain} and /0) and (sidechainAttached or _P) and not hydrogen`, {color: 'element', colorValue: hexNum((ch && ch.color) || '#cccccc'), radiusScale: 0.55 * stickK});
+    });
+  } catch (e) {}
   spotRefresh();
 }
 ['#showLig','#showIon','#showWat'].forEach(id => $(id).addEventListener('input', () => { applyHet(); drawSym(); }));
@@ -4822,7 +5054,7 @@ async function buildSession() {
       }
     }
     s.view = {meas: measToJSON(), scale: scaleOn, orientation: stage.viewerControls.getOrientation().toArray(), bg: $('#bg').value, cam: $('#cam').value, look: $('#look').value, shade, outline: outlineLevel, fog: +String(fogV), cartOp, sheetArrow, stickK, stickC, lbl: {...lblPref}, lblOff: [...lblOff],
-              focusSc: $('#focusSc').checked, focusR, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked,
+              focusSc: $('#focusSc').checked, focusR, focusSurf: $('#focusSurf').checked, focusZoom: $('#focusZoom').checked, spin: $('#spin').checked, spinSpeed: +$('#spinV').value,
               focusIx: $('#focusIx').checked, focusScope, focusDist: $('#focusDist').checked, seq: $('#seqOn').checked,
               hb: {...HBSET}, ifCat: {...ifCat}, focusCat: {...focusCat}, stick: {...stickPref},
               spot: {on: $('#spotOn').checked, r: +$('#spotR').value, op: +$('#spotOp').value, mode: $('#spotMode').value},
@@ -4993,7 +5225,7 @@ async function openSessionObj(s, auto) {
   maps.forEach(m => { if (m.mc && !m.visible) m.reps.forEach(r => r.setVisibility(false)); });
   const S = structs[active];
   if (S && S._focus) { lastFocus = Array.isArray(S._focus) ? S._focus : [S._focus]; setInfo(infoBase = infoFor(lastFocus)); focusOn(lastFocus, false); }
-  if (v.spin) { $('#spin').checked = true; stage.setSpin(true); }
+  if (v.spin) setSpinSpeed(v.spinSpeed || 3);
   if (v.orientation) stage.viewerControls.orient(v.orientation);
   status(auto ? `前回の作業を復元しました（構造 ${structs.length} 個、${new Date(s.saved).toLocaleString()} の状態）`
               : `セッションを復元しました（構造 ${structs.length} 個、保存日時 ${new Date(s.saved).toLocaleString()}）`);
@@ -5588,13 +5820,22 @@ function drawFocusShape() {
   const shown = focusItems.filter(it => itemShown(it) && !it._hid);
   if (shown.length) focusShape = lineShape(shown, $('#focusDist').checked);
 }
+/* the selection info's button that opens the interaction tab (it shows how many interactions there are) */
+function ixBtnSync() {
+  const b = document.getElementById('ixOpen'); if (!b) return;
+  const n = ixHas || 0;
+  b.style.display = lastFocus && n ? '' : 'none';
+  $('#ixOpenN').textContent = n ? String(n) : '';
+  b.classList.toggle('on', btab === 'ix');
+}
+document.getElementById('ixOpen').onclick = () => { btab = btab === 'ix' ? 'seq' : 'ix'; bottomUpdate(); ixBtnSync(); };
 function renderFlist() {
   const el = $('#flist');
-  if (!focusItems.length || !$('#focusListOn').checked || !$('#focusIx').checked) { el.innerHTML = ''; ixHas = 0; ixKey = ''; bottomUpdate(); return; }
-  // a new selection brings the interaction tab forward (not when it was made from the sequence, which stays in view)
-  const key = (lastFocus || []).map(focusKey).join(',');
-  if (key !== ixKey) { ixKey = key; if (performance.now() - seqTouch > 1500) btab = 'ix'; }
+  if (!focusItems.length || !$('#focusListOn').checked || !$('#focusIx').checked) { el.innerHTML = ''; ixHas = 0; ixKey = ''; ixBtnSync(); bottomUpdate(); return; }
+  // the bottom tab is left as it is (the user opens the interaction tab, or presses the button in the selection info)
+  ixKey = (lastFocus || []).map(focusKey).join(',');
   ixHas = focusItems.length;
+  ixBtnSync();
   const cnt = {}; focusItems.forEach(it => cnt[it.t] = (cnt[it.t] || 0) + 1);
   const order = Object.keys(IT).filter(t => cnt[t]);
   const rows = focusItems.map((it, i) => ({it, i})).sort((x, y) => order.indexOf(x.it.t) - order.indexOf(y.it.t) || (x.it.d ?? x.it.d1) - (y.it.d ?? y.it.d1));
@@ -5622,6 +5863,7 @@ const fOpen = () => fOpenSet !== null ? fOpenSet : $('#bpane').clientWidth >= 64
 function mmNow() { try { return !!mm; } catch (e) { return false; } }
 function nMeas() { try { return measures.length; } catch (e) { return 0; } }
 function bottomUpdate() {
+  try { ixBtnSync(); } catch (e) {}
   try { cellInfoSync(); } catch (e) {}
   try { mmTargetSync(); } catch (e) {}
   const hasSeq = !!($('#seqOn').checked && seqData.length), hasIx = ixHas > 0, hasGrp = structs.length > 0, hasIfc = !!ifc;
@@ -6214,6 +6456,19 @@ function applySelection(list, a, noHist) {
   focusOn(list, true);
 }
 function infoFor(list, a) {
+  if (list.length === 1) {
+    // a ligand with atoms missing from the file, or bonds taken from the dictionary: say so under the residue
+    const S = structs[active], rn = (a && a.resname) || list[0].resname, n = S && S.hetNote && rn && S.hetNote[rn], en = LANG === 'en';
+    if (n) {
+      const extra = [];
+      if (n.gap) extra.push(en ? `⚠ ${n.gap.missing.length ? n.gap.missing.join(', ') + ': ' : ''}no coordinates in the file, not drawn` : `⚠ ${n.gap.missing.length ? n.gap.missing.join('・') + ' の' : '一部の原子の'}座標がファイルになく、描いていません`);
+      if (n.fixed) extra.push(en ? 'ⓘ bonds drawn from the Chemical Component Dictionary (distorted coordinates)' : 'ⓘ 座標がゆがんでいるため、結合は化合物辞書の定義で描画');
+      return infoFor1(list, a) + '\n' + extra.join('\n');
+    }
+  }
+  return infoFor1(list, a);
+}
+function infoFor1(list, a) {
   return list.length === 1
     ? (a ? `${a.chainname} ・ ${a.resname} ${a.resno}${a.inscode || ''} ・ ${a.atomname} ・ B = ${a.bfactor.toFixed(1)}${a.occupancy < 1 ? ' ・ occ ' + a.occupancy.toFixed(2) : ''}`
          : `${list[0].chainname} ・ ${list[0].resname || ''} ${list[0].resno}${list[0].inscode || ''}`)
@@ -6360,7 +6615,7 @@ const ONE = {ALA:'A',ARG:'R',ASN:'N',ASP:'D',CYS:'C',GLN:'Q',GLU:'E',GLY:'G',HIS
   DA:'A',DT:'T',DG:'G',DC:'C',DU:'U',DI:'I',A:'A',U:'U',G:'G',C:'C',I:'I',T:'T'};
 function buildSeq() {
   stash();
-  seqData = [];
+  seqData = []; ligData = [];
   structs.forEach(S => {
     const st = S.comp.structure;
     S.chains.forEach(ch => {
@@ -6368,8 +6623,24 @@ function buildSeq() {
       st.eachResidue(r => res.push({rn: r.resname, rs: r.resno, ic: r.inscode || '', ti: r.traceAtomIndex}), new NGL.Selection(`:${ch.name} and polymer and /0`));
       seqData.push({sid: S.sid, ch: ch.name, res});
     });
+    // ligands and ions (not water) for the row under the sequences
+    st.eachResidue(r => ligData.push({sid: S.sid, ch: r.chainname, rn: r.resname, rs: r.resno, ic: r.inscode || '', ti: r.atomOffset}),
+      new NGL.Selection('/0 and (ligand or ion) and not water and not polymer'));
   });
   renderSeq();
+}
+/* ligands and ions as small buttons under the sequences, grouped by chain (like PyMOL's sequence view); water is left out */
+function ligRowHtml(multi) {
+  if (!ligData.length) return '';
+  let html = '', last = '';
+  ligData.forEach((l, li) => {
+    const S = structs.find(x => x.sid === l.sid); if (!S) return;
+    const ch = S.chains.find(c => c.name === l.ch), grp = `${l.sid}|${l.ch}`;
+    if (grp !== last) { html += `<span class="lgh">${esc(multi ? S.name + ':' : '')}${esc(l.ch || '-')}</span>`; last = grp; }
+    const g = hetGroups(S).find(x => x.rn === l.rn), nm = g ? hetName(g) : '';
+    html += `<span class="lgc${S.visible === false ? ' off' : ''}" data-l="${li}" data-k="${l.sid}|${l.ch}|${l.rs}|${l.ic}" style="border-color:${(ch && ch.color) || '#3a414e'}" title="${esc(`${l.ch}:${l.rn}${l.rs}${l.ic}${nm ? '（' + nm + '）' : ''}${LANG === 'en' ? ' — click to select and zoom; Ctrl/⌘+click adds to the selection' : '（クリックで選択・ズーム。Ctrl／⌘＋クリックで選択に追加）'}`)}">${esc(l.rn)}<small>${l.rs}${esc(l.ic)}</small></span>`;
+  });
+  return `<div class="sqlig"><span class="lgt">リガンド</span>${html}</div>`;
 }
 function renderSeq() {
   const el = $('#seq');
@@ -6398,15 +6669,16 @@ function renderSeq() {
     // long structure names are cut with "…" so the chain name stays visible; the full name is in the tooltip
     const lab = multi ? `<span class="sqn">${esc(S.name)}</span><span class="sqk">:${esc(s.ch)}</span>` : esc(s.ch);
     return `<div class="sqr${shown ? '' : ' off'}" style="color:${ch.color}"><span class="sqc" data-c="${ci}" style="width:calc(${multi ? 7 : 3.2}em + 8px)${mode && !CD ? ';color:' + ($('#seq').classList.contains('light') ? '#222' : '#e8eaee') : ''}" title="${esc(multi ? S.name + ':' + s.ch : s.ch)}（クリックでこの Chain の残基をすべて選択。Ctrl／⌘＋クリックで選択に追加）">${lab}</span>${html}</div>`;
-  }).join('') + '</div>';   // one wrapper as wide as the longest row, so every chain name can stay pinned at the left
+  }).join('') + '</div>' + ligRowHtml(multi);   // one wrapper as wide as the longest row, so every chain name can stay pinned at the left
   if (lastFocus) seqMark(lastFocus);
 }
 function seqMark(list) {
-  document.querySelectorAll('#seq i.on').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('#seq i.on, #seq .lgc.on').forEach(x => x.classList.remove('on'));
   if (!list) return;
   if (!Array.isArray(list)) list = [list];
   const S = structs[active]; if (!S) return;
   list.forEach((a, k) => {
+    const lg = document.querySelector(`#seq .lgc[data-k="${S.sid}|${a.chainname}|${a.resno}|${a.inscode || ''}"]`); if (lg) lg.classList.add('on');
     const e = document.querySelector(`#seq i[data-k="${S.sid}|${a.chainname}|${a.resno}|${a.inscode || ''}"]`);
     if (!e) return;
     e.classList.add('on');
@@ -6484,6 +6756,15 @@ $('#seq').addEventListener('click', e => {
     list.chainSel = !(add && Array.isArray(lastFocus)) || !!lastFocus.chainSel;   // chains picked from their names: no labels, only interactions with other molecules
     focusStay = true;
     try { applySelection(list, null); } finally { focusStay = false; }
+    return;
+  }
+  const lg = e.target.closest('.lgc[data-l]');
+  if (lg && comp) {
+    const l = ligData[+lg.dataset.l]; if (!l) return;
+    const i = structs.findIndex(x => x.sid === l.sid); if (i < 0) return;
+    const mode = i === active ? modeOf(e) : 'set';
+    if (i !== active) activate(i);
+    selectAtom(comp.structure.getAtomProxy(l.ti), mode);
     return;
   }
   const t = e.target.closest('i'); if (!t || !comp) return;
@@ -6568,6 +6849,8 @@ $('#chains').addEventListener('mouseover', e => {
 });
 $('#chains').addEventListener('mouseleave', clearHL);
 $('#seq').addEventListener('mouseover', e => {
+  const lg = e.target.closest('.lgc[data-l]');
+  if (lg) { const l = ligData[+lg.dataset.l], st = l && structs.find(x => x.sid === l.sid); if (st) highlight(st, resSele(l.ch, l.rs, l.ic), `r|${l.sid}|${l.ch}|${l.rs}|${l.ic}`, true, l.ch); return; }
   const t = e.target.closest('i[data-c], .sqc[data-c]');
   if (!t) return clearHL();
   const row = seqData[+t.dataset.c]; if (!row) return;
@@ -7137,7 +7420,17 @@ $('#toonPreset').onclick = () => {
   status('イラスト風にしました（質感: フラット、背景: 白、輪郭線: 標準、奥行きのぼかし: 強め）');
 };
 try { const o = +localStorage.getItem('pdv_outline'); if (o) setOutline(o); const f = localStorage.getItem('pdv_fog'); if (f !== null) setFog(f); } catch (e) {}
-$('#spin').onchange = e => stage.setSpin(e.target.checked);
+/* spin: 0 stops, 1–10 sets the speed (NGL's default spin, 0.005 rad per frame, is about 3) */
+const SPIN_STEP = 0.0017;
+function setSpinSpeed(v) {
+  v = Math.max(0, Math.min(10, Math.round(+v || 0)));
+  $('#spinV').value = v; $('#spinVV').textContent = v ? String(v) : '止める'; $('#spin').checked = v > 0;
+  try { if (v) stage.spinAnimation.angle = v * SPIN_STEP; } catch (e) {}
+  stage.setSpin(v > 0);
+}
+$('#spinV').oninput = e => setSpinSpeed(e.target.value);
+$('#spinV').onchange = () => { try { stash(); } catch (e) {} };
+$('#spin').onchange = e => setSpinSpeed(e.target.checked ? (+$('#spinV').value || 3) : 0);
 /* the sections of the 表示・出力 tab remember whether they were open */
 (function secMemory() {
   let st = {}; try { st = JSON.parse(localStorage.getItem('pdv_secs') || '{}'); } catch (e) {}
@@ -7154,7 +7447,6 @@ function resetView() {
   setFog(String(fogV));
   if (structs.filter(S => S.visible !== false).length > 1 || !comp) stage.autoView(600); else comp.autoView(600);
 }
-$('#resetView').onclick = resetView;
 /* publication PNG: width in mm / inch / px at a chosen dpi; the dpi is written into the PNG (pHYs chunk) */
 const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
 const crc32 = u8 => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
@@ -8449,6 +8741,35 @@ $('#mutList').addEventListener('click', e => {
    Ctrl+wheel zoom, Shift+left drag = box select (added), wheel click = centre on the atom.
    In both, a right click that does not move opens a menu for the selection (or the residue under the pointer).
    ===================================================================== */
+/* hover label: NGL's own tooltip sits 3 px from the pointer and takes the pointer itself, so a small hand movement onto
+   it made the molecule window lose the hover and the label blinked (seen in Edge). This one ignores the pointer and
+   keeps 14 px away; it names the chain, residue and atom (and a ligand's compound name) */
+function hoverTip(pp) {
+  let t = document.getElementById('hoverTip');
+  if (!t) { t = document.createElement('div'); t.id = 'hoverTip'; document.body.appendChild(t); }
+  try { if (stage.tooltip) stage.tooltip.style.display = 'none'; } catch (e) {}
+  if (!pp || boxMode) { t.style.display = 'none'; return; }
+  let txt = '';
+  try {
+    const a = pp.atom || pp.closestBondAtom;
+    if (a) {
+      txt = `${a.chainname ? a.chainname + ':' : ''}${a.resname}${a.resno}${a.inscode || ''} ・ ${a.atomname}`;
+      if (!a.isPolymer() && !a.isWater()) {
+        const S = structs.find(x => x.comp === pp.component), g = S && hetGroups(S).find(x => x.rn === a.resname), nm = g ? hetName(g) : '';
+        if (nm) txt += `（${nm}）`;
+      }
+      if (structs.length > 1 && pp.component && pp.component.name && pp.component.name !== 'symmetry') txt = (structs.find(x => x.comp === pp.component) || {}).name ? `${structs.find(x => x.comp === pp.component).name} ${txt}` : txt;
+    } else txt = pp.getLabel ? pp.getLabel() : '';
+  } catch (e) { txt = ''; }
+  if (!txt) { t.style.display = 'none'; return; }
+  const m = pp.mouse && pp.mouse.position; if (!m) { t.style.display = 'none'; return; }
+  t.textContent = txt; t.style.display = 'block';
+  const w = t.offsetWidth, h = t.offsetHeight;
+  let x = m.x + 14, y = m.y - h - 10;
+  if (x + w > window.innerWidth - 4) x = m.x - w - 14;
+  if (y < 4) y = m.y + 18;
+  t.style.left = x + 'px'; t.style.top = y + 'px';
+}
 var mouseMode = (() => { try { return localStorage.getItem('pdv_mouse') === 'pymol' ? 'pymol' : 'std'; } catch (e) { return 'std'; } })();
 function applyMouseMode(m) {
   mouseMode = m === 'pymol' ? 'pymol' : 'std';
@@ -8457,6 +8778,7 @@ function applyMouseMode(m) {
   if (mc && A) {
   mc.preset('default');
   ['clickPick-ctrl-left', 'clickPick-right'].forEach(t => { try { mc.remove(t); } catch (e) {} });   // Ctrl+click adds residues; right click = menu
+  try { mc.remove('hoverPick'); mc.add('hoverPick', (stg, pp) => hoverTip(pp)); } catch (e) {}
   if (mouseMode === 'pymol') {
     ['drag-middle', 'drag-right', 'scroll', 'scroll-ctrl', 'scroll-shift', 'drag-shift-left', 'drag-shift-right'].forEach(t => { try { mc.remove(t); } catch (e) {} });
     mc.add('drag-middle', A.panDrag);
@@ -9102,7 +9424,8 @@ Object.entries(SEG).forEach(([id, names]) => {
   const box = document.createElement('div'); box.className = 'seg'; box.dataset.for = id;
   [...sel.options].forEach(o => {
     const b = document.createElement('button'); b.type = 'button'; b.dataset.v = o.value;
-    b.textContent = (names && names[o.value]) || o.textContent; b.title = o.title || o.textContent;
+    b.textContent = (names && names[o.value]) || o.textContent;
+    b.title = o.title || o.textContent;
     b.onclick = () => { if (sel.value === o.value) return; sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); segSync(); };
     box.appendChild(b);
   });
