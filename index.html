@@ -23,7 +23,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1
    nothing to scroll; scrolling itself is unchanged */
 html,body,#side,#bpane,#seq,#flist,#ipane,#gpane,#upane,#spane,#mpane,#opane{overscroll-behavior:none}
 #app{display:grid;grid-template-columns:var(--sw,380px) 7px minmax(0,1fr);height:100vh}
-#side{overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:12px 14px 40px}
+#side{overflow-y:auto;overflow-x:hidden;background:var(--panel);border-right:1px solid var(--line);padding:12px 14px 40px}   /* no sideways scrolling: a pixel of rounding let the panel wobble sideways under a finger */
 main{position:relative;display:flex;flex-direction:column;min-height:0}
 #vwrap{position:relative;flex:1 1 auto;min-height:120px}
 #seqbar{flex:none;height:8px;cursor:ns-resize;background:#232831;border-top:1px solid #2c313b;display:none;touch-action:none;position:relative}
