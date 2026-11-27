@@ -19,6 +19,9 @@
 :root{--bg:#14161b;--panel:#1c1f26;--line:#2c313b;--ink:#e8eaee;--mute:#9aa2b1;--acc:#5aa9ff;--warn:#ff7a7a}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.45 "Noto Sans JP",system-ui,sans-serif}
+/* no rubber-band bounce (iPad): the page and each scrolling panel stay put when dragged past their ends or when there is
+   nothing to scroll; scrolling itself is unchanged */
+html,body,#side,#bpane,#seq,#flist,#ipane,#gpane,#upane,#spane,#mpane,#opane{overscroll-behavior:none}
 #app{display:grid;grid-template-columns:var(--sw,380px) 7px minmax(0,1fr);height:100vh}
 #side{overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:12px 14px 40px}
 main{position:relative;display:flex;flex-direction:column;min-height:0}
