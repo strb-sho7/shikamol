@@ -321,12 +321,22 @@ details.sec{margin-bottom:12px}
 #spane .oph{display:flex;gap:6px;align-items:center;margin:-4px 0 4px;position:sticky;top:-4px;background:#0b0d11;padding:5px 0 3px;z-index:1}
 #spane .oph button{font-size:11px;padding:1px 8px;white-space:nowrap;flex:none}
 #spane .oph .small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#vidBar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 6px;padding:5px 8px;border:1px solid #ffffff1a;border-radius:6px;font-size:12px}
+#vidBar input[type=number]{width:4em;font-size:12px}
+#vidBar select{font-size:12px}
+#vidBar button{font-size:11px;padding:1px 8px}
+#vidBar .small{white-space:nowrap}
+#vidBar button.rec{background:#e5484d;border-color:#e5484d;color:#fff}
+.scn .use{flex:none;margin:0}
+.scn .spinset{display:flex;gap:4px;align-items:center;flex:none;font-size:11.5px;color:var(--mute)}
+.scn .spinset select,.scn .spinset input{font-size:11.5px}
+.scn .spinset input{width:3.6em}
 .scn{display:flex;align-items:center;gap:6px;padding:3px 4px;border-top:1px solid #ffffff10;border-radius:5px}
 .scn.cur{background:#5aa9ff1f}
 .scn .no{flex:none;width:1.6em;text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
 .scn .go{flex:0 1 auto;min-width:0;text-align:left;background:transparent;border:0;color:#e8eaee;font-size:13px;font-weight:600;padding:2px 4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .scn .go:hover{text-decoration:underline}
-.scn input{flex:0 1 14em;min-width:6em;font-size:13px}
+.scn input[data-k=name]{flex:0 1 14em;min-width:6em;font-size:13px}
 .scn .sum{flex:1 1 auto;min-width:0;color:var(--mute);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .scn .act{flex:none;display:flex;gap:3px}
 .scn .act button,.scn .del{font-size:11px;padding:1px 6px}
@@ -889,7 +899,7 @@ body.molonly #fullBtn{background:#5aa9ff33;border-color:#5aa9ff88}
     <label><input type="checkbox" id="mutShow" checked> 3D表示</label>
     <button id="mutSelAll" title="変異の位置をまとめて選択し、それぞれの相互作用を分子ウィンドウに出します">まとめて選択</button>
     <button id="mutCopy">表をコピー（TSV）</button>
-  </div><div id="mutList"></div></div></div><div id="spane"><div class="oph"><button id="scnAdd">＋ 今の表示を追加</button><button id="scnClear">すべて消す</button><span class="small">名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）</span></div><div id="scnList"></div></div><div id="mpane"><div class="oph"><button id="measCopy">一覧をコピー</button><button id="measAll">すべて隠す</button><button id="measClear">すべて消す</button><span class="small">分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます</span></div><div id="measList"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
+  </div><div id="mutList"></div></div></div><div id="spane"><div class="oph"><button id="scnAdd">＋ 今の表示を追加</button><button id="scnSpin" title="その場で回転するだけのシーンを追加します（角度・秒数・向きは行の中で変えられます）">＋ 回転を追加</button><button id="scnClear">すべて消す</button><span class="small">名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）</span></div><div id="vidBar"><b>🎥 動画</b><span class="small">チェックしたシーンを上から順に</span><label title="次のシーンへ移るのにかける時間">移動 <input type="number" id="vidMove" value="2" min="0.2" max="20" step="0.5"> 秒</label><label title="各シーンで止まっている時間">停止 <input type="number" id="vidHold" value="1.5" min="0" max="30" step="0.5"> 秒</label><label title="動画の大きさ。16:9 は分子ウィンドウの中に横長の枠をとって録画します">サイズ <select id="vidSize"><option value="1920x1080">1920×1080（16:9）</option><option value="1280x720">1280×720（16:9）</option><option value="view">画面のまま</option></select></label><label title="図用ラベル・測定値・スケールバーを動画に入れます"><input type="checkbox" id="vidLbl" checked> ラベルも入れる</label><button id="vidPlay" title="録画せずに、動画と同じ流れで再生します">▶ 通して再生</button><button id="vidRec" class="pri" title="チェックしたシーンを順に再生しながら録画し、動画ファイルとして保存します（Esc で中止）">● 動画に書き出す</button></div><div id="scnList"></div></div><div id="mpane"><div class="oph"><button id="measCopy">一覧をコピー</button><button id="measAll">すべて隠す</button><button id="measClear">すべて消す</button><span class="small">分子ウィンドウ右上の「📏 測定」を押して原子をタップすると、ここに並びます</span></div><div id="measList"></div></div><div id="opane"><div class="oph"><button data-k="opcopy">コピー</button><button data-k="opclear">消去</button><span class="small">このページを開いてからの操作の記録です（新しいものが下）</span></div><div id="oplog" data-notr></div></div></div>
 </main>
 </div>
 <div id="pop"></div>
@@ -997,6 +1007,7 @@ const JPRE = /[　-ヿ㐀-鿿＀-￯]/;
 let LANG = 'ja';
 try { LANG = localStorage.getItem('pdv_lang') || 'ja'; } catch (e) {}
 const EXACT = new Map(Object.entries({
+  "＋ 回転を追加": "+ Add rotation", "その場で回転するだけのシーンを追加します（角度・秒数・向きは行の中で変えられます）": "Adds a scene that just turns the view in place (angle, seconds and direction can be changed in its row)", "🎥 動画": "🎥 Video", "チェックしたシーンを上から順に": "checked scenes, top to bottom", "移動": "Move", "停止": "Hold", "秒": "s", "サイズ": "Size", "画面のまま": "As on screen", "1920×1080（16:9）": "1920×1080 (16:9)", "1280×720（16:9）": "1280×720 (16:9)", "次のシーンへ移るのにかける時間": "Time to move to the next scene", "各シーンで止まっている時間": "Time to stay on each scene", "動画の大きさ。16:9 は分子ウィンドウの中に横長の枠をとって録画します": "Video size. For 16:9 a wide frame is taken inside the viewer", "ラベルも入れる": "Include labels", "図用ラベル・測定値・スケールバーを動画に入れます": "Puts figure labels, measurement values and the scale bar in the video", "▶ 通して再生": "▶ Play through", "録画せずに、動画と同じ流れで再生します": "Plays the same sequence as the video, without recording", "● 動画に書き出す": "● Export video", "チェックしたシーンを順に再生しながら録画し、動画ファイルとして保存します（Esc で中止）": "Plays the checked scenes in order while recording, and saves a video file (Esc to stop)", "■ 止める": "■ Stop", "■ 録画を止める": "■ Stop recording", "動画に使う": "Use in the video", "その場で回転させます": "Turn the view in place", "回す角度": "Angle to turn", "回す向き": "Direction", "回すのにかける時間": "Time for the turn", "横回転": "turn sideways", "縦回転": "turn vertically", "回転": "Rotation", "動画に使うシーンにチェックを入れてください": "Check the scenes to use in the video", "回転だけでは始められません。最初に表示のシーンを1つ入れてください": "A video cannot be only rotations; include at least one view scene", "回転のシーンを追加しました（角度・秒数・向きは行の中で変えられます）": "Added a rotation scene (change its angle, seconds and direction in its row)", "録画を中止しました": "Recording stopped", "再生を止めました": "Playback stopped", "最後まで再生しました": "Played to the end", "このブラウザは動画の録画に対応していません": "This browser cannot record video", "この端末では大きすぎます": "Too large for this device",
   "🎬 シーンを追加": "🎬 Add scene", "今の表示（視点・色・表示形式・選択・ラベル）に名前を付けてシーンとして残します。画面下の「シーン」タブから切り替えられます": "Keeps the current view (camera, colours, styles, selection, labels) as a named scene. Switch between scenes in the \"Scenes\" tab below", "シーン": "Scenes", "保存したシーンの一覧（押すとその表示に移ります）": "Saved scenes (press one to go to it)", "＋ 今の表示を追加": "+ Add current view", "名前を押すとその表示に移ります（PgUp／PgDn で前後のシーン）": "Press a name to go to that scene (PgUp/PgDn for the previous/next one)", "このシーンの表示に移ります": "Go to this scene", "名前を変えます": "Rename", "上書き保存": "Overwrite", "このシーンを今の表示で上書きします": "Replace this scene with the current view", "1つ上へ": "Move up", "1つ下へ": "Move down", "このシーンを消します": "Delete this scene", "構造を読み込んでからシーンを追加してください": "Load a structure before adding a scene", "シーンをすべて消しました": "All scenes deleted",
   'リガンド・イオン・水': 'Ligands, ions and water',
   "この種類を表示する": "Show this kind", "炭素の色（N・O などは元素の色）": "Carbon colour (N, O and others keep element colours)", "色（元に戻すときは「元素の色」）": "Colour (use \"element colours\" to go back)", "半透明の表面": "See-through surface", "小さい球": "Small spheres", "この種類の場所にズームします": "Zoom to this kind", "元素の色に戻す": "Back to element colours",
@@ -1304,7 +1315,13 @@ const EXACT = new Map(Object.entries({
 }));
 const P = (re, f) => [re, f];
 const SUP_EN = {'配列アライメント': 'sequence alignment', '構造ベース': 'structure-based', '残基番号': 'residue numbers', '自動': 'auto'};
+const coefFilesEn = A => { const a = A.toLowerCase(); return `on the RCSB PDB page of ${A} open "Download Files", download "Validation 2fo-fc coefficients" and "Validation fo-fc coefficients" (${a}_validation_2fo-fc_map_coef.cif.gz and ${a}_validation_fo-fc_map_coef.cif.gz), and choose both at once with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab`; };
 const PATTERNS = [
+  P(/^その場で (\d+)° (横回転|縦回転)（(\d+(?:\.\d+)?) 秒）$/, (m, d, a, t) => `${d}° ${a === '縦回転' ? 'vertical' : 'sideways'} turn in place (${t} s)`),
+  P(/^(録画中|再生中)… (\d+) \/ (\d+)「(.+)」（Esc で中止）$/, (m, w, a, b, n) => `${w === '録画中' ? 'Recording' : 'Playing'}… ${a} / ${b} "${n}" (Esc to stop)`),
+  P(/^動画を書き出しました（(\d+) × (\d+)、(MP4|WEBM)、([\d.]+) MB）(.*)$/, (m, w, h, f, mb, rest) => `Video saved (${w} × ${h}, ${f}, ${mb} MB)${rest ? '. To put it in PowerPoint, convert it to MP4 or use a recent Chrome or Edge' : ''}`),
+  P(/^動画の書き出しに失敗: (.+)$/, (m, e) => `Video export failed: ${e}`),
+  P(/^シーン「(.+)」を再生しています$/, (m, n) => `Playing scene "${n}"`),
   P(/^塩橋（水素結合 (\d+)本）$/, (m, n) => `Salt bridge (${n} H-bonds)`),
   P(/^塩橋（水素結合あり）$/, () => 'Salt bridge (with H-bond)'),
   P(/^シーン (\d+)$/, (m, n) => `Scene ${n}`),
@@ -1352,7 +1369,12 @@ const PATTERNS = [
   P(/^マップ係数を読み込み中: (.+) …$/, (m, a) => `Reading map coefficients: ${a} …`),
   P(/^マップ係数を RCSB PDB から取得中: (.+) …$/, (m, a) => `Fetching map coefficients from RCSB PDB: ${a} …`),
   P(/^マップ係数を読めませんでした: (.+?)（(.*)）$/, (m, a, e) => `Could not read map coefficients: ${a} (${tr(e)})`),
-  P(/^(.+) のマップ係数を RCSB PDB から取得できませんでした。.*$/, (m, a) => `Could not fetch the map coefficients of ${a} from RCSB PDB. It may not be an X-ray structure, have no structure factors, or the request was blocked (files from "Download Files" on the RCSB entry page can be read with "From MTZ or map coefficients")`),
+  P(/^(\S+) は X 線の構造ではない（(.+)）ため、X 線の電子密度はありません(。クライオ電顕のマップは「電子密度」タブの EMDB から表示できます)?$/, (m, a, b, em) => `${a} is not an X-ray structure (${b}), so it has no X-ray electron density${em ? '. Cryo-EM maps can be shown from EMDB in the Density tab' : ''}`),
+  P(/^(\S+) は (\d{4}) 年に登録された構造で、電子密度のもとになる構造因子が登録されていないようです.*$/, (m, a, y) => `${a} was deposited in ${y} and seems to have no structure factors (the data the density is computed from; their deposition became mandatory in 2008), so its electron density cannot be shown`),
+  P(/^(\S+) のマップ係数のファイルが RCSB PDB に見つかりませんでした。.*$/, (m, a) => `No map-coefficient files of ${a} were found at RCSB PDB; it may have no structure factors. If "Download Files" on its RCSB PDB page lists "Validation 2fo-fc coefficients", download it and read it with "From MTZ or map coefficients (2Fo-Fc + Fo-Fc)…" in the Density tab`),
+  P(/^(\S+) の電子密度は PDBe の密度サーバーにありません。(\d{4}) 年に.*$/, (m, a, y) => `The PDBe density server has no density for ${a}. It was deposited in ${y} and may have no structure factors (mandatory since 2008); "2Fo-Fc + Fo-Fc (computed from RCSB map coefficients)" will tell`),
+  P(/^(\S+) の電子密度は PDBe の密度サーバーにまだありません。.*$/, (m, a) => `The PDBe density server has no density for ${a} yet. Press "2Fo-Fc + Fo-Fc (computed from RCSB map coefficients)", or ` + coefFilesEn(a)),
+  P(/^(\S+) のマップ係数を RCSB PDB から自動で取得できませんでした.*$/, (m, a) => `Could not fetch the map coefficients of ${a} from RCSB PDB automatically (the connection may be blocked). O` + coefFilesEn(a).slice(1)),
   P(/^(.+): 取得できなかったマップ係数: (.+)$/, (m, a, b) => `${a}: map coefficients not fetched: ${b}`),
   P(/^マップ係数（(.+)）$/, (m, a) => `Map coefficients (${a})`),
   P(/^HTTP (\d+)（このエントリーの密度がサーバーにありません。公開されたばかりの構造なら「RCSB のマップ係数から計算」を試してください）$/, (m, c) => `HTTP ${c} (the server has no density for this entry; for a newly released entry, try "computed from RCSB map coefficients")`),
@@ -1596,6 +1618,7 @@ if (LANG === 'en') setLang('en');
 
 // field of view 20° (NGL's default is 40°): the same as PyMOL, so close-ups of rings and side chains are not stretched by perspective
 const stage = new NGL.Stage('viewport', {backgroundColor: 'black', tooltip: true, cameraFov: 20});
+stage.viewer.signals.rendered.add(() => surfDepthPatch());
 /* NGL counts the work still running (surfaces are built in a background worker): the deer runs while that takes over 0.4 s.
    NGL's overall count can stay above zero when a representation is removed mid-build, so the representations that
    still exist are asked one by one; and the deer stops after 60 s whatever happens */
@@ -1620,7 +1643,28 @@ const PALETTES = {
   gray:    ['#c8c8c8']
 };
 const TYPES = [['cartoon','カートゥーン'],['cartoon+sc','カートゥーン＋側鎖'],['licorice','スティック'],['line','ライン'],['spacefill','球（CPK）'],['trace','トレース（Cα）'],['none','なし（表面だけ）']];
-const isSurf = r => (r.repr && r.repr.type === 'surface') || r.t === 'surface';
+const SURF_DEPTH = 'surf-depth';
+const isSurf = r => r.name !== SURF_DEPTH && ((r.repr && r.repr.type === 'surface') || r.t === 'surface');
+/* See-through chain surfaces. WebGL blends see-through faces in the order they are drawn, and the triangles of one
+   surface are not sorted, so wherever the surface folds or chains' surfaces overlap, two or three layers add up and the
+   result changes with the viewing angle (cloudy, uneven). As in PyMOL and ChimeraX, only the nearest layer is shown:
+   a copy of each surface first writes depth without colour, after the opaque parts (cartoons, sticks) and the other
+   see-through parts but before every coloured surface (render order 2.95 between NGL's 2 and 3); the coloured
+   surfaces then pass the depth test only where they are that nearest layer. The surfaces are built asynchronously and
+   NGL gives every surface mesh the same render order, so the copies are adjusted after each frame NGL draws. */
+function surfDepthPatch() {
+  let changed = false;
+  try {
+    stage.compList.forEach(c => c.reprList.forEach(r => {
+      if (r.name !== SURF_DEPTH || !r.repr || !r.repr.bufferList) return;
+      r.repr.bufferList.forEach(b => {
+        [b.material, b.wireframeMaterial].forEach(m => { if (m && (m.colorWrite !== false || m.depthWrite !== true)) { m.colorWrite = false; m.depthWrite = true; changed = true; } });
+        [b.group, b.wireframeGroup].forEach(g => g && g.traverse(o => { if (o.isMesh && o.renderOrder !== 2.95) { o.renderOrder = 2.95; changed = true; } }));
+      });
+    }));
+  } catch (e) {}
+  if (changed) stage.viewer.requestRender();
+}
 const STRUCT_EXT = ['pdb','ent','cif','mmcif','bcif','gro','mol2','sdf'];
 /* iPadOS / iOS grey out files whose extension it does not know (.pdb, .cif, .ccp4 …) when a file picker lists
    extensions, so on those devices every file can be picked and the extension is checked after choosing */
@@ -2399,7 +2443,7 @@ function chainReps(ch) {
   ch.reps.forEach(r => comp.removeRepresentation(r)); ch.reps = [];
   bridgesSoon();
   if (!ch.visible) return;
-  repSpecs(ch).forEach(([t, p]) => ch.reps.push(addSpec(comp, t, p)));
+  repSpecs(ch).forEach(([t, p]) => { const r = addSpec(comp, t, p); if (p && p.name === SURF_DEPTH) { r.__pickOnly = true; r.__depthPre = true; } ch.reps.push(r); });
   try { emphChain(ch); } catch (e) {}
   spotRefresh();
 }
@@ -2748,6 +2792,8 @@ function repSpecs(ch) {
     case 'spacefill': add('spacefill', {sele: s, ...el}); break;
     case 'trace': add('backbone', {sele: s, color: c}); break;
   }
+  // see-through: a depth-only copy first, so that only the nearest layer of the surfaces is seen (see surfDepthPatch)
+  if (ch.surf && surfOpacity() < 0.99) add('surface', {sele: s, color: '#ffffff', opacity: 0.99, ...surfShapeParams(), depthWrite: true, disablePicking: true, name: SURF_DEPTH});
   if (ch.surf) add('surface', {sele: s, ...((cs && $('#surfColor').value === 'chain') ? {color: CONS_SCHEME} : surfColorParams(ch.color)), opacity: surfOpacity(), ...surfShapeParams()});
   return out;
 }
@@ -3284,7 +3330,10 @@ $('#elecRange').oninput = e => { $('#elecV').textContent = e.target.value; clear
 $('#elecRange').onchange = () => stash();
 $('#surfOp').oninput = e => {
   $('#surfOpV').textContent = (+e.target.value).toFixed(2);
-  chains.forEach(ch => ch.reps.filter(isSurf).forEach(r => r.setParameters({opacity: +e.target.value, ...surfSide()})));
+  // crossing into or out of see-through adds or removes the depth-only copies, so the chains with a surface are rebuilt
+  const v = +e.target.value, was = chains.some(ch => ch.reps.some(r => r.name === SURF_DEPTH));
+  if (was !== v < 0.99 && chains.some(ch => ch.surf)) { chains.forEach(ch => { if (ch.surf) chainReps(ch); }); return; }
+  chains.forEach(ch => ch.reps.filter(isSurf).forEach(r => r.setParameters({opacity: v, ...surfSide()})));
 };
 $('#surfOp').onchange = () => { stash(); spotRefresh(); };
 
@@ -4530,7 +4579,8 @@ async function srvFetch(srv, force) {
   let txt;
   try {
     const r = await fetch(url, {signal: ctrl.signal});
-    if (!r.ok) throw new Error('HTTP ' + r.status + (r.status === 404 ? '（このエントリーの密度がサーバーにありません。公開されたばかりの構造なら「RCSB のマップ係数から計算」を試してください）' : ''));
+    if (!r.ok && r.status === 404 && srv.src === 'x-ray') { status(densityHint(srv.id, 'server'), true); return; }
+    if (!r.ok) throw new Error('HTTP ' + r.status + (r.status === 404 ? '（このエントリーの密度がサーバーにありません）' : ''));
     txt = await r.text();
   } catch (e) { if (e.name !== 'AbortError') status(`密度の取得に失敗: ${srv.label}（${e.message || e}）`, true); return; }
   if (ctrl !== srv.ctrl) return;
@@ -4890,6 +4940,21 @@ async function loadCoefFiles(files, restore) {
   } catch (e) { status(`マップ係数を読めませんでした: ${files[0].name}（${e.message || e}）`, true); }
 }
 /* the map coefficients of a released PDB entry, straight from the wwPDB validation archive at RCSB PDB */
+/* What to tell when the electron density of a PDB entry cannot be had. Structure factors (the data the density is
+   computed from) have had to be deposited with X-ray structures since 2008; many earlier entries have none, and then
+   there are no map coefficients either. Newer entries have them, as files beside the validation report. */
+function densityHint(idRaw, kind) {
+  const id = String(idRaw || '').toLowerCase(), ID = id.toUpperCase();
+  const S = structs.find(x => (x.pdbId || '').toLowerCase() === id) || {};
+  const m = S.method || '', yr = S.depDate ? +String(S.depDate).slice(0, 4) : 0;
+  const files = `RCSB PDB の ${ID} のページの「Download Files」から「Validation 2fo-fc coefficients」と「Validation fo-fc coefficients」（${id}_validation_2fo-fc_map_coef.cif.gz と ${id}_validation_fo-fc_map_coef.cif.gz）をダウンロードし、「電子密度」タブの「MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…」で2つ同時に選んでください`;
+  if (m && !/X-RAY/i.test(m)) return `${ID} は X 線の構造ではない（${m}）ため、X 線の電子密度はありません` + (/ELECTRON MICROSCOPY/i.test(m) ? '。クライオ電顕のマップは「電子密度」タブの EMDB から表示できます' : '');
+  if (kind === 'none' && yr && yr < 2008) return `${ID} は ${yr} 年に登録された構造で、電子密度のもとになる構造因子が登録されていないようです（構造因子の登録が義務になったのは 2008 年から）。電子密度は表示できません`;
+  if (kind === 'none') return `${ID} のマップ係数のファイルが RCSB PDB に見つかりませんでした。構造因子が登録されていない可能性があります。${ID} のページの「Download Files」に「Validation 2fo-fc coefficients」があれば、それをダウンロードし、「電子密度」タブの「MTZ・マップ係数から計算（2Fo-Fc ＋ Fo-Fc）…」で読み込んでください`;
+  if (kind === 'server' && yr && yr < 2008) return `${ID} の電子密度は PDBe の密度サーバーにありません。${yr} 年に登録された構造で、構造因子が登録されていない可能性があります（構造因子の登録が義務になったのは 2008 年から）。「2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）」で確かめられます`;
+  if (kind === 'server') return `${ID} の電子密度は PDBe の密度サーバーにまだありません。「2Fo-Fc ＋ Fo-Fc（RCSB のマップ係数から計算）」を押すか、${files}`;
+  return `${ID} のマップ係数を RCSB PDB から自動で取得できませんでした（通信が止められた可能性があります）。${files}`;
+}
 async function loadCoefById() {
   if (!needId()) return;
   const id = pdbId.toLowerCase();
@@ -4897,15 +4962,16 @@ async function loadCoefById() {
   const base = `https://files.rcsb.org/pub/pdb/validation_reports/${id.slice(1, 3)}/${id}/${id}_validation_`;
   status(`マップ係数を RCSB PDB から取得中: ${pdbId} …`);
   const texts = [], miss = [];
+  let notFound = 0;
   for (const k of ['2fo-fc', 'fo-fc']) {
     try {
       const r = await fetch(`${base}${k}_map_coef.cif.gz`);
-      if (!r.ok) throw new Error('HTTP ' + r.status);
+      if (!r.ok) { if (r.status === 404) notFound++; throw new Error('HTTP ' + r.status); }
       texts.push(await readMaybeGz(await r.arrayBuffer()));
     } catch (e) { miss.push(`${k}（${e.message || e}）`); }
   }
   if (miss.length) log(`${pdbId}: 取得できなかったマップ係数: ${miss.join('、')}`);
-  if (!texts.length) return status(`${pdbId} のマップ係数を RCSB PDB から取得できませんでした。X 線構造でない、構造因子が登録されていない、または通信が止められた可能性があります（RCSB のエントリーのページの「Download Files」から取ったファイルは「MTZ・マップ係数から計算」で読み込めます）`, true);
+  if (!texts.length) return status(densityHint(pdbId, notFound === 2 ? 'none' : 'net'), true);
   return loadCoef(texts, `${id}_map_coef.cif`);
 }
 /* several files at once: wwPDB map-coefficient CIFs are merged into one 2Fo-Fc + Fo-Fc set; everything else as usual */
@@ -4955,6 +5021,7 @@ async function fetchEntryInfo(S) {
     if (!r.ok) return;
     const j = await r.json();
     S.method = (j.exptl || []).map(x => x.method).join(', ');
+    S.depDate = (j.rcsb_accession_info || {}).deposit_date || null;
     const rc = (j.rcsb_entry_info || {}).resolution_combined;
     S.resolution = rc && rc.length ? rc[0] : null;
     if (/ELECTRON MICROSCOPY/i.test(S.method)) {
@@ -7907,7 +7974,9 @@ var scenes = [], sceneCur = -1, sceneEdit = -1;
 const tr2 = t => LANG === 'en' ? tr(t) : t;
 function nScenes() { return scenes ? scenes.length : 0; }
 function sceneLbl() { const o = {}; structs.forEach(st => { if (st.menuLbl && st.menuLbl.size) o[st.sid] = [...st.menuLbl]; }); return o; }
+const SPIN_AX = {y: '横回転', x: '縦回転'};
 function sceneSum(sc) {
+  if (sc.spin) return `その場で ${sc.spin.deg}° ${SPIN_AX[sc.spin.axis] || '横回転'}（${sc.spin.sec} 秒）`;
   const names = sc.snap.st.map(t => (structs.find(x => x.sid === t.sid) || {}).name).filter(Boolean);
   const a = sc.snap.st.find(t => t.sid === sc.snap.active), f = a && a.focus;
   return names.join('、') + (f && f.length ? `　選択: ${selLabel(f, 2)}` : '　選択なし');
@@ -7925,8 +7994,35 @@ function sceneAdd() {
   renderScenes(); bottomUpdate();
   status(`「シーン ${n}」を追加しました（画面下の「シーン」タブで名前の変更・切り替えができます）`);
 }
-async function sceneGo(i) {
+function spinAdd() {
+  if (!structs.length) return status('構造を読み込んでからシーンを追加してください', true);
+  scenes.push({name: '回転', spin: {deg: 360, sec: 8, axis: 'y'}});
+  sceneCur = scenes.length - 1; btab = 'scn';
+  renderScenes(); bottomUpdate();
+  status('回転のシーンを追加しました（角度・秒数・向きは行の中で変えられます）');
+}
+/* turn the view in place about the screen's vertical (y) or horizontal (x) axis; resolves when done or stopped */
+function spinRun(sp) {
+  return new Promise(res => {
+    const total = (+sp.deg || 360) * Math.PI / 180, ms = Math.max(0.2, +sp.sec || 8) * 1000, ax = sp.axis === 'x' ? [1, 0, 0] : [0, 1, 0];
+    const t0 = performance.now(); let done = 0;
+    const step = now => {
+      if (vid.abort && vid.on) return res();
+      const k = Math.min(1, (now - t0) / ms), want = total * (0.5 - 0.5 * Math.cos(Math.PI * k));   // eased start and stop
+      stage.viewerControls.spin(ax, want - done); done = want;
+      if (k < 1) requestAnimationFrame(step); else res();
+    };
+    requestAnimationFrame(step);
+  });
+}
+async function sceneGo(i, opt) {
   const sc = scenes[i]; if (!sc) return;
+  opt = opt || {};
+  if (sc.spin) {
+    sceneCur = i; renderScenes();
+    if (!opt.quiet) status(`シーン「${sc.name}」を再生しています`);
+    await spinRun(sc.spin); return;
+  }
   clearTimeout(undoT); undoRecord();
   const before = undoCur;
   // a copy of the selections, so that later changes to the live selection do not change the scene
@@ -7948,9 +8044,10 @@ async function sceneGo(i) {
     st.menuLbl = new Set(k || []); ctxLabelDraw(st);
   });
   try { stage.animationControls.clear(); } catch (e) {}
-  if (sc.orient && sc.orient.length === 16) stage.animationControls.orient(sc.orient, 700);
+  const dur = opt.dur ?? 700;
+  if (sc.orient && sc.orient.length === 16) { if (dur > 0) stage.animationControls.orient(sc.orient, dur); else stage.viewerControls.orient(sc.orient); }
   sceneCur = i; renderScenes();
-  status(`シーン「${sc.name}」を表示しました`);
+  if (!opt.quiet) status(`シーン「${sc.name}」を表示しました`);
 }
 function sceneStep(d) {
   if (!scenes.length) return;
@@ -7959,11 +8056,16 @@ function sceneStep(d) {
 function renderScenes() {
   const box = $('#scnList'); if (!box) return;
   if (sceneCur >= scenes.length) sceneCur = scenes.length - 1;
+  const opt = (vals, cur, lab) => vals.map(v => `<option value="${v}"${String(v) === String(cur) ? ' selected' : ''}>${lab ? lab(v) : v}</option>`).join('');
   box.innerHTML = scenes.map((sc, i) => `<div class="scn${i === sceneCur ? ' cur' : ''}" data-i="${i}"><span class="no">${i + 1}</span>`
+    + `<input type="checkbox" class="use" data-k="use"${sc.use !== false ? ' checked' : ''} title="動画に使う">`
     + `<span class="act"><button data-k="up" title="1つ上へ"${i ? '' : ' disabled'}>↑</button><button data-k="dn" title="1つ下へ"${i < scenes.length - 1 ? '' : ' disabled'}>↓</button>`
-    + `<button data-k="upd" title="このシーンを今の表示で上書きします">上書き保存</button></span>`
-    + (i === sceneEdit ? `<input type="text" value="${esc(sc.name)}" maxlength="60" data-k="name">` : `<button class="go" data-k="go" title="このシーンの表示に移ります">${esc(sc.name)}</button><button class="ren" data-k="ren" title="名前を変えます">✎</button>`)
-    + `<span class="sum">${esc(sceneSum(sc))}</span>`
+    + (sc.spin ? '' : `<button data-k="upd" title="このシーンを今の表示で上書きします">上書き保存</button>`) + `</span>`
+    + (i === sceneEdit ? `<input type="text" value="${esc(sc.name)}" maxlength="60" data-k="name">` : `<button class="go" data-k="go" title="${sc.spin ? 'その場で回転させます' : 'このシーンの表示に移ります'}">${sc.spin ? '🔄 ' : ''}${esc(sc.name)}</button><button class="ren" data-k="ren" title="名前を変えます">✎</button>`)
+    + (sc.spin ? `<span class="spinset"><select data-k="deg" title="回す角度">${opt([90, 180, 360, 720], sc.spin.deg, v => v + '°')}</select>`
+      + `<select data-k="axis" title="回す向き">${opt(['y', 'x'], sc.spin.axis, v => SPIN_AX[v])}</select>`
+      + `<input type="number" data-k="sec" value="${sc.spin.sec}" min="1" max="60" step="1" title="回すのにかける時間"> 秒</span>`
+      : `<span class="sum">${esc(sceneSum(sc))}</span>`)
     + `<button class="del" data-k="del" title="このシーンを消します">×</button></div>`).join('');
   const inp = box.querySelector('input[data-k=name]'); if (inp) { inp.focus(); inp.select(); }
   const bt = $('#btScN'); if (bt) bt.textContent = scenes.length ? ` ${scenes.length}` : '';
@@ -7976,6 +8078,15 @@ function sceneRename(inp, keep) {
 }
 $('#sceneBtn').onclick = sceneAdd;
 $('#scnAdd').onclick = sceneAdd;
+$('#scnSpin').onclick = spinAdd;
+$('#scnList').addEventListener('change', e => {
+  const k = e.target.dataset.k, row = e.target.closest('.scn'); if (!row || !k) return;
+  const sc = scenes[+row.dataset.i]; if (!sc) return;
+  if (k === 'use') sc.use = e.target.checked;
+  else if (sc.spin && k === 'deg') sc.spin.deg = +e.target.value;
+  else if (sc.spin && k === 'axis') sc.spin.axis = e.target.value === 'x' ? 'x' : 'y';
+  else if (sc.spin && k === 'sec') sc.spin.sec = Math.min(60, Math.max(1, +e.target.value || 8));
+});
 $('#scnClear').onclick = () => {
   if (!scenes.length || !confirm(tr2(`シーン ${scenes.length} 個をすべて消しますか？`))) return;
   scenes = []; sceneCur = sceneEdit = -1; renderScenes(); bottomUpdate(); status('シーンをすべて消しました');
@@ -8005,14 +8116,132 @@ $('#scnList').addEventListener('keydown', e => {
 $('#scnList').addEventListener('focusout', e => { if (e.target.dataset && e.target.dataset.k === 'name' && sceneEdit >= 0) sceneRename(e.target, true); });
 addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey || !scenes.length || e.target.closest('input, textarea, select, [contenteditable]')) return;
+  if (vid.on) return;
   if (e.key === 'PageDown') { e.preventDefault(); sceneStep(1); }
   else if (e.key === 'PageUp') { e.preventDefault(); sceneStep(-1); }
 });
+/* =====================================================================
+   Scene video: the checked scenes are played from top to bottom (move, then hold; rotation scenes turn in place)
+   and, when recording, the viewer is copied after every frame NGL draws into a 2D canvas, the figure labels,
+   measurement values and scale bar are painted on top (as in the PNG export), and that canvas is recorded
+   with the browser's MediaRecorder (MP4 where the browser can, otherwise WebM).
+   For 16:9 the viewer is shrunk to a 16:9 box inside its area and drawn at a higher pixel ratio, so that the
+   frames have the chosen size; the window is restored afterwards.
+   ===================================================================== */
+var vid = {on: false, abort: false, rec: false};
+function vidMime() {
+  if (typeof MediaRecorder === 'undefined' || !HTMLCanvasElement.prototype.captureStream) return null;
+  const c = ['video/mp4;codecs=avc1.640028', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  return c.find(t => { try { return MediaRecorder.isTypeSupported(t); } catch (e) { return false; } }) || '';
+}
+function vidUI() {
+  const p = $('#vidPlay'), r = $('#vidRec');
+  p.textContent = vid.on && !vid.rec ? '■ 止める' : '▶ 通して再生'; p.disabled = vid.on && vid.rec;
+  r.textContent = vid.on && vid.rec ? '■ 録画を止める' : '● 動画に書き出す'; r.disabled = vid.on && !vid.rec; r.classList.toggle('rec', vid.on && vid.rec);
+  ['#vidMove', '#vidHold', '#vidSize', '#vidLbl', '#scnAdd', '#scnSpin', '#scnClear', '#sceneBtn'].forEach(q => { const e = $(q); if (e) e.disabled = vid.on; });
+  $('#scnList').style.pointerEvents = vid.on ? 'none' : ''; $('#scnList').style.opacity = vid.on ? '.6' : '';
+}
+const vidWait = ms => new Promise(res => { const t0 = performance.now(); const f = () => (vid.abort || performance.now() - t0 >= ms) ? res() : setTimeout(f, 30); f(); });
+async function vidRun(record) {
+  if (vid.on) { vid.abort = true; return; }
+  const list = scenes.map((s, i) => i).filter(i => scenes[i].use !== false);
+  if (!list.length) return status('動画に使うシーンにチェックを入れてください', true);
+  if (!list.some(i => !scenes[i].spin)) return status('回転だけでは始められません。最初に表示のシーンを1つ入れてください', true);
+  const T = Math.min(20, Math.max(0.2, +$('#vidMove').value || 2)) * 1000, HOLD = Math.min(30, Math.max(0, +$('#vidHold').value || 0)) * 1000;
+  let mime = '', rec = null, chunks = [], raf = 0, onR = null, restore = null, W = 0, H = 0;
+  vid.on = true; vid.abort = false; vid.rec = !!record; vidUI();
+  try { clearHL(); } catch (e) {}
+  try {
+    if (record) {
+      mime = vidMime();
+      if (mime === null) throw new Error('このブラウザは動画の録画に対応していません');
+      const V = stage.viewer, cont = V.container, vw0 = V.width, vh0 = V.height, keep = {w: cont.style.width, h: cont.style.height};
+      const dpr0 = window.devicePixelRatio || 1, dprDesc = Object.getOwnPropertyDescriptor(window, 'devicePixelRatio');
+      const size = $('#vidSize').value;
+      let cw = vw0, ch = vh0;
+      if (size !== 'view') {
+        [W, H] = size.split('x').map(Number);
+        ch = Math.round(vw0 * H / W); if (ch > vh0) { ch = vh0; cw = Math.round(vh0 * W / H); } else cw = vw0;
+      } else { W = Math.round(vw0 * dpr0 / 2) * 2; H = Math.round(vh0 * dpr0 / 2) * 2; }
+      const pr = W / cw;
+      if (IOS && W * H > 16.7e6) throw new Error('この端末では大きすぎます');
+      cont.style.width = cw + 'px'; cont.style.height = ch + 'px';
+      try { Object.defineProperty(window, 'devicePixelRatio', {configurable: true, get: () => pr}); } catch (e) {}
+      silScale = pr / dpr0;
+      stage.handleResize();
+      restore = () => {
+        try { if (dprDesc) Object.defineProperty(window, 'devicePixelRatio', dprDesc); else delete window.devicePixelRatio; } catch (e) {}
+        silScale = 1; cont.style.width = keep.w; cont.style.height = keep.h; stage.handleResize();
+      };
+      const gl = V.renderer.domElement;
+      const base = document.createElement('canvas'); base.width = W; base.height = H; const bctx = base.getContext('2d');
+      const out = document.createElement('canvas'); out.width = W; out.height = H; const ctx = out.getContext('2d');
+      onR = () => { try { bctx.clearRect(0, 0, W, H); bctx.drawImage(gl, 0, 0, W, H); } catch (e) {} };
+      V.signals.rendered.add(onR);
+      const withLbl = $('#vidLbl').checked;
+      const paint = () => {
+        ctx.fillStyle = $('#bg').value || '#000'; ctx.fillRect(0, 0, W, H);
+        ctx.drawImage(base, 0, 0);
+        if (withLbl) {
+          try { lblDraw(ctx, W, H, lblSnapshot()); } catch (e) {}
+          try {
+            const ov = ovlSnapshot();
+            if (ov.length) { const s = H / V.height, ox = (W - V.width * s) / 2, bgc = lblColors().bg;
+              ctx.save(); ctx.font = `bold ${13 * s}px Arial, Helvetica, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+              ov.forEach(o => { const x = ox + o.c[0] * s, y = o.c[1] * s; ctx.strokeStyle = bgc; ctx.lineWidth = 3 * s; ctx.strokeText(o.text, x, y); ctx.fillStyle = o.col; ctx.fillText(o.text, x, y); });
+              ctx.restore(); }
+          } catch (e) {}
+          try { scaleDraw(ctx, W, H, scaleSnapshot()); } catch (e) {}
+        }
+        raf = requestAnimationFrame(paint);
+      };
+      V.requestRender();
+      await new Promise(r => setTimeout(r, 120));
+      // the first scene is set before recording starts, so the video opens on it
+      if (!scenes[list[0]].spin) await sceneGo(list[0], {dur: 0, quiet: true});
+      V.requestRender(); await new Promise(r => setTimeout(r, 200));
+      paint();
+      const stream = out.captureStream(30);
+      rec = new MediaRecorder(stream, {...(mime ? {mimeType: mime} : {}), videoBitsPerSecond: Math.round(Math.min(16e6, Math.max(4e6, W * H * 5)))});
+      rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.start(250);
+    }
+    for (let n = 0; n < list.length && !vid.abort; n++) {
+      const i = list[n], sc = scenes[i];
+      status(`${record ? '録画中' : '再生中'}… ${n + 1} / ${list.length}「${sc.name}」（Esc で中止）`);
+      if (sc.spin) await sceneGo(i, {quiet: true});
+      else if (n === 0) { if (!record) await sceneGo(i, {dur: 0, quiet: true}); }   // when recording, set before the start
+      else { await sceneGo(i, {dur: T, quiet: true}); await vidWait(T + 60); }
+      await vidWait(HOLD);
+    }
+    if (rec) {
+      const stopped = new Promise(r => { rec.onstop = r; });
+      rec.stop(); await stopped;
+      if (vid.abort) status('録画を中止しました');
+      else {
+        const type = rec.mimeType || mime || 'video/webm', ext = /mp4/.test(type) ? 'mp4' : 'webm';
+        const blob = new Blob(chunks, {type});
+        const nm = (structs[active] && structs[active].name) || 'structure';
+        NGL.download(blob, `${nm}_scenes_${W}x${H}.${ext}`);
+        status(`動画を書き出しました（${W} × ${H}、${ext.toUpperCase()}、${(blob.size / 1048576).toFixed(1)} MB）` + (ext === 'webm' ? '。PowerPoint に貼るなら MP4 に変換するか、Chrome・Edge の新しい版をお使いください' : ''));
+      }
+    } else status(vid.abort ? '再生を止めました' : '最後まで再生しました');
+  } catch (e) { status('動画の書き出しに失敗: ' + (e.message || e), true); try { if (rec && rec.state !== 'inactive') rec.stop(); } catch (er) {} }
+  finally {
+    cancelAnimationFrame(raf);
+    if (onR) stage.viewer.signals.rendered.remove(onR);
+    if (restore) restore();
+    vid.on = false; vid.abort = false; vid.rec = false; vidUI();
+  }
+}
+$('#vidPlay').onclick = () => vidRun(false);
+$('#vidRec').onclick = () => vidRun(true);
+addEventListener('keydown', e => { if (e.key === 'Escape' && vid.on) { vid.abort = true; } });
 /* for the session file: structures by their order, maps by name and kind */
 const mapKey = m => `${m.name}|${m.kind}`;
 function scenesToJSON() {
   const idx = sid => structs.findIndex(x => x.sid === sid);
-  return scenes.map(sc => ({name: sc.name, orient: sc.orient,
+  return scenes.map(sc => sc.spin ? {name: sc.name, spin: {...sc.spin}, ...(sc.use === false ? {use: false} : {})} : ({name: sc.name, orient: sc.orient, ...(sc.use === false ? {use: false} : {}),
     lbl: Object.entries(sc.lbl || {}).map(([sid, k]) => [idx(+sid || sid), k]).filter(([i]) => i >= 0),
     snap: {...sc.snap, active: idx(sc.snap.active),
       st: sc.snap.st.map(t => ({...t, sid: idx(t.sid)})).filter(t => t.sid >= 0),
@@ -8021,13 +8250,19 @@ function scenesToJSON() {
 function scenesFromJSON(arr) {
   scenes = []; sceneCur = sceneEdit = -1;
   if (Array.isArray(arr)) for (const j of arr) {
+    if (j && j.spin && typeof j.spin === 'object') {
+      const sp = j.spin;
+      scenes.push({name: String(j.name || '回転').slice(0, 60), ...(j.use === false ? {use: false} : {}),
+        spin: {deg: [90, 180, 360, 720].includes(+sp.deg) ? +sp.deg : 360, sec: Math.min(60, Math.max(1, +sp.sec || 8)), axis: sp.axis === 'x' ? 'x' : 'y'}});
+      continue;
+    }
     if (!j || !j.snap || !Array.isArray(j.snap.st)) continue;
     const sid = i => structs[i] ? structs[i].sid : null;
     const snap = {...j.snap, active: sid(j.snap.active), g: j.snap.g || {},
       st: j.snap.st.map(t => ({...t, sid: sid(t.sid)})).filter(t => t.sid !== null),
       maps: (j.snap.maps || []).map(t => ({...t, m: maps.find(m => mapKey(m) === t.m)})).filter(t => t.m)};
     const lbl = {}; (j.lbl || []).forEach(([i, k]) => { const s = sid(i); if (s !== null && Array.isArray(k)) lbl[s] = k; });
-    scenes.push({name: String(j.name || `シーン ${scenes.length + 1}`).slice(0, 60), orient: Array.isArray(j.orient) ? j.orient : null, lbl, snap});
+    scenes.push({name: String(j.name || `シーン ${scenes.length + 1}`).slice(0, 60), ...(j.use === false ? {use: false} : {}), orient: Array.isArray(j.orient) ? j.orient : null, lbl, snap});
   }
   renderScenes(); bottomUpdate();
 }
