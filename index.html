@@ -8744,11 +8744,25 @@ $('#mutList').addEventListener('click', e => {
 /* hover label: NGL's own tooltip sits 3 px from the pointer and takes the pointer itself, so a small hand movement onto
    it made the molecule window lose the hover and the label blinked (seen in Edge). This one ignores the pointer and
    keeps 14 px away; it names the chain, residue and atom (and a ligand's compound name) */
+let hoverTipOff = false;
+const hoverTipHide = () => { const t = document.getElementById('hoverTip'); if (t) t.style.display = 'none'; };
+{ // any button press or leaving the molecule window hides the label; it comes back on the next plain hover
+  const cv = stage.viewer && stage.viewer.renderer && stage.viewer.renderer.domElement;
+  if (cv) {
+    cv.addEventListener('pointerdown', () => { hoverTipOff = true; hoverTipHide(); }, true);
+    cv.addEventListener('pointerup', () => { hoverTipOff = false; }, true);
+    cv.addEventListener('pointerleave', hoverTipHide);
+    cv.addEventListener('contextmenu', hoverTipHide, true);
+  }
+  window.addEventListener('blur', hoverTipHide);
+}
 function hoverTip(pp) {
   let t = document.getElementById('hoverTip');
   if (!t) { t = document.createElement('div'); t.id = 'hoverTip'; document.body.appendChild(t); }
   try { if (stage.tooltip) stage.tooltip.style.display = 'none'; } catch (e) {}
-  if (!pp || boxMode) { t.style.display = 'none'; return; }
+  // no label while a menu or a drag is in progress (it covered the right-click menu)
+  const menu = document.getElementById('ctxMenu');
+  if (!pp || boxMode || hoverTipOff || (menu && getComputedStyle(menu).display !== 'none')) { t.style.display = 'none'; return; }
   let txt = '';
   try {
     const a = pp.atom || pp.closestBondAtom;
@@ -8845,6 +8859,7 @@ function ctxTargetAt(cx, cy) {
 }
 var ctxOpenT = 0;
 function openCtxMenu(cx, cy) {
+  hoverTipHide();
   ctxOpenT = performance.now();
   if (!comp) return;
   const T = ctxT = ctxTargetAt(cx, cy);
