@@ -10,6 +10,8 @@ PDB ID かファイルを読み込むだけで、構造の表示、電子密度�
 
 **▶ 使ってみる：https://strb-sho7.github.io/shikamol/**
 
+![ShikaMol の画面。GAL4 と DNA の複合体（PDB 1D66）で Arg15 を選び、周りの残基のスティック、相互作用の点線、ラベル、画面下の相互作用の一覧を表示している](docs/screenshot.png)
+
 ---
 
 ## 使い方
