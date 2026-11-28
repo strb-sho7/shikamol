@@ -354,11 +354,13 @@ details.sec{margin-bottom:12px}
 .scn .spinset{display:flex;gap:4px;align-items:center;flex:none;font-size:11.5px;color:var(--mute)}
 .scn .spinset select,.scn .spinset input{font-size:11.5px}
 .scn .spinset input{width:3.6em}
-.scn{display:grid;grid-template-columns:1.6em 16px 9.8em 16em 16em minmax(0,1fr) auto;align-items:center;gap:6px;padding:3px 4px;border-top:1px solid #ffffff10;border-radius:5px}
+/* width of the name column in the Scenes and Saved selections tabs (one value for both) */
+#bpane{--nameW:240px}
+.scn{display:grid;grid-template-columns:1.6em 16px 9.8em var(--nameW) 16em minmax(0,1fr) auto;align-items:center;gap:6px;padding:3px 4px;border-top:1px solid #ffffff10;border-radius:5px}
 .scn .nm{display:flex;align-items:center;min-width:0}
 .scn .tm{justify-self:start;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 #spane{container-type:inline-size}
-@container (max-width:760px){.scn{grid-template-columns:1.6em 16px auto minmax(0,1fr) auto;grid-template-areas:'no use act nm del' '. . tm tm tm' '. . sum sum sum';row-gap:2px}.scn .no{grid-area:no}.scn .use{grid-area:use}.scn .act{grid-area:act}.scn .nm{grid-area:nm}.scn .del{grid-area:del}.scn .tm{grid-area:tm}.scn .sum,.scn .spinset{grid-area:sum}.scnT{margin-left:2.4em}}
+@container (max-width:800px){.scn{grid-template-columns:1.6em 16px auto minmax(0,1fr) auto;grid-template-areas:'no use act nm del' '. . tm tm tm' '. . sum sum sum';row-gap:2px}.scn .no{grid-area:no}.scn .use{grid-area:use}.scn .act{grid-area:act}.scn .nm{grid-area:nm}.scn .del{grid-area:del}.scn .tm{grid-area:tm}.scn .sum,.scn .spinset{grid-area:sum}.scnT{margin-left:2.4em}}
 .scn.cur{background:#5aa9ff1f}
 .scn .no{flex:none;width:1.6em;text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
 .scn .go{flex:0 1 auto;min-width:0;text-align:left;background:transparent;border:0;color:#e8eaee;font-size:13px;font-weight:600;padding:2px 4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -413,7 +415,10 @@ details.sec{margin-bottom:12px}
 #addMode.on,#scBtn.on{background:#5aa9ff;color:#000;border-color:#5aa9ff}
 #groups .g{display:flex;align-items:center;gap:6px;margin:3px 0}
 #groups .gl{flex-wrap:wrap;row-gap:3px;padding:2px 0;border-top:1px solid #ffffff10}
-#groups .gnm{display:flex;align-items:center;flex:1 1 12em;min-width:8em}
+#groups .gnm{display:flex;align-items:center;flex:0 0 var(--nameW);min-width:0}
+#groups .gl .gdel{margin-left:auto}
+#gpane{container-type:inline-size}
+@container (max-width:640px){#groups .gnm{flex:1 1 12em;min-width:8em}}
 #groups .gnm input[type=text]{flex:1;min-width:0}
 #groups .gl .ggo{min-width:0;text-align:left;background:transparent;border:0;color:#e8eaee;font-size:13px;font-weight:600;padding:2px 4px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #groups .gl .ggo:hover{text-decoration:underline}
