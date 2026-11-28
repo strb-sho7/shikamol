@@ -10,6 +10,8 @@ Load a PDB ID or a file, and you can display the structure, overlay electron den
 
 **▶ Open the viewer: https://strb-sho7.github.io/shikamol/**
 
+![ShikaMol showing the GAL4–DNA complex (PDB 1D66) with Arg15 selected: sticks of the surrounding residues, interactions as dashed lines, labels, and the interaction list below the viewer](docs/screenshot.png)
+
 ---
 
 ## Getting started
